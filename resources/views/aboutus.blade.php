@@ -36,7 +36,7 @@
         <div class="col-md-6 mb-4 mb-md-0 heading-section">
 
           <span class="subheading">About us </span>
-            <h2 class="mb-4">Who We are?</h2>
+            <h2 class="mb-4">Who We are.?</h2>
 
           <p class="text-muted">We drive one of the biggest virtual yet fancy sports platform. Also, we help you set-up your fan base by keeping a watch over shared posts in the feed. Not just this, but here you can enhance your performance by playing more to reach the next best level along with exciting cash rewards. Here you can create a team choosing your favourite players which help you gain more coins in any contest. Sportfight Fantasy League is a stage that permits you to play virtually opting amongst real-life players and earn points using your game expertise and knowledge.
           </p>
