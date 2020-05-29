@@ -116,15 +116,14 @@
                                                         <i class="glyphicon glyphicon-eye-open" title="edit"></i> 
 
                                                     </a>
-                                                    @else
-                                                      {{ ($result->role_type==1)?'admin':($result->role_type==2)?'Sales':($result->role_type==4)?'Support':'Admin'}}
                                                     @endif
+                                                  
                                                 </td>
                                                 <td>
                                                     {!! Carbon\Carbon::parse($result->created_at)->format('d-m-Y'); !!}
                                                 </td>
                                                 <td>
-                                                    <span class="label label-{{ ($result->status==1)?'success':'warning'}} status" id="{{$result->id}}"  data="{{$result->status}}"  onclick="changeStatus({{$result->id}},'user')" >
+                                    <span class="label label-{{ ($result->status==1)?'success':'warning'}} status" id="{{$result->id}}"  data="{{$result->status}}"  onclick="changeStatus({{$result->id}},'user')" >
                                                             {{ ($result->status==1)?'Active':'Inactive'}}
                                                         </span>
                                                 </td>
@@ -141,8 +140,8 @@
                                                     </td>
                                                
                                             </tr>
-                                           @endforeach
-                                         @endif   
+                                            @endforeach
+                                         @endif  
                                         </tbody>
                                     </table>
                                     Showing {{($users->currentpage()-1)*$users->perpage()+1}} to {{$users->currentpage()*$users->perpage()}}

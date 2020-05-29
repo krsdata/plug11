@@ -1,6 +1,6 @@
 <ul class="page-breadcrumb breadcrumb">
     <li>
-        <a href="{{ url('/') }}">Home</a>
+        <a href="{{ url('admin') }}">Home</a>
         <i class="fa fa-circle"></i>
     </li>
     <li>

@@ -1,56 +1,103 @@
-<!-- END CONTAINER -->
-        <!-- BEGIN FOOTER -->
-        <div class="page-footer">
-            <div class="page-footer-inner"> 2020 &copy; admin panel
-
-            </div>
+<div class="page-footer">
+            <div class="page-footer-inner"> 2016 &copy; Copyright
+                <a target="_blank" href="http://keenthemes.com">SportsFight</a> &nbsp;|&nbsp;
+         
+             </div>
             <div class="scroll-to-top">
-                <i class="icon-arrow-up"></i>
+                <i class="fa fa-arrow-up"></i>
             </div>
         </div>
-
-
-        <!-- END QUICK NAV -->
-
+      
+        <!-- END FOOTER -->
+        
+        <!--[if lt IE 9]>
+<script src="media/js//respond.min.js"></script>
+<script src="media/js//excanvas.min.js"></script> 
+<script src="media/js//ie8.fix.min.js"></script> 
+<![endif]-->
         <!-- BEGIN CORE PLUGINS -->
-         <script src="{{ URL::asset('assets/global/plugins/jquery.min.js') }}" type="text/javascript"></script>
-        <script src="{{ URL::asset('assets/global/plugins/bootstrap/js/bootstrap.min.js') }}" type="text/javascript"></script>
-        <script src="{{ URL::asset('assets/global/plugins/js.cookie.min.js') }}" type="text/javascript"></script>
-        <script src="{{ URL::asset('assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js') }}" type="text/javascript"></script>
-        <script src="{{ URL::asset('assets/global/plugins/jquery.blockui.min.js') }}" type="text/javascript"></script>
-        <script src="{{ URL::asset('assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js') }}" type="text/javascript"></script>
+
+
+        <script src="{{ URL::asset('media/js/ui-confirmations.min.js')}}" type="text/javascript"></script>
+
+        <script src="{{ URL::asset('media/js/bootstrap-confirmation.min.js')}}" type="text/javascript"></script>
+    
+        <script src="{{ URL::asset('media/js/jquery.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/bootstrap.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/js.cookie.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/jquery.slimscroll.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/jquery.blockui.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/bootstrap-switch.min.js')}}" type="text/javascript"></script>
         <!-- END CORE PLUGINS -->
+        <!-- BEGIN THEME GLOBAL SCRIPTS -->
+        <script src="{{ URL::asset('media/js/app.min.js')}}" type="text/javascript"></script>
+        <!-- END THEME GLOBAL SCRIPTS -->
+        <!-- BEGIN THEME LAYOUT SCRIPTS -->
+        <script src="{{ URL::asset('media/js/layout.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/demo.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/quick-sidebar.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/quick-nav.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/bootstrap-datepaginator.min.js')}}" type="text/javascript"></script>
+
+        <!-- END THEME LAYOUT SCRIPTS -->
         <!-- BEGIN PAGE LEVEL PLUGINS -->
+        <script src="{{ URL::asset('media/js/moment.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/daterangepicker.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/bootstrap-datepicker.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/bootstrap-datetimepicker.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/components-date-time-pickers.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/morris.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/raphael-min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/jquery.waypoints.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/jquery.counterup.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/amcharts.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/serial.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/pie.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/radar.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/light.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/patterns.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/chalk.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/ammap.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/worldLow.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/amstock.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/fullcalendar.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/horizontal-timeline.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/jquery.flot.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/jquery.flot.resize.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/jquery.flot.categories.min.js')}}" type="text/javascript"></script>
+      
+        <script src="{{ URL::asset('media/js/jquery.sparkline.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/jquery.vmap.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/jquery.vmap.russia.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/jquery.vmap.world.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/jquery.vmap.europe.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/jquery.vmap.germany.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/jquery.vmap.usa.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/jquery.vmap.sampledata.js')}}" type="text/javascript"></script>
+      
+         <script src="{{ URL::asset('assets/global/plugins/jquery.blockui.min.js') }}" type="text/javascript"></script>
+        <!-- END PAGE LEVEL PLUGINS -->
+        <!-- BEGIN PAGE LEVEL SCRIPTS -->
         <script src="{{ URL::asset('assets/global/scripts/datatable.js') }}" type="text/javascript"></script>
         <script src="{{ URL::asset('assets/global/plugins/datatables/datatables.min.js') }}" type="text/javascript"></script>
         <script src="{{ URL::asset('assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js') }}" type="text/javascript"></script>
-        <!-- END PAGE LEVEL PLUGINS -->
-        <!-- BEGIN THEME GLOBAL SCRIPTS -->
-        <script src="{{ URL::asset('assets/global/scripts/app.min.js') }}" type="text/javascript"></script>
-        <!-- END THEME GLOBAL SCRIPTS -->
-        <!-- BEGIN PAGE LEVEL SCRIPTS -->
-        <script src="{{ URL::asset('assets/pages/scripts/table-datatables-editable.min.js') }}" type="text/javascript"></script>
-        <!-- END PAGE LEVEL SCRIPTS -->
-        <!-- BEGIN THEME LAYOUT SCRIPTS -->
-        <script src="{{ URL::asset('assets/layouts/layout4/scripts/layout.min.js') }}" type="text/javascript"></script>
-        <script src="{{ URL::asset('assets/layouts/layout4/scripts/demo.min.js') }}" type="text/javascript"></script>
-        <script src="{{ URL::asset('assets/layouts/global/scripts/quick-sidebar.min.js') }}" type="text/javascript"></script>
-        <script src="{{ URL::asset('assets/layouts/global/scripts/quick-nav.min.js') }}" type="text/javascript"></script>
-
-         <script src="{{ URL::asset('assets/global/plugins/select2/js/select2.full.min.js') }}" type="text/javascript"></script>
-        <script src="{{ URL::asset('assets/global/plugins/jquery-validation/js/jquery.validate.min.js') }}" type="text/javascript"></script>
-        <script src="{{ URL::asset('assets/global/plugins/jquery-validation/js/additional-methods.min.js') }}" type="text/javascript"></script>
-        <script src="{{ URL::asset('assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}" type="text/javascript"></script>
-        <script src="{{ URL::asset('assets/global/plugins/bootstrap-wysihtml5/wysihtml5-0.3.0.js') }}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/dashboard.min.js')}}" type="text/javascript"></script>
+   
+               <script src="{{ URL::asset('assets/global/plugins/bootstrap-wysihtml5/wysihtml5-0.3.0.js') }}" type="text/javascript"></script>
         <script src="{{ URL::asset('assets/global/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.js') }}" type="text/javascript"></script>
         <script src="{{ URL::asset('assets/global/plugins/ckeditor/ckeditor.js') }}" type="text/javascript"></script>
         <script src="{{ URL::asset('assets/global/plugins/bootstrap-markdown/lib/markdown.js') }}" type="text/javascript"></script>
         <script src="{{ URL::asset('assets/global/plugins/bootstrap-markdown/js/bootstrap-markdown.js') }}" type="text/javascript"></script>
+
+         <script src="{{ URL::asset('assets/global/plugins/select2/js/select2.full.min.js') }}" type="text/javascript"></script>
+        <script src="{{ URL::asset('assets/global/plugins/jquery-validation/js/jquery.validate.min.js') }}" type="text/javascript"></script>
+        <script src="{{ URL::asset('assets/global/plugins/jquery-validation/js/additional-methods.min.js') }}" type="text/javascript"></script>
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN THEME GLOBAL SCRIPTS -->
 
         <!-- BEGIN PAGE LEVEL SCRIPTS -->
         <script src="{{ URL::asset('assets/pages/scripts/form-validation.js') }}" type="text/javascript"></script>
+         <script src="{{ URL::asset('assets/pages/scripts/table-datatables-editable.min.js') }}" type="text/javascript"></script>
 
          <script src="{{ URL::asset('assets/global/plugins/bootstrap-fileinput/bootstrap-fileinput.js') }}" type="text/javascript"></script>
 
@@ -66,14 +113,7 @@
 
         <script src="{{ URL::asset('assets/js/components-bootstrap-multiselect.min.js') }}" type="text/javascript"></script>
 
-        
-
-         <script src="{{ URL::asset('assets/js/bootstrap-datetimepicker.js') }}" type="text/javascript"></script>
-        <script src="{{ URL::asset('assets/js/bootstrap-datetimepicker.fr.js') }}" type="text/javascript"></script>
-
-
-        <!-- END THEME LAYOUT SCRIPTS -->
-      @if(isset($js_file))
+ @if(isset($js_file))
 
         @foreach($js_file as $key => $js )
               <script src="{{ URL::asset('assets/js/'.$js) }}" type="text/javascript"></script>
@@ -175,9 +215,6 @@
 
 
 
-    </body>
-
-
 <style type="text/css">
   .cke_button__source{
     display: none !important;
@@ -217,6 +254,14 @@ $(document).ready(function(){
   }  
 
 });
-</script>
+      </script>
+        <script src="{{ URL::asset('media/js/charts-highcharts.min.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/highcharts.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/highcharts-3d.js')}}" type="text/javascript"></script>
+        <script src="{{ URL::asset('media/js/highcharts-more.js')}}" type="text/javascript"></script>
+
+
+        <!-- END PAGE LEVEL SCRIPTS -->
+    </body>
 
 </html>

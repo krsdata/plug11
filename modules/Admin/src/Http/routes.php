@@ -31,6 +31,12 @@
 
     Route::group(['middleware' => ['admin']], function () {
 
+
+        //
+
+        Route::get('admin/keyFeature','Modules\Admin\Http\Controllers\AdminController@keyfeature');
+        Route::get('admin/primarykpi','Modules\Admin\Http\Controllers\AdminController@primarykpi');
+           Route::get('admin/secondarykpi','Modules\Admin\Http\Controllers\AdminController@secondarykpi');
         Route::get('admin', 'Modules\Admin\Http\Controllers\AdminController@index');
         /*------------User Model and controller---------*/
         

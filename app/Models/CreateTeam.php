@@ -48,6 +48,6 @@ class CreateTeam extends Eloquent
     {
         return $this->hasOne('App\User', 'id', 'user_id')->select('id','first_name','last_name','name','user_name','profile_image');
     }
-
+//CreateTeam::with('user')->get();
     
 }

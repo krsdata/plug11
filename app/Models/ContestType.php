@@ -39,4 +39,9 @@ class ContestType extends Eloquent
 
     protected $guarded = ['created_at' , 'updated_at' , 'id' ];
 
+           
+    public function create_contests()
+    {
+        return $this->hasMany('App\Models\CreateContest', 'contest_type', 'id') ;
+    }
 }

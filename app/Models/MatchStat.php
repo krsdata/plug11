@@ -38,4 +38,5 @@ class MatchStat extends Eloquent
         return $this->hasOne('App\Models\Player', 'pid', 'pid');
     }
 
+
 }

@@ -44,4 +44,23 @@ class Matches extends Eloquent
     {
         return $this->hasOne('App\Models\TeamB', 'match_id', 'match_id') ;
     }
+
+     public function joinContest()
+    {
+        return $this->hasOne('App\Models\JoinContest', 'match_id', 'match_id') ;
+    }
+
+        public function create_contests()
+    {
+        return $this->hasOne('App\Models\CreateContest', 'match_id', 'match_id') ;
+    }
+      public function competition()
+    {
+        return $this->hasOne('App\Models\Competition', 'match_id', 'match_id') ;
+    }
+    
+
+    
+
+
 }
