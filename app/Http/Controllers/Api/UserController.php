@@ -581,69 +581,90 @@ class UserController extends BaseController
         );
     }
 
-    public function updateProfile(Request $request)
-    {
-        $user = User::find($request->user_id);
-        if(!$request->user_id && (User::find($request->user_id))==null)
-        {
+    public function updateProfile(Request $request){
+
+        $myArr = [];
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
+            'city' => 'required',
+            'dateOfBirth' => 'required',
+            'gender' => 'required',
+            'mobile_number' => 'required',
+            'name' => 'required',
+            'pinCode' => 'required',
+            'state' => 'required'
+        ]);
+
+
+        // Return Error Message
+        if ($validator->fails()) {
+            $error_msg  =   [];
+            foreach ( $validator->messages()->all() as $key => $value) {
+                array_push($error_msg, $value);
+            }
+
             return Response::json(array(
-                    'status' => false,
                     'code' => 201,
-                    'message' => 'Invalid user Id!',
-                    'data'  =>  $request->all()
+                    'status' => false,
+                    'message' => $error_msg[0]
                 )
             );
         }
 
-        $table_cname = \Schema::getColumnListing('users');
-        $except = ['id','created_at','updated_at','profile_image','referral_code','user_name','password','device_id','user_type','email'];
-        $user_data = [];
-        foreach ($table_cname as $key => $value) {
+    $new_password  = $request->new_password;
+    $password      = $request->password;
+    $user = User::find($request->user_id);
+     
+    if($new_password && $password){
 
-            if(in_array($value, $except )){
-                continue;
-            }
+        $credentials = [
+                    'email'     =>$request->get('email'),
+                    'password'  =>$request->get('password'),
+                    'status'    => 1
+                ];
 
-            $udata = $request->get($value);
-            if($request->get($value) && $udata!=""){
-                $user->$value = $request->get($value);
-                $user_data[$value] = $request->get($value);
-            }
+        $auth = Auth::attempt($credentials);
+        if($auth){
+                $user->password = Hash::make($new_password);
+                $user->save();
+        }else{
+             return Response::json(array(
+                    'code' => 201,
+                    'status' => false,
+                    'message' => 'Old password does not match!'
+                )
+            );
         }
+    }
 
-        if($request->get('profile_image')){
-            $profile_image = $this->createImage($request);
-            if($profile_image==false){
-                return Response::json(array(
-                        'status' => false,
-                        'code' => 201,
-                        'message' => 'Invalid Image format!'
-                    )
-                );
-            }
-            $user->profile_image  = $profile_image;
-        }
+    $user = User::find($request->user_id);
+    
+    if($user){
+            $user->city = $request->city;
+            $user->dateOfBirth = $request->dateOfBirth;
+            $user->gender = $request->gender;
+            $user->pinCode = $request->pinCode;
+            $user->state = $request->state;
 
-        try{
             $user->save();
-            $status = true;
-            $code  = 200;
-            $message ="Profile updated successfully";
-        }catch(\Exception $e){
-            $status = false;
-            $code  = 201;
-            $message =$e->getMessage();
+
+            return response()->json(
+                [
+                    "status"=>true,
+                    "code"=>200,
+                    "message" => "Profile updated successfully"
+                ]
+            );
+        }else{
+            return response()->json(
+                [
+                    "status"=>false,
+                    "code"=>201,
+                    "message" => "User is invalid"
+                ]
+            );
         }
-
-        return response()->json(
-            [
-                "status" =>$status,
-                'code'   => $code,
-                "message"=> $message,
-                'data'=>isset($user_data)?$user_data:null
-            ]
-        );
-
     }
 
     // Image upload
@@ -932,10 +953,16 @@ class UserController extends BaseController
                 $data['referal_code']  = $usermodel->user_name;
                 $data['name'] = $usermodel->name;
                 $data['email'] = $usermodel->email;
+                $data['profile_image'] = isset($usermodel->profile_image)?$usermodel->profile_image:"https://image";
                 $data['user_id'] = $usermodel->id;
                 $data['mobile_number'] = $usermodel->mobile_number??$usermodel->phone;
                 $data['bonus_amount']     =  (float)$wallet->bonus_amount;
                 $data['usable_amount']    = (float)$wallet->usable_amount;
+                $data['city'] = $usermodel->city;
+                $data['dateOfBirth'] = $usermodel->dateOfBirth;
+                $data['gender'] = $usermodel->gender;
+                $data['pinCode'] = $usermodel->pinCode;
+                $data['state'] = $usermodel->state;
                 $status = true;
             }
             $devD = \DB::table('hardware_infos')->where('user_id',$usermodel->id)->first();
@@ -1120,6 +1147,63 @@ class UserController extends BaseController
     }
 
 
+    
+    public function mChangePassword(Request $request){
+
+        $user_id =  $request->user_id;
+        $current_password =  $request->current_password;
+        $new_password = $request->new_password;
+
+        $messages = [
+            'user_id.required' => 'User id is required',
+            'new_password.required' => 'New password is required',
+            'current_password.required' => 'current password is required'
+
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required',
+            'current_password' => 'required',
+            'new_password' => 'required|min:6'
+        ],$messages);
+
+        $user = User::where('id',$user_id)->first();
+
+        // Return Error Message
+        if ($validator->fails() || $user ==null) {
+            $error_msg =[];
+            foreach ( $validator->messages()->all() as $key => $value) {
+                array_push($error_msg, $value);
+            }
+            return Response::json(array(
+                    'status' => false,
+                    "code"=> 201,
+                    'message' => $error_msg[0]??'Opps! This user is not available'
+                )
+            );
+        }
+
+        $credentials = [
+            'email'=>$user->email,
+            'password'=>$current_password
+        ];
+
+        $auth = Auth::attempt($credentials);
+        if($auth){
+            $user->password = Hash::make($new_password);
+            $user->save();
+            return response()->json(
+                [
+                    "status"=>true,
+                    'code'=>200,
+                    "message"=>"Password changed successfully"
+                ]);
+
+        }else{
+            return response()->json([ "status"=>false,'code'=>201,"message"=>"Old password do not match. Try again!"]);
+
+        }
+    }
     public function resetPassword(Request $request){
 
         $user_id =  $request->user_id;

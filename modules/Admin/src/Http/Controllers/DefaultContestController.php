@@ -125,17 +125,17 @@ class DefaultContestController extends Controller {
 
         if($request->match_id){
             $match  = Matches::where('match_id',$request->match_id)->get('match_id');
+            \DB::table('matches')->where('match_id',$request->match_id)->update(['is_free'=>$request->is_free]);
+            
         }else{
             $match  = Matches::where('status',1)->get('match_id');
         }
-
         $request->merge(['filled_spot' => 0]);
         foreach ($match as $key => $result) {
             $request->merge(['match_id' => $result->match_id]);
             $request->merge(['default_contest_id' => $default_contest_id]);
+            \DB::table('create_contests')->insert($request->except('_token'));
         }
-
-        \DB::table('create_contests')->insert($request->except('_token'));
          
         return Redirect::to(route('defaultContest'))
                             ->with('flash_alert_notice', 'New Contest successfully created!');

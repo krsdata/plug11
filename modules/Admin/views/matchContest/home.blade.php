@@ -21,13 +21,13 @@
                                         <i class="icon-settings font-red"></i>
                                         <span class="caption-subject font-red sbold uppercase">{{ $heading }}</span>
                                     </div>
-                                     <div class="col-md-2 pull-right">
+                                       <!--  <div class="col-md-2 pull-right">
                                             <div style="width: 150px;" class="input-group"> 
-                                                <a href="{{ route('prizeDistribution.create')}}">
+                                                <a href="{{ route('matchContest.create')}}">
                                                     <button class="btn btn-success"><i class="fa fa-plus-circle"></i> Add {{ $heading }}</button> 
                                                 </a>
                                             </div>
-                                        </div> 
+                                        </div>  -->
                                      
                                 </div>
                                   
@@ -41,10 +41,10 @@
                                 <div class="portlet-body table-responsive">
                                     <div class="table-toolbar">
                                         <div class="row">
-                                            <form action="{{route('prizeDistribution')}}" method="get" id="filter_data">
+                                            <form action="{{route('matchContest')}}" method="get" id="filter_data">
                                              
                                             <div class="col-md-3">
-                                                <input value="{{ (isset($_REQUEST['search']))?$_REQUEST['search']:''}}" placeholder="Search by  Match Id" type="text" name="search" id="search" class="form-control" >
+                                                <input value="{{ (isset($_REQUEST['search']))?$_REQUEST['search']:''}}" placeholder="Search by Match Id" type="text" name="search" id="search" class="form-control" >
                                             </div>
                                             <div class="col-md-2">
                                                 <input type="submit" value="Search" class="btn btn-primary form-control">
@@ -52,7 +52,7 @@
                                            
                                         </form>
                                          <div class="col-md-2">
-                                             <a href="{{ route('prizeDistribution') }}">   <input type="submit" value="Reset" class="btn btn-default form-control"> </a>
+                                             <a href="{{ route('matchContest') }}">   <input type="submit" value="Reset" class="btn btn-default form-control"> </a>
                                         </div>
                                        
                                         </div>
@@ -63,27 +63,39 @@
                                             <tr>
                                                 <th>Sno.</th>
                                            @foreach($tables as $col_name)
-                                                <th> {{$col_name}}</th> 
+                                                <th> 
+                                                    {{  \Str::replaceFirst('_'," ",ucfirst($col_name)) }}
+                                                </th> 
                                             @endforeach
                                             <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-            @foreach($prizeDistribution as $key => $result)
+            @foreach($matchContest as $key => $result)
             
                 <tr>
-                    <td> {{ (($prizeDistribution->currentpage()-1)*15)+(++$key) }}</td>
+                    <td> {{ (($matchContest->currentpage()-1)*15)+(++$key) }}</td>
                     @foreach($tables as $col_name)
 
                            <td>  {!!$result->$col_name!!} </td>
                     @endforeach
                         
                     <td> 
-                        <a href="{{ route('prizeDistribution.edit',$result->id)}}">
+                        
+
+                        <a href="{{ route('prizeDistribution','search='.$result->match_id)}}">
                             <button class="btn btn-success btn-xs">
-                            <i class="fa fa-fw fa-edit" title="edit"></i> 
+                               View Prize
+                            <i class="fa fa-fw fa-eye" title="edit"></i> 
                             </button>
                         </a>
+                        <a href="{{ route('matchTeams','search='.$result->match_id)}}">
+                            <button class="btn btn-success btn-xs">
+                               View Teams
+                            <i class="fa fa-fw fa-eye" title="edit"></i> 
+                            </button>
+                        </a>
+ 
                         
                          {!! Form::close() !!}
 
@@ -94,12 +106,10 @@
                 
             </tbody>
         </table>
-<span>
-  Showing {{($prizeDistribution->currentpage()-1)*$prizeDistribution->perpage()+1}} to {{$prizeDistribution->currentpage()*$prizeDistribution->perpage()}}
-  of  {{$prizeDistribution->total()}} entries 
-</span>
-
-         <div class="center" align="center">  {!! $prizeDistribution->appends(['search' => isset($_GET['search'])?$_GET['search']:''])->render() !!}</div>
+        <span>
+        Showing {{($matchContest->currentpage()-1)*$matchContest->perpage()+1}} to {{$matchContest->currentpage()*$matchContest->perpage()}}
+                            of  {{$matchContest->total()}} entries </span>
+         <div class="center" align="center">  {!! $matchContest->appends(['search' => isset($_GET['search'])?$_GET['search']:''])->render() !!}</div>
     </div>
                             </div>
                             <!-- END EXAMPLE TABLE PORTLET-->

@@ -3,17 +3,11 @@
             <!-- BEGIN CONTENT -->
 <div class="page-content-wrapper">
                 <!-- BEGIN CONTENT BODY -->
-                <div class="page-content">
+  <div class="page-content">
                     <!-- BEGIN PAGE HEAD-->
-                    
-                    <!-- END PAGE HEAD-->
-                    <!-- BEGIN PAGE BREADCRUMB -->
-                   @include('packages::partials.breadcrumb')
+    @include('packages::partials.breadcrumb')
 
-                    <!-- END PAGE BREADCRUMB -->
-                    <!-- BEGIN PAGE BASE CONTENT -->
-
-                        <div class="row">
+    <div class="row">
                             <div class="col-md-12">
                             <!-- BEGIN EXAMPLE TABLE PORTLET-->
                             <div class="portlet light portlet-fit bordered">
@@ -60,7 +54,7 @@
                                          {{ Session::get('flash_alert_notice') }} 
                                          </div>
                                     @endif
-                                <div class="portlet-body table-responsive">
+                                <div class="portlet-body table-responsive" style="min-height: 480px">
                                     <div class="table-toolbar">
                                         <div class="row">
                                             <form action="{{route('match')}}" method="get" id="filter_data">
@@ -95,6 +89,7 @@
                                                  <th>Sno.</th>
                                                 <th> Match Id </th>
                                                 <th> Match Between </th> 
+                                                <th> Short title </th> 
                                                 <th> Add Contest</th> 
                                                 <th> Player List </th>  
                                                 <th> Action</th> 
@@ -113,6 +108,7 @@
                                                {{ (($match->currentpage()-1)*15)+(++$key) }}</td>
                                                 <td> {{$result->match_id}} </td>
                                                  <td> {{$result->title}} </td>
+                                                 <td> {{$result->short_title}} </td>
                                                  <td> <a class="btn btn-success" href="{{route('defaultContest.create')}}?match_id={{$result->match_id}}">
                                                     Add Contest
                                                  </a>
@@ -145,8 +141,142 @@
           @endif  
         <div class="dropdown-divider"></div>
         <a class="dropdown-item btn btn-info" href="{{route('triggerEmail','match_id='.$result->match_id)}}">Prize Email Trigger</a>
+           
+          <a class="dropdown-item btn btn-danger" data-toggle="modal" data-target="#cancelContest_{{$result->id}}" href="#">Cancel Match Contest</a>
+
+          <a class="dropdown-item btn btn-danger" data-toggle="modal" data-target="#playing11_{{$result->id}}" href="#">Playing 11 Squad</a>
+
+         <a class="dropdown-item btn btn-primary" href="{{route('cancelMatch','match_id='.$result->match_id)}}">Cancel This Match</a>
+
+
+         <a class="dropdown-item btn btn-primary" href="{{route('matchContest','search='.$result->match_id)}}">View All Contests</a>
+         
       </div>
     </div>
+
+<div class="modal fade" id="cancelContest_{{$result->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg  " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="exampleModalLabel">Cancel Match Contest</h2>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <form action="{{route('cancelContest','match_id='.$result->match_id)}}"> 
+      <div class="modal-body">
+
+         <table class="table table-striped table-hover table-bordered" id="contact">
+          <thead>
+              <tr>
+                  <th>Sno.</th>
+                  <th> Contest Name</th> 
+                  <th> Total Spot </th>  
+                  <th> Filled Spot</th> 
+                  <th> Remaining Spot</th>
+                  <th> Entry Fees</th>
+                  <th> Status</th> 
+                  <th> Action </th> 
+              </tr>
+
+          </thead>
+          <tbody>
+            @foreach($result->contests as $key => $contest)
+            <tr>
+              <td>{{$key+1}} </td>
+              <td>{{$contest->contest_name}}</td>
+              <td>{{$contest->total_spots}}</td>
+              <td>{{$contest->filled_spot??'0'}}</td>
+              <td>
+                <?php  
+
+                  $count = ($contest->total_spots-$contest->filled_spot);
+                  if($count<1){
+                    echo "Unlimited Spot";
+                  }else{
+                    echo $count; 
+                  }
+               ?> </td>
+               <td>{{$contest->entry_fees??'0'}}</td>
+              <td>{{ ($contest->is_cancelled==0)?'Active':'Cancelled' }}  </td>
+              <td>
+                 <div class="mt-checkbox-list">
+                  <input type="hidden" name="match_id" value="{{$result->match_id}}">
+                  @if(($contest->is_cancelled==0))
+                    <label class="mt-checkbox mt-checkbox-outline">
+                        <input type="checkbox" name="cancel_contest[]" id="cancel_contest_{{$result->match_id}}" value="{{$contest->id}}">  
+                        <span></span>
+                    </label>
+                    </div>
+                    @endif
+              </td>
+            </tr>
+            @endforeach
+ 
+          </tbody>
+      </table>  
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-success"> Cancel Selected Contest </button>
+        </div>
+      </div>
+    </form>
+</div>
+</div>
+</div>
+
+
+<div class="modal fade" id="playing11_{{$result->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg  " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="exampleModalLabel">Playing 11</h2>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div> 
+      <div class="modal-body">
+
+         <table class="table table-striped table-hover table-bordered" id="contact">
+          <thead>
+              <tr>
+                  <th>Sno.</th>
+                  <th> Player Name</th> 
+              </tr>
+
+          </thead>
+          <tbody>
+            <tr>
+              <td>Team A</td>
+              <td>{{(count($result->playing11_teamA)==0)?'Not announced':''}}</td>
+            </tr>
+            @foreach($result->playing11_teamA as $key => $playing11)
+            <tr>
+              <td>{{$key+1}} </td>
+              <td>{{$playing11->name}}</td>
+            </tr>
+            @endforeach
+            <tr>
+              <td>Team B</td>
+              <td>{{(count($result->playing11_teamB)==0)?'Not announced':''}}</td>
+            </tr>
+             @foreach($result->playing11_teamB as $key => $playing11)
+            <tr>
+              <td>{{$key+1}} </td>
+              <td>{{$playing11->name}}</td>
+            </tr>
+            @endforeach
+          </tbody>
+      </table>  
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+</div>
+</div>
+</div>
 
 
                                               </td> 
@@ -174,13 +304,20 @@
                         </a>
  </td>
                                     </tr>
+
+
+
+
+
+
+
                                    @endforeach
                                     
                                 </tbody>
                             </table>
                             <span>
                               Showing {{($match->currentpage()-1)*$match->perpage()+1}} to {{$match->currentpage()*$match->perpage()}}
-                            of  {{$match->total()}} entries
+                            of  {{$match->total()}} entries </span>
                              <div class="center" align="center">  {!! $match->appends(['search' => isset($_GET['search'])?$_GET['search']:'','status' => isset($_GET['status'])?$_GET['status']:''])->render() !!}</div>
                         </div>
                     </div>
@@ -309,3 +446,5 @@
   </div>
 </div>
 </div>
+
+

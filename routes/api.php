@@ -21,6 +21,8 @@ Route::group(['prefix' => 'v2'], function () {
     Route::match(['post','get'], 'forgotPassword', 'Api\UserController@forgotPassword');
     Route::match(['post','get'], 'password/reset', 'Api\UserController@resetPassword');
     Route::match(['post','get'], 'changePassword', 'Api\UserController@changePassword');
+    Route::match(['post','get'], 'mChangePassword', 'Api\UserController@mChangePassword');
+    
 });
 
 Route::middleware('auth:api')->group( function () {
@@ -66,6 +68,18 @@ Route::group([
     'prefix' => 'v2'
 ], function()
 {   
+    
+
+    Route::match(['get','post'], 'getPlayerPoints', [
+        'as' => 'getPlayerPoints',
+        'uses' => 'Api\ApiController@getPlayerPoints'
+    ]);
+    
+    Route::match(['get','post'], 'automateCreateContest', [
+        'as' => 'automateCreateContest',
+        'uses' => 'Api\ApiController@automateCreateContest'
+    ]);
+
     Route::match(['get','post'], 'verification', [
         'as' => 'verification',
         'uses' => 'Api\ApiController@verification'
@@ -169,7 +183,8 @@ Route::group([
     //added by manoj
     Route::match(['post','get'],'uploadbase64Image', 'Api\ApiController@uploadbase64Image');
     Route::match(['post','get'],'member/uploadImages', 'Api\ApiController@uploadImages');
-    Route::match(['post','get'],'member/updateProfile', 'Api\ApiController@updateProfile');
+    Route::match(['post','get'],'member/updateProfile', 'Api\UserController@updateProfile');
+    Route::match(['post','get'],'updateProfile', 'Api\UserController@updateProfile');
 }
 );
 
