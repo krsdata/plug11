@@ -729,7 +729,7 @@ class ApiController extends BaseController
 
         $point = (int)($leader_board1[0]->points??null);
 
-        $leader_board2 = JoinContest::with('user')
+        $leader_board2 = JoinContest::whereHas('user')
             ->where('match_id',$request->match_id)
             ->where('contest_id',$request->get('contest_id'))
             ->where(function($q) use($user_id,$point){
@@ -2862,6 +2862,7 @@ class ApiController extends BaseController
                 $myjoinedContest = $this->myJoinedTeam($request->match_id,$request->user_id,$result->id);
 
                 // dd($result);
+                $data2['isCancelled'] =   $result->is_cancelled?true:false;
                 $data2['totalSpots'] =   $result->total_spots;
                 $data2['firstPrice'] =   $result->first_prize;
                 $data2['totalWinningPrize'] =    $result->total_winning_prize;
@@ -2938,6 +2939,7 @@ class ApiController extends BaseController
                 $myjoinedContest = $this->myJoinedTeam($request->match_id,$request->user_id,$result->id);
 
                 // dd($result);
+                $data2['isCancelled'] =   $result->is_cancelled?true:false;
                 $data2['totalSpots'] =   $result->total_spots;
                 $data2['firstPrice'] =   $result->first_prize;
                 $data2['totalWinningPrize'] =    $result->total_winning_prize;
