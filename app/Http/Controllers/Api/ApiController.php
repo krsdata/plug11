@@ -4022,7 +4022,6 @@ class ApiController extends BaseController
                         ->where('contest_id',$contest_id)
                         ->get()
                         ->transform(function($item,$key){
-                        dd($item);
                         $cancel_contest = CreateContest::find($item->contest_id);
                         if($cancel_contest->is_cancelled==0){
                             
