@@ -205,6 +205,10 @@ class ApiController extends BaseController
 
                     $prize = round(($item->entry_fees*$item->filled_spot)*(0.25));
 
+                    if($prize<$item->entry_fees){
+                        $prize = $item->entry_fees*($item->filled_spot-1);
+                    }
+
                     \DB::table('prize_breakups')->where('id',$value->id)
                         ->update(['prize_amount'=>$prize]);
                 }
