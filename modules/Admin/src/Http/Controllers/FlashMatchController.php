@@ -56,7 +56,7 @@ class FlashMatchController extends Controller {
         View::share('helper',new Helper);
         View::share('heading','Wallets');
         View::share('route_url',route('flashMatch'));
-        $this->token =  env('CRIC_API_KEY')??'7f7c1c8df02f5f8c25a405fbbc7d59cf'; 
+        $this->token =  env('CRIC_API_KEY')??'8740931958a5c24fed8b66c7609c1c49'; 
         
         $this->record_per_page = 10;// Config::get('app.record_per_page');
         
