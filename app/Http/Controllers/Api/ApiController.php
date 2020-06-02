@@ -44,7 +44,7 @@ class ApiController extends BaseController
     public function __construct(Request $request) {
 
         $this->date = date('Y-m-d');
-        $this->token = "7f7c1c8df02f5f8c25a405fbbc7d59cf";
+        $this->token = "8740931958a5c24fed8b66c7609c1c49";
 
         $request->headers->set('Accept', 'application/json');
 
