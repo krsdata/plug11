@@ -3998,7 +3998,7 @@ class ApiController extends BaseController
                                     $total_winning_prize = $item->total_winning_prize;
                                     $total_amount_recvd = $item->filled_spot*$item->entry_fees;
                                     //if($item->entry_fees!=0 && $total_winning_prize < $total_amount_recvd){
-                                    if($item->entry_fees!=0 && $total_winning_prize > $total_amount_recvd){
+                                    if($item->entry_fees!=0 && $total_winning_prize > $total_amount_recvd && $item->total_winning_prize!=0){
 
                                         $match_id = $item->match_id;
                                         $contest_id = $item->id;
