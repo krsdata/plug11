@@ -44,8 +44,7 @@ class ApiController extends BaseController
     public function __construct(Request $request) {
 
         $this->date = date('Y-m-d');
-        $this->token = "8740931958a5c24fed8b66c7609c1c49";
-
+        $this->token = env('CRIC_API_KEY',"8740931958a5c24fed8b66c7609c1c49");
         $request->headers->set('Accept', 'application/json');
 
         if ($request->header('Content-Type') != "application/json")  {
@@ -709,7 +708,7 @@ class ApiController extends BaseController
     */
     public function leaderBoard(Request $request){
         // $join_contests = [];
-
+        $match_id = $request->match_id;
         $join_contests = JoinContest::where('match_id',$request->get('match_id'))
             ->where('contest_id',$request->get('contest_id'))
             ->pluck('created_team_id')->toArray();
@@ -814,9 +813,17 @@ class ApiController extends BaseController
             $lb[] = $data;
         }
         $lb = $lb??null;
+
+
+        $match_info = $this->setMatchStatusTime($match_id);
+          //  dd($match_info);
+            
         
         if($lb){
             return [
+                'system_time'=>time(),
+                'match_status' => $match_info['match_status']??null,
+                'match_time' => $match_info['match_time']??null,
                 'status'=>true,
                 'code' => 200,
                 'message' => 'leaderBoard',
@@ -826,6 +833,9 @@ class ApiController extends BaseController
             ];
         }else{
             return [
+                'system_time'=>time(),
+                'match_status' => $match_info['match_status']??null,
+                'match_time' => $match_info['match_time']??null,
                 'status'=>false,
                 'code' => 201,
                 'message' => 'leaderBoard not available'
@@ -960,8 +970,13 @@ class ApiController extends BaseController
 
         }
 
-        return response()->json(
-            [
+        $match_info = $this->setMatchStatusTime($match_id);
+          //  dd($match_info);
+            return response()->json(
+                [
+                    'system_time'=>time(),
+                    'match_status' => $match_info['match_status']??null,
+                    'match_time' => $match_info['match_time']??null,
                 "status"=>true,
                 "code"=>200,
                 "teamCount" => $myTeam->count(),
@@ -1080,8 +1095,13 @@ class ApiController extends BaseController
             $this->playerAnalytics($request);
 
             Log::channel('after_create_team')->info($request->all());
+            $match_info = $this->setMatchStatusTime($match_id);
+          //  dd($match_info);
             return response()->json(
                 [
+                    'system_time'=>time(),
+                    'match_status' => $match_info['match_status']??null,
+                    'match_time' => $match_info['match_time']??null,
                     "status"=>true,
                     "code"=>200,
                     "message"=>"Success",
@@ -1178,6 +1198,15 @@ class ApiController extends BaseController
             }
 
         }
+    }
+
+    public function setMatchStatusTime($match_id=null){
+        $match = Matches::where('match_id',$match_id)->first();
+
+        $arr['match_status'] = $match->status_str;
+        $arr['match_time'] = $match->timestamp_start;
+
+        return $arr;
 
     }
     // get contest details by match id
@@ -1304,10 +1333,13 @@ class ApiController extends BaseController
 
 
             $myjoinedContest = $this->getMyContest2($request);
-
+            $match_info = $this->setMatchStatusTime($match_id);
+          //  dd($match_info);
             return response()->json(
                 [
                     'system_time'=>time(),
+                    'match_status' => $match_info['match_status']??null,
+                    'match_time' => $match_info['match_time']??null,
                     "status"=>true,
                     "code"=>200,
                     "message"=>"Success",
@@ -1460,7 +1492,7 @@ class ApiController extends BaseController
 
     }
 
-     public function updateMatchDataByMatchId($match_id=null,$status=1)
+    public function updateMatchDataByMatchId($match_id=null,$status=1)
     {
         if($status==1){
             $fileName="upcoming";
@@ -1675,16 +1707,12 @@ class ApiController extends BaseController
 
             $mid[] = $data_set['match_id'];
             $this->createContest($data_set['match_id']);
-            //
-            // }
-
+         
             if(count($mid)){
                 $this->getSquad($mid);
                 // $this->saveSquad($mid);
             }
-
         }
-        //
         return [$mid,"match info updated "];
     }
 
@@ -1719,10 +1747,7 @@ class ApiController extends BaseController
                 }
 
                 $team_a->save();
-
                 $team_a_id = $team_a->id;
-
-
                 /*TEAM B*/
                 $team_b = TeamB::firstOrNew(['match_id' => $data_set['match_id']]);
                 $team_b->match_id   = $data_set['match_id'];
@@ -1799,7 +1824,6 @@ class ApiController extends BaseController
         }
         //
         return ["match info updated "];
-
     }
 
     public function saveSquad($match_ids=null){
@@ -2506,7 +2530,6 @@ class ApiController extends BaseController
 
 
     public function updateAllSquad(){
-        echo date('h:i:s').'--time--';
 
         $com =  Matches::where('status',3)->select('match_id')->get();
         $players = [];
@@ -2519,7 +2542,9 @@ class ApiController extends BaseController
     }
 
     public function maxAllowedTeam($request){
-        
+        if($request->created_team_id==null){
+            return false;
+        }    
         $created_team = CreateTeam::whereIn('id',$request->created_team_id)->count();
 
         $contest = CreateContest::find($request->contest_id);
@@ -2603,7 +2628,6 @@ class ApiController extends BaseController
         $created_team_id    = $request->created_team_id;
         $contest_id         = $request->contest_id;
         $max_t = $this->maxAllowedTeam($request);
-
         // join team validation 
 
         $this->matchInfo($request,'joinContest'); 
@@ -2614,7 +2638,7 @@ class ApiController extends BaseController
             'contest_id' => 'required',
             'created_team_id' => 'required'
 
-        ]); 
+        ]);  
         // Return Error Message
         if ($validator->fails() || !isset($created_team_id)) {
             $error_msg  =   [];
@@ -2823,8 +2847,13 @@ class ApiController extends BaseController
         }
         Log::channel('after_join_contest')->info($cont);
 
-        return response()->json(
-            [
+        $match_info = $this->setMatchStatusTime($match_id);
+          //  dd($match_info);
+            return response()->json(
+                [
+                'system_time'=>time(),
+                'match_status' => $match_info['match_status']??null,
+                'match_time' => $match_info['match_time']??null,
                 "status"=>true,
                 "code"=>200,
                 "message"=>$message,
@@ -2926,8 +2955,13 @@ class ApiController extends BaseController
             }
             $data = $matchcontests;
 
+            $match_info = $this->setMatchStatusTime($match_id);
+          //  dd($match_info);
             return response()->json(
                 [
+                    'system_time'=>time(),
+                    'match_status' => $match_info['match_status']??null,
+                    'match_time' => $match_info['match_time']??null,
                     'system_time'=>time(),
                     "status"=>true,
                     "code"=>200,
@@ -3065,7 +3099,6 @@ class ApiController extends BaseController
         $check_my_contest = \DB::table('join_contests')
             ->where('match_id',$match_id)
             ->where('user_id',$user_id);
-
 
         $contest_id = $check_my_contest->pluck('created_team_id');
         $myContest  =     $check_my_contest->first();
@@ -3414,8 +3447,14 @@ class ApiController extends BaseController
             ->where('match_id',$request->match_id)
             ->select('match_id','title','short_title','status','status_str','result','status_note')
             ->first();
-        return response()->json(
+            $match_id = $request->match_id;
+            $match_info = $this->setMatchStatusTime($match_id);
+          //  dd($match_info);
+            return response()->json(
             [
+                'system_time'=>time(),
+                'match_status' => $match_info['match_status']??null,
+                'match_time' => $match_info['match_time']??null,
                 "status"=>true,
                 "code"=>200,
                 "message" => "Match Score",
