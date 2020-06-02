@@ -30,8 +30,6 @@ use Modules\Admin\Models\ContestType;
 use Modules\Admin\Models\PrizeBreakups;
 use App\Models\Matches;
 
-
-
 /**
  * Class AdminController
  */
@@ -220,17 +218,19 @@ class DefaultContestController extends Controller {
         $defaultContest->fill(Input::all()); 
         $defaultContest->save(); 
         $default_contest_id = $id;
+
         $match  = Matches::where('status',1)->get('match_id');
-        //$request->merge(['filled_spot' => 0]);
         foreach ($match as $key => $result) {
+
             $request->merge(['match_id' => $result->match_id]);
             $request->merge(['default_contest_id' => $default_contest_id]);
+
             \DB::table('create_contests')
-                    ->where('default_contest_id',$result->match_id)
-                    ->where('match_id',$id)
+                    ->where('default_contest_id',$default_contest_id)
+                    ->where('match_id',$result->match_id)
                     ->update($request->except(['_token','_method']));
         }
-        
+
         return Redirect::to(route('defaultContest'))
                         ->with('flash_alert_notice', 'Default Contest  successfully updated.');
     }
@@ -242,10 +242,13 @@ class DefaultContestController extends Controller {
     public function destroy($id) { 
         
         DefaultContest::where('id',$id)->delete();
-        
+        $del = date(now());
         $contest = \DB::table('create_contests')
                     ->where('default_contest_id',$id)
-                    ->where('filled_spot',0)->delete();
+                    ->where('filled_spot',0)
+                    ->orwhere('filled_spot',null)
+                    ->orwhere('filled_spot',"")
+                    ->delete();
 
         return Redirect::to(route('defaultContest'))
                         ->with('flash_alert_notice', 'Contest successfully deleted.');
