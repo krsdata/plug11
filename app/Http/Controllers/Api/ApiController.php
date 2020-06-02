@@ -2759,12 +2759,15 @@ class ApiController extends BaseController
                         $refer_amount->save();
                          
                     }else{
-                        return [
-                            'status'=>false,
-                            'code' => 201,
-                            'message' => "You don't have sufficient balance!"
 
-                        ]; 
+                        if(isset($is_full) && $is_full->entry_fees>0){
+                             return [
+                                'status'=>false,
+                                'code' => 201,
+                                'message' => "You don't have sufficient balance!"
+                            ]; 
+                        }
+                       
                     } 
 
                  //   $cc->save(); 
