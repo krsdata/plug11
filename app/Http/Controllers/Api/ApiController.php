@@ -195,7 +195,7 @@ class ApiController extends BaseController
             $rank = [];
             foreach ($defaultContest as $key => $value) {
                 $prize = $value->prize_amount;
-                if($value->rank_from == $value->rank_upto){
+                if($value->rank_from == $value->rank_upto || $value->rank_upto==1){
                     $rank_rang = "$value->rank_from";
                 }else{
                     $rank_rang = $value->rank_from.'-'.$value->rank_upto;
