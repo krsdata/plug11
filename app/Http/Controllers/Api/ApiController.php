@@ -206,10 +206,10 @@ class ApiController extends BaseController
                     $prize = round(($item->entry_fees*$item->filled_spot)*(0.25));
 
                     if($prize<$item->entry_fees){
-                        if($item->filled_spot>0){
+                        if($item->filled_spot>1){
                             $prize = $item->entry_fees*($item->filled_spot-1);    
                         }else{
-                            $prize = $item->entry_fees*($item->filled_spot);
+                            $prize = $item->entry_fees;
                         }
                         
                     }
