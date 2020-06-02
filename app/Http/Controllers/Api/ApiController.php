@@ -1095,6 +1095,7 @@ class ApiController extends BaseController
 
         $default_contest = \DB::table('default_contents')
             ->where('match_id',$match_id)
+            ->whereNull('deleted_at')
             ->get();
 
         foreach ($default_contest as $key => $result) {
@@ -1128,6 +1129,7 @@ class ApiController extends BaseController
 
         $default_contest = \DB::table('default_contents')
             ->whereNull('match_id')
+            ->whereNull('deleted_at')
             ->get();
 
         foreach ($default_contest as $key => $result) {
@@ -1155,6 +1157,7 @@ class ApiController extends BaseController
 
             $default_contest_id = \DB::table('default_contents')
                 ->where('match_id',$match_id)
+                ->whereNull('deleted_at')
                 ->get();
 
             if($default_contest_id){
