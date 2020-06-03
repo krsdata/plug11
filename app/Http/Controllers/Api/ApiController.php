@@ -3468,7 +3468,7 @@ class ApiController extends BaseController
     public function getScore(Request $request){
 
         $this->updatePointsAndPlayerByMatchId($request);
-        $this->updateUserMatchPoints($request);
+        //$this->updateUserMatchPoints($request);
         $score = Matches::with(['teama' => function ($query) {
             $query->select('match_id', 'team_id', 'name','short_name','scores_full','scores','overs');
         }])->with(['teamb' => function ($query) {
