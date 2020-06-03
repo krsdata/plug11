@@ -364,6 +364,10 @@ class ApiController extends BaseController
 
             foreach ($players as $key => $result) {
 
+                if($result->playing_role=='wkbat'){
+                    $result->playing_role = "wk";
+                }
+
                 $data[] = [
 
                     'pid'       => $result->pid,
@@ -372,7 +376,7 @@ class ApiController extends BaseController
                     'short_name'=> $result->short_name,
                     'points'    => 0,
                     'rating'    => 0,
-                    'role'      => ($result->playing_role=='wkbat')?'wk':$result->playing_role,
+                    'role'      => $result->playing_role,
                     'captain'   =>  ($captain==$result->pid)?true:false,
                     'vice_captain'   => ($vice_captain==$result->pid)?true:false,
                     'trump'     => ($trump==$result->pid)?true:false
@@ -426,6 +430,9 @@ class ApiController extends BaseController
                     else{
                         $short_name = $fname[0].' '.$lname;
                     }
+                }
+                if($result->role=='wkbat'){
+                    $result->role = "wk";
                 }
                 $data[] = [
                     'pid'       => $result->pid,
