@@ -991,7 +991,7 @@ class ApiController extends BaseController
     public function createTeam(Request $request){
         
         $this->matchInfo($request,'createTeam');
-
+        $match_id = $request->match_id;
         $userVald = User::find($request->user_id);
         $matchVald = Matches::where('match_id',$request->match_id)->first();
 
