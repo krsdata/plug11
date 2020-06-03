@@ -61,7 +61,6 @@ class DefaultContestController extends Controller {
         $page_title = 'Default Contest';
         $sub_page_title = 'View Default Contest';
         $page_action = 'View Default Contest'; 
-
  
         // Search by name ,email and group
         $search = Input::get('search');
@@ -91,8 +90,6 @@ class DefaultContestController extends Controller {
 
     public function create(DefaultContest $defaultContest , Request $request) 
     {
-        
-
         $page_title     = 'Default Contest';
         $page_action    = 'Create Default Contest'; 
         $contest_type   = ContestType::pluck('contest_type','id'); 
@@ -160,7 +157,7 @@ class DefaultContestController extends Controller {
     }
 
     public function update(Request $request, $id) {
-       
+        
         $action = null;
         if($request->prize_break){ 
              $action = "prize_break";
@@ -198,7 +195,7 @@ class DefaultContestController extends Controller {
                   }
 
                 return Redirect::to(route('defaultContest'))
-                        ->with('flash_alert_notice', 'Prize Breakups add  successfully updated.');
+                        ->with('flash_alert_notice', 'Prize Breakups successfully updated.');
 
 
                 break;
@@ -262,7 +259,7 @@ class DefaultContestController extends Controller {
         
         try{
             $defaultContest = DefaultContest::find((int)$id);
-         	if(!$defaultContest){
+          if(!$defaultContest){
         		return Redirect::to(route('defaultContest'));
         	} 
           $contestType   =  DefaultContest::with('contestType')->where('id',$id)->first();
@@ -286,6 +283,8 @@ class DefaultContestController extends Controller {
 
             $rank_list = $request->list??$prizeBreakup->count();
             $expected_amount =  $contestType->entry_fees*$contestType->total_spots;
+            
+
             $html       = view::make('packages::defaultContest.addPrizeForm',compact('expected_amount','rank_list','prizeBreakup'));
             
            $default_contest_id = $id;
