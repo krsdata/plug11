@@ -1254,7 +1254,7 @@ class ApiController extends BaseController
                 ->transform(function($item,$key)use($matchVald){
                     $np1 = (int)($item->total_spots*(0.1));
 
-                    if($np1==$item->filled_spot){
+                    if($item->filled_spot==$np1){
                             $device_id = User::pluck('device_id')->toArray();
 
                             $data = [
