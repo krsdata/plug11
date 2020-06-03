@@ -1248,7 +1248,7 @@ class ApiController extends BaseController
         $this->automateCreateContest();
 
         $match_id =  $request->match_id;
-        $matchVald = Matches::where('match_id',$request->match_id)->count();
+        $matchVald = Matches::where('match_id',$request->match_id)->first();
 
         if(!$matchVald){
             return [
