@@ -89,7 +89,8 @@ class PaymentController extends BaseController
             return $prizeBreakup;    
         }else{
             return $prizeBreakup=0;
-        } 
+        }
+        
     }
 
   /**
@@ -181,12 +182,12 @@ class PaymentController extends BaseController
                             'email'            => $item->user->email,
                             'device_id'        => $item->user->device_id,
                             'contest_name'     => $item->contest->contestType->contest_type??null,
-                            'entry_fees'       => $item->contest->entry_fees,
-                            'total_spots'      => $item->contest->total_spots,
-                            'filled_spot'      => $item->contest->filled_spot,
+                            'entry_fees'       => $item->contest->entry_fees??0,
+                            'total_spots'      => $item->contest->total_spots??0,
+                            'filled_spot'      => $item->contest->filled_spot??0,
 
-                            'first_prize'        => $item->contest->first_prize,
-                            'default_contest_id'=> $item->contest->default_contest_id,
+                            'first_prize'        => $item->contest->first_prize??0,
+                            'default_contest_id'=> $item->contest->default_contest_id??0,
  
                             'prize_amount'      => $item->contest->prize_amount??0.0,
                             'contest_type_id'   => $item->contest->prizeBreakup->contest_type_id??null,
