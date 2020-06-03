@@ -66,7 +66,8 @@
              {!! Form::submit('Generate Prize rang List', ['class'=>'btn btn-warning text-white']) !!}  
 
               {!! Form::submit(' Save ', ['class'=>'btn  btn-primary text-white','id'=>'saveBtn']) !!}
-
+                <a href="{{route('defaultContest')}}">
+    {!! Form::button('Back', ['class'=>'btn btn-warning text-white']) !!} </a>
               
             </div>
         </div> 
@@ -87,8 +88,7 @@
         <div class="row">
             <div class="col-md-offset-3 col-md-9">
 
-               <a href="{{route('defaultContest')}}">
-    {!! Form::button('Back', ['class'=>'btn btn-warning text-white']) !!} </a>
+             
             </div>
         </div>
     </div>

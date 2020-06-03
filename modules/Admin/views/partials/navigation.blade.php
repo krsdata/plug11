@@ -75,8 +75,8 @@
                     </div>
 
                     <div class="btn-group"> 
-                             <a class="btn red-haze btn-sm dropdown-toggle"  href="{{ route('updatePlayerPoints')}}">
-                                    <i class="glyphicon glyphicon-th"></i> Update Player Points </a>
+                             <a class="btn red-haze btn-sm dropdown-toggle"  href="{{ route('defaultContest')}}">
+                                    <i class="glyphicon glyphicon-th"></i> Default Contest </a>
                     </div>
 
                     <div class="btn-group"> 
