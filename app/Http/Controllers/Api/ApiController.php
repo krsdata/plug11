@@ -1250,7 +1250,7 @@ class ApiController extends BaseController
         $match_id =  $request->match_id;
         $matchVald = Matches::where('match_id',$request->match_id)->first();
         
-        CreateContest::where('total_spots','!=',0)->where('is_cloned','!=',1)->where('total_spots','>=',15)->where('filled_spot','!=',0)->get()
+        CreateContest::where('total_spots','!=',0)->where('is_cloned','!=',1)->where('total_spots','>=',50)->where('filled_spot','!=',0)->get()
                 ->transform(function($item,$key)use($matchVald){
                     $np1 = (int)($item->total_spots*(0.1));
 
