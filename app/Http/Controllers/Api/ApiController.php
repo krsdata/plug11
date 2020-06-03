@@ -1801,8 +1801,13 @@ class ApiController extends BaseController
                     if(in_array($key, $remove_data)){
                         continue;
                     }
-                    $matches->$key = $value;
-
+                    $matches->$key = $value; 
+                    if($key=='status_str' && $value=='Scheduled')
+                    {  
+                        $matches->status_str = 'Upcoming';
+                    } 
+                     
+                   
                 }
                 $matches->toss_id = $toss_id;
                 $matches->venue_id = $venue_id;
@@ -2339,15 +2344,21 @@ class ApiController extends BaseController
             $lname = $results->last_name;
 
             $fl = strlen(trim($fname.trim($lname)));
+            
             if($fl<=10){
                 $data['short_name'] = $results->short_name;
             }else{
                 if(strlen($lname)>=10)
                 {
-                    $data['short_name'] = $lname;
+                    $data['short_name'] = $fname." ".$lname;
                 }
                 else{
-                    $data['short_name'] = $fname[0].' '.$lname;
+                    if($lname==""){
+                        $data['short_name'] = $results->short_name;
+                    }else{
+                        $data['short_name'] = $fname[0].' '.$lname;    
+                    }
+                    
                 }
             }
             $data['fantasy_player_rating'] = ($results->fantasy_player_rating);
