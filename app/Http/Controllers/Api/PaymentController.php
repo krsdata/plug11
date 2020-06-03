@@ -89,8 +89,7 @@ class PaymentController extends BaseController
             return $prizeBreakup;    
         }else{
             return $prizeBreakup=0;
-        }
-        
+        } 
     }
 
   /**
