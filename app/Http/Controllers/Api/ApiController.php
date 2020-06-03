@@ -2254,9 +2254,9 @@ class ApiController extends BaseController
                     $lineup = \DB::table('team_a_squads')->where('match_id',$item->match_id)
                                 ->where('playing11',"true")->count();
 
-                    if($lineup && $item->status==1){
+                   /* if($lineup && $item->status==1){
                         $item->status = "lined up";
-                    }    
+                    }   */ 
 
                     $item->is_lineup = $lineup?true:false;  
 
