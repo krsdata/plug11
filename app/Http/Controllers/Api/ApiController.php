@@ -372,7 +372,7 @@ class ApiController extends BaseController
                     'short_name'=> $result->short_name,
                     'points'    => 0,
                     'rating'    => 0,
-                    'role'      => $result->playing_role,
+                    'role'      => ($result->playing_role=='wkbat')?'wk':$result->playing_role,
                     'captain'   =>  ($captain==$result->pid)?true:false,
                     'vice_captain'   => ($vice_captain==$result->pid)?true:false,
                     'trump'     => ($trump==$result->pid)?true:false
