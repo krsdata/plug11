@@ -33,7 +33,8 @@ use App\Models\MatchPoint;
 use App\Models\MatchStat;
 use App\Models\ReferralCode;
 use File;
-
+use Ixudra\Curl\Facades\Curl;
+use App\Models\PrizeDistribution;
 
 class ApiController extends BaseController
 {
@@ -616,10 +617,11 @@ class ApiController extends BaseController
 
             $points = file_get_contents('https://rest.entitysport.com/v2/matches/'.$match->match_id.'/point?token='.$this->token);
             $points_json = json_decode($points);
-            $this->storeMatchInfoAtMachine($points,'point/'.$match->match_id.'.txt');
+         //   $this->storeMatchInfoAtMachine($points,'point/'.$match->match_id.'.txt');
             
             $m = [];
             foreach ($points_json->response->points as $team => $teams) {
+               
                 if($teams==""){
                     continue;
                 }
@@ -636,6 +638,30 @@ class ApiController extends BaseController
                     }
                 }
             }
+
+            /*TEAM A*/
+            $team_a = TeamA::firstOrNew(['match_id' => $match->match_id]);
+            $team_a->match_id   = $match->match_id;
+
+            if(isset($points_json->response->teama)){
+                foreach ($points_json->response->teama as $key => $value) {
+                    $team_a->$key = $value;
+                }
+            }
+            $team_a->save(); 
+
+            /*TEAM B*/
+              /*TEAM A*/
+            $team_b = TeamB::firstOrNew(['match_id' => $match->match_id]);
+            $team_b->match_id   = $match->match_id;
+
+            if(isset($points_json->response->teamb)){
+                foreach ($points_json->response->teamb as $key => $value) {
+                    $team_b->$key = $value;
+                }
+            }  
+            $team_b->save(); 
+
         }
 
         echo 'points_updated';
@@ -1399,8 +1425,9 @@ class ApiController extends BaseController
 
     public function updateMatchDataById($match_id=null)
     {
-        
-        $data =    file_get_contents('https://rest.entitysport.com/v2/matches/'.$match_id.'/info?token='.$this->token);
+       $endpoint = 'https://rest.entitysport.com/v2/matches/'.$match_id.'/info?token='.$this->token;
+        //$response = Curl::to($endpoint)->get();
+        $data =    file_get_contents($endpoint);
        // $this->saveMatchDataFromAPI2DB($data);
         $this->saveMatchDataById($data);
 
@@ -3465,10 +3492,165 @@ class ApiController extends BaseController
         }
     }
 
+    public function prizeDistribution(Request $request)
+    {  
+        $match_id = $request->match_id;  
+        $get_join_contest = JoinContest::where('match_id',  $match_id)
+          ->get();
+
+        $get_join_contest->transform(function ($item, $key)   {
+            
+            $ct = CreateTeam::where('match_id',$item->match_id)
+                            ->where('user_id',$item->user_id)
+                            ->where('id',$item->created_team_id)
+                            ->first();
+            
+            $user = User::where('id',$item->user_id)->select('id','first_name','last_name','user_name','email','profile_image','validate_user','phone','device_id','name')->first();
+             
+            $team_id    =   $item->created_team_id;
+            $match_id   =   $item->match_id;
+            $user_id    =   $item->user_id;
+            $rank       =   $item->ranks; 
+            $team_name  =   $item->team_count;
+            $points     =   $item->points;
+            $contest_id =   $item->contest_id;
+
+            $contest    =  CreateContest::with('contestType','defaultContest')
+                              ->with(['prizeBreakup'=>function($q) use($rank,$points,$contest_id  )
+                                {
+                                  $q->where('rank_from','>=',$rank);
+                                  $q->orwhere('rank_upto','<=',$rank)
+                                  ->where('rank_from','>=',$rank); 
+                                }
+                              ]
+                            )
+                          ->where('match_id',$item->match_id)
+                          ->where('id',$item->contest_id) 
+                          ->where('is_cancelled',0) 
+                          ->get() 
+                          ->transform(function ($contestItem, $ckey) use($team_id,$match_id,$user_id,$rank,$team_name,$points, $contest_id,$item)  {
+                            // check wether rank is repeated
+                            
+                            $rank_repeat = $this->checkReaptedRank($rank, $match_id,$contest_id);
+                            //get average amount in case of repeated rank
+                            $rank_amount = $this->getAmountPerRank($rank,$match_id,$contestItem->default_contest_id,$rank_repeat);
+                              
+                             $contestItem->prize_amount = $rank_amount;
+                             $contestItem->team_id = $team_id;
+                             $contestItem->match_id = $match_id;
+                             $contestItem->user_id = $user_id;
+                             $contestItem->rank = $rank;
+                             $contestItem->team_name = $team_name;
+                            //Rank Amount
+                            
+                            $update_join_contest = JoinContest::find($item->id);
+                            $update_join_contest->prize_amount = $rank_amount;
+                            $update_join_contest->save();
+                            return $contestItem;
+
+                           });
+            
+            
+           // $item->createdTeam = $ct;
+            $item->user = $user;
+            $item->team_id = $team_id;
+            $item->match_id = $match_id;
+            $item->user_id = $user_id;
+            $item->rank = $rank;
+            $item->team_name = $team_name;
+            $item->contest  = $contest[0]??null ;
+            $item->createdTeam = $ct;  
+
+            //echo $rank.'-'.$match_id.'-'.$user_id.'-'.$team_id.'<br>';
+            $prize_dist =  PrizeDistribution::updateOrCreate(
+                          [
+                            'match_id'        => $match_id,
+                            'user_id'         => $user_id,
+                            'created_team_id' => $team_id,
+                            'team_name'       => $team_name,
+                            'contest_id'       => $item->contest_id
+                          ],
+                          [
+                            'points'          => $points,
+                            'match_id'        => $match_id,
+                            'user_id'         => $user_id,
+                            'created_team_id' => $team_id,
+                            'rank'            => $rank,
+                            'contest_id'        => $item->contest_id,
+
+                            'team_name'        => $item->team_name,
+                            'user_name'        => $item->user->user_name,
+                            'name'             => $item->user->first_name??$item->user->name,
+                            'mobile'           => $item->user->phone,
+                            'email'            => $item->user->email,
+                            'device_id'        => $item->user->device_id,
+                            'contest_name'     => $item->contest->contestType->contest_type??null,
+                            'entry_fees'       => $item->contest->entry_fees??0,
+                            'total_spots'      => $item->contest->total_spots??0,
+                            'filled_spot'      => $item->contest->filled_spot??0,
+
+                            'first_prize'        => $item->contest->first_prize??0,
+                            'default_contest_id'=> $item->contest->default_contest_id??0,
+ 
+                            'prize_amount'      => $item->contest->prize_amount??0.0,
+                            'contest_type_id'   => $item->contest->prizeBreakup->contest_type_id??null,
+                            'captain'           => $item->createdTeam->captain,
+                            'vice_captain'      => $item->createdTeam->vice_captain,
+                            'trump'             => $item->createdTeam->trump,
+                            'match_team_id'     => $item->createdTeam->team_id,
+                            'user_teams'        => $item->createdTeam->teams
+
+                          ]
+                        ); 
+        });
+        
+        return  ['winningAmount'=>'updated'];
+    }
+    public function checkReaptedRank($rank, $match_id,$contest_id){
+        $rank = JoinContest::where('match_id',$match_id)
+                            ->where('contest_id',$contest_id)
+                            ->where('ranks',$rank)
+                            ->count();
+        return $rank; 
+    }
+    /**
+    *@var match_id
+    *@var contest_id
+    *@var rank
+    *Description get Amount as per Rank
+    */
+    public function getAmountPerRank($rank,$match_id=null,$contest_id=null,$repeat_rank=1)
+    {
+        $rank_from = $rank; //$rank;
+        $rank_to   = $rank+($repeat_rank-1);
+      
+        $cid = $contest_id;  
+        $rank_prize    =    $prizeBreakup = \DB::table('prize_breakups')
+                                ->where(function($q) use ($rank,$cid,$rank_to){
+                                    $q->where('rank_upto','>=',$rank_to);
+                                    $q->where('rank_from','<=',$rank_to);
+                                    $q->where('default_contest_id',$cid);
+
+                                })
+                                ->orwhere(function($q) use ($rank_from,$rank_to,$cid){
+                                    $q->where('rank_from','>=',$rank_from);
+                                    $q->where('rank_from','<=',$rank_to);
+                                    $q->where('default_contest_id',$cid);
+                                }) 
+                                ->avg('prize_amount');  
+        if($rank_prize){
+            return $prizeBreakup;    
+        }else{
+            return $prizeBreakup=0;
+        } 
+    }
+    /*getScore*/
     public function getScore(Request $request){
 
         $this->updatePointsAndPlayerByMatchId($request);
-        //$this->updateUserMatchPoints($request);
+        $this->updateUserMatchPoints($request);
+        $this->prizeDistribution($request);
+
         $score = Matches::with(['teama' => function ($query) {
             $query->select('match_id', 'team_id', 'name','short_name','scores_full','scores','overs');
         }])->with(['teamb' => function ($query) {
