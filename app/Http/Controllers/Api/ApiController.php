@@ -1061,7 +1061,7 @@ class ApiController extends BaseController
 
         $team_count = CreateTeam::where('user_id',$request->user_id)
             ->where('match_id',$request->match_id)->count();
-        if($team_count>=11){
+        if($team_count>=11 && $request->create_team_id==null){
             return [
                 'status'=>false,
                 'code' => 201,
