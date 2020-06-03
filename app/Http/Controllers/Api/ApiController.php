@@ -2229,7 +2229,7 @@ class ApiController extends BaseController
                  $lineup = \DB::table('team_a_squads')->where('match_id',$join_match->match_id)
                                 ->where('playing11',"true")->count();
                 if($lineup && $join_match->status==1){
-                    $join_match->status_str = "lined up";
+                  //  $join_match->status_str = "lined up";
                 }     
 
                 $join_match->total_joined_team   =  $join_match_count;
