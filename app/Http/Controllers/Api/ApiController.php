@@ -1293,19 +1293,7 @@ class ApiController extends BaseController
                     continue;
                 }
                 //notification per
-                $np1 = (int)($result->total_spots*(0.05));
-                $np2 = (int)($result->total_spots*(0.15));
-                $np3 = (int)($result->total_spots*(0.3)); 
-                if($result->filled_spot!=0 && $np1==$result->filled_spot || $np2==$result->filled_spot || $np3==$result->filled_spot){
-                    $device_id = User::pluck('device_id')->toArray();
-
-                    $data = [
-                                    'action' => 'notify' ,
-                                    'title' => $matchVald->title. ' Contest is filling fast' ,
-                                    'message' => 'Hurry up!!. Join with maximum team and win cash.'
-                                ];
-                    $this->sendNotification($device_id, $data);
-                }
+                
 
                 $data2['isCancelled'] =   $result->is_cancelled?true:false;
                 $data2['totalSpots'] =   $result->total_spots;
