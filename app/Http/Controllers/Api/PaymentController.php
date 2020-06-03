@@ -223,7 +223,7 @@ class PaymentController extends BaseController
             $data = [
                 'action' => 'notify' ,
                 'title' => 'Prize is distributed for '.$cid->title,
-                'message' => 'Check your wallets.Prize is available for you respected team'
+                'message' => 'Check your wallets.Prize is distributed for your team'
             ];
 
             $this->sendNotification($device_id,$data);
@@ -286,7 +286,7 @@ class PaymentController extends BaseController
             
 
                 $helper = new Helper;
-              //  $m = $helper->sendNotificationMail($email_content,'prize');
+                $helper->sendNotificationMail($email_content,'prize');
                 $item->user_id = $item->user_id;
                 $item->email = $item->email;
             }   
