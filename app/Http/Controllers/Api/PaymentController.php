@@ -282,9 +282,6 @@ class PaymentController extends BaseController
                         'content' => 'You have won the prize of Rs.<b>'.$item->prize_amount.'</b> for the <b>'.$cid->title.'</b> match.',
                         'rank' => $item->rank
                         ];
-
-            
-
                 $helper = new Helper;
                 $helper->sendNotificationMail($email_content,'prize');
                 $item->user_id = $item->user_id;
