@@ -2199,6 +2199,8 @@ class ApiController extends BaseController
                     $jmatches->has_free_contest= true;
                 }
 
+
+
                 $join_contests_count =  \DB::table('join_contests')
                     ->where('user_id',$user)
                     ->where('match_id',$match_id)
@@ -2223,6 +2225,12 @@ class ApiController extends BaseController
                        $join_match->status_str = "Live" ;
                     }
                 }
+
+                 $lineup = \DB::table('team_a_squads')->where('match_id',$item->match_id)
+                                ->where('playing11',"true")->count();
+                if($lineup && $join_match->status==1){
+                    $join_match->status_str = "lined up";
+                }     
 
                 $join_match->total_joined_team   =  $join_match_count;
                 $join_match->total_join_contests =  $join_contests_count->count();
