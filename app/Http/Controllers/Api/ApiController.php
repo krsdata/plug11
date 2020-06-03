@@ -1801,15 +1801,20 @@ class ApiController extends BaseController
                     if(in_array($key, $remove_data)){
                         continue;
                     }
-                    $matches->$key = $value;
-
+                    $matches->$key = $value; 
+                    if($key=='status_str' && $value=='Scheduled')
+                    {  
+                        $matches->status_str = 'Upcoming';
+                    } 
+                     
+                   
                 }
                 $matches->toss_id = $toss_id;
                 $matches->venue_id = $venue_id;
                 $matches->teama_id = $team_a_id;
                 $matches->teamb_id = $team_b_id;
                 $matches->competition_id = $toss_id;
-
+                
                 $matches->save();
 
                 $mid[] = $data_set['match_id'];
