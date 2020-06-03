@@ -1814,7 +1814,7 @@ class ApiController extends BaseController
                 $matches->teama_id = $team_a_id;
                 $matches->teamb_id = $team_b_id;
                 $matches->competition_id = $toss_id;
-                
+
                 $matches->save();
 
                 $mid[] = $data_set['match_id'];
@@ -2344,15 +2344,21 @@ class ApiController extends BaseController
             $lname = $results->last_name;
 
             $fl = strlen(trim($fname.trim($lname)));
+            
             if($fl<=10){
                 $data['short_name'] = $results->short_name;
             }else{
                 if(strlen($lname)>=10)
                 {
-                    $data['short_name'] = $lname;
+                    $data['short_name'] = $fname." ".$lname;
                 }
                 else{
-                    $data['short_name'] = $fname[0].' '.$lname;
+                    if($lname==""){
+                        $data['short_name'] = $results->short_name;
+                    }else{
+                        $data['short_name'] = $fname[0].' '.$lname;    
+                    }
+                    
                 }
             }
             $data['fantasy_player_rating'] = ($results->fantasy_player_rating);
