@@ -3150,6 +3150,7 @@ class ApiController extends BaseController
                         ->where('match_id' ,$item->match_id)
                         ->where('user_id',$item->user_id)
                         ->where('contest_id',$item->contest_id)
+                        ->where('created_team_id',$item->created_team_id)
                         ->sum('prize_amount');
                 
                 $item->prize_amount = $prize;
