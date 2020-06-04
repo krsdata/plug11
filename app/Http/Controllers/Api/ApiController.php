@@ -2217,7 +2217,7 @@ class ApiController extends BaseController
         $created_team = CreateTeam::where('user_id',$user)
             ->where('team_join_status',1)
             ->orderBy('updated_at','desc')
-            ->limit(3)
+            ->limit(1)
             ->get()
             ->groupBy('match_id');
 
@@ -3245,8 +3245,8 @@ class ApiController extends BaseController
         $user_id = User::find($request->user_id);
         $wallet = Wallet::where('user_id',$request->user_id)->first();
         if($wallet){
-            $myArr['wallet_amount']   = (float) $wallet->usable_amount;
-            $myArr['bonus_amount']    = (float)$wallet->bonus_amount;
+            $myArr['wallet_amount']   = $wallet->usable_amount;
+            $myArr['bonus_amount']    = $wallet->bonus_amount;
             $myArr['is_account_verified']    = $this->isAccountVerified($request);
             $myArr['refferal_friends_count']    = $this->getRefferalsCounts($request);
             $myArr['user_id']         =  $wallet->user_id;
