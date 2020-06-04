@@ -762,8 +762,8 @@ class ApiController extends BaseController
                         ->where('user_id',$item->user_id)
                         ->where('contest_id',$item->contest_id)
                         ->where('created_team_id',$item->created_team_id)
-                        ->sum('prize_amount');
-                //$item->prize_amount = $prize;
+                        ->first();
+                $item->prize_amount = $prize->prize_amount;
                 return $item;
                 
             });
@@ -789,8 +789,9 @@ class ApiController extends BaseController
                         ->where('user_id',$item->user_id)
                         ->where('contest_id',$item->contest_id)
                         ->where('created_team_id',$item->created_team_id)
-                        ->sum('prize_amount');
+                        ->first();
               //  $item->prize_amount = $prize;
+                $item->prize_amount = $prize->prize_amount;
                 return $item;
             });
         $lb = [];    
@@ -3151,9 +3152,9 @@ class ApiController extends BaseController
                         ->where('user_id',$item->user_id)
                         ->where('contest_id',$item->contest_id)
                         ->where('created_team_id',$item->created_team_id)
-                        ->sum('prize_amount');
+                        ->first();
                 
-                $item->prize_amount = $prize;
+                $item->prize_amount = $prize->prize_amount;
                 return $item;
             });
 
@@ -4445,7 +4446,7 @@ class ApiController extends BaseController
                 [
                     "status"=>false,
                     "code"=>201,
-                    "message" => "Minimum withdrawal amount 200 INR"
+                    "message" => "Minimum withdrawal amount 200 INR" 
                 ]
                 );
             }
