@@ -3342,7 +3342,7 @@ class ApiController extends BaseController
                         
                         $item->document_verified = $doc_status;
                         $item->paytm_verified = $payment_status;
-                        $item->wallet_amount = round($wallet_amount,2);
+                        $item->wallet_amount = sprintf('%0.2f', $wallet_amount);
                         
                         return $item;
 
