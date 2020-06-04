@@ -3453,19 +3453,29 @@ class ApiController extends BaseController
             $check_user = Hash::check($user->id,$user->validate_user);
 
             if($check_user){
-                $wallet     = Wallet::where('user_id',$user->id)->first();
-                $deposit_amount = (float) $request->deposit_amount;
+                $wallet     = Wallet::where('user_id',$user->id)->where('payment_type',3)->first();
+                
                 $message    = "Amount not added successfully";
                 $status     = false;
                 $code       = 201;
                 if($wallet){
+                    $deposit_amount = (float) $request->amount;
+                }else{
+                    $wallet =  new Wallet; 
+                }
+
+                if($wallet){
                     \DB::beginTransaction();
 
-                    $wallet->deposit_amount   =  $wallet->deposit_amount+$deposit_amount;
-                    $wallet->usable_amount    =  $wallet->usable_amount+$deposit_amount;
+                    $wallet->amount         =  $wallet->amount+$deposit_amount;
+                    $wallet->payment_type   =  3;
+                    $wallet->user_id        =  $user->id;
+                    $wallet->validate_user  =  Hash::make($user->id);
+                    $wallet->deposit_amount = $wallet->amount;
+                    $wallet->payment_type_string =  'Deposit';
                     $wallet->save();
 
-                    $myArr['wallet_amount']   = (float) $wallet->usable_amount;
+                    $myArr['wallet_amount']   = (float) $wallet->amount;
                     $myArr['bonus_amount']    = (float)$wallet->bonus_amount;
                     $myArr['user_id']         = (float)$wallet->user_id;
 
@@ -3476,6 +3486,8 @@ class ApiController extends BaseController
                     $transaction->payment_mode   =  $request->payment_mode;
                     $transaction->payment_status =  $request->payment_status;
                     $transaction->payment_details =  json_encode($request->all());
+                    $transaction->payment_type =  3;
+                    $transaction->payment_type_string =  'Deposit';
                     $transaction->save();
 
                     $message    = "Amount added successfully";
