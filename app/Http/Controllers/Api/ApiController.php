@@ -3454,7 +3454,6 @@ class ApiController extends BaseController
 
             if($check_user){
                 $wallet     = Wallet::where('user_id',$user->id)->where('payment_type',3)->first();
-                
                 $message    = "Amount not added successfully";
                 $status     = false;
                 $code       = 201;
@@ -3469,6 +3468,13 @@ class ApiController extends BaseController
                 if($wallet){ 
                     \DB::beginTransaction();
 
+                    $data['method']     = 'deposit';
+                    $data['user_id']    = $request->user_id;
+                    $data['amount']     = $deposit_amount;
+                    $data['content']    = json_encode($request->all());
+
+                    \DB::table('payment_logs')->insert($data);
+
                     $wallet->amount         =  $wallet->amount+$deposit_amount;
                     $wallet->payment_type   =  3;
                     $wallet->user_id        =  $user->id;
@@ -3479,7 +3485,6 @@ class ApiController extends BaseController
                     $wallet->save();
 
                     $myArr['wallet_amount']   = (float) $wallet->amount;
-                    $myArr['bonus_amount']    = (float)$wallet->bonus_amount;
                     $myArr['user_id']         = (float)$wallet->user_id;
 
                     $transaction = new WalletTransaction;
