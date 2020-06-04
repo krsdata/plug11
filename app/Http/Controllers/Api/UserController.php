@@ -1483,6 +1483,33 @@ class UserController extends BaseController
             ]
         );
     }
+    /*get profile*/
+    public function getProfile(Request $request){
+
+        $user = User::select('id','name','email','user_name','referal_code','profile_image','mobile_number','birthday','status','city','gender','dateOfBirth','state','pinCode')->find($request->user_id);
+        if($user){
+
+            $status = true;
+            $code = 200;
+            $message = "Record found";
+            $data = $user;
+
+        }else{
+            $status = false;
+            $code = 201;
+            $message = "Record not found";
+            $data = null;
+        }
+
+        return response()->json(
+            [
+                "status"    =>  $status,
+                'code'      =>  $code,
+                "message"   =>  $message,
+                'data'      =>  $data
+            ]
+        );
+    }
 
     public function sendSMS($mobileNumber=null,$message=null)
     {
