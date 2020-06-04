@@ -1237,11 +1237,19 @@ class ApiController extends BaseController
     public function setMatchStatusTime($match_id=null){
         $match = Matches::where('match_id',$match_id)->first();
 
-        $arr['match_status'] = $match->status_str;
-        $arr['match_time'] = $match->timestamp_start;
+        if($match){
+            $arr['match_status'] = $match->status_str;
+            $arr['match_time'] = $match->timestamp_start;
 
-        return $arr;
+            return $arr;
+        }else{
 
+            $arr['match_status'] = null;
+            $arr['match_time'] = null;
+
+            return $arr;
+
+        }
     }
     // get contest details by match id
     public function getContestByMatch(Request $request){
