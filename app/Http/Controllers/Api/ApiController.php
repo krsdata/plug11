@@ -2306,7 +2306,7 @@ class ApiController extends BaseController
             ->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','date_start','date_end','game_state','game_state_str','is_free','competition_id')
             ->orderBy('is_free','DESC')
             ->orderBy('timestamp_start','ASC')
-
+            ->whereMonth('date_start',date('m'))
             ->where('timestamp_start','>=' , time())
             ->limit(10)
             ->get()->transform(function($item,$key){
