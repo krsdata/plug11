@@ -225,8 +225,13 @@ class PaymentController extends BaseController
                 'title' => 'Prize is distributed for '.$cid->title,
                 'message' => 'Check your wallets.Prize is distributed for your team'
             ];
-
-            $this->sendNotification($device_id,$data);
+           // $this->sendNotification($device_id,$data);
+            $data['entity_id'] = $match_id;
+            $data['message_type'] = 'notify';
+                
+            \DB::table('user_notifications')->insert($data);
+        
+            
         }    
         $prize_distributions->transform(function($item,$key) use($match_id){
               $cid = \DB::table('matches')

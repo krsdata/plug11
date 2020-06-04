@@ -103,8 +103,14 @@ class NotificationController extends Controller {
     {   
         $notification->fill(Input::all()); 
         $notification->notified_user=1;
-        $notification->save();   
+        $notification->save(); 
 
+        $request->merge([
+            'entity_id' => $notification->id,
+            'notified_user' => 0
+        ]);
+        \DB::table('user_notifications')->insert($request->except('_token'));
+        
         $device_id = User::where('device_id','!=','null')->pluck('device_id')->toArray();
         
         $data = [
@@ -113,7 +119,7 @@ class NotificationController extends Controller {
                 'message' => $notification->message
             ];
 
-        $this->sendNotification($device_id,$data);
+      //  $this->sendNotification($device_id,$data);
         return Redirect::to(route('notification'))
                             ->with('flash_alert_notice', 'New Notification  successfully created!');
     }

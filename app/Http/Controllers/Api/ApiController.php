@@ -2215,8 +2215,9 @@ class ApiController extends BaseController
 
         $created_team = CreateTeam::where('user_id',$user)
             ->where('team_join_status',1)
+            ->whereDate('updated_at',\Carbon\Carbon::today())
             ->orderBy('updated_at','desc')
-            ->limit(1)
+           // ->limit(1)
             ->get()
             ->groupBy('match_id');
 
@@ -2245,8 +2246,6 @@ class ApiController extends BaseController
                     $jmatches->has_free_contest= true;
                 }
 
-
-
                 $join_contests_count =  \DB::table('join_contests')
                     ->where('user_id',$user)
                     ->where('match_id',$match_id)
@@ -2274,6 +2273,7 @@ class ApiController extends BaseController
 
                  $lineup = \DB::table('team_a_squads')->where('match_id',$join_match->match_id)
                                 ->where('playing11',"true")->count();
+
                 if($lineup && $join_match->status==1){
                   //  $join_match->status_str = "lined up";
                 }     
