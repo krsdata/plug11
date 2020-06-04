@@ -763,7 +763,7 @@ class ApiController extends BaseController
                         ->where('contest_id',$item->contest_id)
                         ->where('created_team_id',$item->created_team_id)
                         ->sum('prize_amount');
-                $item->prize_amount = $prize;
+                //$item->prize_amount = $prize;
                 return $item;
                 
             });
@@ -790,7 +790,7 @@ class ApiController extends BaseController
                         ->where('contest_id',$item->contest_id)
                         ->where('created_team_id',$item->created_team_id)
                         ->sum('prize_amount');
-                $item->prize_amount = $prize;
+              //  $item->prize_amount = $prize;
                 return $item;
             });
         $lb = [];    
@@ -806,7 +806,7 @@ class ApiController extends BaseController
             $data['team'] = $value->team_count;
             $data['point'] = $value->points;
             $data['rank'] = $value->ranks;
-            $data['prize_amount'] = (int)$value->prize_amount??0;
+            $data['prize_amount'] = (int)$value->winning_amount;
             $data['winning_amount'] = (int)$value->winning_amount;
 
             $data['user'] = [
@@ -831,7 +831,7 @@ class ApiController extends BaseController
             $data['team'] = $value->team_count;
             $data['point'] = $value->points;
             $data['rank'] = $value->ranks;
-            $data['prize_amount'] = (int)$value->prize_amount??0;
+            $data['prize_amount'] = (int)$value->winning_amount;
             $data['winning_amount'] = (int)$value->winning_amount;
             $user_data =  $value->user->first_name;
             $fn = explode(" ",$user_data);

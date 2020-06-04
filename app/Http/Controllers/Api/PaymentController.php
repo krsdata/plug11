@@ -230,7 +230,6 @@ class PaymentController extends BaseController
             $data['message_type'] = 'notify';
                 
             \DB::table('user_notifications')->insert($data);
-        
             
         }    
         $prize_distributions->transform(function($item,$key) use($match_id){
