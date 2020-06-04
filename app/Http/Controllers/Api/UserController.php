@@ -50,8 +50,8 @@ class UserController extends BaseController
             $request->headers->set('Content-Type', 'application/json');
         }
         /*Promotion*/
-        $program  = Program::whereDate('end_date','>=',date('Y-m-d'))
-            ->get()
+        //whereDate('end_date','>=',date('Y-m-d'))
+        $program  = Program::get()
             ->transform(function($item, $key){
 
                 if($item->promotion_type==1)
@@ -73,7 +73,6 @@ class UserController extends BaseController
 
                 return $item;
             });
-
         $signup_bonus = $program->where('bonus',true)->first();
         $referral_bonus = $program->where('referral',true)->first();
         
