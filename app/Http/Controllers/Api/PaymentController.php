@@ -279,7 +279,7 @@ class PaymentController extends BaseController
                         );
 
                 $device_id = $item->device_id;
-                $email_content = [ //$item->email
+               /* $email_content = [ //$item->email
                         'receipent_email'=> $item->email,
                         'subject'=>$subject,
                         'greeting'=> 'SportsFight',
@@ -288,7 +288,7 @@ class PaymentController extends BaseController
                         'rank' => $item->rank
                         ];
                 $helper = new Helper;
-                $helper->sendNotificationMail($email_content,'prize');
+                $helper->sendNotificationMail($email_content,'prize');*/
                 $item->user_id = $item->user_id;
                 $item->email = $item->email;
             }   
