@@ -1249,7 +1249,7 @@ class ApiController extends BaseController
 
         $match_id =  $request->match_id;
         $matchVald = Matches::where('match_id',$request->match_id)->first();
-        
+        /*
         CreateContest::where('total_spots','!=',0)->where('is_cloned','!=',1)->where('total_spots','>=',50)->where('filled_spot','!=',0)->get()
                 ->transform(function($item,$key)use($matchVald){
                     $np1 = (int)($item->total_spots*(0.1));
@@ -1262,9 +1262,10 @@ class ApiController extends BaseController
                                             'title' => ' Contest is filling fast' ,
                                             'message' => 'Hurry up!!.'.$matchVald->title .' is filling fast.Join with maximum team and win maximum cash.'
                                         ];
-                            $this->sendNotification($device_id, $data);
+                           // $this->sendNotification($device_id, $data);
                         }
                     });
+                    */
 
         if(!$matchVald){
             return [
