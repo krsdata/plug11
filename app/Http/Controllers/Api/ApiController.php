@@ -4419,5 +4419,99 @@ class ApiController extends BaseController
             return ['No Contest selected for cancellation']; 
         }
     }
+
+    public function withdrawAmount(Request $request){
+
+        $user = $request->user_id;
+
+        $user = User::find($request->user_id);
+
+        if($user && $request->withdraw_amount){
+
+            $withdraw_amount = $request->withdraw_amount;
+
+            $wallet = Wallet::where('user_id',$user->id)
+                            ->whereIn('payment_type',[2,3,4])
+                            ->get();
+
+            $referral   = $wallet->where('payment_type',2)->first()->amount??0;
+            $deposit    = $wallet->where('payment_type',3)->first()->amount??0;
+            $prize      = $wallet->where('payment_type',4)->first()->amount??0;
+           
+            $access = false;
+            if($prize>=200 && $prize >= $withdraw_amount){
+                $amt  = $prize-$withdraw_amount;
+                $prize = $wallet->where('payment_type',4)->first();
+                $prize->amount = $amt;
+                $access = true;
+
+            }elseif ($referral>=200 && $referral >= $withdraw_amount){
+                
+                $amt  = $referral-$withdraw_amount;
+                $prize = $wallet->where('payment_type',2)->first();
+                $prize->amount = $amt;
+                $access = true;
+
+            }elseif ($deposit>=200 && $deposit >= $withdraw_amount){
+                $amt  = $deposit-$withdraw_amount;
+                $prize = $wallet->where('payment_type',3)->first();
+                $prize->amount = $amt;
+                $access = true;
+
+            }else{
+                return response()->json(
+                [
+                    "status"=>false,
+                    "code"=>201,
+                    "message" => "You don't have sufficient balance to withdraw"
+                ]
+                );
+
+            } 
+
+            if($access){
+                \DB::beginTransaction();
+                $prize->save();
+                $wdl = Wallet::firstOrNew([
+                        'user_id' => $user->id,
+                        'payment_type' => 5
+                    ]);
+                $wdl->payment_type_string = 'withdraw';
+                $wdl->validate_user = Hash::make($user->id);
+                
+                $wdl->amount = $wdl->amount+$withdraw_amount;
+                $wdl->save();
+
+                $wt = new WalletTransaction;
+                $wt->amount = $withdraw_amount;
+                $wt->user_id = $user->id;
+                $wt->payment_type = 5;
+                $wt->payment_type_string = 'withdraw';
+                $wt->payment_mode = 'sf';
+                $wt->payment_details = json_encode($request->all());
+                $wt->payment_status  = 'request';
+                $wt->transaction_id = time().'WDL'.$user->id;
+                $wt->save();
+                \DB::commit();
+            }
+
+            return response()->json(
+                [
+                    "status"=>true,
+                    "code"=>200,
+                    "message" => "Withdraw request submitted successfully!"
+                ]
+            );
+
+        }else{
+            return response()->json(
+                [
+                    "status"=>false,
+                    "code"=>201,
+                    "message" => "Withdrawal amount can't be null"
+                ]
+            );
+        }
+    }
     
 }
