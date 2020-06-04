@@ -3475,7 +3475,7 @@ class ApiController extends BaseController
 
                     \DB::table('payment_logs')->insert($data);
 
-                    $wallet->amount         =  $wallet->amount+$deposit_amount;
+                    $wallet->amount         =  $wallet->amount+$request->deposit_amount;
                     $wallet->payment_type   =  3;
                     $wallet->user_id        =  $user->id;
                     $wallet->validate_user  =  Hash::make($user->id);
