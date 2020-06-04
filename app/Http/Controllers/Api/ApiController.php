@@ -3439,7 +3439,7 @@ class ApiController extends BaseController
                 array_push($error_msg, $value);
             }
 
-            return Response::json(array(
+           return Response::json(array(
                     'code' => 201,
                     'status' => false,
                     'message' => $error_msg
@@ -3458,13 +3458,15 @@ class ApiController extends BaseController
                 $message    = "Amount not added successfully";
                 $status     = false;
                 $code       = 201;
+                
                 if($wallet){
                     $deposit_amount = (float) $request->amount;
                 }else{
                     $wallet =  new Wallet; 
+                    $deposit_amount = (float) $request->amount;
                 }
 
-                if($wallet){
+                if($wallet){ 
                     \DB::beginTransaction();
 
                     $wallet->amount         =  $wallet->amount+$deposit_amount;
@@ -3473,6 +3475,7 @@ class ApiController extends BaseController
                     $wallet->validate_user  =  Hash::make($user->id);
                     $wallet->deposit_amount = $wallet->amount;
                     $wallet->payment_type_string =  'Deposit';
+                    
                     $wallet->save();
 
                     $myArr['wallet_amount']   = (float) $wallet->amount;
@@ -3482,9 +3485,9 @@ class ApiController extends BaseController
                     $transaction = new WalletTransaction;
                     $transaction->user_id        =  $request->user_id;
                     $transaction->amount         =  $request->deposit_amount;
-                    $transaction->transaction_id =  $request->transaction_id;
-                    $transaction->payment_mode   =  $request->payment_mode;
-                    $transaction->payment_status =  $request->payment_status;
+                    $transaction->transaction_id =  $request->transaction_id??time();
+                    $transaction->payment_mode   =  $request->payment_mode??'online';
+                    $transaction->payment_status =  $request->payment_status??'pending';
                     $transaction->payment_details =  json_encode($request->all());
                     $transaction->payment_type =  3;
                     $transaction->payment_type_string =  'Deposit';
