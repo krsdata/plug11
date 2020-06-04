@@ -3145,6 +3145,7 @@ class ApiController extends BaseController
             ->where('match_id',$match_id)
             ->where('user_id',$user_id)
             ->where('contest_id',$contest_id)
+            ->orderBy('rank','desc')
             ->get()
             ->transform(function($item,$key){
                  $prize = \DB::table('prize_distributions')
