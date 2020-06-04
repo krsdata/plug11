@@ -2243,7 +2243,7 @@ class ApiController extends BaseController
                         ->where('user_id',$request->user_id)
                         ->sum('prize_amount');
                 
-                $jmatches->prize_amount = $prize;
+                $jmatches->prize_amount = 0; //$prize;
 
                 $jmatches->league_title = $league_title;
 
