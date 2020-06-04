@@ -2226,7 +2226,6 @@ class ApiController extends BaseController
                 # code...
                 $jmatches = Matches::with('teama','teamb')->where('match_id',$match_id)->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','game_state','game_state_str','current_status','competition_id')->first();
                 //dd($jmatches);
-                $join_match_count   =   $join_contest->count();
                 $join_match = $jmatches;
                 $league_title = \DB::table('competitions')->where('id',$jmatches->competition_id)->first()->title??null;
 
@@ -2277,7 +2276,12 @@ class ApiController extends BaseController
                   //  $join_match->status_str = "lined up";
                 }     
 
-                $join_match->total_joined_team   =  $join_match_count;
+                $join_match_count   =   \DB::table('join_contests')
+                    ->where('user_id',$user)
+                    ->where('match_id',$match_id)
+                    ->get();
+
+                $join_match->total_joined_team   =  $join_match_count->count();
                 $join_match->total_join_contests =  $join_contests_count->count();
                 $jm[$match_id] = $join_match;
             }
