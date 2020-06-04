@@ -89,8 +89,8 @@ class WalletsController extends Controller {
             });
         } else {
             $wallets = Wallets::whereHas('user')
-                            ->distinct('user_id') 
-                            ->orderBy('id','DESC')
+                            ->orderBy('user_id','DESC')
+                            ->orderBy('amount','DESC')
                             ->Paginate($this->record_per_page);
                                                     
           //  dd($wallets);
@@ -111,7 +111,7 @@ class WalletsController extends Controller {
 
         $table_cname = \Schema::getColumnListing('wallets');
         
-        $except = ['validate_user','id','created_at','updated_at','usable_amount_validation','prize_distributed_id','payment_type','bonus_amount','referal_amount','prize_amount','deposit_amount','usable_amount','total_withdrawal_amount','payment_type_string','user_id'];
+        $except = ['validate_user','id','created_at','updated_at','usable_amount_validation','prize_distributed_id','payment_type','bonus_amount','referal_amount','prize_amount','deposit_amount','usable_amount','total_withdrawal_amount','user_id'];
         $data = [];
         $tables[] = 'name';
         $tables[] = 'email';
