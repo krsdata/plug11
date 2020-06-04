@@ -4439,6 +4439,17 @@ class ApiController extends BaseController
             $prize      = $wallet->where('payment_type',4)->first()->amount??0;
            
             $access = false;
+
+            if($withdraw_amount<200){
+                return response()->json(
+                [
+                    "status"=>false,
+                    "code"=>201,
+                    "message" => "Minimum withdrawal amount 200 INR"
+                ]
+                );
+            }
+
             if($prize>=200 && $prize >= $withdraw_amount){
                 $amt  = $prize-$withdraw_amount;
                 $prize = $wallet->where('payment_type',4)->first();
