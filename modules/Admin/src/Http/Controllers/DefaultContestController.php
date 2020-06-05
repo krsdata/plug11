@@ -76,7 +76,7 @@ class DefaultContestController extends Controller {
                         
                     })->Paginate($this->record_per_page);
         } else {
-            $defaultContest = DefaultContest::Paginate($this->record_per_page);
+            $defaultContest = DefaultContest::orderBy('id','DESC')->Paginate($this->record_per_page);
         }
         
         $contest_type   = ContestType::pluck('contest_type','id');
@@ -283,7 +283,7 @@ class DefaultContestController extends Controller {
 
             $rank_list = $request->list??$prizeBreakup->count();
             $expected_amount =  $contestType->entry_fees*$contestType->total_spots;
-            
+
 
             $html       = view::make('packages::defaultContest.addPrizeForm',compact('expected_amount','rank_list','prizeBreakup'));
             
