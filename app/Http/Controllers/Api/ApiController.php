@@ -845,11 +845,13 @@ class ApiController extends BaseController
             $user_data =  $value->user->first_name;
             $fn = explode(" ",$user_data);
 
+            
+            
             $data['user'] = [
                 'first_name'    => reset($fn),
                 'last_name'     => end($fn),
                 'name'          => reset($fn).' '.end($fn),
-                'user_name'     => $value->user->first_name??$value->user->user_name,
+                'user_name'     => isset($user_data)?$value->user->user_name:null,
                 'profile_image' => isset($user_data)?$value->user->profile_image:null,
                 'short_name'    => substr(reset($fn),0,1).substr(end($fn),0,1)
             ];
