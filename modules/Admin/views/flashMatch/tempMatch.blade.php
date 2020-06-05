@@ -116,7 +116,11 @@
                                                  <td> {{$result->title}} </td>
                                                  <td> <a class="btn btn-success" href="{{url('api/v2/saveMatchDataByMatchId/'.$result->match_id)}}"  data-target="#saveMatch" data-toggle="modal" >
                                                   Save This Match
-                                                 </a>
+                                                 </a> 
+                                                </td>
+                                                <td> <a class="btn btn-success" href="{{url('api/v2/saveMatchDataByMatchId/'.$result->match_id.'?Playing11=true')}}"  data-target="#saveMatch" data-toggle="modal" >
+                                                  Enable Playing 11
+                                                 </a> 
                                                 </td>
                                                  
                                                
