@@ -1310,7 +1310,7 @@ class ApiController extends BaseController
             ->where('match_id',$match_id)
             ->where('is_cancelled',0)
             ->orderBy('contest_type','ASC')
-            ->orderBy('total_winning_prize','Desc')
+            ->orderBy('total_winning_prize','ASC')
             ->get();
         if($contest){
             $matchcontests = [];
@@ -2301,6 +2301,7 @@ class ApiController extends BaseController
                 'joinedmatches'=>array_values($jm)
             ];
         }
+        //dd(\Carbon\Carbon::now()->endOfWeek());
         $match = Matches::with('teama','teamb')
             ->whereIn('status',[1,3])
             ->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','date_start','date_end','game_state','game_state_str','is_free','competition_id')
