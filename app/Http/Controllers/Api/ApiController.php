@@ -3602,7 +3602,10 @@ class ApiController extends BaseController
                     
                     $wallet->save();
 
-                    $myArr['wallet_amount']   = (float) $wallet->amount;
+                    $myBlance = Wallet::where('user_id',$wallet->user_id)
+                                ->whereIn('payment_type',[2,3,4])->sum('amount');
+
+                    $myArr['wallet_amount']   = (float) $myBlance??0;
                     $myArr['user_id']         = (float)$wallet->user_id;
 
                     $transaction = new WalletTransaction;
