@@ -1448,16 +1448,78 @@ class ApiController extends BaseController
         return ['file updated'];
     }
 
-    public function saveMatchDataByMatchId($match_id=null)
-    {
+    public function removePlaying11($match_id=null, $is_playing=null){
+        
+            $setPlaying = $is_playing;
+         # code...
+            $token =  $this->token;
+            $path = 'https://rest.entitysport.com/v2/matches/'.$match_id.'/squads/?token='.$token;
+            $data = $this->getJsonFromLocal($path);
+            // update team a players
+            $teama = $data->response->teama;
+            foreach ($teama->squads as $key => $squads) {
+                $teama_obj = TeamASquad::firstOrNew(
+                    [
+                        'team_id'=>$teama->team_id,
+                        'player_id'=>$squads->player_id,
+                        'match_id'=>$match_id
+                    ]
+                );
+
+                $teama_obj->team_id   =  $teama->team_id;
+                $teama_obj->player_id =  $squads->player_id;
+                $teama_obj->role      =  $squads->role;
+                $teama_obj->role_str  =  $squads->role_str;
+                $teama_obj->playing11 =  $setPlaying??$squads->playing11;
+                $teama_obj->name      =  $squads->name;
+                $teama_obj->match_id  =  $match_id;
+                $teama_obj->save();
+                $team_id[$squads->player_id] = $teama->team_id;
+            }
+
+            $teamb = $data->response->teamb;
+            foreach ($teamb->squads as $key => $squads) {
+
+                $teamb_obj = TeamBSquad::firstOrNew(['team_id'=>$teamb->team_id,'player_id'=>$squads->player_id,'match_id'=>$match_id]);
+
+                $teamb_obj->team_id   =  $teamb->team_id;
+                $teamb_obj->player_id =  $squads->player_id;
+                $teamb_obj->role      =  $squads->role;
+                $teamb_obj->role_str  =  $squads->role_str;
+                $teamb_obj->playing11 =  $setPlaying??$squads->playing11;
+                $teamb_obj->name      =  $squads->name;
+                $teamb_obj->match_id  =  $match_id;
+                $teamb_obj->save();
+
+                $team_id[$squads->player_id] = $teamb->team_id;
+            }
+    }
+    //access from admin
+    public function saveMatchDataByMatchId($match_id=null,Request $request)
+    {   
+       $matches = Matches::firstOrNew(
+                [
+                    'match_id' => $match_id
+                ]
+            );
+         
         //upcoming
-        $data =    file_get_contents('https://rest.entitysport.com/v2/matches/'.$match_id.'/info?token='.$this->token);
+        $data =  file_get_contents('https://rest.entitysport.com/v2/matches/'.$match_id.'/info?token='.$this->token);
 
         $json = json_decode($data);
         $title = $json->response->title??null;
-        // store match info    
-        $this->storeMatchInfoAtMachine($data,'info/'.$match_id.'.txt');
-        $this->saveMatchDataFromAPI2DB($data);
+
+        if($request->Playing11){
+            $this->removePlaying11($match_id, null);
+            return "<p style='padding:10px' class='alert alert-success'> Playing11 announced! <p>";
+
+        }else{
+            $this->saveMatchDataFromAPI2DB($data); 
+            $this->removePlaying11($match_id, "false");
+            $matches->status =1;
+            $matches->status_str = 'upcoming';
+            $matches->save();
+        }
 
         return "<p style='padding:10px' class='alert alert-success'> Match $title saved successfully<p>";
     }
@@ -2020,7 +2082,7 @@ class ApiController extends BaseController
 
 
         $upcomingMatches = Matches::with('teama','teamb')
-            ->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','date_start','date_end','game_state','game_state_str',\DB::raw($status))
+            ->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','date_start','date_end','game_state','competition_id','game_state_str',\DB::raw($status))
             ->whereIn('match_id',
                 \DB::table('join_contests')->where('user_id',$user_id)
                     ->groupBy('match_id')
@@ -2033,6 +2095,17 @@ class ApiController extends BaseController
             
             $upcomingMatches->transform(function($items,$key)use($user_id){
                 //  dd($items);
+
+                $league_title = \DB::table('competitions')->where('id',$items->competition_id)->first()->title??null;
+
+                $items->league_title = $league_title;
+
+                if($items->is_free==0){
+                    $items->has_free_contest= false;
+                }else{
+                    $items->has_free_contest= true;
+                }
+
                 $total_joined_team = \DB::table('join_contests')
                     ->where('match_id' ,$items->match_id)
                     ->where('user_id',$user_id)
@@ -2065,15 +2138,13 @@ class ApiController extends BaseController
                 }else{
                    $items->status_str = $items->status_str; 
                 }
-
-
                 return $items;
             });
 
 
 
         $completedMatches = Matches::with('teama','teamb')
-            ->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','date_start','date_end','game_state','game_state_str')
+            ->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','date_start','date_end','game_state','game_state_str','competition_id')
             ->whereIn('match_id',
                 \DB::table('join_contests')->where('user_id',$user_id)
                     ->groupBy('match_id')
@@ -2085,6 +2156,16 @@ class ApiController extends BaseController
             ->get()
             ->transform(function($items,$key)use($user_id){
                 //  dd($items);
+                $league_title = \DB::table('competitions')->where('id',$items->competition_id)->first()->title??null;
+
+                $items->league_title = $league_title;
+
+                if($items->is_free==0){
+                    $items->has_free_contest= false;
+                }else{
+                    $items->has_free_contest= true;
+                }
+
                 $total_joined_team = \DB::table('join_contests')
                     ->where('match_id' ,$items->match_id)
                     ->where('user_id',$user_id)
@@ -2129,7 +2210,7 @@ class ApiController extends BaseController
 
 
         $liveMatches = Matches::with('teama','teamb')
-            ->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','date_start','date_end','game_state','game_state_str')
+            ->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','date_start','date_end','game_state','game_state_str','competition_id')
             ->whereIn('match_id',
                 \DB::table('join_contests')->where('user_id',$user_id)
                     ->groupBy('match_id')
@@ -2141,6 +2222,15 @@ class ApiController extends BaseController
             ->get()
 
             ->transform(function($items,$key)use($user_id){
+                $league_title = \DB::table('competitions')->where('id',$items->competition_id)->first()->title??null;
+                //dd($items);
+                $items->league_title = $league_title;
+
+                if($items->is_free==0){
+                    $items->has_free_contest= false;
+                }else{
+                    $items->has_free_contest= true;
+                }
 
                 $total_joined_team = \DB::table('join_contests')
                     ->where('match_id' ,$items->match_id)
@@ -2474,6 +2564,9 @@ class ApiController extends BaseController
             ]
         ];
     }
+    
+
+
     // update player by match_id
 
     public function getSquad($match_ids=null){
