@@ -70,7 +70,7 @@
 @endfor
 @endif
 
-@if($rank_list>$prizeBreakup->count())
+@if($rank_list>$prizeBreakup->count() && $prizeBreakup->count())
 @for($i=1;$i<=($rank_list-$prizeBreakup->count());$i++)
 
 <input type="hidden" name="prize_break" value="prize_break">

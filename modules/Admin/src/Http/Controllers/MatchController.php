@@ -258,6 +258,11 @@ class MatchController extends Controller {
         $sub_page_title = 'View Match';
         $page_action = 'View Match'; 
 
+
+        $date = "2020-6-4 16:30";
+
+        
+
         if($request->match_id && (($request->date_start && $request->date_end) || $request->status)){
             if($request->date_end && $request->date_start){
                 $date_start = \Carbon\Carbon::createFromFormat('Y-m-d H:i',$request->date_start)
@@ -267,6 +272,8 @@ class MatchController extends Controller {
                 $date_end = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $request->date_end)
                     ->setTimezone('UTC')
                     ->format('Y-m-d H:i:s');
+
+                dd(date$date_start);
 
                 $timestamp_start = strtotime($date_start);
                 $timestamp_end   = strtotime($date_end);
