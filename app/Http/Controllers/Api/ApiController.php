@@ -845,8 +845,6 @@ class ApiController extends BaseController
             $user_data =  $value->user->first_name;
             $fn = explode(" ",$user_data);
 
-            
-
             $data['user'] = [
                 'first_name'    => reset($fn),
                 'last_name'     => end($fn),
