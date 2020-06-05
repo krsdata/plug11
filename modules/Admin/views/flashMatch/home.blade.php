@@ -47,8 +47,10 @@
 
                        <button type="button" class="btn pull-right btn-primary" data-toggle="modal" data-target="#changeMatchStatus" data-whatever="@" style="margin-right: 10px">Change Match Status</button> 
 
-                       <button type="button" class="btn pull-right btn-primary" data-toggle="modal" data-target="#getOldMatch" data-whatever="@" style="margin-right: 10px">Get Old Match</button> 
-
+                      <!--  <button type="button" class="btn pull-right btn-primary" data-toggle="modal" data-target="#getOldMatch" data-whatever="@" style="margin-right: 10px">Get Old Match</button> -->
+                       <a href="{{url('admin/oldMatch')}}">
+                       <button type="button" class="btn pull-right btn-primary" style="margin-right: 10px">Get Old Match</button> 
+                     </a>
                        
                   </div>
               </div>
