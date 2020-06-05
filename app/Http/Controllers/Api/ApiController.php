@@ -851,7 +851,7 @@ class ApiController extends BaseController
                 'first_name'    => reset($fn),
                 'last_name'     => end($fn),
                 'name'          => reset($fn).' '.end($fn),
-                'user_name'     => $user_data??$value->user->user_name,
+                'user_name'     => reset($fn)??$value->user->user_name,
                 'profile_image' => isset($user_data)?$value->user->profile_image:null,
                 'short_name'    => substr(reset($fn),0,1).substr(end($fn),0,1)
             ];
