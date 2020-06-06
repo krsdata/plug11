@@ -763,7 +763,7 @@ class ApiController extends BaseController
                         ->where('contest_id',$item->contest_id)
                         ->where('created_team_id',$item->created_team_id)
                         ->first();
-                if($prize){
+                if($prize->rank){
                     $item->prize_amount = $prize->prize_amount??0;    
                 }else{
                     $item->prize_amount = 0;
@@ -795,7 +795,7 @@ class ApiController extends BaseController
                         ->where('created_team_id',$item->created_team_id)
                         ->first();
               //  $item->prize_amount = $prize;
-                if($prize){
+                if($prize->rank){
                     $item->prize_amount = $prize->prize_amount??0;    
                 }else{
                     $item->prize_amount = 0;
@@ -2342,6 +2342,7 @@ class ApiController extends BaseController
                 $prize = \DB::table('prize_distributions')
                         ->where('match_id' ,$jmatches->match_id)
                         ->where('user_id',$request->user_id)
+                        ->where('rank','>',0)
                         ->sum('prize_amount');
                 
                 $jmatches->prize_amount = $prize;
@@ -3259,8 +3260,8 @@ class ApiController extends BaseController
                         ->where('created_team_id',$item->created_team_id)
                         ->first();
                 
-                if($prize){
-                    $item->prize_amount = $prize->prize_amount??0;    
+                if($prize->rank){
+                    $item->prize_amount = $prize->prize_amount;    
                 }else{
                     $item->prize_amount = 0;
                 }
