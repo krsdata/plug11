@@ -3699,7 +3699,7 @@ class ApiController extends BaseController
                             //get average amount in case of repeated rank
                             $rank_amount = $this->getAmountPerRank($rank,$match_id,$contestItem->default_contest_id,$rank_repeat);
                               
-                             $contestItem->prize_amount = $rank_amount;
+                             $contestItem->prize_amount = $rank?$rank_amount:0;
                              $contestItem->team_id = $team_id;
                              $contestItem->match_id = $match_id;
                              $contestItem->user_id = $user_id;
@@ -3708,7 +3708,7 @@ class ApiController extends BaseController
                             //Rank Amount
                             
                             $update_join_contest = JoinContest::find($item->id);
-                            $update_join_contest->winning_amount = $rank_amount;
+                            $update_join_contest->winning_amount = $rank?$rank_amount:0;
                             $update_join_contest->save();
                             return $contestItem;
 
