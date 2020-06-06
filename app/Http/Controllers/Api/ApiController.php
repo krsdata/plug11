@@ -818,11 +818,15 @@ class ApiController extends BaseController
             $data['prize_amount'] = (int)$value->prize_amount;
             $data['winning_amount'] = (int)$value->winning_amount;
 
+            $user_data =  $value->user->first_name;
+            $fn = explode(" ",$user_data);
+            
+            
             $data['user'] = [
                 'first_name'    => $value->user->first_name,
                 'last_name'     => $value->user->last_name,
                 'name'          => $value->user->name,
-                'user_name'     => strtoupper($value->user->first_name??$value->user->user_name),
+                'user_name'     => strtoupper(reset($fn)??$value->user->user_name),
                 'profile_image' => $value->user->profile_image,
                 'short_name'    => substr($value->user->first_name,0,1).substr($value->user->last_name,0,1)
             ];
