@@ -2196,7 +2196,9 @@ class ApiController extends BaseController
                 $prize = \DB::table('prize_distributions')
                         ->where('match_id' ,$items->match_id)
                         ->where('user_id',$user_id)
+                        ->where('rank','>',0)
                         ->sum('prize_amount');
+
                 $items->prize_amount = $prize;
 
                 if($items->status==4){
