@@ -815,7 +815,7 @@ class ApiController extends BaseController
             $data['team'] = $value->team_count;
             $data['point'] = $value->points;
             $data['rank'] = $value->ranks;
-            $data['prize_amount'] = (int)$value->winning_amount;
+            $data['prize_amount'] = (int)$value->prize_amount;
             $data['winning_amount'] = (int)$value->winning_amount;
 
             $data['user'] = [
@@ -840,7 +840,7 @@ class ApiController extends BaseController
             $data['team'] = $value->team_count;
             $data['point'] = $value->points;
             $data['rank'] = $value->ranks;
-            $data['prize_amount'] = (int)$value->winning_amount;
+            $data['prize_amount'] = (int)$value->prize_amount;
             $data['winning_amount'] = (int)$value->winning_amount;
             $user_data =  $value->user->first_name;
             $fn = explode(" ",$user_data);
@@ -3707,7 +3707,7 @@ class ApiController extends BaseController
                             //Rank Amount
                             
                             $update_join_contest = JoinContest::find($item->id);
-                            $update_join_contest->winning_amount = (int)$rank_amount;
+                            $update_join_contest->winning_amount = $rank_amount;
                             $update_join_contest->save();
                             return $contestItem;
 

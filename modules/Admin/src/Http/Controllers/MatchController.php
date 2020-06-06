@@ -268,8 +268,8 @@ class MatchController extends Controller {
                     ->setTimezone('UTC')
                     ->format('Y-m-d H:i:s');
 
-                $timestamp_start = strtotime($date_start);
-                $timestamp_end   = strtotime($date_end);
+                $timestamp_start = strtotime($request->date_start);
+                $timestamp_end   = strtotime($request->date_end);
 
                 if($timestamp_start > $timestamp_end) {
 
