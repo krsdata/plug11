@@ -182,14 +182,14 @@ class PaymentController extends BaseController
                             'email'            => $item->user->email,
                             'device_id'        => $item->user->device_id,
                             'contest_name'     => $item->contest->contestType->contest_type??null,
-                            'entry_fees'       => $item->contest->entry_fees??0,
-                            'total_spots'      => $item->contest->total_spots??0,
-                            'filled_spot'      => $item->contest->filled_spot??0,
+                            'entry_fees'       => $item->contest->entry_fees,
+                            'total_spots'      => $item->contest->total_spots,
+                            'filled_spot'      => $item->contest->filled_spot,
 
-                            'first_prize'        => $item->contest->first_prize??0,
-                            'default_contest_id'=> $item->contest->default_contest_id??0,
+                            'first_prize'        => $item->contest->first_prize,
+                            'default_contest_id'=> $item->contest->default_contest_id,
  
-                            'prize_amount'      => $item->contest->prize_amount??0.0,
+                            'prize_amount'      => $item->contest->prize_amount,
                             'contest_type_id'   => $item->contest->prizeBreakup->contest_type_id??null,
                             'captain'           => $item->createdTeam->captain,
                             'vice_captain'      => $item->createdTeam->vice_captain,
@@ -217,6 +217,13 @@ class PaymentController extends BaseController
                     ->select('match_id','title')
                     ->first();
 
+        $match_id = $request->match_id;  
+        $dist_status = \DB::table('matches')->where('match_id',$match_id)->first();
+        
+        if($dist_status && $dist_status->current_status==1){
+            return  Redirect::to(route('match','prize=true'));
+        }
+
         $puser = PrizeDistribution::where('match_id',$match_id)->pluck('user_id')->toArray();
         $device_id = User::whereIn('id',$puser)->pluck('device_id')->toArray();
         if(count($device_id)){
@@ -225,7 +232,7 @@ class PaymentController extends BaseController
                 'title' => 'Prize is distributed for '.$cid->title,
                 'message' => 'Check your wallets.Prize is distributed for your team'
             ];
-           // $this->sendNotification($device_id,$data);
+            $this->sendNotification($device_id,$data);
             $data['entity_id'] = $match_id;
             $data['message_type'] = 'notify';
                 
@@ -242,7 +249,16 @@ class PaymentController extends BaseController
 
                 $prize_amount = PrizeDistribution::where('match_id',$match_id)
                            ->where('user_id',$item->user_id)->sum('prize_amount');
-
+                  
+                $wallet_amount_c =  Wallet::where(
+                            [
+                                'user_id'       => $item->user_id,
+                                'payment_type'  => 4
+                            ])->first();
+                if($wallet_amount_c){
+                  $prize_amount = $wallet_amount_c->amount+$prize_amount;
+                }
+                //dd($prize_amount,$item->user_id);
                 $wallets = Wallet::updateOrCreate(
                             [
                                 'user_id'       => $item->user_id,
@@ -293,10 +309,8 @@ class PaymentController extends BaseController
             }   
             return $item;
         });
-
-        $match_id = $request->match_id;  
+         $match_id = $request->match_id; 
         \DB::table('matches')->where('match_id',$match_id)->update(['current_status'=>1]);
-        
         return  Redirect::to(route('match','prize=true'));
     }
     
