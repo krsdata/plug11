@@ -820,8 +820,8 @@ class ApiController extends BaseController
 
             $user_data =  $value->user->first_name;
             $fn = explode(" ",$user_data);
-            
-            
+
+
             $data['user'] = [
                 'first_name'    => $value->user->first_name,
                 'last_name'     => $value->user->last_name,
@@ -2170,18 +2170,21 @@ class ApiController extends BaseController
                     $items->has_free_contest= true;
                 }
 
+
+
                 $total_joined_team = \DB::table('join_contests')
                     ->where('match_id' ,$items->match_id)
                     ->where('user_id',$user_id)
                     ->count();
-                $items->total_joined_team = $total_joined_team;
+                $items->total_joined_team =1;// $total_joined_team;
 
                 $total_join_contests =  \DB::table('join_contests')
                     ->where('match_id',$items->match_id)
                     ->where('user_id',$user_id)
                     ->groupBy('contest_id')
                     ->count();
-                $items->total_join_contests = $total_join_contests;
+
+                $items->total_join_contests =1; // $total_join_contests;
 
                 $total_created_team =  \DB::table('create_teams')
                     ->where('match_id',$items->match_id)
