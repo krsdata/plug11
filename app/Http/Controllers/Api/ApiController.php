@@ -2175,16 +2175,17 @@ class ApiController extends BaseController
                 $total_joined_team = \DB::table('join_contests')
                     ->where('match_id' ,$items->match_id)
                     ->where('user_id',$user_id)
-                    ->count();
-                $items->total_joined_team =1;// $total_joined_team;
+                    ->get();
+                $items->total_joined_team = $total_joined_team->count()??0;
 
                 $total_join_contests =  \DB::table('join_contests')
                     ->where('match_id',$items->match_id)
                     ->where('user_id',$user_id)
                     ->selectRaw('distinct contest_id')
-                    ->count();
+                    ->groupBy('contest_id')
+                    ->get();
 
-                $items->total_join_contests = $total_join_contests;
+                $items->total_join_contests = $total_join_contests->count()??0;
 
                 $total_created_team =  \DB::table('create_teams')
                     ->where('match_id',$items->match_id)
