@@ -504,7 +504,7 @@ class PaymentController extends BaseController
                             //    ->setTimezone('Asia/Kolkata')
                               //  ->format('d-m-Y, h:i A');
                                                     
-                            $d = date('d-m-Y, h:i A',$dt);                        
+                            $d = date('d-M-Y, h:i A',$dt);                        
                              $transaction[] =  [
                                 'user_id'        => $item->user_id,
                                 'amount'         => $value->amount??$item->deposit_amount,
