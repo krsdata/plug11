@@ -500,7 +500,7 @@ class PaymentController extends BaseController
                         $wallet_transactions = \DB::table('wallet_transactions')->where('user_id',$item->user_id)->orderBy('id','desc')->get();
                         foreach ($wallet_transactions as $key => $value) {
                             
-                            $d =  \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value->created_at, 'UTC')
+                            $d =  \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value->created_at, 'IST')
                                 ->setTimezone('Asia/Kolkata')
                                 ->format('d-m-Y, h:i A');
                                                     
