@@ -2514,21 +2514,66 @@ class ApiController extends BaseController
         $com = \DB::table('competitions')->select('id','match_id','cid')->get()->toArray();
         return $com;
     }
-    public function getAnalytics(){
-        $analytics = [
-                'selection' => (float)0.0,
-                'captain' => (float)0.0,
-                'vice_captain' => (float)0.0,
-                'trump' => (float)0.0
-        ];
+    public function getAnalytics($match_id = 44585){
+        
+        $ct = CreateTeam::where('match_id',$match_id)->count();
+        $player = \DB::table('player_analytics')->select('player_id',\DB::raw('COUNT(player_id) as count'))->where('match_id',$match_id)->groupBy('player_id')->get()
+            ->transform(function($item,$key) use($ct,$match_id){
+                if($item->count){
+                  $percent = ($item->count/$ct)*100;  
+              }else{
+                    $percent = 0;
+              }
+                
 
-        return $analytics;
+                $trump = \DB::table('create_teams')
+                        ->where('match_id',$match_id)
+                        ->where('trump',$item->player_id)
+                        ->count();
+                $vc = \DB::table('create_teams')
+                        ->where('match_id',$match_id)
+                        ->where('vice_captain',$item->player_id)
+                        ->groupBy('vice_captain')
+                        ->count();
+                $captain = \DB::table('create_teams')
+                        ->where('match_id',$match_id)
+                        ->where('captain',$item->player_id)
+                        ->groupBy('captain')
+                        ->count();
+                $trump_per = ($trump/$ct)*100;
+                $vc_per = ($vc/$ct)*100;
+                $captain_per = ($captain/$ct)*100;
+
+
+                 $analytics = [
+                    'player_id' => $item->player_id,
+                    'selection' => number_format($percent,1).'%',
+                    'trump' => $trump_per.'%',
+                    'vice_captain' => $vc_per.'%',
+                    'captain' => $captain_per.'%'
+
+                ];
+
+                
+                $item->selection = number_format($percent,1).'%';
+                $item->trump = $trump_per.'%';  
+                $item->vice_captain = $trump_per.'%';
+                $item->captain = $trump_per.'%'; 
+
+                return $item;
+
+            });
+
+        return $player;
 
     }
     // get players
     public function getPlayer(Request $request)
     {
         $analytics  = $this->getAnalytics();
+
+        //dd($analytics->where('player_id',950483)->first());
+
         $match_id   =  $request->get('match_id');
         $matchVald  = Matches::where('match_id',$request->match_id)->count();
         if(!$matchVald){
@@ -2611,8 +2656,17 @@ class ApiController extends BaseController
                     
                 }
             }
+                       
             $data['fantasy_player_rating'] = ($results->fantasy_player_rating);
-            $data['analytics'] = $analytics;
+
+            $sel_per = $analytics->where('player_id',$results->pid)->first();
+            
+            if($sel_per){
+                $data['analytics'] = $analytics->where('player_id',$results->pid)->first();
+            }else{
+                $data['analytics'] = ['selection'=>"0.0%",'trump'=>"0.0%",'vice_captain'=>"0.0%",'captain'=>'0.0%'];
+            }
+
             if($results->playing_role=="wkbat")
             {
                 $rs['wk'][]  = $data;
