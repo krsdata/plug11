@@ -3270,7 +3270,7 @@ class ApiController extends BaseController
                         ->where('created_team_id',$item->created_team_id)
                         ->first();
                 
-                if($prize->rank){
+                if(isset($prize->rank)){
                     $item->prize_amount = $prize->prize_amount;    
                 }else{
                     $item->prize_amount = 0;
@@ -3290,7 +3290,7 @@ class ApiController extends BaseController
                 $data2['createdTeamId'] =    $result->created_team_id;
                 $data2['contestId'] =    $result->contest_id;
                 $data2['isWinning'] =   false;
-                $data2['rank']      = $result->ranks;
+                $data2['rank']      = $result->ranks??$result->rank;
                 $data2['points']    = $result->points;
                 if(isset($result->prize_amount)){
                     $data2['prize_amount']    = (int)$result->prize_amount??0; 
