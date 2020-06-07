@@ -2321,13 +2321,13 @@ class ApiController extends BaseController
         }
 
 
-
         return ['status'=>true,'code'=>200,'message'=>'success','system_time'=>time(),'response'=>$data];
     }
 
     // get Match by status and all
     public function getMatch(Request $request){
-        //$status =  $request->status;
+        
+
         $user = $request->user_id;
         $banner = \DB::table('banners')->select('title','url','actiontype')->get();
         $join_contests =  \DB::table('join_contests')->where('user_id',$user)->get('match_id');
@@ -2437,7 +2437,21 @@ class ApiController extends BaseController
                         $item->status = "lined up";
                     }   */ 
 
-                    $item->is_lineup = $lineup?true:false;  
+                    $t1 = $item->timestamp_start;
+                    $t2 = time();
+                    $td = round((($t1 - $t2)/60),2);
+                    
+                    if($td>(0.5)){
+                        $item->status=1;
+                        $item->status_str='Upcoming';
+                    }
+                    if($td>1 and $td<=30){
+                        $item->status=1;
+                        $item->status_str='Upcoming';
+                        $item->is_lineup = true; 
+                    }else{
+                        $item->is_lineup = $lineup?true:false;
+                    } 
 
                     $item->league_title = $league_title;
                     return $item;
