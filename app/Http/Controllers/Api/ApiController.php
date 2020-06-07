@@ -2439,6 +2439,8 @@ class ApiController extends BaseController
                     $t2 = time();
                     $td = round((($t1 - $t2)/60),2);
                     
+                    $item->time_left = ($td>0)?$td.'Min':'time up';    
+
                     if($td>(0.5)){
                         $item->status=1;
                         $item->status_str='Upcoming';
