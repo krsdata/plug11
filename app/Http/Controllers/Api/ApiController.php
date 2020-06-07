@@ -1364,9 +1364,9 @@ class ApiController extends BaseController
         $contest = CreateContest::with('contestType')
             ->where('match_id',$match_id)
             ->where('is_cancelled',0)
-            ->orderBy('contest_type','ASC')
         //    ->orderBy('total_winning_prize','DESC')
             ->orderBy('entry_fees','ASC')
+            ->orderBy('contest_type','ASC')
             ->get();
         if($contest){
             $matchcontests = [];
