@@ -101,7 +101,7 @@ class PaymentController extends BaseController
     {  
         $match_id = $request->match_id;  
         $get_join_contest = JoinContest::where('match_id',  $match_id)
-          ->where('ranks','!=',0)  
+          ->where('ranks','>',0)  
           ->get();
         $get_join_contest->transform(function ($item, $key)   {
             
