@@ -157,8 +157,11 @@ class PaymentController extends BaseController
             $item->rank = $rank;
             $item->team_name = $team_name;
             $item->contest  = $contest[0]??null ;
-            $item->createdTeam = $ct;  
-            //echo $rank.'-'.$match_id.'-'.$user_id.'-'.$team_id.'<br>';
+            $item->createdTeam = $ct; 
+
+            if($item->contest==null){
+            }else{
+              //echo $rank.'-'.$match_id.'-'.$user_id.'-'.$team_id.'<br>';
             $prize_dist =  PrizeDistribution::updateOrCreate(
                           [
                             'match_id'        => $match_id,
@@ -199,6 +202,7 @@ class PaymentController extends BaseController
 
                           ]
                         ); 
+            }
         });
         
         /*$data = [
@@ -247,9 +251,14 @@ class PaymentController extends BaseController
             $subject = "You won prize for match - ".$cid->title??null;
             if((int)$item->prize_amount > 0){
 
-                $prize_amount = PrizeDistribution::where('match_id',$match_id)
-                           ->where('user_id',$item->user_id)->sum('prize_amount');
-                  
+                $prize_amount = PrizeDistribution::where('match_id',$item->match_id)
+                           ->where('user_id',$item->user_id)
+                           ->where('contest_id',$item->contest_id)
+                           ->where('created_team_id',$item->created_team_id)
+                           ->where('team_name',$item->team_name)
+                           ->sum('prize_amount');
+
+                
                 $wallet_amount_c =  Wallet::where(
                             [
                                 'user_id'       => $item->user_id,
