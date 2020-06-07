@@ -2326,8 +2326,6 @@ class ApiController extends BaseController
 
     // get Match by status and all
     public function getMatch(Request $request){
-        
-
         $user = $request->user_id;
         $banner = \DB::table('banners')->select('title','url','actiontype')->get();
         $join_contests =  \DB::table('join_contests')->where('user_id',$user)->get('match_id');
@@ -2449,6 +2447,8 @@ class ApiController extends BaseController
                         $item->status=1;
                         $item->status_str='Upcoming';
                         $item->is_lineup = true; 
+                        //exec('curl https://sportsfight.in/api/v2/updateMatchDataByStatus/3');
+        
                     }else{
                         $item->is_lineup = $lineup?true:false;
                     } 
