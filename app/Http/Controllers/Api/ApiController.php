@@ -425,6 +425,7 @@ class ApiController extends BaseController
                                     ->where('match_id',$item->match_id)
                                     ->where('player_id',$item->pid)
                                     ->first();
+
                         if($playing11_a){
                             $item->playing11 = $playing11_a->playing11=='true'?true:false;
                         }elseif ($playing11_b) {
@@ -485,7 +486,7 @@ class ApiController extends BaseController
                     'captain'   =>  ($captain==$result->pid)?true:false,
                     'vice_captain'   => ($vice_captain==$result->pid)?true:false,
                     'trump'     => ($trump==$result->pid)?true:false,
-                    'playing11' => $playing11??false
+                    'playing11' => $result->playing11??false
                 ];
             }
             $total_points = array_sum($array_sum);
