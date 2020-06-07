@@ -361,7 +361,26 @@ class ApiController extends BaseController
             $vice_captain   =   $team_id->vice_captain;
             $trump          =   $team_id->trump;
 
-            $players =$playerObject->get();
+            $players =$playerObject->get()
+                        ->transform(function($item,$key){
+                        $playing11_a = \DB::table('team_a_squads')
+                                    ->where('match_id',$item->match_id)
+                                    ->where('player_id',$item->pid)
+                                    ->first();
+                        $playing11_b = \DB::table('team_a_squads')
+                                    ->where('match_id',$item->match_id)
+                                    ->where('player_id',$item->pid)
+                                    ->first();
+                        if($playing11_a){
+                            $item->playing11 = $playing11_a->playing11=='true'?true:false;
+                        }elseif ($playing11_b) {
+                           $item->playing11 = $playing11_b->playing11=='true'?true:false;
+                        }else{
+                           $item->playing11 = false; 
+                        }             
+                          return $item;
+
+                    });
 
             foreach ($players as $key => $result) {
 
@@ -380,7 +399,8 @@ class ApiController extends BaseController
                     'role'      => $result->playing_role,
                     'captain'   =>  ($captain==$result->pid)?true:false,
                     'vice_captain'   => ($vice_captain==$result->pid)?true:false,
-                    'trump'     => ($trump==$result->pid)?true:false
+                    'trump'     => ($trump==$result->pid)?true:false,
+                    'playing11' => $result->playing11??false
                 ];
             }
         }
@@ -395,9 +415,28 @@ class ApiController extends BaseController
 
             $mpObject = MatchPoint::where('match_id',$team_id->match_id)
                 ->whereIn('pid',$player_id)
-                ->select('match_id','pid','name','role','rating','point','starting11');
+                ->select('match_id','pid','name','role','rating','point','starting11')->get()
+                    ->transform(function($item,$key){
+                        $playing11_a = \DB::table('team_a_squads')
+                                    ->where('match_id',$item->match_id)
+                                    ->where('player_id',$item->pid)
+                                    ->first();
+                        $playing11_b = \DB::table('team_a_squads')
+                                    ->where('match_id',$item->match_id)
+                                    ->where('player_id',$item->pid)
+                                    ->first();
+                        if($playing11_a){
+                            $item->playing11 = $playing11_a->playing11=='true'?true:false;
+                        }elseif ($playing11_b) {
+                           $item->playing11 = $playing11_b->playing11=='true'?true:false;
+                        }else{
+                           $item->playing11 = false; 
+                        }             
+
+                        return $item;
+                    });
             //mp=match point
-            foreach ($mpObject->get() as $key => $result) {
+            foreach ($mpObject as $key => $result) {
 
                 $point = $result->point;
                 if($captain==$result->pid){
@@ -445,7 +484,8 @@ class ApiController extends BaseController
                     'role'      => ($result->role=='wkbat')?'wk':$result->role,
                     'captain'   =>  ($captain==$result->pid)?true:false,
                     'vice_captain'   => ($vice_captain==$result->pid)?true:false,
-                    'trump'     => ($trump==$result->pid)?true:false
+                    'trump'     => ($trump==$result->pid)?true:false,
+                    'playing11' => $playing11??false
                 ];
             }
             $total_points = array_sum($array_sum);
