@@ -1364,10 +1364,8 @@ class ApiController extends BaseController
         $contest = CreateContest::with('contestType')
             ->where('match_id',$match_id)
             ->where('is_cancelled',0)
-           // ->orderBy('total_winning_prize','DESC')
-            ->orderBy('entry_fees','ASC')
+            ->orderBy('contest_type','ASC')
             ->orderBy('total_winning_prize','DESC')
-           // ->orderBy('contest_type','ASC')
             ->get();
         if($contest){
             $matchcontests = [];
@@ -1424,8 +1422,8 @@ class ApiController extends BaseController
                     'contests'=>$data2
                 ];
             }
-            $data = [];
-
+           // $data = [];
+            $data[0] = null;
             foreach ($matchcontests as $key => $value) {
 
                 foreach ($value as $key2 => $value2) {
@@ -1433,10 +1431,13 @@ class ApiController extends BaseController
                     $k['contestSubTitle'] = $value2['contestSubTitle'];
                     $k['contests'][] = $value2['contests'];
                 }
-                $data[] = $k;
-                $k= [];
+                if($k['contestTitle']=='Practise Contest'){
+                    $data[0] = $k;
+                }else{
+                   $data[] = $k;
+                }
+                $k = [];
             }
-
 
             $join_contests_team = \DB::table('join_contests')
                            ->where('match_id',$request->match_id)
