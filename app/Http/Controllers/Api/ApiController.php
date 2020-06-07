@@ -2545,20 +2545,20 @@ class ApiController extends BaseController
                 $captain_per = ($captain/$ct)*100;
 
 
-                 $analytics = [
+               /*  $analytics = [
                     'player_id' => $item->player_id,
                     'selection' => number_format($percent,1).'%',
                     'trump' => $trump_per.'%',
                     'vice_captain' => $vc_per.'%',
                     'captain' => $captain_per.'%'
 
-                ];
+                ];*/
 
                 
-                $item->selection = number_format($percent,1).'%';
-                $item->trump = $trump_per.'%';  
-                $item->vice_captain = $trump_per.'%';
-                $item->captain = $trump_per.'%'; 
+                $item->selection = number_format($percent,1);
+                $item->trump = $trump_per;  
+                $item->vice_captain = $trump_per;
+                $item->captain = $trump_per; 
 
                 return $item;
 
@@ -2664,7 +2664,7 @@ class ApiController extends BaseController
             if($sel_per){
                 $data['analytics'] = $analytics->where('player_id',$results->pid)->first();
             }else{
-                $data['analytics'] = ['selection'=>"0.0%",'trump'=>"0.0%",'vice_captain'=>"0.0%",'captain'=>'0.0%'];
+                $data['analytics'] = ['selection'=>"0.",'trump'=>"0.0",'vice_captain'=>"0.0",'captain'=>'0.0'];
             }
 
             if($results->playing_role=="wkbat")
