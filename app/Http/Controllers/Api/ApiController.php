@@ -3791,9 +3791,10 @@ class ApiController extends BaseController
             $item->team_name = $team_name;
             $item->contest  = $contest[0]??null ;
             $item->createdTeam = $ct;  
-
+            if($item->contest==null){
+            }else{
             //echo $rank.'-'.$match_id.'-'.$user_id.'-'.$team_id.'<br>';
-            $prize_dist =  PrizeDistribution::updateOrCreate(
+                $prize_dist =  PrizeDistribution::updateOrCreate(
                           [
                             'match_id'        => $match_id,
                             'user_id'         => $user_id,
@@ -3833,6 +3834,7 @@ class ApiController extends BaseController
 
                           ]
                         ); 
+            }
         });
         
         return  ['winningAmount'=>'updated'];
