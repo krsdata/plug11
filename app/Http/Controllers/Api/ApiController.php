@@ -421,7 +421,7 @@ class ApiController extends BaseController
                                     ->where('match_id',$item->match_id)
                                     ->where('player_id',$item->pid)
                                     ->first();
-                        $playing11_b = \DB::table('team_a_squads')
+                        $playing11_b = \DB::table('team_b_squads')
                                     ->where('match_id',$item->match_id)
                                     ->where('player_id',$item->pid)
                                     ->first();
