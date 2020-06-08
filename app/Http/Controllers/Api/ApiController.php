@@ -4026,7 +4026,6 @@ class ApiController extends BaseController
 
     public function createImage($base64,$userId=null,$documentsType)
     {   
-        
         try{
             if($base64){
                 $image = base64_decode($base64);
@@ -4034,7 +4033,6 @@ class ApiController extends BaseController
                     
                 if($documentsType=='profile'){
                     $path = storage_path() . "/image/profile/" . $image_name;
-                  
                     file_put_contents($path, $image); 
                     $url = url::to(asset('storage/image/profile/'.$image_name));
                     $user = User::find($userId);
@@ -4046,10 +4044,11 @@ class ApiController extends BaseController
                     return $url;
                     
                 }else{
-                    $internalPath = "/image/bank_docs/". date("Y-m-d")."/".$userId."/". $documentsType."/". $image_name;
-                    $storagePath = storage_path() .$internalPath ;
-                    file_put_contents($storagePath, $image); 
-                    return url::to(asset('storage/'.$internalPath));
+                    $path = storage_path() ."/image/bank_docs/". date("Y-m-d")."/".$userId."/". $documentsType."/". $image_name;
+
+                    file_put_contents($path, $image); 
+
+                    return url::to(asset('storage/'."/image/bank_docs/". date("Y-m-d")."/".$userId."/". $documentsType."/". $image_name));
                 }
                 
             }else{
@@ -4080,7 +4079,13 @@ class ApiController extends BaseController
         $internalPath = "";
         if(isset($userId) && isset($documentsType) && $documentsType!='profile'){
                 $internalPath = "/image/bank_docs/". date("Y-m-d")."/".$userId."/". $documentsType."/";
+
                 $storagePath = storage_path() .$internalPath ;
+                
+                if(!File::isDirectory($storagePath)){
+                    File::makeDirectory($storagePath, 0777, true, true);
+                }
+
                 $url =  $this->createImage($request->get('image_bytes'),$userId,$documentsType);
         }else {
              $internalPath  = "/image/".$documentsType."/";
