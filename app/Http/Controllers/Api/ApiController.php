@@ -2517,9 +2517,9 @@ class ApiController extends BaseController
     public function getAnalytics($match_id = null){
         
         $ct = CreateTeam::where('match_id',$match_id)->count();
-        $player = \DB::table('player_analytics')->select('player_id',\DB::raw('COUNT(player_id) as count'))->where('match_id',$match_id)->groupBy('player_id')->get()
+        $player = \DB::table('player_analytics')->select('player_id',\DB::raw('COUNT(player_id) as count'))->where('match_id',$match_id)->groupBy('player_id')->where('created_team_id',0)->get()
             ->transform(function($item,$key) use($ct,$match_id){
-                if($item->count){
+                if($ct){
                   $percent = ($item->count/$ct)*100;  
               }else{
                     $percent = 0;
