@@ -1447,7 +1447,7 @@ class ApiController extends BaseController
             $join_contests = \DB::table('create_teams')
                 ->where('match_id',$request->match_id)
                 ->where('user_id',$request->user_id)
-                ->whereIn('id',$join_contests_team)
+             //   ->whereIn('id',$join_contests_team)
                 ->select('id as team_id')
                 ->get();
 
@@ -2544,7 +2544,7 @@ class ApiController extends BaseController
                 $vc_per = ($vc/$ct)*100;
                 $captain_per = ($captain/$ct)*100;
                 
-                    
+
 
                 
                 $item->selection = number_format($percent,1);
