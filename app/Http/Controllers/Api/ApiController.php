@@ -2656,7 +2656,7 @@ class ApiController extends BaseController
             if($sel_per){
                 $data['analytics'] = $analytics->where('player_id',$results->pid)->first();
             }else{
-                $data['analytics'] = ['selection'=>"0.",'trump'=>"0.0",'vice_captain'=>"0.0",'captain'=>'0.0'];
+                $data['analytics'] = ['selection'=>"0.0",'trump'=>"0.0",'vice_captain'=>"0.0",'captain'=>'0.0'];
             }
 
             if($results->playing_role=="wkbat")
