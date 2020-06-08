@@ -4039,7 +4039,7 @@ class ApiController extends BaseController
                     $url = url::to(asset('storage/image/profile/'.$image_name));
                     $user = User::find($userId);
                     if($user){
-                        $user->profile_image = 
+                        $user->profile_image = $url;
                     }
 
                     return $url;
