@@ -4018,24 +4018,49 @@ class ApiController extends BaseController
         }
         else
         {
-            $data=array("success"=>"0", "msg"=>"Image Type Not Right");
+            $data=array("successd"=>"0", "msg"=>"Image Type Not Right");
         }
         return $data;
     }
 
 
+    public function createImage($base64)
+    {
+        try{
+            if($base64){
+                $image = base64_decode($base64);
+                $image_name= 'test'.time().'.jpg';
+                $path = storage_path() . "/image/" . $image_name;
+              
+                file_put_contents($path, $image); 
+               // return url::to(asset('storage/image/'.$image_name));
+                return true;
+            }else{
+                
+                return false; 
+            }
+ 
+            
+        }catch(Exception $e){
+            return false;
+        }
+        
+    }
+
+
     public function uploadbase64Image(Request $request)
     {
-
         // echo $request->get('image_bytes');
         $userId = $request->get('user_id');
         $documentsType = $request->get('documents_type');
+
+        $this->createImage($request->get('image_bytes'));
 
         $bin = base64_decode($request->get('image_bytes'));
         $im = imageCreateFromString($bin);
         if (!$im) {
             die('Base64 value is not a valid image');
-        }
+            }
 
         $image_name= time().'.jpg';
         $storagePath = "";
