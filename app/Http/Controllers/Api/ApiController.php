@@ -4024,17 +4024,27 @@ class ApiController extends BaseController
     }
 
 
-    public function createImage($base64)
-    {
+    public function createImage($base64,$userId=null,$documentsType)
+    {   
+        
         try{
             if($base64){
                 $image = base64_decode($base64);
-                $image_name= 'test'.time().'.jpg';
-                $path = storage_path() . "/image/" . $image_name;
-              
-                file_put_contents($path, $image); 
-               // return url::to(asset('storage/image/'.$image_name));
-                return true;
+                $image_name= time().'.jpg';
+                    
+                if($documentsType=='profile'){
+                    $path = storage_path() . "/image/profile/" . $image_name;
+                  
+                    file_put_contents($path, $image); 
+                    return url::to(asset('storage/image/profile/'.$image_name));
+                    
+                }else{
+                    $internalPath = "/image/bank_docs/". date("Y-m-d")."/".$userId."/". $documentsType."/";
+                    $storagePath = storage_path() .$internalPath ;
+                    file_put_contents($storagePath, $image); 
+                    return url::to(asset('storage/'.$internalPath));
+                }
+                
             }else{
                 
                 return false; 
@@ -4050,12 +4060,8 @@ class ApiController extends BaseController
 
     public function uploadbase64Image(Request $request)
     {
-        // echo $request->get('image_bytes');
         $userId = $request->get('user_id');
         $documentsType = $request->get('documents_type');
-
-        $this->createImage($request->get('image_bytes'));
-
         $bin = base64_decode($request->get('image_bytes'));
         $im = imageCreateFromString($bin);
         if (!$im) {
@@ -4066,12 +4072,14 @@ class ApiController extends BaseController
         $storagePath = "";
         $internalPath = "";
         if(isset($userId) && isset($documentsType) && $documentsType!='profile'){
-            $internalPath = "/image/bank_docs/". date("Y-m-d")."/".$userId."/". $documentsType."/";
-            $storagePath = storage_path() .$internalPath ;
-
+                $internalPath = "/image/bank_docs/". date("Y-m-d")."/".$userId."/". $documentsType."/";
+                $storagePath = storage_path() .$internalPath ;
+                $url =  $this->createImage($request->get('image_bytes'),$userId,$documentsType);
         }else {
-            $internalPath  = "/image/".$documentsType."/";
-            $storagePath = storage_path() .  $internalPath;
+             $internalPath  = "/image/".$documentsType."/";
+             $storagePath = storage_path() .  $internalPath;
+
+            $url =  $this->createImage($request->get('image_bytes'),$userId,$documentsType);
         }
         //echo "storagePath".$storagePath;
 
@@ -4083,10 +4091,10 @@ class ApiController extends BaseController
 
         //dd('done');
 
-        $imagePath = $storagePath.$image_name;
+        //$imagePath = $storagePath.$image_name;
         //echo "\nImage Path ".$imagePath;
-        imagepng($im, $imagePath, 0);
-        $urls = url::to(asset("/storage".$internalPath.$image_name));
+       // imagepng($im, $imagePath, 0);
+        $urls =$url; // url::to(asset("/storage".$internalPath.$image_name));
         return response()->json(
             [
                 "status" =>true,
