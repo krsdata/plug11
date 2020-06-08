@@ -4036,7 +4036,13 @@ class ApiController extends BaseController
                     $path = storage_path() . "/image/profile/" . $image_name;
                   
                     file_put_contents($path, $image); 
-                    return url::to(asset('storage/image/profile/'.$image_name));
+                    $url = url::to(asset('storage/image/profile/'.$image_name));
+                    $user = User::find($userId);
+                    if($user){
+                        $user->profile_image = 
+                    }
+
+                    return $url;
                     
                 }else{
                     $internalPath = "/image/bank_docs/". date("Y-m-d")."/".$userId."/". $documentsType."/";
