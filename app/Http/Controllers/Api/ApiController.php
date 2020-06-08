@@ -4040,6 +4040,7 @@ class ApiController extends BaseController
                     $user = User::find($userId);
                     if($user){
                         $user->profile_image = $url;
+                        $user->save();
                     }
 
                     return $url;
