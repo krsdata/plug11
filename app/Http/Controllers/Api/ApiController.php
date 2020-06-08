@@ -1178,10 +1178,12 @@ class ApiController extends BaseController
                 $ct->edit_team_count = $ct->edit_team_count+1;
             }
             $ct->save();
+            
             $ct->team_id  = $request->team_id;
             $ct->create_team_id  = $ct->id;
             // player analytics
             $request->merge(['created_team_id'=>$ct->id]);
+            
             $this->playerAnalytics($request);
 
             Log::channel('after_create_team')->info($request->all());
@@ -2517,15 +2519,13 @@ class ApiController extends BaseController
     public function getAnalytics($match_id = null){
         
         $ct = CreateTeam::where('match_id',$match_id)->count();
-        $player = \DB::table('player_analytics')->select('player_id',\DB::raw('COUNT(player_id) as count'))->where('match_id',$match_id)->groupBy('player_id')->where('created_team_id',0)->get()
+        $player = \DB::table('player_analytics')->select('player_id',\DB::raw('COUNT(player_id) as count'))->where('match_id',$match_id)->groupBy('player_id')->where('created_team_id','>',0)->get()
             ->transform(function($item,$key) use($ct,$match_id){
                 if($ct){
                   $percent = ($item->count/$ct)*100;  
               }else{
                     $percent = 0;
               }
-                
-
                 $trump = \DB::table('create_teams')
                         ->where('match_id',$match_id)
                         ->where('trump',$item->player_id)
@@ -4348,15 +4348,16 @@ class ApiController extends BaseController
         $teams = $request->teams;
         if($teams){
             $data['match_id'] = $request->match_id;
-            $data['created_team_id'] = $request->create_team_id;
+            $data['created_team_id'] = $request->created_team_id;
             $data['captain'] = $request->captain;
             $data['vice_captain'] = $request->vice_captain;
             $data['trump'] = $request->trump;
             $data['user_id'] = $request->user_id;
-
+            
             foreach ($teams as $key => $result) {
                 $data['player_id'] = $result;
-                \DB::table('player_analytics')->insert($data);
+                
+                \DB::table('player_analytics')->updateOrInsert($data,['match_id' => $request->match_id,'created_team_id'=>$request->created_team_id]);
             }
 
             return ['Player details added'];
