@@ -2570,7 +2570,7 @@ class ApiController extends BaseController
     // get players
     public function getPlayer(Request $request)
     {
-        $analytics  = $this->getAnalytics();
+        $analytics  = $this->getAnalytics($request->match_id);
 
         //dd($analytics->where('player_id',950483)->first());
 
