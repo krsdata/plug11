@@ -2514,7 +2514,7 @@ class ApiController extends BaseController
         $com = \DB::table('competitions')->select('id','match_id','cid')->get()->toArray();
         return $com;
     }
-    public function getAnalytics($match_id = 44585){
+    public function getAnalytics($match_id = null){
         
         $ct = CreateTeam::where('match_id',$match_id)->count();
         $player = \DB::table('player_analytics')->select('player_id',\DB::raw('COUNT(player_id) as count'))->where('match_id',$match_id)->groupBy('player_id')->get()
@@ -2543,22 +2543,14 @@ class ApiController extends BaseController
                 $trump_per = ($trump/$ct)*100;
                 $vc_per = ($vc/$ct)*100;
                 $captain_per = ($captain/$ct)*100;
-
-
-               /*  $analytics = [
-                    'player_id' => $item->player_id,
-                    'selection' => number_format($percent,1).'%',
-                    'trump' => $trump_per.'%',
-                    'vice_captain' => $vc_per.'%',
-                    'captain' => $captain_per.'%'
-
-                ];*/
+                
+                    
 
                 
                 $item->selection = number_format($percent,1);
                 $item->trump = $trump_per;  
-                $item->vice_captain = $trump_per;
-                $item->captain = $trump_per; 
+                $item->vice_captain = $vc_per;
+                $item->captain = $captain_per; 
 
                 return $item;
 
