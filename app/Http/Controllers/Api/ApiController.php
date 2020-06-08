@@ -4046,7 +4046,7 @@ class ApiController extends BaseController
                     return $url;
                     
                 }else{
-                    $internalPath = "/image/bank_docs/". date("Y-m-d")."/".$userId."/". $documentsType."/";
+                    $internalPath = "/image/bank_docs/". date("Y-m-d")."/".$userId."/". $documentsType."/". $image_name;
                     $storagePath = storage_path() .$internalPath ;
                     file_put_contents($storagePath, $image); 
                     return url::to(asset('storage/'.$internalPath));
