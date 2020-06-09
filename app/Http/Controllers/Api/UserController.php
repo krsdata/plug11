@@ -376,218 +376,6 @@ class UserController extends BaseController
         }
 
     }
-    public function signup(Request $request)
-    {
-        $input['name']          = $request->name;
-        $input['email']         = $request->get('email');
-        $input['password']      = Hash::make($request->input('password'));
-        $input['role_type']     = 3; //$request->input('role_type'); ;
-        $input['user_type']     = $request->get('user_type');
-        $input['provider_id']   = $request->get('provider_id');
-        $input['mobile_number'] = $request->get('mobile_number');
-        $input['referal_code']  = $request->get('referral_code');
-
-        #email - gmail - verified
-        #otp - 
-        #gmail -id - user_exit / mobile_number
-        #email_id / name_exit/ mobile_exit bt not verified
-
-        if($input['user_type']=='googleAuth' || $input['user_type']=='facebookAuth' ){
-            //Server side valiation
-
-
-
-            $validator = Validator::make($request->all(), [
-                'email' => 'required',
-                'name' => 'required',
-                'provider_id' => 'required'
-            ]);
-        }else{
-            //Server side valiation
-            //  $request->merge(['mobile' => $request->mobile_number]);
-
-            $validator = Validator::make($request->all(), [
-                'email'          => 'required|email|unique:users',
-                'mobile_number'  => 'required|unique:users',
-                'password'       => 'required'
-            ]);
-        }
-
-        /** Return Error Message **/
-        if ($validator->fails()) {
-            $error_msg      =   [];
-            foreach ( $validator->messages()->all() as $key => $value) {
-                array_push($error_msg, $value);
-            }
-
-            return Response::json(array(
-                    'status' => false,
-                    'code'=>201,
-                    'message' => $error_msg[0]
-                )
-            );
-        }
-
-        \DB::beginTransaction();
-
-        $helper = new Helper;
-        /** --Create USER-- **/
-        $user = new User;
-        foreach ($input as $key => $value) {
-            $user->$key = $value;
-        }
-        $uname = strtoupper(substr($user->name, 0, 3)).$this->generateUserName();
-        $user->user_name    = $uname;
-        $user->referal_code = $uname;
-
-        $user->save();
-
-        if($user->id){
-            $wallet = new Wallet;
-            $wallet->user_id = $user->id;
-            $wallet->validate_user = Hash::make($user->id);
-            $wallet->payment_type  =  1;
-            $wallet->payment_type_string = "Bonus";
-            $wallet->amount         = $this->signup_bonus;
-            $wallet->bonus_amount   = $this->signup_bonus;
-            $wallet->save();
-            $wallet  =  Wallet::find($wallet->id);
-
-            $wallet_trns['user_id']         =  $user->id??null;
-            $wallet_trns['amount']          =  $this->signup_bonus;
-            $wallet_trns['payment_type']    =  1;
-            $wallet_trns['payment_type_string'] = "Bonus";
-            $wallet_trns['transaction_id']  = time().'-'.$user->id??null;
-            $wallet_trns['payment_mode']    = "sportsfight";
-            $wallet_trns['payment_details'] = json_encode($wallet_trns);
-            $wallet_trns['payment_status']  = "success";
-
-            $wallet_transactions = WalletTransaction::updateOrCreate(
-                [
-                    'payment_type' => 1,
-                    'user_id' => $user->id
-                ],
-                $wallet_trns
-            );
-        }
-
-        \DB::commit();
-
-        $user  = User::find($user->id);
-        $user->validate_user    = Hash::make($user->id);
-        $user->reference_code   = $request->referral_code;
-        $user->mobile_number    = $request->mobile_number;
-        $user->phone            = $request->phone;
-        $user->save();
-
-        $token = $user->createToken('SportsFight')->accessToken;
-        $user_data['referal_code']     =  $user->user_name;
-        $user_data['user_id']          =  $user->id;
-        $user_data['name']             =  $user->name;
-        $user_data['email']            =  $user->email;
-        $user_data['bonus_amount']     =  (float)$wallet->bonus_amount;
-        $user_data['usable_amount']    =  (float)$wallet->usable_amount;
-        $user_data['mobile_number']    =  ($user->phone==null)?$user->mobile_number:$user->phone;
-
-        $subject = "Welcome to SportsFight! Verify your email address to get started";
-        $email_content = [
-            'receipent_email'=> $request->input('email'),
-            'subject'=>     $subject,
-            'greeting'=>    'SportsFight',
-            'first_name'=> $request->input('name')??$request->input('first_name')
-        ];
-
-        //$verification_email = $helper->sendMailFrontEnd($email_content,'verification_link');
-
-
-        $notification = new Notification;
-        $notification->addNotification('user_register',$user->id,$user->id,'User register','');
-
-        // user device details
-        $devD = \DB::table('hardware_infos')->where('user_id',$user->id)->first();
-        if($devD){
-            $deviceDetails = json_encode($request->deviceDetails);
-            \DB::table('hardware_infos')->where('user_id',$devD->user_id)->update([
-                'user_id' => $user->id,
-                'device_details' => $deviceDetails
-            ]);
-        }else{
-            $deviceDetails = json_encode($request->deviceDetails);
-            \DB::table('hardware_infos')->insert([
-                'user_id' => $user->id??0,
-                'device_details' => $deviceDetails
-            ]);
-        }
-        $apk_updates = \DB::table('apk_updates')->orderBy('id','desc')->first();
-        $data['apk_url'] =  $apk_updates->url??null;
-        //reference_code
-
-        $refer_by = User::where('referal_code',$request->referral_code)
-            ->orWhere('user_name',$request->referral_code)
-            ->first();
-
-
-        if($refer_by && $user)
-        {
-            $referralCode = new ReferralCode;
-            $referralCode->referral_code    =   $request->referral_code;
-            $referralCode->user_id          =   $user->id;
-            $referralCode->refer_by         =   $refer_by->id;
-            $referralCode->save();
-
-            $wallet_trns['user_id']         =  $refer_by->id??null;
-            $wallet_trns['amount']          =  $this->referral_bonus;
-            $wallet_trns['payment_type']    =  2;
-            $wallet_trns['payment_type_string'] = "Referral";
-            $wallet_trns['transaction_id']  = time().'-'.$refer_by->id??null;
-            $wallet_trns['payment_mode']    = "sportsfight";
-            $wallet_trns['payment_details'] = json_encode($wallet_trns);
-            $wallet_trns['payment_status']  = "success";
-
-            $wallet_transactions = WalletTransaction::create(
-                $wallet_trns
-            );
-
-
-            $wallet = Wallet::firstOrNew(
-                [
-                    'payment_type' => 2,
-                    'user_id' => $refer_by->id
-                ]
-            );
-
-            $wallet->user_id        = $refer_by->id;
-            $wallet->validate_user  = Hash::make($refer_by->id);
-            $wallet->payment_type   = 2 ;
-            $wallet->payment_type_string = "Referral";
-            $wallet->referal_amount = ($wallet->referal_amount)+$this->referral_bonus;
-            $wallet->amount = ($wallet->referal_amount)+$this->referral_bonus;
-
-            $wallet->save();
-
-        }
-
-        if($user){
-            $user->name             = $request->name;
-            $user->mobile_number    = $request->mobile_number;
-            $user->phone            = $request->phone;
-            $user->profile_image    = $request->image_url;
-            $user->reference_code   = $request->referral_code;
-            $user->save();
-        }
-        $request->merge(['user_id'=>$user->id]);
-        $this->generateOtp($request);
-
-        return response()->json(
-            [
-                "status"=>true,
-                "code"=>200,
-                "message"=>"Thank you for registration. Otp sent to your register email id and mobile number.",
-                'data' => $user_data,
-                'token' => $token??null
-            ]
-        );
-    }
     public function registration(Request $request)
     {
         $input['first_name']    = $request->get('first_name')??$request->get('name');
@@ -940,7 +728,7 @@ class UserController extends BaseController
         $input = $request->all();
         // print_r ($input);
         $validator = Validator::make($request->all(), [
-            'email' => 'email',
+            'email' => 'required|email',
             'user_type' => 'required'
         ]);
         if ($validator->fails()) {
@@ -1052,8 +840,8 @@ class UserController extends BaseController
                     'user_type' => 'googleAuth'
                 ];
 
-                $is_user = User::where('email',$request->email)->first();
-                if ($is_user) {
+
+                if (User::where('email',$request->email)->first()) {
                     $usermodel = User::where('email',$request->email)->first();
                     $usermodel->provider_id = $request->get('provider_id');
                     $usermodel->name        = $request->name;
@@ -1130,20 +918,15 @@ class UserController extends BaseController
                 break;
 
             default:
-                $mobile_number = $request->get('mobile_number');
-                $mobile_login = User::where('mobile_number',$mobile_number)
-                                ->first();
-                $email =   $mobile_login->email??null;
-                $email_id =  $email??$request->get('email');
-
                 $credentials = [
-                    'email'     =>$email_id,
+                    'email'     =>$request->get('email'),
                     'password'  =>$request->get('password'),
                     'status'    => 1
                 ];
+
                 $auth = Auth::attempt($credentials);
 
-                if ($auth){
+                if ($auth ){
                     $usermodel = Auth::user();
                     $request->merge(['user_id'=>$usermodel->id]);
                     if($usermodel->is_account_verified==0){
@@ -1617,7 +1400,7 @@ class UserController extends BaseController
             $this->sendSMS($request->mobile_number,$urlencode);
         }
 
-       // $this->sendOtpOverEmail($user,$otp);
+        $this->sendOtpOverEmail($user,$otp);
  
         return response()->json(
             [
