@@ -9,9 +9,9 @@
 .scrollbar
 {
      
-    float: left; 
+  /*  float: left; 
     overflow-y: scroll;
-    overflow-x: hidden; 
+    overflow-x: hidden; */
 }
 #scroll_bar::-webkit-scrollbar-thumb
 {
@@ -31,7 +31,7 @@
 <div class="page-container">
  <div class="page-sidebar-wrapper">
                 <!-- BEGIN SIDEBAR -->
-        <div id="scroll_bar" class="page-sidebar scrollbar navbar-collapse collapse" style="overflow-y: scroll !important; max-height: 650px !important ">
+        <div id="scroll_bar" class="page-sidebar scrollbar navbar-collapse collapse" style="overflow-y: scroll !important; max-height: 700px !important ">
 
             <ul class="page-sidebar-menu" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
                 <li class="nav-item start active open">

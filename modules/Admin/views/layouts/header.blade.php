@@ -56,19 +56,19 @@
                 font-weight: 700;
             }
             div.page-sidebar {
-                height: 600px !important ;
-                overflow-y: scroll !important;
+                /*height: 600px !important ;
+                overflow-y: scroll !important;*/
             }
             body{
-                  overflow-y: hidden !important; 
+               /*   overflow-y: hidden !important; 
                     overflow-x: scroll !important;
-                overflow-x: auto !important;
+                overflow-x: auto !important;*/
             }
             .portlet {
-                 height: 600px !important ;
+               /*  height: 600px !important ;
                 overflow-y: scroll !important;
                     overflow-x: scroll !important;
-                  overflow-x: auto !important;
+                  overflow-x: auto !important;*/
                 
             }
         </style>

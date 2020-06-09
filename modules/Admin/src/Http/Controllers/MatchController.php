@@ -323,8 +323,7 @@ class MatchController extends Controller {
                         if (!empty($status) && empty($search)) {
                            // $query->Where('status', '=', $status);
                             if($status==1){
-                                $query->where('timestamp_start','>=',time());
-                                $query->where('status','=',1);
+                                $query->where('status',1);
                             }
                             if($status==2){
                                 $query->orderBy('timestamp_start','DESC');
@@ -346,10 +345,12 @@ class MatchController extends Controller {
                                // $query->orWhere('title', 'LIKE', "%$search%"); 
                             }    
                         }
-                        
                          
                         
-                    })->orderBy('updated_at','DESC')->Paginate($this->record_per_page);
+                    })
+                    ->whereDate('date_start','>=',\Carbon\Carbon::yesterday())
+                    ->orderBy('date_start','ASC')
+                    ->Paginate($this->record_per_page);
 
                 $match->transform(function($item,$key){
                     $playing11_teamA= \DB::table('team_a_squads')
@@ -377,7 +378,11 @@ class MatchController extends Controller {
             }); 
              
         } else {
-            $match = Match::with('teama','teamb')->orderBy('created_at','DESC')->Paginate($this->record_per_page);
+            $match = Match::with('teama','teamb')
+                ->where('status','1')
+                ->whereDate('date_start','>=',\Carbon\Carbon::yesterday())
+                ->orderBy('date_start','ASC')
+                ->Paginate($this->record_per_page);
             $match->transform(function($item,$key){
 
                 $playing11_teamA= \DB::table('team_a_squads')
