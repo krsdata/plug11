@@ -1139,7 +1139,12 @@ class UserController extends BaseController
                     $data['otpverified'] = $user->is_account_verified?true:false;
                      // dd($user->mobile_number); 
                      $usermodel = User::where('email',$request->email)->first();
-                   $usermodel->name = $usermodel->name??$request->name;
+                   if($request->name) {
+                        $usermodel->name = $usermodel->name;
+                   }else{
+                        $usermodel->name = $request->name;
+                   }
+                   
 
                    /*if($request->mobile_number){
                         if(!is_numeric($request->mobile_number) || strlen($request->mobile_number)!=10){
@@ -1152,15 +1157,13 @@ class UserController extends BaseController
                                 ); 
                         }
                    }*/
-                   if($usermodel->mobile_number){
-                        $usermodel->mobile_number = $usermodel->mobile_number;
-                   }
                    if($request->mobile_number){
                         $usermodel->mobile_number = $request->mobile_number;
                    }
-                   
-                   
-                   $usermodel->profile_image = $request->profile_image??$user->profile_image;
+                   elseif($usermodel->mobile_number){
+                        $usermodel->mobile_number = $usermodel->mobile_number;
+                   }
+                   $usermodel->profile_image = $user->profile_image??$request->profile_image;
                    
                     if(empty($user->name) || empty($user->mobile_number)){
                         
