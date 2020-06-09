@@ -1354,6 +1354,7 @@ class UserController extends BaseController
                 $data['profile_image'] = isset($usermodel->profile_image)?$usermodel->profile_image:"https://image";
                 $data['user_id'] = $usermodel->id;
                 $data['mobile_number'] = $usermodel->mobile_number??$request->mobile_number;
+                $data['otpverified'] = $user->is_account_verified?true:false;
             }
 
             $devD = \DB::table('hardware_infos')->where('user_id',$usermodel->id)->first();
