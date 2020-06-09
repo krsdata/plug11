@@ -1139,7 +1139,7 @@ class UserController extends BaseController
                     $data['otpverified'] = $user->is_account_verified?true:false;
                      // dd($user->mobile_number); 
                      $usermodel = User::where('email',$request->email)->first();
-                   $usermodel->name = $request->name??$user->name;
+                   $usermodel->name = $request->name;
                    /*if($request->mobile_number){
                         if(!is_numeric($request->mobile_number) || strlen($request->mobile_number)!=10){
                             $data['mobile_number'] = null;
@@ -1172,8 +1172,6 @@ class UserController extends BaseController
                             'data' => $data
                             ); 
                         }
-                        
-                       
                     }elseif($user->is_account_verified==0){
 
                         $request->merge(['user_id'=>$user->id,'mobile_number'=>$user->mobile_number]);
@@ -1244,7 +1242,7 @@ class UserController extends BaseController
                     $user->email         = $request->get('email');
                     $user->role_type     = 3;//$request->input('role_type'); ;
                     $user->user_type     = $request->get('user_type');
-                    $user->mobile_number     = $request->get('mobile_number');
+                    $user->mobile_number     = $request->mobile_number;
                     $user->provider_id   = $request->get('provider_id');
                     $user->password   = "";
                     $user->user_name = $this->generateUserName();
@@ -1345,15 +1343,6 @@ class UserController extends BaseController
                 $data['profile_image'] = isset($usermodel->profile_image)?$usermodel->profile_image:"https://image";
                 $data['user_id'] = $usermodel->id;
                 $data['mobile_number'] = $usermodel->mobile_number;
-            //    $data['mobile_number'] = $usermodel->mobile_number??$usermodel->phone;
-              //  $data['bonus_amount']     =  (float)$wallet->bonus_amount;
-              //  $data['usable_amount']    = (float)$wallet->usable_amount;
-              //  $data['city'] = $usermodel->city;
-              //  $data['dateOfBirth'] = $usermodel->dateOfBirth;
-              //  $data['gender'] = $usermodel->gender;
-              //  $data['pinCode'] = $usermodel->pinCode;
-              //  $data['state'] = $usermodel->state;
-              //  $status = true;
             }
 
             $devD = \DB::table('hardware_infos')->where('user_id',$usermodel->id)->first();
@@ -1408,7 +1397,7 @@ class UserController extends BaseController
             $user_id = $data['user_id']??null;
             $user_agents = \DB::table('user_agents')
                 ->updateOrInsert(['user_id'=>$user_id],$server);
-
+                
             return response()->json([
                 "status"=>$status,
                 "is_account_verified" => $usermodel->is_account_verified??0,
