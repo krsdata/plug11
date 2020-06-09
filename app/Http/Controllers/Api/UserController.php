@@ -1094,6 +1094,51 @@ class UserController extends BaseController
 
     }
 
+    public function changeMobile(Request $request){
+
+        $validator = Validator::make($request->all(), [
+                        'mobile_number'  => 'required|unique:users|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
+                        'user_id' => 'required'
+                    ]);
+                    
+                    if ($validator->fails()) {
+                        $error_msg = [];
+                        foreach ($validator->messages()->all() as $key => $value) {
+                            array_push($error_msg, $value);
+                        }
+                        if ($error_msg) {
+                            return array(
+                                'status' => false,
+                                'code' => 201,
+                                'message' => $error_msg[0],
+                                'data' => $request->all()
+                            );
+                        }
+                    }
+            $user = User::find($request->user_id);
+
+            if($user){
+                $this->generateOtp($request);
+                $user->mobile_number = $request->mobile_number;
+                $user->save();
+
+            return response()->json([
+                "status"=>true,
+                "code"=>200,
+                "message" => 'Mobile number updated'
+
+            ]);
+
+            }else{
+                return response()->json([
+                    "status"=>true,
+                    "code"=>201,
+                    "message" => 'Mobile number not updated'
+
+                ]);
+            }       
+    }
+
     public function login(Request $request)
     {   
         $request->merge(['user_type'=>'googleAuth']);
@@ -1358,6 +1403,7 @@ class UserController extends BaseController
                 $data['user_id'] = $usermodel->id;
                 $data['mobile_number'] = $usermodel->mobile_number??$request->mobile_number;
                 $data['otpverified'] = $usermodel->is_account_verified?true:false;
+                $data['team_name'] = $usermodel->team_name??null;
             }
 
             $devD = \DB::table('hardware_infos')->where('user_id',$usermodel->id)->first();
