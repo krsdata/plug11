@@ -1151,7 +1151,7 @@ class UserController extends BaseController
                                 ); 
                         }
                    }*/
-                   $usermodel->mobile_number = $request->mobile_number??$user->name;
+                   $usermodel->mobile_number = $request->mobile_number;
                    $usermodel->profile_image = $request->profile_image??$user->profile_image;
                    
                     if(empty($user->name) || empty($user->mobile_number)){
@@ -1174,7 +1174,11 @@ class UserController extends BaseController
                         }
                     }elseif($user->is_account_verified==0){
 
-                        $request->merge(['user_id'=>$user->id,'mobile_number'=>$user->mobile_number]);
+                        $request->merge([
+                                'user_id'=>$user->id,
+                                'mobile_number'=>$user->mobile_number
+                            ]
+                        );
 
                         $this->generateOtp($request);
                         return array(
@@ -1332,7 +1336,6 @@ class UserController extends BaseController
                 }
                 break;
         }
-
         $data = [];
         if($usermodel){ 
             $wallet  = Wallet::where('user_id',$usermodel->id)->first();
@@ -1397,7 +1400,7 @@ class UserController extends BaseController
             $user_id = $data['user_id']??null;
             $user_agents = \DB::table('user_agents')
                 ->updateOrInsert(['user_id'=>$user_id],$server);
-                
+
             return response()->json([
                 "status"=>$status,
                 "is_account_verified" => $usermodel->is_account_verified??0,
@@ -1840,12 +1843,11 @@ class UserController extends BaseController
                 ->where('user_id',$request->get('user_id'))
                 ->update(['is_verified'=>1,'referral_amount'=>$this->referral_bonus]);
 
-            if($data->mobile){
+            if($data->mobile_number){
                 \DB::table('users')
                     ->where('id',$request->get('user_id'))
-                    ->update(['phone'=>$data->mobile,'is_account_verified'=>1]);
+                    ->update(['is_account_verified'=>1]);
             }
-
         }
         return response()->json(
             [
