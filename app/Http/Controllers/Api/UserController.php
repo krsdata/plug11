@@ -1120,6 +1120,9 @@ class UserController extends BaseController
                         
                        
                     }elseif($user->is_account_verified==0){
+
+                        $request->merge(['user_id'=>$user->id,'mobile_number'=>$user->mobile_number]);
+
                         $this->generateOtp($request);
                         return array(
                             'status' => true,
