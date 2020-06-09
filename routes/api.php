@@ -70,6 +70,7 @@ Route::group([
     'prefix' => 'v2'
 ], function()
 {   
+    Route::match(['post','get'],'changeMobile', 'Api\UserController@changeMobile');
     Route::match(['post','get'],'login', 'Api\UserController@login');
         
     Route::match(['post','get'],'withdrawAmount', 'Api\ApiController@withdrawAmount');

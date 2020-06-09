@@ -1184,11 +1184,9 @@ class UserController extends BaseController
                     $data['otpverified'] = $user->is_account_verified?true:false;
                      // dd($user->mobile_number); 
                      $usermodel = User::where('email',$request->email)->first();
-                   if($request->name) {
-                        $usermodel->name = $usermodel->name;
-                   }else{
+                    if($request->name) {
                         $usermodel->name = $request->name;
-                   }
+                    }
                    
 
                    /*if($request->mobile_number){
@@ -1397,7 +1395,7 @@ class UserController extends BaseController
             $wallet  = Wallet::where('user_id',$usermodel->id)->first();
             if($wallet!=null){
                // $data['referal_code']  = $usermodel->user_name;
-                $data['name'] = $usermodel->name??$request->name;
+                $data['name'] = $usermodel->name;
                 $data['email'] = $usermodel->email;
                 $data['profile_image'] = isset($usermodel->profile_image)?$usermodel->profile_image:"https://image";
                 $data['user_id'] = $usermodel->id;
