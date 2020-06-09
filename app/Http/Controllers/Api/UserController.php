@@ -1131,15 +1131,16 @@ class UserController extends BaseController
 
                 if($user){
 
-                    $data['name'] = $user->name;
-                    $data['email'] = $user->email;
+                    $data['name'] = $user->name??$request->name;
+                    $data['email'] = $user->email??$request->email;
                     $data['user_id'] = $user->id;
                     $data['profile_image'] = $user->profile_image;
-                    $data['mobile_number'] = $user->mobile_number;
+                    $data['mobile_number'] = $user->mobile_number??$request->mobile_number;
                     $data['otpverified'] = $user->is_account_verified?true:false;
                      // dd($user->mobile_number); 
                      $usermodel = User::where('email',$request->email)->first();
-                   $usermodel->name = $request->name;
+                   $usermodel->name = $usermodel->name??$request->name;
+
                    /*if($request->mobile_number){
                         if(!is_numeric($request->mobile_number) || strlen($request->mobile_number)!=10){
                             $data['mobile_number'] = null;
@@ -1151,7 +1152,14 @@ class UserController extends BaseController
                                 ); 
                         }
                    }*/
-                   $usermodel->mobile_number = $request->mobile_number;
+                   if($usermodel->mobile_number){
+                        $usermodel->mobile_number = $usermodel->mobile_number;
+                   }
+                   if($request->mobile_number){
+                        $usermodel->mobile_number = $request->mobile_number;
+                   }
+                   
+                   
                    $usermodel->profile_image = $request->profile_image??$user->profile_image;
                    
                     if(empty($user->name) || empty($user->mobile_number)){
@@ -1341,11 +1349,11 @@ class UserController extends BaseController
             $wallet  = Wallet::where('user_id',$usermodel->id)->first();
             if($wallet!=null){
                // $data['referal_code']  = $usermodel->user_name;
-                $data['name'] = $usermodel->name;
+                $data['name'] = $usermodel->name??$request->name;
                 $data['email'] = $usermodel->email;
                 $data['profile_image'] = isset($usermodel->profile_image)?$usermodel->profile_image:"https://image";
                 $data['user_id'] = $usermodel->id;
-                $data['mobile_number'] = $usermodel->mobile_number;
+                $data['mobile_number'] = $usermodel->mobile_number??$request->mobile_number;
             }
 
             $devD = \DB::table('hardware_infos')->where('user_id',$usermodel->id)->first();
