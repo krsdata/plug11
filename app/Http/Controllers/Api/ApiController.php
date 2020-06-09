@@ -1466,9 +1466,9 @@ class ApiController extends BaseController
                     "code"=>200,
                     "message"=>"Success",
                     "response"=>[
-                        'matchcontests'=>$data,
+                        'matchcontests'=>array_filter($data),
                         'myjoinedTeams' =>$join_contests,
-                        'myjoinedContest' => $myjoinedContest
+                        'myjoinedContest' => array_filter($myjoinedContest)
                     ]
                 ]
             );
