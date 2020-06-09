@@ -4353,13 +4353,16 @@ class ApiController extends BaseController
             $data['vice_captain'] = $request->vice_captain;
             $data['trump'] = $request->trump;
             $data['user_id'] = $request->user_id;
-            \DB::table('player_analytics')->where('created_team_id',$request->created_team_id)->delete();
+            \DB::table('player_analytics')
+                    ->where('created_team_id',$request->created_team_id)
+                    ->where('user_id',$request->user_id)
+                    ->delete();
 
             foreach ($teams as $key => $result) {
                 $data['player_id'] = $result;
                 
                 \DB::table('player_analytics')
-                        ->Insert($data);
+                        ->insert($data);
             }
 
             return ['Player details added'];
