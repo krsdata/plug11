@@ -1075,42 +1075,42 @@ class UserController extends BaseController
                 $user = User::where('email',$request->email)->first();
 
                 if($user){
-                    
-                    $usermodel = User::where('email',$request->email)->first();
+
+                    $data['name'] = $user->name;
+                    $data['email'] = $user->email;
+                    $data['user_id'] = $user->id;
+                    $data['mobile_number'] = $user->mobile_number;
+                    $data['otpverified'] = $user->is_account_verified?true:false;
                      // dd($user->mobile_number); 
                     if(empty($user->name) || empty($user->mobile_number)){
-                       $is_name_mob = 0;
-                       if($request->name){
-                            $usermodel->name = $request->name;
-                       }else{
-                            $is_name_mob = 1;
-                       }if($request->mobile_number){
-                            $usermodel->mobile_number = $request->mobile_number;
-                       }else{
-                            $is_name_mob = 1;
-                       }
-                       if($is_name_mob){ 
-                            $msg1 = $request->name?null:'Name is required';
-                            $msg2 = $request->mobile_number?null:'Mobile Number is required';
-                            $message = $msg1??$msg2;
-
+                        
+                        if(empty($user->mobile_number) && $request->mobile_number==null){
+                                return array(
+                            'status' => true,
+                            'code' => 200,
+                            'message' => 'Something went wrong',
+                            'data' => $data
+                            ); 
+                        }
+                        if(empty($user->name) && $request->name==null){
                             return array(
-                            'status' => false,
-                            'code' => 1000,
-                            'message' => $message,
-                            'data' => $request->all()
-                        ); 
-                       }
-                    }
-
-                    if($user->is_account_verified==0){
+                            'status' => true,
+                            'code' => 200,
+                            'message' => 'Something went wrong',
+                            'data' => $data
+                            ); 
+                        }
+                        
+                       
+                    }elseif($user->is_account_verified==0){
                         return array(
-                            'status' => false,
-                            'code' => 1001,
-                            'message' => 'account is not verified',
-                            'data' => $request->all()
+                            'status' => true,
+                            'code' => 200,
+                            'message' => 'Something went wrong',
+                            'data' => $data
                         );    
                     }
+                    $usermodel = User::where('email',$request->email)->first();
                    // $usermodel->is_account_verified = 1;
                     $usermodel->email_verified_at = date('Y-m-d h:i:s');
                     
@@ -1129,10 +1129,11 @@ class UserController extends BaseController
                 }else{
 
                     $validator = Validator::make($request->all(), [
-                        'email' => 'required|email',
-                        'name' => 'required|min:3',
-                        'mobile_number' => 'required|max:10|min:10',
+                        'email'          => 'required|email|unique:users',
+                        'mobile_number'  => 'required|unique:users|max:10|min:10',
+                        'name' => 'required|min:3'
                     ]);
+                    
                     if ($validator->fails()) {
                         $error_msg = [];
                         foreach ($validator->messages()->all() as $key => $value) {
@@ -1246,15 +1247,15 @@ class UserController extends BaseController
                 $data['email'] = $usermodel->email;
                 $data['profile_image'] = isset($usermodel->profile_image)?$usermodel->profile_image:"https://image";
                 $data['user_id'] = $usermodel->id;
-                $data['mobile_number'] = $usermodel->mobile_number??$usermodel->phone;
-                $data['bonus_amount']     =  (float)$wallet->bonus_amount;
-                $data['usable_amount']    = (float)$wallet->usable_amount;
-                $data['city'] = $usermodel->city;
-                $data['dateOfBirth'] = $usermodel->dateOfBirth;
-                $data['gender'] = $usermodel->gender;
-                $data['pinCode'] = $usermodel->pinCode;
-                $data['state'] = $usermodel->state;
-                $status = true;
+            //    $data['mobile_number'] = $usermodel->mobile_number??$usermodel->phone;
+              //  $data['bonus_amount']     =  (float)$wallet->bonus_amount;
+              //  $data['usable_amount']    = (float)$wallet->usable_amount;
+              //  $data['city'] = $usermodel->city;
+              //  $data['dateOfBirth'] = $usermodel->dateOfBirth;
+              //  $data['gender'] = $usermodel->gender;
+              //  $data['pinCode'] = $usermodel->pinCode;
+              //  $data['state'] = $usermodel->state;
+              //  $status = true;
             }
 
             $devD = \DB::table('hardware_infos')->where('user_id',$usermodel->id)->first();
