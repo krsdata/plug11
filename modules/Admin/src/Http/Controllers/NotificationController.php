@@ -119,7 +119,7 @@ class NotificationController extends Controller {
                 'message' => $notification->message
             ];
 
-      //  $this->sendNotification($device_id,$data);
+        $this->sendNotification($device_id,$data);
         return Redirect::to(route('notification'))
                             ->with('flash_alert_notice', 'New Notification  successfully created!');
     }
