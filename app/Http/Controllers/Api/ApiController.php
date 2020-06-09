@@ -4359,7 +4359,7 @@ class ApiController extends BaseController
                 $data['player_id'] = $result;
                 
                 \DB::table('player_analytics')
-                        ->Insert($data);
+                        ->insert($data);
             }
 
             return ['Player details added'];
