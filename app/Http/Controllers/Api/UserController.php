@@ -1040,6 +1040,297 @@ class UserController extends BaseController
 
     }
 
+    public function login(Request $request)
+    {
+        $data = [];
+        $input = $request->all();
+        // print_r ($input);
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email'
+        ]);
+        if ($validator->fails()) {
+            $error_msg = [];
+            foreach ($validator->messages()->all() as $key => $value) {
+                array_push($error_msg, $value);
+            }
+            if ($error_msg) {
+                return array(
+                    'status' => false,
+                    'code' => 201,
+                    'message' => $error_msg[0],
+                    'data' => $request->all()
+                );
+            }
+        }
+
+        $user_type = $request->user_type;
+        switch ($user_type) {
+            case 'googleAuth':
+
+                $credentials = [
+                    'email'=>$request->get('email'),
+                    'user_type' => 'googleAuth'
+                ];
+
+                $user = User::where('email',$request->email)->first();
+
+                if($user){
+                    
+                    $usermodel = User::where('email',$request->email)->first();
+                     // dd($user->mobile_number); 
+                    if(empty($user->name) || empty($user->mobile_number)){
+                       $is_name_mob = 0;
+                       if($request->name){
+                            $usermodel->name = $request->name;
+                       }else{
+                            $is_name_mob = 1;
+                       }if($request->mobile_number){
+                            $usermodel->mobile_number = $request->mobile_number;
+                       }else{
+                            $is_name_mob = 1;
+                       }
+                       if($is_name_mob){ 
+                            $msg1 = $request->name?null:'Name is required';
+                            $msg2 = $request->mobile_number?null:'Mobile Number is required';
+                            $message = $msg1??$msg2;
+
+                            return array(
+                            'status' => false,
+                            'code' => 1000,
+                            'message' => $message,
+                            'data' => $request->all()
+                        ); 
+                       }
+                    }
+
+                    if($user->is_account_verified==0){
+                        return array(
+                            'status' => false,
+                            'code' => 1001,
+                            'message' => 'account is not verified',
+                            'data' => $request->all()
+                        );    
+                    }
+                   // $usermodel->is_account_verified = 1;
+                    $usermodel->email_verified_at = date('Y-m-d h:i:s');
+                    
+                    $usermodel->provider_id = $request->get('provider_id');
+                    if($usermodel->user_name){
+                        $usermodel->referal_code  = $usermodel->user_name;
+                    }else{
+                        $usermodel->user_name = $this->generateUserName();
+                        $usermodel->reference_code = $request->referral_code;
+                    }
+                    $usermodel->save();
+                    $status = true;
+                    $code = 200;
+                    $message = "login successfully";
+
+                }else{
+
+                    $validator = Validator::make($request->all(), [
+                        'email' => 'required|email',
+                        'name' => 'required|min:3',
+                        'mobile_number' => 'required|max:10|min:10',
+                    ]);
+                    if ($validator->fails()) {
+                        $error_msg = [];
+                        foreach ($validator->messages()->all() as $key => $value) {
+                            array_push($error_msg, $value);
+                        }
+                        if ($error_msg) {
+                            return array(
+                                'status' => false,
+                                'code' => 201,
+                                'message' => $error_msg[0],
+                                'data' => $request->all()
+                            );
+                        }
+                    }
+
+                    $user = new User;
+
+                    $user->name          = $request->name;
+                    $user->email         = $request->get('email');
+                    $user->role_type     = 3;//$request->input('role_type'); ;
+                    $user->user_type     = $request->get('user_type');
+                    $user->mobile_number     = $request->get('mobile_number');
+                    $user->provider_id   = $request->get('provider_id');
+                    $user->password   = "";
+                    $user->user_name = $this->generateUserName();
+                    $user->referal_code = $user->user_name;
+                    $user->reference_code = $request->referral_code;
+                    $user->email_verified_at = 1;
+                    $user->save() ;
+                    
+                    //$this->generateOtp($request);
+                    if($user->id){
+                        $wallet = new Wallet;
+                        $wallet->user_id = $user->id;
+                        $wallet->validate_user = Hash::make($user->id);
+                        $wallet->payment_type  =  1;
+                        $wallet->payment_type_string = "Bonus";
+                        $wallet->amount         = $this->signup_bonus;
+                        $wallet->bonus_amount   = $this->signup_bonus;
+                        $wallet->save();
+
+
+                        $wallet_trns['user_id']         =  $user->id??null;
+                        $wallet_trns['amount']          =  $this->signup_bonus;
+                        $wallet_trns['payment_type']    =  1;
+                        $wallet_trns['payment_type_string'] = "Bonus";
+                        $wallet_trns['transaction_id']  = time().'-'.$user->id??null;
+                        $wallet_trns['payment_mode']    = "sportsfight";
+                        $wallet_trns['payment_details'] = json_encode($wallet_trns);
+                        $wallet_trns['payment_status']  = "success";
+
+                        $wallet_transactions = WalletTransaction::updateOrCreate(
+                            [
+                                'payment_type' => 1,
+                                'user_id' => $user->id
+                            ],
+                            $wallet_trns
+                        );
+                    }
+
+                    $token = $user->createToken('token')->accessToken;
+
+
+                    $user->validate_user = Hash::make($user->id);
+                    $user->save();
+                    $usermodel =  $user;
+                    $status = true;
+                    $code = 200;
+                    $message = "login successfully";
+                    $token = $usermodel->createToken('token')->accessToken;
+                }
+
+                break;
+
+            default:
+                $credentials = [
+                    'email'     =>$request->get('email'),
+                    'password'  =>$request->get('password'),
+                    'status'    => 1
+                ];
+
+                $auth = Auth::attempt($credentials);
+
+                if ($auth ){
+                    $usermodel = Auth::user();
+                    $request->merge(['user_id'=>$usermodel->id]);
+                    if($usermodel->is_account_verified==0){
+                        $this->generateOtp($request);
+                    }
+
+                    $token = $usermodel->createToken('SportsFight')->accessToken;
+
+                    $status = true;
+                    $code = 200;
+                    $message = "login successfully";
+                }else{
+                    $usermodel = null;
+                    $status = false;
+                    $code = 201;
+                    $message = "login failed";
+                }
+                break;
+        }
+
+        $data = [];
+        if($usermodel){ 
+            $wallet  = Wallet::where('user_id',$usermodel->id)->first();
+            if($wallet!=null){
+                $data['referal_code']  = $usermodel->user_name;
+                $data['name'] = $usermodel->name;
+                $data['email'] = $usermodel->email;
+                $data['profile_image'] = isset($usermodel->profile_image)?$usermodel->profile_image:"https://image";
+                $data['user_id'] = $usermodel->id;
+                $data['mobile_number'] = $usermodel->mobile_number??$usermodel->phone;
+                $data['bonus_amount']     =  (float)$wallet->bonus_amount;
+                $data['usable_amount']    = (float)$wallet->usable_amount;
+                $data['city'] = $usermodel->city;
+                $data['dateOfBirth'] = $usermodel->dateOfBirth;
+                $data['gender'] = $usermodel->gender;
+                $data['pinCode'] = $usermodel->pinCode;
+                $data['state'] = $usermodel->state;
+                $status = true;
+            }
+
+            $devD = \DB::table('hardware_infos')->where('user_id',$usermodel->id)->first();
+
+            if($devD){
+                $deviceDetails = json_encode($request->deviceDetails);
+                \DB::table('hardware_infos')->where('user_id',$devD->user_id)->update([
+                    'user_id' => $usermodel->id??0,
+                    'device_details' => $deviceDetails
+                ]);
+
+                \DB::table('users')->where('email',$request->email)->update([
+                    'device_id'=>$request->device_id
+                ]);
+
+            }else{
+                $deviceDetails = json_encode($request->deviceDetails);
+                \DB::table('hardware_infos')->insert([
+                    'user_id' => $usermodel->id??0,
+                    'device_details' => $deviceDetails
+                ]);
+            }
+            \DB::table('users')->where('id',$usermodel->id)->update([
+                'login_status' => true,
+                'device_id' => $request->device_id
+            ]);
+        } 
+
+       // $token = Hash::make(1);
+        if($usermodel){
+            $token = $usermodel->createToken('token')->accessToken;
+        }
+
+        $apk_updates = \DB::table('apk_updates')->orderBy('id','desc')->first();
+        $data['apk_url'] =  $apk_updates->url??null;
+        if($data){
+
+            $server = [
+                'USER_DEVICE_IP' => $_SERVER['HTTP_X_FORWARDED_FOR']??null,
+                //  'COUNTRY_CODE' => $_SERVER['HTTP_CF_IPCOUNTRY']??null,
+                'SERVER_ADDR' => $_SERVER['SERVER_ADDR'],
+                'SERVER_NAME' => $_SERVER['SERVER_NAME'],
+                'SERVER_ADDR' => $_SERVER['SERVER_ADDR'],
+                'REMOTE_ADDR' => $_SERVER['REMOTE_ADDR'],
+                'REQUEST_METHOD' => $_SERVER['REQUEST_METHOD'],
+                'HTTP_USER_AGENT' => $_SERVER['HTTP_USER_AGENT'],
+                'HTTP_HOST' => $_SERVER['HTTP_HOST'],
+                'user_id' => $data['user_id']??null
+
+            ];
+
+            $user_id = $data['user_id']??null;
+            $user_agents = \DB::table('user_agents')
+                ->updateOrInsert(['user_id'=>$user_id],$server);
+
+            return response()->json([
+                "status"=>$status,
+                "is_account_verified" => $usermodel->is_account_verified??0,
+                "code"=>$code,
+                "message"=> $message ,
+                'data'=> $data,
+                'token' => $token
+            ]);
+        }else{
+            return response()->json([
+                "status"=>$status,
+                "is_account_verified" => 0,
+                "code"=>$code,
+                "message" => 'Invalid email or password',
+                'token' =>$token??Hash::make(1)
+
+            ]);
+        }
+
+    }
+
     /* @method : Email Verification
      * @param : token_id
      * Response : jsonṭ
@@ -1146,9 +1437,6 @@ class UserController extends BaseController
             return response()->json([ "status"=>0,"message"=>"Verification link is invalid!" ,'data' => '']);
         }
     }
-
-
-    
     public function mChangePassword(Request $request){
 
         $user_id =  $request->user_id;
@@ -1317,8 +1605,6 @@ class UserController extends BaseController
         }
     }
 
-
-
     public function sendNotification($token, $data){
 
         $serverLKey = 'AIzaSyAFIO8uE_q7vdcmymsxwmXf-olotQmOCgE';
@@ -1400,7 +1686,7 @@ class UserController extends BaseController
             $this->sendSMS($request->mobile_number,$urlencode);
         }
 
-        $this->sendOtpOverEmail($user,$otp);
+       // $this->sendOtpOverEmail($user,$otp);
  
         return response()->json(
             [
