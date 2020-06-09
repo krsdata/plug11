@@ -1097,8 +1097,9 @@ class UserController extends BaseController
     public function changeMobile(Request $request){
 
         $validator = Validator::make($request->all(), [
-                        'mobile_number'  => 'required|unique:users|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
-                        'user_id' => 'required'
+                        'user_id' => 'required',
+                        'mobile_number'  => 'required|unique:users|regex:/^([0-9\s\-\+\(\)]*)$/|min:10'
+                        
                     ]);
                     
                     if ($validator->fails()) {
