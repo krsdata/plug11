@@ -284,11 +284,10 @@
 
                                          <td> {{$result->status_str}} </td>
                                          <td> 
-                                            {!!
-                                                \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $result->date_start, 'UTC')
-                                                ->setTimezone('Asia/Kolkata')
-                                                ->format('d-m-y, H:i:s A')
-                                            !!}
+                                          {{
+                                            date('Y-m-d h:i:s A',$result->timestamp_start)
+                                          }}
+                                            
                                         </td>
                                          <td> 
                                             @if($result->current_status==1) 
