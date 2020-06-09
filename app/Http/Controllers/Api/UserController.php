@@ -1079,9 +1079,15 @@ class UserController extends BaseController
                     $data['name'] = $user->name;
                     $data['email'] = $user->email;
                     $data['user_id'] = $user->id;
+                    $data['profile_image'] = $user->profile_image;
                     $data['mobile_number'] = $user->mobile_number;
                     $data['otpverified'] = $user->is_account_verified?true:false;
                      // dd($user->mobile_number); 
+                     $usermodel = User::where('email',$request->email)->first();
+                   $usermodel->name = $request->name??$user->name;
+                   $usermodel->mobile_number = $request->mobile_number??$user->name;
+                   $usermodel->profile_image = $request->profile_image??$user->profile_image;
+                   
                     if(empty($user->name) || empty($user->mobile_number)){
                         
                         if(empty($user->mobile_number) && $request->mobile_number==null){
@@ -1110,7 +1116,6 @@ class UserController extends BaseController
                             'data' => $data
                         );    
                     }
-                    $usermodel = User::where('email',$request->email)->first();
                    // $usermodel->is_account_verified = 1;
                     $usermodel->email_verified_at = date('Y-m-d h:i:s');
                     
