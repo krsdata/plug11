@@ -1084,16 +1084,14 @@ class UserController extends BaseController
                             $usermodel->name = $request->name;
                        }else{
                             $is_name_mob = 1;
+                            $message = "Name is required";
                        }if($request->mobile_number){
                             $usermodel->mobile_number = $request->mobile_number;
                        }else{
                             $is_name_mob = 1;
+                            $message = "Mobile number is required";
                        }
                        if($is_name_mob){ 
-                            $msg1 = $request->name?null:'Name is required';
-                            $msg2 = $request->mobile_number?null:'Mobile Number is required';
-                            $message = $msg1??$msg2;
-
                             return array(
                             'status' => false,
                             'code' => 1000,
@@ -1129,10 +1127,11 @@ class UserController extends BaseController
                 }else{
 
                     $validator = Validator::make($request->all(), [
-                        'email' => 'required|email',
-                        'name' => 'required|min:3',
-                        'mobile_number' => 'required|max:10|min:10',
+                        'email'          => 'required|email|unique:users',
+                        'mobile_number'  => 'required|unique:users|max:10|min:10',
+                        'name' => 'required|min:3'
                     ]);
+                    
                     if ($validator->fails()) {
                         $error_msg = [];
                         foreach ($validator->messages()->all() as $key => $value) {
