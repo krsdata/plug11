@@ -559,7 +559,6 @@ class UserController extends BaseController
             $wallet->save();
 
         }
-
         if($user){
             $user->name             = $request->name;
             $user->mobile_number    = $request->mobile_number;
@@ -1040,6 +1039,61 @@ class UserController extends BaseController
 
     }
 
+    public function saveReferral($request,$user=null){
+
+        $refer_by = User::where('referal_code',$request->referral_code)
+            ->orWhere('user_name',$request->referral_code)
+            ->first();
+
+        if($refer_by && $user)
+        {
+            $referralCode = new ReferralCode;
+            $referralCode->referral_code    =   $request->referral_code;
+            $referralCode->user_id          =   $user->id;
+            $referralCode->refer_by         =   $refer_by->id;
+            $referralCode->save();
+
+            $wallet_trns['user_id']         =  $refer_by->id??null;
+            $wallet_trns['amount']          =  $this->referral_bonus;
+            $wallet_trns['payment_type']    =  2;
+            $wallet_trns['payment_type_string'] = "Referral";
+            $wallet_trns['transaction_id']  = time().'-'.$refer_by->id??null;
+            $wallet_trns['payment_mode']    = "sportsfight";
+            $wallet_trns['payment_details'] = json_encode($wallet_trns);
+            $wallet_trns['payment_status']  = "success";
+
+            $wallet_transactions = WalletTransaction::create(
+                $wallet_trns
+            );
+
+
+            $wallet = Wallet::firstOrNew(
+                [
+                    'payment_type' => 2,
+                    'user_id' => $refer_by->id
+                ]
+            );
+
+            $wallet->user_id        = $refer_by->id;
+            $wallet->validate_user  = Hash::make($refer_by->id);
+            $wallet->payment_type   = 2 ;
+            $wallet->payment_type_string = "Referral";
+            $wallet->referal_amount = ($wallet->referal_amount)+$this->referral_bonus;
+            $wallet->amount = ($wallet->referal_amount)+$this->referral_bonus;
+
+            $wallet->save();
+
+        }
+        if($user){
+            $user->reference_code   = $request->referral_code;
+            $user->save();
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
     public function login(Request $request)
     {
         $data = [];
@@ -1135,12 +1189,24 @@ class UserController extends BaseController
                     $usermodel->email_verified_at = date('Y-m-d h:i:s');
                     
                     $usermodel->provider_id = $request->get('provider_id');
-                    if($usermodel->user_name){
-                        $usermodel->referal_code  = $usermodel->user_name;
+                    if($usermodel->referal_code){
+                        $usermodel->referal_code  = $usermodel->referal_code;
                     }else{
-                        $usermodel->user_name = $this->generateUserName();
+                        $usermodel->referal_code = $this->generateUserName();
                         $usermodel->reference_code = $request->referral_code;
                     }
+
+                    if($request->team_name){
+                        $usermodel->team_name = $request->team_name;
+                        $usermodel->user_name = $request->team_name;
+                    }else{
+                        if($usermodel->team_name){
+                           $usermodel->user_name = $usermodel->team_name; 
+                        }else{
+                            $usermodel->user_name = $request->referral_code;
+                        }
+                    }
+
                     $usermodel->save();
                     $status = true;
                     $code = 200;
@@ -1170,7 +1236,9 @@ class UserController extends BaseController
                     }
 
                     $user = new User;
-
+                    if($request->team_name){
+                        $user->team_name = $request->team_name;
+                    }
                     $user->name          = $request->name;
                     $user->email         = $request->get('email');
                     $user->role_type     = 3;//$request->input('role_type'); ;
@@ -1184,8 +1252,16 @@ class UserController extends BaseController
                     $user->email_verified_at = 1;
                     $user->save() ;
                     
-                    //$this->generateOtp($request);
+                    $request->merge(['user_id'=>$user->id,'mobile_number'=>$user->mobile_number]);
+                    
+                    $this->generateOtp($request);
+
                     if($user->id){
+                        if($request->referal_code){
+                            $this->saveReferral($request,$user);    
+                        }
+                        
+
                         $wallet = new Wallet;
                         $wallet->user_id = $user->id;
                         $wallet->validate_user = Hash::make($user->id);
@@ -1337,7 +1413,7 @@ class UserController extends BaseController
                 "code"=>$code,
                 "message"=> $message ,
                 'data'=> $data,
-                'token' => $token
+                'token' => $token??Hash::make(1)
             ]);
         }else{
             return response()->json([
