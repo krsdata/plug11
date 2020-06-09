@@ -1085,13 +1085,24 @@ class UserController extends BaseController
                      // dd($user->mobile_number); 
                      $usermodel = User::where('email',$request->email)->first();
                    $usermodel->name = $request->name??$user->name;
+                   /*if($request->mobile_number){
+                        if(!is_numeric($request->mobile_number) || strlen($request->mobile_number)!=10){
+                            $data['mobile_number'] = null;
+                            return array(
+                                'status' => true,
+                                'code' => 200,
+                                'message' => $request->mobile_number .' mobile number is invalid',
+                                'data' => $data
+                                ); 
+                        }
+                   }*/
                    $usermodel->mobile_number = $request->mobile_number??$user->name;
                    $usermodel->profile_image = $request->profile_image??$user->profile_image;
                    
                     if(empty($user->name) || empty($user->mobile_number)){
                         
                         if(empty($user->mobile_number) && $request->mobile_number==null){
-                                return array(
+                        return array(
                             'status' => true,
                             'code' => 200,
                             'message' => 'Something went wrong',
@@ -1109,6 +1120,7 @@ class UserController extends BaseController
                         
                        
                     }elseif($user->is_account_verified==0){
+                        $this->generateOtp($request);
                         return array(
                             'status' => true,
                             'code' => 200,
