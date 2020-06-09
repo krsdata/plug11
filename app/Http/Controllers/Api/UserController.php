@@ -728,7 +728,7 @@ class UserController extends BaseController
         $input = $request->all();
         // print_r ($input);
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
+            'email' => 'email',
             'user_type' => 'required'
         ]);
         if ($validator->fails()) {
@@ -918,15 +918,20 @@ class UserController extends BaseController
                 break;
 
             default:
+                $mobile_number = $request->get('mobile_number');
+                $mobile_login = User::where('mobile_number',$mobile_number)
+                                ->first();
+                $email =   $mobile_login->email??null;
+                $email_id =  $email??$request->get('email');
+
                 $credentials = [
-                    'email'     =>$request->get('email'),
+                    'email'     =>$email_id,
                     'password'  =>$request->get('password'),
                     'status'    => 1
                 ];
-
                 $auth = Auth::attempt($credentials);
 
-                if ($auth ){
+                if ($auth){
                     $usermodel = Auth::user();
                     $request->merge(['user_id'=>$usermodel->id]);
                     if($usermodel->is_account_verified==0){
