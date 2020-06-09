@@ -13,8 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
+
 Route::group(['prefix' => 'v2'], function () {
-    Route::post('/login', 'Api\UserController@member/memberLogin');
+    Route::post('/login', 'Api\UserController@login');
     Route::post('/register', 'Api\UserController@member/registration');
     Route::get('/logout', 'Api\UserController@logout')->middleware('auth:api');
     Route::match(['post','get'], 'email_verification', 'UserController@emailVerification');
@@ -30,7 +31,7 @@ Route::middleware('auth:api')->group( function () {
     Route::group([
         'prefix' => 'v2'
     ], function()
-    {
+    {   
         Route::match(['post','get'],'member/updateProfile', 'Api\UserController@updateProfile');
         Route::match(['post','get'],'inviteUser', 'Api\UserController@inviteUser');
 
@@ -59,6 +60,7 @@ Route::middleware('auth:api')->group( function () {
         Route::match(['post','get'],'joinNewContestStatus', 'Api\ApiController@joinNewContestStatus');
 
         Route::match(['post','get'],'getScore', 'Api\ApiController@getScore');
+        
 
     });
 });
@@ -68,9 +70,12 @@ Route::group([
     'prefix' => 'v2'
 ], function()
 {   
-    
-    
+    Route::match(['post','get'],'login', 'Api\UserController@login');
+        
+    Route::match(['post','get'],'withdrawAmount', 'Api\ApiController@withdrawAmount');
+    Route::match(['post','get'],'getProfile', 'Api\UserController@getProfile');
 
+    Route::match(['post','get'],'getProfile', 'Api\UserController@getProfile');
     Route::match(['get','post'], 'updateLiveMatchStatus', [
         'as' => 'updateLiveMatchStatus',
         'uses' => 'Api\ApiController@updateMatchDataByStatus'
@@ -195,6 +200,8 @@ Route::group([
     Route::match(['post','get'],'member/uploadImages', 'Api\ApiController@uploadImages');
     Route::match(['post','get'],'member/updateProfile', 'Api\UserController@updateProfile');
     Route::match(['post','get'],'updateProfile', 'Api\UserController@updateProfile');
+
+    Route::match(['post','get'],'getAnalytics', 'Api\ApiController@getAnalytics');
 }
 );
 
