@@ -11,6 +11,11 @@
 |
 */
 
+Route::get('apkDownload',function(){
+   return \Response::download('public/upload/apk/sportsfight.apk'); 
+});
+
+
 Route::get('chart-line', 'ChartController@chartLine');
 Route::get('chart-line-ajax', 'ChartController@chartLineAjax');
 Route::get('charts', 'ChartController@index');
