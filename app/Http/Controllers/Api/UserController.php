@@ -1135,7 +1135,7 @@ class UserController extends BaseController
                     $data['email'] = $user->email??$request->email;
                     $data['user_id'] = $user->id;
                     $data['profile_image'] = $user->profile_image;
-                    $data['mobile_number'] = $user->mobile_number??$request->mobile_number;
+                    $data['mobile_number'] = $request->mobile_number??$user->mobile_number;
                     $data['otpverified'] = $user->is_account_verified?true:false;
                      // dd($user->mobile_number); 
                      $usermodel = User::where('email',$request->email)->first();
