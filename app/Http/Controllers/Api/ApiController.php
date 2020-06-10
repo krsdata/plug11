@@ -2965,7 +2965,7 @@ class ApiController extends BaseController
             );
         }
 
-        //Log::channel('before_join_contest')->info($request->all());
+        Log::channel('before_join_contest')->info($request->all());
 
         $check_join_contest = \DB::table('join_contests')
             ->whereIn('created_team_id',$created_team_id)
@@ -3010,7 +3010,7 @@ class ApiController extends BaseController
 
             ];
         }
-
+        
         $data = [];
         $cont = [];
 
@@ -3023,13 +3023,41 @@ class ApiController extends BaseController
                 \DB::beginTransaction();
                 
                 $is_full = CreateContest::find($contest_id);
-                if($is_full->total_spots>0  && ($is_full->total_spots==$is_full->filled_spot)){
+                if($is_full==null){
+                    return [
+                        'status'=>false,
+                        'code' => 201,
+                        'message' => 'invalid contest'
+                    ];
+                }
+                if($is_full && $is_full->total_spots>0  && ($is_full->total_spots==$is_full->filled_spot)){
                     return [
                         'status'=>false,
                         'code' => 201,
                         'message' => 'This Contest is already full'
                     ];
                 }
+                // free contest validation, if more than two team 
+                $check_max_contest = \DB::table('join_contests')
+                        ->where('match_id',$match_id)
+                        ->where('user_id',$user_id)
+                        ->where('contest_id',$contest_id)
+                        ->count(); 
+
+                if(
+                    isset($check_max_contest) 
+                    && $check_max_contest>=2 
+                    && $is_full->entry_fees==0
+                ){
+
+                    return [
+                        'status'=>false,
+                        'code' => 201,
+                        'message' => 'Only two teams are allowed in free contest'
+                    ];
+                }
+
+                
 
                 $check_join_contest = \DB::table('join_contests')
                     ->where('created_team_id',$ct_id)
@@ -4548,7 +4576,7 @@ class ApiController extends BaseController
         
         $match_id = $contest->pluck('match_id')->toArray();
         $match = Matches::whereIn('match_id',$match_id)->where('status',1)->get(['match_id']);
-        
+
         $match->transform(function($item,$key)use($contest){
             $contest_copy = $contest->where('match_id',$item->match_id)->first();
 
