@@ -1395,7 +1395,7 @@ class UserController extends BaseController
         if($usermodel){ 
             $wallet  = Wallet::where('user_id',$usermodel->id)->first();
             if($wallet!=null){
-                $data['referal_code']  = $usermodel->user_name;
+                $data['referal_code']  = $usermodel->referal_code;
                 $data['name'] = $usermodel->name;
                 $data['email'] = $usermodel->email;
                 $data['profile_image'] = isset($usermodel->profile_image)?$usermodel->profile_image:"https://image";
