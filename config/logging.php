@@ -68,6 +68,20 @@ return [
             'days' => 7,
         ], 
 
+         'before_getMatch' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/before_getMatch.log'),
+            'level' => 'debug',
+            'days' => 7,
+        ], 
+
+         'after_getMatch' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/after_getMatch.log'),
+            'level' => 'debug',
+            'days' => 7,
+        ], 
+
          'before_create_team' => [
             'driver' => 'daily',
             'path' => storage_path('logs/before_create_team/before_create_team.log'),
