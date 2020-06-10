@@ -2372,6 +2372,8 @@ class ApiController extends BaseController
 
     // get Match by status and all
     public function getMatch(Request $request){
+        Log::channel('before_getMatch')->info($request->all());
+        
         $user = $request->user_id;
         $banner = \DB::table('banners')->select('title','url','actiontype')->get();
         $join_contests =  \DB::table('join_contests')->where('user_id',$user)->get('match_id');
@@ -2507,8 +2509,8 @@ class ApiController extends BaseController
 
         $data['matchdata'][] = ['viewType'=>2,'banners'=>$banner];
         $data['matchdata'][] = ['viewType'=>3,'upcomingmatches'=>$match];
-
-
+        
+        Log::channel('after_getMatch')->info($request->all());
         return ['total_result'=>count($match),'status'=>true,'code'=>200,'message'=>'success','system_time'=>time(),'response'=>$data];
     }
 
