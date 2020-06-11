@@ -1366,7 +1366,7 @@ class ApiController extends BaseController
         $contest = CreateContest::with('contestType')
             ->where('match_id',$match_id)
             ->where('is_cancelled',0)
-            ->orderBy('sort_by','DESC')
+            ->orderBy('sort_by','asc')
            // ->orderBy('id','DESC')
             ->orderBy('total_winning_prize','DESC')
             ->get();
