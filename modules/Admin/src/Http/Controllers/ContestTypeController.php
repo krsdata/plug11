@@ -105,7 +105,10 @@ class ContestTypeController extends Controller {
     {   
         $contestType->fill(Input::all()); 
         $contestType->save();   
-         
+        
+        \DB::table('create_contests')->where('contest_type',$contestType->id)
+                ->update(['sort_by'=>$contestType->sort_by]);
+
         return Redirect::to(route('contestType'))
                             ->with('flash_alert_notice', 'New Contest Type  successfully created!');
     }
@@ -121,13 +124,17 @@ class ContestTypeController extends Controller {
         $page_title     = 'Contest Type';
         $page_action    = 'Edit Contest Type'; 
         
-        return view('packages::contestType.edit', compact('contestType','status', 'page_title', 'page_action'));
+        return view('packages::contestType.edit', compact('contestType', 'page_title', 'page_action'));
     }
 
-    public function update(ContestTypeRequest $request, $id) {
+    public function update(Request $request, $id) {
         $contestType = ContestType::find($id);
         $contestType->fill(Input::all()); 
         $contestType->save(); 
+
+        \DB::table('create_contests')->where('contest_type',$contestType->id)
+                ->update(['sort_by'=>$contestType->sort_by]);
+
         return Redirect::to(route('contestType'))
                         ->with('flash_alert_notice', 'Contest Type  successfully updated.');
     }

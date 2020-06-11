@@ -1366,9 +1366,11 @@ class ApiController extends BaseController
         $contest = CreateContest::with('contestType')
             ->where('match_id',$match_id)
             ->where('is_cancelled',0)
-            ->orderBy('contest_type','ASC')
+            ->orderBy('sort_by','DESC')
+           // ->orderBy('id','DESC')
             ->orderBy('total_winning_prize','DESC')
             ->get();
+            return $contest;
         if($contest){
             $matchcontests = [];
             foreach ($contest as $key => $result) {
@@ -1417,26 +1419,31 @@ class ApiController extends BaseController
 
                 $data2['winnerPercentage'] = $result->winner_percentage;
                 $data2['maxAllowedTeam'] =   $result->contestType->max_entries;
+               // $data2['sort_by'] =   $result->sort_by;
+                
                 $data2['cancellation'] = $result->cancellation;
                 $matchcontests[$result->contest_type][] = [
+                    'sort_by' => $result->sort_by,
                     'contestTitle'=>$result->contestType->contest_type,
                     'contestSubTitle'=>$result->contestType->description,
                     'contests'=>$data2
                 ];
             }
-           // $data = [];
+            // $data = [];
             $data[0] = null;
             foreach ($matchcontests as $key => $value) {
 
                 foreach ($value as $key2 => $value2) {
+                    //$value2['contests']['sort_by']
                     $k['contestTitle'] = $value2['contestTitle'];
                     $k['contestSubTitle'] = $value2['contestSubTitle'];
                     $k['contests'][] = $value2['contests'];
                 }
+                $data[] = $k;
                 if($k['contestTitle']=='Practise Contest'){
-                    $data[0] = $k;
+                   // $data[0] = $k;
                 }else{
-                   $data[] = $k;
+                  // $data[] = $k;
                 }
                 $k = [];
             }
