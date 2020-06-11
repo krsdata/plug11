@@ -174,9 +174,24 @@ class DefaultContestController extends Controller {
                     $to     = $request->rank_upto;
                     $prize  = $request->prize_amount;
                     $prize_break_id = $request->prize_break_id;
+
+                    $pb = PrizeBreakups::where('default_contest_id',$request->default_contest_id)->pluck('id')->toArray();
+                    
+                    if(count($pb)  > count($request->prize_break_id))
+                    {
+                      foreach ($pb as $key => $id) {
+                        if(!in_array($id, $prize_break_id)){
+                            PrizeBreakups::where('id',$id)
+                                       ->delete();
+                        }
+                      }
+                    }  
+                    
                     foreach ($request->rank_from as $key => $value) {
-                       
-                        PrizeBreakups::updateOrCreate(
+                      if($prize[$key]==null){
+                           continue;
+                      } 
+                      PrizeBreakups::updateOrCreate(
                             [
                                'default_contest_id'  => $request->default_contest_id,
                                'contest_type_id'   => $request->contest_type_id,
@@ -190,11 +205,14 @@ class DefaultContestController extends Controller {
                                'prize_amount' =>  $prize[$key],
                                'match_id'  => $request->match_id
                             ]);
+
                     } 
 
                   }
 
-                return Redirect::to(route('defaultContest'))
+                $url = Url::previous();
+                  
+                return Redirect::to($url)
                         ->with('flash_alert_notice', 'Prize Breakups successfully updated.');
 
 
@@ -237,15 +255,15 @@ class DefaultContestController extends Controller {
      * 
      */
     public function destroy($id) { 
-        
+
         DefaultContest::where('id',$id)->delete();
-        $del = date(now());
         $contest = \DB::table('create_contests')
                     ->where('default_contest_id',$id)
                     ->where('filled_spot',0)
-                    ->orwhere('filled_spot',null)
-                    ->orwhere('filled_spot',"")
-                    ->delete();
+                    ->update([
+                        'deleted_at'=>date('Y-m-d h:i'),
+                        'is_cancelled'=>1
+                      ]);
 
         return Redirect::to(route('defaultContest'))
                         ->with('flash_alert_notice', 'Contest successfully deleted.');
