@@ -1370,7 +1370,7 @@ class ApiController extends BaseController
            // ->orderBy('id','DESC')
             ->orderBy('total_winning_prize','DESC')
             ->get();
-            return $contest;
+           // return $contest;
         if($contest){
             $matchcontests = [];
             foreach ($contest as $key => $result) {
