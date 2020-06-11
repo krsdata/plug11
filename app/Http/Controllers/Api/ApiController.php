@@ -3053,16 +3053,18 @@ class ApiController extends BaseController
                         ->where('contest_id',$contest_id)
                         ->count(); 
 
+                $contestT = CreateContest::find($contest_id);
+                $contestTyp = \DB::table('contest_types')->where('id',$contestT->contest_type)->first();
                 if(
                     isset($check_max_contest) 
                     && $check_max_contest>=2 
-                    && $is_full->entry_fees==0
+                    && $is_full->entry_fees==0 || $check_max_contest>=$contestTyp->max_entries
                 ){
 
                     return [
                         'status'=>false,
                         'code' => 201,
-                        'message' => 'Only two teams are allowed in free contest'
+                        'message' => "Only $contestTyp->max_entries teams are allowed"
                     ];
                 }
 
