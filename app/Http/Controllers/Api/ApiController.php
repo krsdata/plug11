@@ -3064,6 +3064,7 @@ class ApiController extends BaseController
                 if(
                     isset($check_max_contest) 
                     && $check_max_contest>=$contestTyp->max_entries
+                    || isset($request->created_team_id) && count($request->created_team_id) >=$contestTyp->max_entries
                 ){
 
                     return [
