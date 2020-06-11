@@ -33,7 +33,13 @@
                                 </div>
                                 <div class="portlet-body">
                                     <!-- BEGIN FORM-->
-                                
+                                     @if(Session::has('flash_alert_notice'))
+                                         <div class="alert alert-success alert-dismissable" style="margin:10px">
+                                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                                          <i class="icon fa fa-check"></i>  
+                                         {{ Session::get('flash_alert_notice') }} 
+                                         </div>
+                                    @endif
                                  
 
                                    {!! Form::model($defaultContest, ['method' => 'PATCH', 'route' => ['defaultContest.update', $defaultContest->id],'class'=>'form-horizontal user-form','id'=>'form_sample_3','enctype'=>'multipart/form-data']) !!}
