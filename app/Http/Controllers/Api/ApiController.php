@@ -3055,10 +3055,15 @@ class ApiController extends BaseController
 
                 $contestT = CreateContest::find($contest_id);
                 $contestTyp = \DB::table('contest_types')->where('id',$contestT->contest_type)->first();
-                if(
+
+                 /*if(
                     isset($check_max_contest) 
                     && $check_max_contest>=2 
                     && $is_full->entry_fees==0 || $check_max_contest>=$contestTyp->max_entries
+                )*/
+                if(
+                    isset($check_max_contest) 
+                    && $check_max_contest>=$contestTyp->max_entries
                 ){
 
                     return [
