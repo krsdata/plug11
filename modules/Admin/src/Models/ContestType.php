@@ -40,7 +40,7 @@ class ContestType extends Model {
      *
      * @var array
      */
-    protected $fillable = ['contest_type','description','max_entries','cancellable'];  // All field of user table here    
+    protected $fillable = ['contest_type','description','max_entries','cancellable','sort_by'];  // All field of user table here    
 
     
     

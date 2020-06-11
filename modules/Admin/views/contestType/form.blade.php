@@ -41,6 +41,15 @@
                 <span class="help-block">{{ $errors->first('max_entries', ':message') }}</span>
             </div>
         </div> 
+
+        <div class="form-group {{ $errors->first('sort_by', ' has-error') }}">
+            <label class="control-label col-md-3">Sort By </label>
+            <div class="col-md-4"> 
+                {!! Form::text('sort_by',null, ['class' => 'form-control'])  !!} 
+                
+                <span class="help-block">{{ $errors->first('sort_by', ':message') }}</span>
+            </div>
+        </div> 
         
 
     

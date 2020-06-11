@@ -66,7 +66,7 @@
                                                 <th> Max  Entry </th> 
 						<th> Description  </th> 
                                                  <th> Cancellable  </th> 
- 						<th>   </th> 
+ 						<th> Sorted</th> 
                                                 <th> date</th> 
                                                 <th>Action</th> 
                                             </tr>
@@ -79,6 +79,7 @@
                                                  <td> {{$result->max_entries}} </td>
 <td>{{ $result->description}}</td>
                                                  <td> {{$result->cancellable}} </td>
+                                                 <td> {{$result->sort_by??0}} </td>
                                                     <td>  <a href="{{ route('contestType.show',$result->id)}}">
                                                             <i class="fa fa-eye" title="details"></i> 
                                                         </a> </td> 

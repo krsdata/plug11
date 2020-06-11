@@ -125,10 +125,14 @@ class DefaultContestController extends Controller {
         }else{
             $match  = Matches::where('status',1)->get('match_id');
         }
+        $sort_by = \DB::table('contest_types')->where('id',$request->contest_type)->first()->sort_by??0;
+        $request->merge(['sort_by'=>$sort_by]);
         $request->merge(['filled_spot' => 0]);
         foreach ($match as $key => $result) {
+
             $request->merge(['match_id' => $result->match_id]);
             $request->merge(['default_contest_id' => $default_contest_id]);
+
             \DB::table('create_contests')->insert($request->except('_token'));
         }
          
@@ -239,6 +243,9 @@ class DefaultContestController extends Controller {
 
             $request->merge(['match_id' => $result->match_id]);
             $request->merge(['default_contest_id' => $default_contest_id]);
+
+            $sort_by = \DB::table('contest_types')->where('id',$request->contest_type)->first()->sort_by??0;
+            $request->merge(['sort_by'=>$sort_by]);
 
             \DB::table('create_contests')
                     ->where('default_contest_id',$default_contest_id)
