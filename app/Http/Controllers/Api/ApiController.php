@@ -3704,7 +3704,6 @@ class ApiController extends BaseController
         $myArr = [];
         $user = User::find($request->user_id);
 
-
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
             'deposit_amount' => 'required',
@@ -4209,8 +4208,7 @@ class ApiController extends BaseController
     }
 
     public function notifyToAdmin(){
-
-        $user_email = [env('admin1_email','manoj.i.prasad@gmail.com'),env('admin2_email','kroy.aws@gmail.com'),env('admin3_email','saxena.sweekar@gmail.com')];
+        $user_email = [env('admin1_email','manoj.i.prasad@gmail.com'),env('admin2_email','kroy.aws@gmail.com')];
 
         $user = User::whereIn('email',$user_email)->get();
         foreach ($user as $key => $result) {
@@ -4622,24 +4620,31 @@ class ApiController extends BaseController
 
     public function isLineUp(Request $request){
 
-        $matches = Matches::where('status',1)
+        $matches = Matches::whereIn('status',[1,3])
                    ->whereDate('date_start',\Carbon\Carbon::today())
                         ->get()
                         ->transform(function($item,$key){
                             
+                            $t1 = $item->timestamp_start;
+                            $t2 = time();
+                            //time diff
+                            $td = round((($t1 - $t2)/60),2);    
+
+                            if($td<=5){
+                               // $this->matchAutoCancel($item->match_id);
+                            }
+                           // dd($item->match_id);
                             $lineup = \DB::table('team_a_squads')->where('match_id',$item->match_id)
                                 ->where('playing11',"true")->count();
-
-                            if($lineup){
-                                $this->matchAutoCancel();
-                                $user_id = \DB::table('create_teams')->where('match_id',$item->match_id)
-                                    ->pluck('user_id')->toArray();
-                                $device_id = User::whereIn('id',$user_id)->pluck('device_id')->toArray();
-
+                            
+                            if($lineup || $td > 0 && $td%5==0){ 
+                                   
+                                $device_id = User::whereNotNull('device_id')->pluck('device_id')->toArray();
+                                
                                 $data = [
                                     'action' => 'notify' ,
-                                    'title' => $item->title . 'is lineup' ,
-                                    'message' => 'Hurry up!!. Join or edit your team.'
+                                    'title' => $item->short_title,
+                                    'message' => 'Lined up out. Create, Join or edit  your team.'
                                 ];
                                 $this->sendNotification($device_id, $data);
                                 return $item; 
@@ -4653,37 +4658,52 @@ class ApiController extends BaseController
     /*Match auto cancel if not filled*/
     public function matchAutoCancel(){
 
-        $cancel_match = Matches::where('status',1)
+        $cancel_match = Matches::whereIn('status',[1,3])
                        ->whereDate('date_start',\Carbon\Carbon::today())
                        ->get()
                         ->transform(function($item,$key){
-                           
-                            $contests = \DB::table('create_contests')
-                                        ->where('match_id',$item->match_id)
+
+                            $t1 = $item->timestamp_start;
+                            $t2 = time();
+                            //time diff
+                            $td = round((($t1 - $t2)/60),2);    
+                       // if(1){    
+                        if($td > 0 && $td<=5){
+                            $contests = CreateContest::where('match_id',$item->match_id)
                                         ->where('total_spots','>',0)
+                                        ->where('is_cancelled',0)
                                         ->get()
                                         ->transform(function($item,$key){
+                                           
                                     $total_winning_prize = $item->total_winning_prize;
                                     $total_amount_recvd = $item->filled_spot*$item->entry_fees;
                                     //if($item->entry_fees!=0 && $total_winning_prize < $total_amount_recvd){
-                                    if($item->entry_fees!=0 && $total_winning_prize > $total_amount_recvd && $item->total_winning_prize!=0){
+                                   // dd($item->entry_fees);
+                                    if($item->entry_fees!=0 && $total_winning_prize > $total_amount_recvd && $item->total_winning_prize!=0
+                                        && $item->entry_fees!=5){
 
                                         $match_id = $item->match_id;
                                         $contest_id = $item->id;
                                         $c =$this->cancelContest($match_id,$contest_id);
-                                        
                                     }
-                                    
-                                });
-                        });
- 
-       return ['Contest Cancelled successfully']; 
+                            });
+                            $item->total_cancel = $contests->count();
+                        }
+                        return $item;
+                    });
+        $c = $cancel_match->first();
+        if($c){
+            return [$c->total_cancel??0 .' Contest is Cancelled successfully']; 
+        }else{
+            return ['No Contest Cancelled successfully']; 
+        }
+       
     }
 
     public function cancelContest($match_id=null,$contest_id=null){
          
         $request = new Request;
-
+        
         if($match_id && $contest_id){
             $JoinContest = JoinContest::whereHas('user')->with('contest')
                         ->where('match_id',$match_id)
@@ -4691,8 +4711,9 @@ class ApiController extends BaseController
                         ->get()
                         ->transform(function($item,$key){
                         $cancel_contest = CreateContest::find($item->contest_id);
-                        if($cancel_contest->is_cancelled==0){
-                            
+                       
+                        if($item->cancel_contest==0){
+                            \DB::beginTransaction();  
                             $cancel_contest->is_cancelled = 1;
                             $cancel_contest->save();
 
@@ -4730,8 +4751,8 @@ class ApiController extends BaseController
                                 $wallet->save();
                             }
 
-                            \DB::commit();
-                            
+                            \DB::commit();  
+
                             $item->cancel_message = 'Contest Cancelled' ;
                             return $item;
                         }else{
@@ -4751,7 +4772,40 @@ class ApiController extends BaseController
            return  ['Selected contest is cancelled'];
 
         }
-        return ['Match Contest Cancelled successfully'];
+
+        
+        $match      = Matches::where('match_id',$match_id)->first();
+        $contest    = CreateContest::find($contest_id);
+
+        $join_contest_user = JoinContest::where('match_id',$match_id)
+                            ->where('contest_id',$contest_id)
+                            ->where('cancel_contest',0)
+                            ->pluck('user_id')
+                            ->toArray();
+                           
+        $device_id  = User::whereIn('id',$join_contest_user)
+                        ->pluck('device_id')
+                        ->toArray();
+
+        $data = [
+                    'action' => 'notify' ,
+                    'title' => "Contest Cancel | $match->short_title" ,
+                    'message' => $match->short_title. " Contest of  $contest->entry_fees Rupess entry is cancelled"
+                ];
+                
+        $this->sendNotification($device_id, $data);
+
+        $JoinContest = JoinContest::where('match_id',$match_id)
+                        ->where('contest_id',$contest_id)
+                        ->get()
+                        ->transform(function($item,$key){
+
+                            $cancel_contest = JoinContest::find($item->id);
+                            $cancel_contest->cancel_contest=1;
+                            $cancel_contest->save(); 
+                        });
+
+        return [$JoinContest->count() . ' Contest Cancelled successfully'];
         }else{
             return ['No Contest selected for cancellation']; 
         }
