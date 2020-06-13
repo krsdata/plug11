@@ -3264,7 +3264,7 @@ class ApiController extends BaseController
             ->whereIn('id',$join_contests)
             ->orderBy('sort_by','ASC')
             ->get();
-            
+
 
         if($contest){
             $matchcontests = [];
@@ -4590,12 +4590,12 @@ class ApiController extends BaseController
     public function automateCreateContest(){
 
         $contest = CreateContest::whereColumn('total_spots','filled_spot')
-            ->where('total_spots','!=',0)
-            ->where('is_cloned','!=',1)
+            ->where('total_spots','>',50)
+           /* ->where('is_cloned','!=',1)
             ->where('total_spots','>',20)
             ->where('total_spots','!=',3)
             ->where('total_spots','!=',5)
-            ->where('total_spots','!=',2)
+            ->where('total_spots','!=',2)*/
             ->get();
         //->where('entry_fees','>',0)
         $match_id = $contest->pluck('match_id')->toArray();
