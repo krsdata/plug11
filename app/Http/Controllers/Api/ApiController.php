@@ -2397,7 +2397,9 @@ class ApiController extends BaseController
             foreach ($created_team as $match_id => $join_contest) {
 
                 # code...
-                $jmatches = Matches::with('teama','teamb')->where('match_id',$match_id)->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','game_state','game_state_str','current_status','competition_id')->first();
+                $jmatches = Matches::with('teama','teamb')->where('match_id',$match_id)->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','game_state','game_state_str','current_status','competition_id')
+                    ->orderBy('status','DESC')
+                    ->first();
                 //dd($jmatches);
                 $join_match = $jmatches;
                 $league_title = \DB::table('competitions')->where('id',$jmatches->competition_id)->first()->title??null;
