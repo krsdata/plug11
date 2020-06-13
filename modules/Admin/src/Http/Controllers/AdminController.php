@@ -15,6 +15,16 @@ use App\Helpers\Helper as Helper;
 //use Modules\Admin\Models\User; 
 use Modules\Admin\Models\Category;
 use App\Models\Matches;
+use App\Models\Player;
+use App\Models\TeamASquad;
+use App\Models\TeamBSquad;
+use App\Models\CreateContest;
+use App\Models\CreateTeam;
+use App\Models\Wallet;
+use App\Models\JoinContest;
+use App\Models\WalletTransaction;
+use App\Models\MatchPoint;
+use App\Models\PrizeDistribution;
 use App\Admin;
 use Illuminate\Http\Request;
 use App\User;
@@ -61,12 +71,27 @@ class AdminController extends Controller {
         $match_1 = Matches::where('status',1)->count();
         $match_2 = Matches::where('status',2)->count();
         $match_3 = Matches::where('status',3)->count();
+
+        $deposit = WalletTransaction::where('payment_type_string','Deposit')->sum('amount');
+        $prize = WalletTransaction::where('payment_type_string','prize')->sum('amount');
+
+        $refunded = WalletTransaction::where('payment_type_string','Refunded')->sum('amount');
+        $referral = WalletTransaction::where('payment_type_string','referral')->sum('amount');
+
+        $today_deposit = WalletTransaction::where('payment_type_string','Deposit')
+            ->whereDate('created_at',\Carbon\Carbon::today())
+            ->sum('amount');
+
+        $create_count = CreateTeam::count();
+
+        $joinContest_count = JoinContest::count(); 
+       // dd($create_count);
         $match = Matches::count();
 
         $contest_types = \DB::table('contest_types')->count();
         $banner = \DB::table('banners')->count();
 
-        return view('packages::dashboard.index',compact('category_count','users_count','category_grp_count','page_title','page_action','viewPage','match_1','match_2','match_3','match','contest_types','banner'));
+        return view('packages::dashboard.index',compact('joinContest_count','create_count','today_deposit','category_count','users_count','category_grp_count','page_title','page_action','viewPage','match_1','match_2','match_3','match','contest_types','banner','deposit','prize','refunded','referral'));
     }
 
    public function profile(Request $request,Admin $users)

@@ -67,14 +67,15 @@ class NotificationController extends Controller {
 
             $search = isset($search) ? Input::get('search') : '';
                
-            $notification = Notification::where(function($query) use($search,$status) {
+            $notification = Notification::orderBy('id','desc')
+            ->where(function($query) use($search,$status) {
                         if (!empty($search)) {
                             $query->Where('title', 'LIKE', "%$search%");
                         }
                         
                     })->where('notified_user',1)->Paginate($this->record_per_page);
         } else {
-            $notification = Notification::where('notified_user',1)->Paginate($this->record_per_page);
+            $notification = Notification::orderBy('id','desc')->where('notified_user',1)->Paginate($this->record_per_page);
         }
          
         return view('packages::notification.index', compact('notification','page_title', 'page_action','sub_page_title'));

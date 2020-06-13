@@ -85,18 +85,18 @@
                                 <div class="display">
                                     <div class="number">
                                         <h3 class="font-blue-sharp">
-                                            <span data-counter="counterup" data-value="567">{{$contest_types or 0 }}</span>
+                                            <span data-counter="counterup" data-value="567">{{$create_count}}</span>
                                         </h3>
-                                        <small> Total Content Type  </small>
+                                        <small> Total Team Created  </small>
                                     </div>
                                     <div class="icon">
                                         <i class="fa fa-folder-open-o"></i>
                                     </div>
-                                </div> 
+                                </div>
                                 <div class="progress-info">
                                     <div class="progress">
-                                        <span style="width: {{$contest_types}}%;" class="progress-bar progress-bar-success blue-sharp">
-                                            <span class="sr-only">{{$contest_types}}% grow</span>
+                                        <span style="width: {{$create_count}}%;" class="progress-bar progress-bar-success blue-sharp">
+                                            <span class="sr-only">{{$create_count}}% grow</span>
                                         </span>
                                     </div>
                                     
@@ -108,9 +108,9 @@
                                 <div class="display">
                                     <div class="number">
                                         <h3 class="font-blue-sharp">
-                                            <span data-counter="counterup" data-value="567">{{$banner or 0 }}</span>
+                                            <span data-counter="counterup" data-value="567">{{$joinContest_count }}</span>
                                         </h3>
-                                        <small> Banners </small>
+                                        <small> Total Join Contest </small>
                                     </div>
                                     <div class="icon">
                                         <i class="fa fa-folder-open-o"></i>
@@ -118,8 +118,10 @@
                                 </div> 
                                 <div class="progress-info">
                                     <div class="progress">
-                                        <span style="width: {{$banner}}%;" class="progress-bar progress-bar-success blue-sharp">
-                                            <span class="sr-only">{{$banner}}% grow</span>
+                                        <span style="width: {{
+                                            $joinContest_count
+                                        }}%;" class="progress-bar progress-bar-success blue-sharp">
+                                            <span class="sr-only">{{$joinContest_count}}% grow</span>
                                         </span>
                                     </div>
                                     
@@ -176,7 +178,7 @@
                             </div>
                         </div>
 
-                         <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
                             <div class="dashboard-stat2 bordered">
                                 <div class="display">
                                     <div class="number">
@@ -193,6 +195,129 @@
                                     <div class="progress">
                                         <span style="width: {{$match_1}}%;" class="progress-bar progress-bar-success blue-sharp">
                                             <span class="sr-only">{{$match_3}}% grow</span>
+                                        </span>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class="dashboard-stat2 bordered">
+                                <div class="display">
+                                    <div class="number">
+                                        <h3 class="font-blue-sharp">
+                                            <span data-counter="counterup" data-value="567">{{$deposit}} INR  </span>
+                                        </h3>
+                                        <small> Total Deposit </small>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fa fa-folder-open-o"></i>
+                                    </div>
+                                </div>
+                                <div class="progress-info">
+                                    <div class="progress">
+                                        <span style="width: {{$deposit}}%;" class="progress-bar progress-bar-success blue-sharp">
+                                            <span class="sr-only">{{$deposit}}% grow</span>
+                                        </span>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class="dashboard-stat2 bordered">
+                                <div class="display">
+                                    <div class="number">
+                                        <h3 class="font-blue-sharp">
+                                            <span data-counter="counterup" data-value="567">{{$prize}} INR  </span>
+                                        </h3>
+                                        <small> Total Prize Distributed</small>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fa fa-folder-open-o"></i>
+                                    </div>
+                                </div>
+                                <div class="progress-info">
+                                    <div class="progress">
+                                        <span style="width: {{$prize}}%;" class="progress-bar progress-bar-success blue-sharp">
+                                            <span class="sr-only">{{$prize}}% grow</span>
+                                        </span>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class="dashboard-stat2 bordered">
+                                <div class="display">
+                                    <div class="number">
+                                        <h3 class="font-blue-sharp">
+                                            <span data-counter="counterup" data-value="567">{{$refunded}} INR  </span>
+                                        </h3>
+                                        <small> Total Refunded </small>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fa fa-folder-open-o"></i>
+                                    </div>
+                                </div>
+                                <div class="progress-info">
+                                    <div class="progress">
+                                        <span style="width: {{$refunded}}%;" class="progress-bar progress-bar-success blue-sharp">
+                                            <span class="sr-only">{{$refunded}}% grow</span>
+                                        </span>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class="dashboard-stat2 bordered">
+                                <div class="display">
+                                    <div class="number">
+                                        <h3 class="font-blue-sharp">
+                                            <span data-counter="counterup" data-value="567">{{$referral}} INR  </span>
+                                        </h3>
+                                        <small> Total Referral </small>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fa fa-folder-open-o"></i>
+                                    </div>
+                                </div>
+                                <div class="progress-info">
+                                    <div class="progress">
+                                        <span style="width: {{$referral}}%;" class="progress-bar progress-bar-success blue-sharp">
+                                            <span class="sr-only">{{$referral}}% grow</span>
+                                        </span>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class="dashboard-stat2 bordered">
+                                <div class="display">
+                                    <div class="number">
+                                        <h3 class="font-blue-sharp">
+                                            <span data-counter="counterup" data-value="567">{{$today_deposit}} INR  </span>
+                                        </h3>
+                                        <small> Total Today Deposit </small>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fa fa-folder-open-o"></i>
+                                    </div>
+                                </div>
+                                <div class="progress-info">
+                                    <div class="progress">
+                                        <span style="width: {{$today_deposit}}%;" class="progress-bar progress-bar-success blue-sharp">
+                                            <span class="sr-only">{{$today_deposit}}% grow</span>
                                         </span>
                                     </div>
                                     

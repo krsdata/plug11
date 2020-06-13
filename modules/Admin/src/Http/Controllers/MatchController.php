@@ -64,7 +64,6 @@ class MatchController extends Controller {
                         ->whereIn('contest_id',$request->cancel_contest)
                         ->get()
                         ->transform(function($item,$key){
-                        
                         $cancel_contest = CreateContest::find($item->contest_id);
                         if($cancel_contest->is_cancelled==0){
                             
@@ -133,6 +132,7 @@ class MatchController extends Controller {
     }
     /*cancelMatch*/
     public function cancelMatch(Request $request){
+        return false;
         $match_id = $request->match_id;
         if($request->match_id){
             $data['status']         = 4;
