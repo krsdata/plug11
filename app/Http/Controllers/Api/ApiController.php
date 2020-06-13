@@ -30,11 +30,11 @@ use App\Models\Wallet;
 use App\Models\JoinContest;
 use App\Models\WalletTransaction;
 use App\Models\MatchPoint;
+use App\Models\PrizeDistribution;
 use App\Models\MatchStat;
 use App\Models\ReferralCode;
 use File;
 use Ixudra\Curl\Facades\Curl;
-use App\Models\PrizeDistribution;
 
 class ApiController extends BaseController
 {
