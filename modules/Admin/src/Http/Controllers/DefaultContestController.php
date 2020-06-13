@@ -169,7 +169,7 @@ class DefaultContestController extends Controller {
         if($request->rank_list){ 
             $action = "rank_list";
         } 
-
+        //dd($request->all());
         switch ($action) {
             case 'prize_break': 
                   if($request->prize_break){
@@ -181,7 +181,7 @@ class DefaultContestController extends Controller {
 
                     $pb = PrizeBreakups::where('default_contest_id',$request->default_contest_id)->pluck('id')->toArray();
                     
-                    if(isset($pb) && count($pb)  > count($request->prize_break_id))
+                    if($prize_break_id && isset($pb) && count($pb)  > count($request->prize_break_id))
                     {
                       foreach ($pb as $key => $id) {
                         if(!in_array($id, $prize_break_id)){
