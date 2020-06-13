@@ -77,7 +77,10 @@
                                         @foreach($defaultContest as $key => $result)
                                             <tr>
                                                 <th>  {{++$key}} </th>
-                                                <td> {{$contest_type[$result->contest_type]}} </td>
+                                                <td> {{$contest_type[$result->contest_type]}}
+                                                    {!!$result->match_id?'<span class="required" aria-required="true"> * </span>':''!!}
+                                                 </td>
+                                                    
                                                 <td> {{$result->entry_fees}} </td>
                                                 <td> {{$result->total_spots}} </td>
                                                 <td> {{$result->first_prize}} </td>
