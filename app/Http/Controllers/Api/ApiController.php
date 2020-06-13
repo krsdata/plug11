@@ -4630,9 +4630,6 @@ class ApiController extends BaseController
                             //time diff
                             $td = round((($t1 - $t2)/60),2);    
 
-                            if($td<=5){
-                               // $this->matchAutoCancel($item->match_id);
-                            }
                            // dd($item->match_id);
                             $lineup = \DB::table('team_a_squads')->where('match_id',$item->match_id)
                                 ->where('playing11',"true")->count();
@@ -4640,11 +4637,11 @@ class ApiController extends BaseController
                             if($lineup || $td > 0 && $td%5==0){ 
                                    
                                 $device_id = User::whereNotNull('device_id')->pluck('device_id')->toArray();
-                                
+                                $td = (int)$td;
                                 $data = [
                                     'action' => 'notify' ,
                                     'title' => $item->short_title,
-                                    'message' => 'Lined up out. Create, Join or edit  your team.'
+                                    'message' => $item->short_title." Lined up and $td minute left. Create, Join or edit  your team"
                                 ];
                                 $this->sendNotification($device_id, $data);
                                 return $item; 
