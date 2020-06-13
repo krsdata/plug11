@@ -57,7 +57,8 @@ class MatchController extends Controller {
     
     /*cancelMatch*/
     public function cancelContest(Request $request){
-        
+        $match_id = $request->match_id;
+        $contest_id = $request->cancel_contest;
         if($request->cancel_contest){
             $JoinContest = JoinContest::whereHas('user')->with('contest')
                         ->where('match_id',$request->match_id)
@@ -65,13 +66,13 @@ class MatchController extends Controller {
                         ->get()
                         ->transform(function($item,$key){
                         $cancel_contest = CreateContest::find($item->contest_id);
-                        if($cancel_contest->is_cancelled==0){
-                            
+                        if($item->cancel_contest==0){
+
+                            \DB::beginTransaction();
                             $cancel_contest->is_cancelled = 1;
                             $cancel_contest->save();
-
-                            if(isset($item->contest) && $item->contest->entry_fees){
-                                
+                            
+                            if(isset($item->contest) && $item->contest->entry_fees){   
                                 $transaction_id = $item->match_id.$item->contest_id.$item->created_team_id.'-'.$item->user_id;
 
                                 $wt =    WalletTransaction::firstOrNew(
@@ -90,7 +91,6 @@ class MatchController extends Controller {
                                 $wt->debit_credit_status = "+";   
                                 $wt->save();
 
-
                                 $wallet = Wallet::firstOrNew(
                                         [
                                            'user_id' => $item->user_id,
@@ -103,9 +103,9 @@ class MatchController extends Controller {
                                 $wallet->deposit_amount = $wallet->amount+$item->contest->entry_fees;
                                 $wallet->save();
                             }
-
+ 
                             \DB::commit();
-                            
+
                             $item->cancel_message = 'Contest Cancelled' ;
                             return $item;
                         }else{
@@ -125,10 +125,90 @@ class MatchController extends Controller {
            return Redirect::to(route('match'))->with('flash_alert_notice', 'Selected contest is cancelled');
 
         }
+
+        $match      = Match::where('match_id',$match_id)->first();
+
+        $contest_count    = CreateContest::whereIn('id',$contest_id)->count();
+        
+        $join_contest_user = JoinContest::where('match_id',$match_id)
+                            ->whereIn('contest_id',$contest_id)
+                            ->where('cancel_contest',0)
+                            ->pluck('user_id')
+                            ->toArray();
+       
+        $device_id  = User::whereIn('id',$join_contest_user)
+                        ->pluck('device_id')
+                        ->toArray();
+       // if contest was joined
+        if(count($join_contest_user)){
+            $data = [
+                    'action' => 'notify' ,
+                    'title' => 'Contest Cancel and amount refunded' ,
+                    'message' => "$contest_count contest has been Cancelled from  $match->title. Due to filled spot was not sufficient."
+                ];
+               
+            $this->sendNotification($device_id, $data);
+        } 
+
+        $JoinContest = JoinContest::where('match_id',$request->match_id)
+                        ->whereIn('contest_id',$request->cancel_contest)
+                        ->get()
+                        ->transform(function($item,$key){
+
+                            $cancel_contest = JoinContest::find($item->id);
+                            $cancel_contest->cancel_contest=1;
+                            $cancel_contest->save(); 
+                        });
+
+
         return Redirect::to(route('match'))->with('flash_alert_notice', 'Match Contest Cancelled successfully');
         }else{
             return Redirect::to(route('match'))->with('flash_alert_notice', 'No Contest selected for cancellation'); 
         }
+    }
+
+     public function sendNotification($token, $data){
+     
+        $serverLKey = 'AIzaSyAFIO8uE_q7vdcmymsxwmXf-olotQmOCgE';
+        $fcmUrl = 'https://fcm.googleapis.com/fcm/send';
+
+       $extraNotificationData = $data;
+
+       if(is_array($token)){
+            $fcmNotification = [
+               'registration_ids' => $token, //multple token array
+              // 'to' => $token, //single token
+               //'notification' => $notification,
+               'data' => $extraNotificationData
+            ];
+       }else{
+                $fcmNotification = [
+               //'registration_ids' => $tokenList, //multple token array
+               'to' => $token, //single token
+               //'notification' => $notification,
+               'data' => $extraNotificationData
+            ];
+        }
+       
+
+       $headers = [
+           'Authorization: key='.$serverLKey,
+           'Content-Type: application/json'
+       ];
+
+
+       $ch = curl_init();
+       curl_setopt($ch, CURLOPT_URL, $fcmUrl);
+       curl_setopt($ch, CURLOPT_POST, true);
+       curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+       curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+       curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fcmNotification));
+       $result = curl_exec($ch);
+       //echo "result".$result;
+       //die;
+       curl_close($ch);
+       return true;
     }
     /*cancelMatch*/
     public function cancelMatch(Request $request){
