@@ -3262,9 +3262,9 @@ class ApiController extends BaseController
         $contest = CreateContest::with('contestType')
             ->where('match_id',$match_id)
             ->whereIn('id',$join_contests)
-
-            ->orderBy('contest_type','ASC')
+            ->orderBy('sort_by','ASC')
             ->get();
+            
 
         if($contest){
             $matchcontests = [];
