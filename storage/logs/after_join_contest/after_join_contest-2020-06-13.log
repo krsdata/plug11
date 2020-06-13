@@ -1,0 +1,270 @@
+[2020-06-13 05:11:02] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44539',
+    'user_id' => '391',
+    'created_team_id' => 537,
+    'contest_id' => '3619',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-13 06:02:01] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44539',
+    'user_id' => '367',
+    'created_team_id' => 538,
+    'contest_id' => '3619',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-13 07:53:44] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44596',
+    'user_id' => '358',
+    'created_team_id' => 540,
+    'contest_id' => '3884',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-13 07:54:20] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44596',
+    'user_id' => '358',
+    'created_team_id' => 541,
+    'contest_id' => '3884',
+    'team_count' => 'T2',
+  ),
+)  
+[2020-06-13 10:08:23] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44596',
+    'user_id' => '392',
+    'created_team_id' => 542,
+    'contest_id' => '3884',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-13 11:04:30] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44596',
+    'user_id' => '351',
+    'created_team_id' => 501,
+    'contest_id' => '4199',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-13 12:19:44] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44596',
+    'user_id' => '398',
+    'created_team_id' => 543,
+    'contest_id' => '3884',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-13 12:35:47] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44596',
+    'user_id' => '379',
+    'created_team_id' => 544,
+    'contest_id' => '4199',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-13 12:48:51] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44596',
+    'user_id' => '362',
+    'created_team_id' => 546,
+    'contest_id' => '9362',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-13 12:51:07] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44596',
+    'user_id' => '371',
+    'created_team_id' => 547,
+    'contest_id' => '3884',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-13 12:52:02] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44596',
+    'user_id' => '371',
+    'created_team_id' => 548,
+    'contest_id' => '3884',
+    'team_count' => 'T2',
+  ),
+)  
+[2020-06-13 12:52:19] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44596',
+    'user_id' => '379',
+    'created_team_id' => 544,
+    'contest_id' => '3884',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-13 12:54:53] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44596',
+    'user_id' => '351',
+    'created_team_id' => 501,
+    'contest_id' => '9362',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-13 12:55:50] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44596',
+    'user_id' => '285',
+    'created_team_id' => 553,
+    'contest_id' => '9362',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-13 12:55:56] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44596',
+    'user_id' => '390',
+    'created_team_id' => 554,
+    'contest_id' => '3884',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-13 13:05:21] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44596',
+    'user_id' => '391',
+    'created_team_id' => 561,
+    'contest_id' => '3884',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-13 13:12:08] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44596',
+    'user_id' => '262',
+    'created_team_id' => 534,
+    'contest_id' => '3884',
+    'team_count' => 'T2',
+  ),
+)  
+[2020-06-13 13:12:24] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44596',
+    'user_id' => '285',
+    'created_team_id' => 553,
+    'contest_id' => '3884',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-13 13:12:45] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44596',
+    'user_id' => '379',
+    'created_team_id' => 544,
+    'contest_id' => '3884',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-13 13:13:47] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44596',
+    'user_id' => '379',
+    'created_team_id' => 563,
+    'contest_id' => '3884',
+    'team_count' => 'T2',
+  ),
+)  
+[2020-06-13 13:14:05] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44596',
+    'user_id' => '285',
+    'created_team_id' => 564,
+    'contest_id' => '3884',
+    'team_count' => 'T2',
+  ),
+)  
+[2020-06-13 13:26:55] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44597',
+    'user_id' => '285',
+    'created_team_id' => 565,
+    'contest_id' => '9363',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-13 13:33:02] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44597',
+    'user_id' => '367',
+    'created_team_id' => 566,
+    'contest_id' => '8630',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-13 13:37:14] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44597',
+    'user_id' => '285',
+    'created_team_id' => 565,
+    'contest_id' => '9398',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-13 13:37:51] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44597',
+    'user_id' => '285',
+    'created_team_id' => 567,
+    'contest_id' => '9398',
+    'team_count' => 'T2',
+  ),
+)  
+[2020-06-13 13:45:34] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44597',
+    'user_id' => '358',
+    'created_team_id' => 568,
+    'contest_id' => '9398',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-13 13:46:03] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44597',
+    'user_id' => '358',
+    'created_team_id' => 569,
+    'contest_id' => '9398',
+    'team_count' => 'T2',
+  ),
+)  

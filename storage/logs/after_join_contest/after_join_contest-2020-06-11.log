@@ -1,0 +1,98 @@
+[2020-06-11 00:09:15] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44539',
+    'user_id' => '262',
+    'created_team_id' => 513,
+    'contest_id' => '3619',
+    'team_count' => 'T1',
+  ),
+  1 => 
+  array (
+    'match_id' => '44539',
+    'user_id' => '262',
+    'created_team_id' => 514,
+    'contest_id' => '3619',
+    'team_count' => 'T2',
+  ),
+)  
+[2020-06-11 18:56:20] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44539',
+    'user_id' => '358',
+    'created_team_id' => 517,
+    'contest_id' => '3619',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-11 18:56:45] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44539',
+    'user_id' => '358',
+    'created_team_id' => 518,
+    'contest_id' => '3619',
+    'team_count' => 'T2',
+  ),
+)  
+[2020-06-11 19:39:06] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44539',
+    'user_id' => '262',
+    'created_team_id' => 519,
+    'contest_id' => '2840',
+    'team_count' => 'T4',
+  ),
+)  
+[2020-06-11 19:42:17] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44539',
+    'user_id' => '262',
+    'created_team_id' => 515,
+    'contest_id' => '2841',
+    'team_count' => 'T3',
+  ),
+)  
+[2020-06-11 20:23:00] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44539',
+    'user_id' => '285',
+    'created_team_id' => 521,
+    'contest_id' => '3619',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-11 20:25:45] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44539',
+    'user_id' => '285',
+    'created_team_id' => 522,
+    'contest_id' => '3619',
+    'team_count' => 'T2',
+  ),
+)  
+[2020-06-11 20:30:25] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44539',
+    'user_id' => '394',
+    'created_team_id' => 516,
+    'contest_id' => '3619',
+    'team_count' => 'T1',
+  ),
+)  
+[2020-06-11 23:14:40] local.INFO: array (
+  0 => 
+  array (
+    'match_id' => '44539',
+    'user_id' => '262',
+    'created_team_id' => 523,
+    'contest_id' => '4057',
+    'team_count' => 'T5',
+  ),
+)  

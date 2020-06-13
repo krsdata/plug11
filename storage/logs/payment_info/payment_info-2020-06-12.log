@@ -1,0 +1,7 @@
+[2020-06-12 01:04:01] local.INFO: array (
+  'user_id' => '379',
+  'deposit_amount' => '200',
+  'payment_mode' => 'gpay',
+  'transaction_id' => 'ICIcdbe3c93d6644b9ca7b75422b932566c',
+  'payment_status' => 'success',
+)  
