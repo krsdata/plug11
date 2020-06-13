@@ -4646,7 +4646,7 @@ class ApiController extends BaseController
                 if($match->status==3){
                     continue;
                 }
-                
+
                 $match_obj = Match::firstOrNew(
                         [
                             'match_id'=>$match_id
@@ -4746,7 +4746,7 @@ class ApiController extends BaseController
                             //time diff
                             $td = round((($t1 - $t2)/60),2);    
                        // if(1){    
-                        if($td > 0 && $td<=5){
+                        if($td >= 0 && $td<=7){
                             $contests = CreateContest::where('match_id',$item->match_id)
                                         ->where('total_spots','>',0)
                                         ->where('is_cancelled',0)
