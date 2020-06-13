@@ -4637,7 +4637,7 @@ class ApiController extends BaseController
                     )->where('playing11',true)->count();
 
             if($td>0 && $td<=60){
-
+                $this->isLineUp($match_id);
             }else{
                 continue;
             }
@@ -4695,7 +4695,7 @@ class ApiController extends BaseController
                 $teamb_obj->save();
                 }   
             }
-            $this->isLineUp($match_id);
+            
         }
         return ['playing11 updated'];
     }
