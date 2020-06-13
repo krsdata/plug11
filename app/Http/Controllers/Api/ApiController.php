@@ -2387,7 +2387,7 @@ class ApiController extends BaseController
         $jm = [];
 
         $created_team = CreateTeam::where('user_id',$user)
-            ->where('team_join_status',1)
+           // ->where('team_join_status',1)
             ->orderBy('updated_at','desc')
             ->limit(3)
             ->get()
