@@ -2472,7 +2472,7 @@ class ApiController extends BaseController
             ->orderBy('timestamp_start','ASC')
             ->whereMonth('date_start',date('m'))
             ->where('timestamp_start','>=' , time())
-            ->limit(10)
+            ->limit(15)
             ->get()->transform(function($item,$key){
                     $league_title = \DB::table('competitions')->where('id',$item->competition_id)->first()->title??null;
 
