@@ -404,6 +404,7 @@ class MatchController extends Controller {
                         if (!empty($status) && empty($search)) {
                            // $query->Where('status', '=', $status);
                             if($status==1){
+                                $query->orderBy('timestamp_start','DESC');
                                 $query->where('status',1);
                             }
                             if($status==2){
@@ -411,7 +412,12 @@ class MatchController extends Controller {
                                 $query->where('status','=',2);
                             }
                             if($status==3){ 
+                                $query->orderBy('timestamp_start','DESC');
                                 $query->where('status',3);
+                            }
+                            if($status==4){ 
+                                $query->orderBy('timestamp_start','DESC');
+                                $query->where('status',4);
                             }
                         }else{
                             if (!empty($status) && !empty($search)) {
@@ -430,7 +436,7 @@ class MatchController extends Controller {
                         
                     })
                     ->whereDate('date_start','>=',\Carbon\Carbon::yesterday())
-                    ->orderBy('date_start','ASC')
+                    ->orderBy('date_start','DESC')
                     ->Paginate($this->record_per_page);
 
                 $match->transform(function($item,$key){
@@ -462,7 +468,7 @@ class MatchController extends Controller {
             $match = Match::with('teama','teamb')
                 ->where('status','1')
                 ->whereDate('date_start','>=',\Carbon\Carbon::yesterday())
-                ->orderBy('date_start','ASC')
+                ->orderBy('date_start','DESC')
                 ->Paginate($this->record_per_page);
             $match->transform(function($item,$key){
 
