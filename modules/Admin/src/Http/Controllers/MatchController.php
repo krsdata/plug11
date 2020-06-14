@@ -144,7 +144,7 @@ class MatchController extends Controller {
             $data = [
                     'action' => 'notify' ,
                     'title' => 'Contest Cancel and amount refunded' ,
-                    'message' => "$contest_count contest has been Cancelled from  $match->title. Due to filled spot was not sufficient."
+                    'message' => "$contest_count contest has been Cancelled from  $match->title."
                 ];
                
             $this->sendNotification($device_id, $data);
