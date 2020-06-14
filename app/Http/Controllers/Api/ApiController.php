@@ -2208,7 +2208,7 @@ class ApiController extends BaseController
                     ->toArray()
             )
             ->where('status',2)
-            ->orderBy('updated_at','desc')
+            ->orderBy('date_start','desc')
             ->get()
             ->transform(function($items,$key)use($user_id){
                 //  dd($items);
