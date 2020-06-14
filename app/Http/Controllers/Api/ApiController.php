@@ -2284,8 +2284,9 @@ class ApiController extends BaseController
             ->get()
 
             ->transform(function($items,$key)use($user_id){
+                
                 $league_title = \DB::table('competitions')->where('id',$items->competition_id)->first()->title??null;
-                //dd($items);
+
                 $items->league_title = $league_title;
 
                 if($items->is_free==0){
@@ -2294,24 +2295,36 @@ class ApiController extends BaseController
                     $items->has_free_contest= true;
                 }
 
+
+
                 $total_joined_team = \DB::table('join_contests')
                     ->where('match_id' ,$items->match_id)
                     ->where('user_id',$user_id)
-                    ->count();
-                $items->total_joined_team = $total_joined_team;
+                    ->get();
+                $items->total_joined_team = $total_joined_team->count()??0;
 
                 $total_join_contests =  \DB::table('join_contests')
                     ->where('match_id',$items->match_id)
                     ->where('user_id',$user_id)
+                    ->selectRaw('distinct contest_id')
                     ->groupBy('contest_id')
-                    ->count();
-                $items->total_join_contests = $total_join_contests;
+                    ->get();
+
+                $items->total_join_contests = $total_join_contests->count()??0;
 
                 $total_created_team =  \DB::table('create_teams')
                     ->where('match_id',$items->match_id)
                     ->where('user_id',$user_id)
                     ->count();
                 $items->total_created_team = $total_created_team;
+
+                $prize = \DB::table('prize_distributions')
+                        ->where('match_id' ,$items->match_id)
+                        ->where('user_id',$user_id)
+                        ->where('rank','>',0)
+                        ->sum('prize_amount');
+
+                $items->prize_amount = $prize;
 
                 if($items->status==4){
                     $items->status_str = "Cancel"; 
