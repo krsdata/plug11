@@ -4732,9 +4732,19 @@ class ApiController extends BaseController
                             $lineup = \DB::table('team_a_squads')->where('match_id',$item->match_id)
                                 ->where('playing11',"true")->count();
                             
+                            $device_id = User::whereNotNull('device_id')->pluck('device_id')->toArray();
+                                                                
+                            if($td>0 && $td%10==0){
+                                    $data = [
+                                        'action' => 'notify' ,
+                                        'title' => $item->short_title,
+                                        'message' => 'Contest is filling fast. Create your team and join the contest. Hurry up!!'
+                                    ];
+                                    $this->sendNotification($device_id, $data);
+                                
+                            }
+                            
                             if($lineup || $td > 0 && $td%5==0){ 
-                                   
-                                $device_id = User::whereNotNull('device_id')->pluck('device_id')->toArray();
                                 $td = (int)$td;
                                 if($td>30){
                                     $msg = "Lined up and $td minute left. Create, Join or edit  your team";
@@ -4747,6 +4757,7 @@ class ApiController extends BaseController
                                     'title' => $item->short_title,
                                     'message' => $msg
                                 ];
+                               
                                 $this->sendNotification($device_id, $data);
                                 return $item; 
                             }    
