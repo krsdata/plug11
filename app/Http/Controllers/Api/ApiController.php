@@ -2431,7 +2431,7 @@ class ApiController extends BaseController
                     $join_match->status_str = "Completed";
                 }else{
                     if($join_match->status==4){
-                       $join_match->status_str = "Cancel"; 
+                       $join_match->status_str = $join_match->status_note??'Cancelled'; 
                     }elseif($join_match->status==2){
                        $join_match->status_str = "Completed" ;
                     }
