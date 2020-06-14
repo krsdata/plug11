@@ -2327,6 +2327,16 @@ class ApiController extends BaseController
                    $items->status_str = $items->status_str; 
                 }
 
+                    $t1 = $item->timestamp_start;
+                    $t2 = time();
+                    $td = round((($t1 - $t2)/60),2);
+                    
+                  
+                    if($td>(0.5)){
+                        $item->status=3;
+                        $item->status_str='Upcoming Live';
+                    }
+
                 return $items;
             });
 
