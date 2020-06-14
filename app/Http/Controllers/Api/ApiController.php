@@ -4568,10 +4568,10 @@ class ApiController extends BaseController
                ] ;
                 } 
             } 
+            if(isset($bank_accounts)){
+                $s = ($bank_accounts->status==1)?'Pending':($bank_accounts->status==2)?'Approved':'Pending';
 
-            $s = ($bank_accounts->status==1)?'Pending':($bank_accounts->status==2)?'Approved':'Pending';
-
-            $status['bank_accounts'][] = [
+                $status['bank_accounts'][] = [
                 'status' =>  $bank_accounts->status,
                 'message' => $s,
                 'data' => $bank_accounts
@@ -4586,6 +4586,8 @@ class ApiController extends BaseController
                 ]
             );
 
+            } 
+            
         }else{
             return response()->json(
                 [
