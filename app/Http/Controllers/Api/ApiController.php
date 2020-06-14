@@ -41,11 +41,14 @@ class ApiController extends BaseController
 
     public $token;
     public $date;
+    public $cric_url;
 
     public function __construct(Request $request) {
         $this->date = date('Y-m-d');
         $this->token = env('CRIC_API_KEY',"8740931958a5c24fed8b66c7609c1c49");
         $request->headers->set('Accept', 'application/json');
+        
+        $this->cric_url = 'https://rest.entitysport.com/v2/';
 
         if ($request->header('Content-Type') != "application/json")  {
             $request->headers->set('Content-Type', 'application/json');
@@ -1264,7 +1267,13 @@ class ApiController extends BaseController
         $default_contest = \DB::table('default_contents')
             ->whereNull('match_id')
             ->whereNull('deleted_at')
-            ->get();
+            ->get()
+            ->transform(function($item,$key){
+                $contest_type = \DB::table('contest_types')->select('sort_by')->first();
+                $item->sort_by = $contest_type->sort_by??0;
+                return $item;
+            });
+
 
         foreach ($default_contest as $key => $result) {
             $createContest = CreateContest::firstOrNew(
@@ -1278,6 +1287,7 @@ class ApiController extends BaseController
                 ]
             );
 
+            $createContest->sort_by             =   $result->sort_by;
             $createContest->match_id            =   $match_id;
             $createContest->contest_type        =   $result->contest_type;
             $createContest->total_winning_prize =   $result->total_winning_prize;
@@ -1665,7 +1675,7 @@ class ApiController extends BaseController
     }
 
     public function updateMatchDataByStatus($status=1)
-    {
+    {   
         if($status==1){
             $fileName="upcoming";
         }
@@ -1681,14 +1691,14 @@ class ApiController extends BaseController
             return ['data not available'];
         }
 
-        //upcoming
-        $data =    file_get_contents('https://rest.entitysport.com/v2/matches/?status='.$status.'&token='.$this->token.'&per_page=20');
+        //upcoming $this->cric_url
+        $data =    file_get_contents($this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=10');
 
         \File::put(public_path('/upload/json/'.$fileName.'.txt'),$data);
-        $this->storeMatchInfoAtMachine($data,'status/'.$fileName.'.txt');
         
+        //$this->storeMatchInfoAtMachine($data,'status/'.$fileName.'.txt');
         $data = $this->storeMatchInfo($fileName);
-
+        
         $this->saveMatchDataFromAPI($data);
 
         return [$fileName.' match data updated successfully'];
@@ -1813,7 +1823,6 @@ class ApiController extends BaseController
     }
 
     public function saveMatchDataFromAPI2DB($data){
-
         $data = json_decode($data);
 
         if(isset($data->response)){
@@ -1920,7 +1929,7 @@ class ApiController extends BaseController
     }
 
     public function saveMatchDataFromAPI($data){
-
+        echo date('h:i:s A');
         if(isset($data->response) && count($data->response->items)){
 
             $results = $data->response->items;
@@ -1989,6 +1998,7 @@ class ApiController extends BaseController
                 $remove_data = ['toss','venue','teama','teamb','competition'];
 
 
+
                 $matches = Matches::firstOrNew(
                     [
                         'match_id' => $data_set['match_id']
@@ -2008,9 +2018,7 @@ class ApiController extends BaseController
                     if($key=='status_str' && $value=='Scheduled')
                     {  
                         $matches->status_str = 'Upcoming';
-                    } 
-                     
-                   
+                    }
                 }
                 $matches->toss_id = $toss_id;
                 $matches->venue_id = $venue_id;
@@ -2023,13 +2031,16 @@ class ApiController extends BaseController
                 $mid[] = $data_set['match_id'];
                 $this->createContest($data_set['match_id']);
                 //
-            }
 
+            }
             if(count($mid)){
-                $this->getSquad($mid);
-                // $this->saveSquad($mid);
+
+                $player_match_id =  Player::whereIn('match_id',$mid)->groupBy('match_id')->pluck('match_id')->toArray();               
+                $arr = array_diff($mid,$player_match_id);
+                $this->getSquad($arr);
             }
         }
+        
         //
         return ["match info updated "];
     }

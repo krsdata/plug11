@@ -590,10 +590,7 @@ class UserController extends BaseController
             'city' => 'required',
             'dateOfBirth' => 'required',
             'gender' => 'required',
-            'mobile_number' => 'required',
-            'name' => 'required',
-            'pinCode' => 'required',
-            'state' => 'required'
+            'name' => 'required'
         ]);
 
 
@@ -644,9 +641,7 @@ class UserController extends BaseController
             $user->city = $request->city;
             $user->dateOfBirth = $request->dateOfBirth;
             $user->gender = $request->gender;
-            $user->pinCode = $request->pinCode;
-            $user->state = $request->state;
-
+            
             $user->save();
 
             return response()->json(
