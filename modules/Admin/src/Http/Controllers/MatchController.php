@@ -404,7 +404,7 @@ class MatchController extends Controller {
                         if (!empty($status) && empty($search)) {
                            // $query->Where('status', '=', $status);
                             if($status==1){
-                                $query->orderBy('timestamp_start','DESC');
+                                $query->orderBy('timestamp_start','ASC');
                                 $query->where('status',1);
                             }
                             if($status==2){
