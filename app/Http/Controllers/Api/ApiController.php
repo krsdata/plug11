@@ -2207,8 +2207,8 @@ class ApiController extends BaseController
                     ->pluck('match_id')
                     ->toArray()
             )
-            ->where('status',2)
-            ->orderBy('created_at','desc')
+            ->whereIn('status',[2,4])
+            ->orderBy('match_id','desc')
             ->get()
             ->transform(function($items,$key)use($user_id){
                 //  dd($items);
