@@ -352,6 +352,8 @@ class ApiController extends BaseController
         $playerObject = Player::where('match_id',$team_id->match_id)
             ->whereIn('pid',$player_id);
 
+        $pids = $playerObject->pluck('pid');
+        //dd($pids);
         $player_team_id = $playerObject->pluck('team_id','pid')->toArray();
 
         if(!$mpObject){
@@ -411,11 +413,13 @@ class ApiController extends BaseController
             $trump          =   $team_id->trump;
 
             $player_id = json_decode($team_id->teams,true);
-
+           // dd($team_id->match_id);    
             $mpObject = MatchPoint::where('match_id',$team_id->match_id)
-                ->whereIn('pid',$player_id)
-                ->select('match_id','pid','name','role','rating','point','starting11')->get()
-                    ->transform(function($item,$key){
+                ->whereIn('pid',$pids)
+                ->select('match_id','pid','name','role','rating','point','starting11')->get();
+           // return $mpObject ;   
+            $mpObject->transform(function($item,$key){
+
                         $playing11_a = \DB::table('team_a_squads')
                                     ->where('match_id',$item->match_id)
                                     ->where('player_id',$item->pid)
@@ -426,16 +430,24 @@ class ApiController extends BaseController
                                     ->first();
 
                         if($playing11_a){
+                            $item->role = $playing11_a->role;
                             $item->playing11 = $playing11_a->playing11=='true'?true:false;
-                        }elseif ($playing11_b) {
+                            $p11=1;
+                        }
+                        if ($playing11_b) {
+                           $item->role = $playing11_b->role; 
                            $item->playing11 = $playing11_b->playing11=='true'?true:false;
-                        }else{
+                           $p11=1;
+                        }
+                        if(!isset($p11)){
                            $item->playing11 = false; 
                         }             
 
                         return $item;
                     });
             //mp=match point
+                    return $mpObject;
+
             foreach ($mpObject as $key => $result) {
 
                 $point = $result->point;
