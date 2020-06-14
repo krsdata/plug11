@@ -4591,7 +4591,7 @@ class ApiController extends BaseController
     contest will create as its full
     */
     public function automateCreateContest(){
-        return false;
+        //return false;
         $contest = CreateContest::whereColumn('total_spots','filled_spot')
            // ->where('total_spots','>',50)
             ->where('is_cloned','!=',1)
