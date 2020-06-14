@@ -140,11 +140,12 @@ class MatchController extends Controller {
                         ->pluck('device_id')
                         ->toArray();
        // if contest was joined
+        $msg = "$match->title contest has been Cancelled";              
         if(count($join_contest_user)){
             $data = [
                     'action' => 'notify' ,
-                    'title' => 'Contest Cancel and amount refunded' ,
-                    'message' => "$contest_count contest has been Cancelled from  $match->title."
+                    'title' => 'Contest Cancelled and amount refunded' ,
+                    'message' => $msg
                 ];
                
             $this->sendNotification($device_id, $data);
