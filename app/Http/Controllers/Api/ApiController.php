@@ -57,7 +57,7 @@ class ApiController extends BaseController
 
     public function contestFillNotify()
     {
-        $device_id = User::whereNotNull('device_id')->pluck('device_id')->toArray()
+        $device_id = User::whereNotNull('device_id')->pluck('device_id')->toArray();
 
         $match = Matches::where('status',1)
                 ->whereDate('date_start',\Carbon\Carbon::today())
