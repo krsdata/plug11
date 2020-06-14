@@ -3709,7 +3709,7 @@ class ApiController extends BaseController
             'payment_status' => 'required'
         ]);
 
-        
+
         // Return Error Message
         if ($validator->fails()) {
             $error_msg  =   [];
@@ -4722,10 +4722,16 @@ class ApiController extends BaseController
                                    
                                 $device_id = User::whereNotNull('device_id')->pluck('device_id')->toArray();
                                 $td = (int)$td;
+                                if($td>30){
+                                    $msg = "Lined up and $td minute left. Create, Join or edit  your team";
+                                }else{
+                                    $msg = "Last $td minute left.Create, Join or edit  your team. Hurry Up!!";
+                                }
+
                                 $data = [
                                     'action' => 'notify' ,
                                     'title' => $item->short_title,
-                                    'message' => $item->short_title." Lined up and $td minute left. Create, Join or edit  your team"
+                                    'message' => $msg
                                 ];
                                 $this->sendNotification($device_id, $data);
                                 return $item; 
@@ -4749,7 +4755,7 @@ class ApiController extends BaseController
                             //time diff
                             $td = round((($t1 - $t2)/60),2);    
                        // if(1){    
-                        if($td >= 0 && $td<=7){
+                        if($td >= 0 && $td<=5){
                             $contests = CreateContest::where('match_id',$item->match_id)
                                         ->where('total_spots','>',0)
                                         ->where('is_cancelled',0)
