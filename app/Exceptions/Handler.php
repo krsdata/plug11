@@ -22,6 +22,7 @@ use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Str;
 use Facade\Ignition\Exceptions\ViewException;
+use App\Helpers\Helper as Helper;
 
 
 class Handler extends ExceptionHandler
@@ -69,7 +70,7 @@ class Handler extends ExceptionHandler
      * @return \Illuminate\Http\Response
      */
     public function render($request, Exception $exception)
-    {  // dd($exception);
+    {  
         if($request->is('admin/*')){
             if ($exception instanceof ViewException) {
                 $exception = $exception->getMessage();
@@ -81,6 +82,9 @@ class Handler extends ExceptionHandler
                 return redirect('admin/error?message='.Str::slug($exception))->with('flash_alert_notice', $exception);
             }
         }
+        $helper = new Helper;
+        $send_status = $helper->notifyToAdmin('alert',
+          $exception->getMessage().'.'.$exception->getfile().'. Line number :'.$exception->getline());
         
         $headers = getallheaders(); 
         $path_info_url = $request->getpathInfo();

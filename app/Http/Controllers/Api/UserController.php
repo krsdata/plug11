@@ -1309,6 +1309,11 @@ class UserController extends BaseController
                     $user->reference_code = $request->referral_code;
                     $user->email_verified_at = 1;
                     $user->save() ;
+
+                    $msg = "$user->name has registered using gmail id $user->email";
+
+                    $helper = new Helper;
+                    $send_status = $helper->notifyToAdmin('New Registration',$msg);
                     
                     $request->merge(['user_id'=>$user->id,'mobile_number'=>$user->mobile_number]);
                     

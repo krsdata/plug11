@@ -36,20 +36,54 @@ class Helper {
      *
      * @param = null
      */ 
+    public function __construct() {
+
+    }
+
+    public function notifyToAdmin($title=null,$message=null){ 
+        $user_email = [env('admin1_email','manoj.i.prasad@gmail.com'),env('admin2_email','kroy.aws@gmail.com')];
+
+        $device_id = User::whereIn('email',$user_email)->pluck('device_id')->toArray();
+          
+          $data = [
+              'action' => 'notify' ,
+              'title' => $title ,
+              'message' => $message
+          ];
+          
+          try{
+             // $helpr = new Helper; 
+              $this->sendNotification($device_id,$data);
+              return true;
+          }catch(\ErrorException $e){
+            
+              return false;
+          }
+    }
 
     public function sendNotification($token, $data){
      
-        $serverLKey = 'AIzaSyAFIO8uE_q7vdcmymsxwmXf-olotQmOCgE';
-        $fcmUrl = 'https://fcm.googleapis.com/fcm/send';
+      $serverLKey = 'AIzaSyAFIO8uE_q7vdcmymsxwmXf-olotQmOCgE';
+      $fcmUrl = 'https://fcm.googleapis.com/fcm/send';
 
-       $extraNotificationData = $data;
+      $extraNotificationData = $data;
 
-       $fcmNotification = [
+       if(is_array($token)){
+            $fcmNotification = [
+               'registration_ids' => $token, //multple token array
+              // 'to' => $token, //single token
+               //'notification' => $notification,
+               'data' => $extraNotificationData
+            ];
+       }else{
+            $fcmNotification = [
            //'registration_ids' => $tokenList, //multple token array
            'to' => $token, //single token
            //'notification' => $notification,
            'data' => $extraNotificationData
-       ];
+        ];
+        }
+       
 
        $headers = [
            'Authorization: key='.$serverLKey,
@@ -83,39 +117,6 @@ class Helper {
 
     
 
-    static public function sendMobileNotification($token, $data){
-     
-        $serverLKey = 'AIzaSyAFIO8uE_q7vdcmymsxwmXf-olotQmOCgE';
-        $fcmUrl = 'https://fcm.googleapis.com/fcm/send';
-
-       $extraNotificationData = $data;
-
-       $fcmNotification = [
-           //'registration_ids' => $tokenList, //multple token array
-           'to' => $token, //single token
-           //'notification' => $notification,
-           'data' => $extraNotificationData
-       ];
-
-       $headers = [
-           'Authorization: key='.$serverLKey,
-           'Content-Type: application/json'
-       ];
-
-
-       $ch = curl_init();
-       curl_setopt($ch, CURLOPT_URL, $fcmUrl);
-       curl_setopt($ch, CURLOPT_POST, true);
-       curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-       curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-       curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fcmNotification));
-       $result = curl_exec($ch);
-       //echo "result".$result;
-       //die;
-       curl_close($ch);
-       return true;
-    }
 /* @method : createCompanyGroup
     * @param : email,user_id
     * Response :  string

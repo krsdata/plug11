@@ -43,7 +43,6 @@ class ApiController extends BaseController
     public $date;
 
     public function __construct(Request $request) {
-
         $this->date = date('Y-m-d');
         $this->token = env('CRIC_API_KEY',"8740931958a5c24fed8b66c7609c1c49");
         $request->headers->set('Accept', 'application/json');
@@ -2379,8 +2378,6 @@ class ApiController extends BaseController
 
     // get Match by status and all
     public function getMatch(Request $request){
-        Log::channel('before_getMatch')->info($request->all());
-        
         $user = $request->user_id;
         $banner = \DB::table('banners')->select('title','url','actiontype')->get();
         $join_contests =  \DB::table('join_contests')->where('user_id',$user)->get('match_id');
@@ -3712,7 +3709,7 @@ class ApiController extends BaseController
             'payment_status' => 'required'
         ]);
 
-
+        
         // Return Error Message
         if ($validator->fails()) {
             $error_msg  =   [];
@@ -3735,9 +3732,15 @@ class ApiController extends BaseController
 
             if($check_user){
                 $wallet     = Wallet::where('user_id',$user->id)->where('payment_type',3)->first();
+                
                 $message    = "Amount not added successfully";
                 $status     = false;
                 $code       = 201;
+
+                $msg = "$user->name has added amount $request->deposit_amount using INR $request->payment_mode";
+
+                $helper = new Helper;
+                $send_status = $helper->notifyToAdmin('Fund Deposit',$msg);
                 
                 if($wallet){
                     $deposit_amount = (float) $request->amount;
