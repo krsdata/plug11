@@ -55,6 +55,30 @@ class ApiController extends BaseController
         }
     }
 
+    public function contestFillNotify()
+    {
+        $device_id = User::whereNotNull('device_id')->pluck('device_id')->toArray()
+
+        $match = Matches::where('status',1)
+                ->whereDate('date_start',\Carbon\Carbon::today())
+                ->orderBy('timestamp_start','ASC')
+                ->first();
+
+        $t1 = $match->timestamp_start;
+        $t2 = time();
+        $td = round((($t1 - $t2)/60),2);
+                        
+        if($td>5 && $td%30==0){
+            $data = [
+            'action' => 'notify' ,
+            'title' => "🏏 $match->short_title  🕚 🏆🏆 🔔",
+            'message' => '**Contest is filling fast. Create your team and join the contest. Hurry up!!**'
+            ];
+        
+        $this->sendNotification($device_id, $data);   
+        }
+    }
+
     public function apkUpdate(Request $request ){
 
         $version_code = $request->version_code;
@@ -4769,11 +4793,11 @@ class ApiController extends BaseController
                                 ->where('playing11',"true")->count();
                             
                             $device_id = User::whereNotNull('device_id')->pluck('device_id')->toArray();
-                                                                
+                                                                  
                             if($td>0 && $td%10==0){
                                     $data = [
                                         'action' => 'notify' ,
-                                        'title' => $item->short_title,
+                                        'title' => "🏏 $item->short_title  🕚 🏆🏆",
                                         'message' => 'Contest is filling fast. Create your team and join the contest. Hurry up!!'
                                     ];
                                     $this->sendNotification($device_id, $data);
@@ -4790,7 +4814,7 @@ class ApiController extends BaseController
 
                                 $data = [
                                     'action' => 'notify' ,
-                                    'title' => $item->short_title,
+                                    'title' => "🏏 $item->short_title  🕚 🏆🏆",
                                     'message' => $msg
                                 ];
                                

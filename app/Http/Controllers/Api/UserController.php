@@ -641,7 +641,7 @@ class UserController extends BaseController
             $user->city = $request->city;
             $user->dateOfBirth = $request->dateOfBirth;
             $user->gender = $request->gender;
-            
+
             $user->save();
 
             return response()->json(
@@ -1175,6 +1175,7 @@ class UserController extends BaseController
                     $data['name'] = $user->name??$request->name;
                     $data['email'] = $user->email??$request->email;
                     $data['user_id'] = $user->id;
+                    $data['team_name'] = $user->team_name??$request->team_name;
                     $data['profile_image'] = $user->profile_image;
                     $data['mobile_number'] = $request->mobile_number??$user->mobile_number;
                     $data['otpverified'] = $user->is_account_verified?true:false;
@@ -1246,18 +1247,19 @@ class UserController extends BaseController
                         $usermodel->referal_code  = $usermodel->referal_code;
                     }else{
                         $usermodel->referal_code = $this->generateUserName();
+
+                        $usermodel->user_name = $usermodel->referal_code;
                         $usermodel->reference_code = $request->referral_code;
                     }
 
                     if($request->team_name){
                         $usermodel->team_name = $request->team_name;
-                        $usermodel->user_name = $request->team_name;
                     }else{
                         if($usermodel->team_name){
-                           $usermodel->user_name = $usermodel->team_name; 
+                          // $usermodel->user_name = $usermodel->team_name; 
                         }else{
-                            $usermodel->user_name = $request->referral_code;
-                        }
+                            $usermodel->team_name = $usermodel->name;
+                        } 
                     }
 
                     $usermodel->save();
