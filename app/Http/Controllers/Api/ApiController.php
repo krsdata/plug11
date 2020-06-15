@@ -456,12 +456,12 @@ class ApiController extends BaseController
                                     ->where('player_id',$item->pid)
                                     ->first();
 
-                        if($playing11_a){
+                        if($playing11_a && $playing11_a->role!='squad'){
                             $item->role = $playing11_a->role;
                             $item->playing11 = $playing11_a->playing11=='true'?true:false;
                             $p11=1;
                         }
-                        if ($playing11_b) {
+                        if ($playing11_b && $playing11_b->role!='squad') {
                            $item->role = $playing11_b->role; 
                            $item->playing11 = $playing11_b->playing11=='true'?true:false;
                            $p11=1;
