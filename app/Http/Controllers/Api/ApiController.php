@@ -920,7 +920,7 @@ class ApiController extends BaseController
             $data['prize_amount'] = (int)$value->prize_amount;
             $data['winning_amount'] = (int)$value->winning_amount;
 
-            $user_data =  $value->user->first_name;
+            $user_data =  $value->user->name;
             $fn = explode(" ",$user_data);
 
 
@@ -948,7 +948,7 @@ class ApiController extends BaseController
             $data['rank'] = $value->ranks;
             $data['prize_amount'] = (int)$value->prize_amount;
             $data['winning_amount'] = (int)$value->winning_amount;
-            $user_data =  $value->user->first_name;
+            $user_data =  $value->user->name;
             $fn = explode(" ",$user_data);
 
             
@@ -4880,7 +4880,7 @@ class ApiController extends BaseController
     /*Match auto cancel if not filled*/
     public function matchAutoCancel(){
 
-        $cancel_match = Matches::where('status',3)
+        $cancel_match = Matches::whereIn('status',[1,3])
                        ->whereDate('date_start',\Carbon\Carbon::today())
                        ->get()
                         ->transform(function($item,$key){
