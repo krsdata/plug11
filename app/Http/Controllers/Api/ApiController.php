@@ -444,7 +444,7 @@ class ApiController extends BaseController
             $mpObject = MatchPoint::where('match_id',$team_id->match_id)
                 ->whereIn('pid',$pids)
                 ->select('match_id','pid','name','role','rating','point','starting11')->get();
-           // return $mpObject ;   
+           // return $mpObject ;    
             $mpObject->transform(function($item,$key){
 
                         $playing11_a = \DB::table('team_a_squads')
@@ -468,6 +468,7 @@ class ApiController extends BaseController
                         }
                         if(!isset($p11)){
                            $item->playing11 = false; 
+                           $item->role = $item->role;
                         }             
 
                         return $item;
