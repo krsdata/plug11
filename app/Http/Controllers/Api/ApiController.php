@@ -4758,6 +4758,7 @@ class ApiController extends BaseController
                     );
 
                     $teama_obj->playing11 =  $squads->playing11;
+                    $teama_obj->role =  $squads->role;
                     $teama_obj->save();
                 }
             }   
@@ -4773,6 +4774,7 @@ class ApiController extends BaseController
                 ]);
 
                 $teamb_obj->playing11 =  $squads->playing11;
+                $teamb_obj->role =  $squads->role;
                 $teamb_obj->save();
                 }   
             }
