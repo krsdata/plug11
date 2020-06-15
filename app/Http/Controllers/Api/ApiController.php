@@ -473,14 +473,14 @@ class ApiController extends BaseController
                             $p11=1;
                         }
                         elseif($playing11_b) {
-                            
+
                            $item->role = $playing11_b->role; 
                            $item->playing11 = 'true';
                            $p11=1;
                         }else{
                            $item->playing11 = false; 
                         }
-                        
+
                         $item->role = $pids_role[$item->pid];
                         return $item;
                     });
@@ -3637,9 +3637,11 @@ class ApiController extends BaseController
             $myArr['is_account_verified']    = $this->isAccountVerified($request);
             $myArr['refferal_friends_count']    = $this->getRefferalsCounts($request);
             $myArr['user_id']         =  $wallet->user_id;
+            $myArr['withdrawal_amount']    = 0;
         }else{
             $myArr['wallet_amount']   = 0;
             $myArr['bonus_amount']    = 0;
+            $myArr['withdrawal_amount']    = 0;
             $myArr['is_account_verified']    = $this->isAccountVerified($request);
             $myArr['refferal_friends_count']    = $this->getRefferalsCounts($request);
             $myArr['user_id']         = (int)$request->user_id;
@@ -3722,12 +3724,13 @@ class ApiController extends BaseController
                         $item->document_verified = $doc_status;
                         $item->paytm_verified = $payment_status;
                         $item->wallet_amount = sprintf('%0.2f', $wallet_amount);
-                        
+                        $withdrawal_amount = \DB::table('wallet_transactions')
+                                            ->where('payment_type',5)
+                                            ->sum('amount');
+
+                        $item->withdrawal_amount = $withdrawal_amount;
                         return $item;
-
                     });
-
-
 
         return response()->json(
             [
@@ -5034,23 +5037,53 @@ class ApiController extends BaseController
             return ['No Contest selected for cancellation']; 
         }
     }
-
+    /*
+    withdraw_status = 0 Pending
+    withdraw_status = 1 Requested
+    withdraw_status = 2 In progress
+    withdraw_status = 3 Success
+    withdraw_status = 4 Rejected
+    */
     public function withdrawAmount(Request $request){
 
         $user = $request->user_id;
 
         $user = User::find($request->user_id);
 
+        $verify_documents = \DB::table('verify_documents')
+                ->where('user_id',$user)
+                ->where('status',2)
+                ->get();
+        if($verify_documents->count() && $verify_documents->count()<2){
+            $msg = "Document approval pending";
+            return response()->json(
+                [
+                    "status"=>false,
+                    "code"=>201,
+                    "message" => $msg 
+                ]
+                );
+        }else{
+            $msg = "Document upload is pending";
+
+            return response()->json(
+                [
+                    "status"=>false,
+                    "code"=>201,
+                    "message" => $msg 
+                ]
+                );
+        }
+
         if($user && $request->withdraw_amount){
 
             $withdraw_amount = $request->withdraw_amount;
-
             $wallet = Wallet::where('user_id',$user->id)
                             ->whereIn('payment_type',[2,3,4])
                             ->get();
 
             $referral   = $wallet->where('payment_type',2)->first()->amount??0;
-            $deposit    = $wallet->where('payment_type',3)->first()->amount??0;
+            //$deposit    = $wallet->where('payment_type',3)->first()->amount??0;
             $prize      = $wallet->where('payment_type',4)->first()->amount??0;
            
             $access = false;
@@ -5066,6 +5099,7 @@ class ApiController extends BaseController
             }
 
             if($prize>=200 && $prize >= $withdraw_amount){
+                
                 $amt  = $prize-$withdraw_amount;
                 $prize = $wallet->where('payment_type',4)->first();
                 $prize->amount = $amt;
@@ -5073,14 +5107,8 @@ class ApiController extends BaseController
 
             }elseif ($referral>=200 && $referral >= $withdraw_amount){
                 
-                $amt  = $referral-$withdraw_amount;
-                $prize = $wallet->where('payment_type',2)->first();
-                $prize->amount = $amt;
-                $access = true;
-
-            }elseif ($deposit>=200 && $deposit >= $withdraw_amount){
-                $amt  = $deposit-$withdraw_amount;
-                $prize = $wallet->where('payment_type',3)->first();
+                $amt    = $referral-$withdraw_amount;
+                $prize  = $wallet->where('payment_type',2)->first();
                 $prize->amount = $amt;
                 $access = true;
 
@@ -5096,6 +5124,10 @@ class ApiController extends BaseController
             } 
 
             if($access){
+                if($prize){
+                    $prize->total_withdrawal_amount = $prize->amount;
+                }
+
                 \DB::beginTransaction();
                 $prize->save();
                 $wdl = Wallet::firstOrNew([
@@ -5117,6 +5149,9 @@ class ApiController extends BaseController
                 $wt->payment_details = json_encode($request->all());
                 $wt->payment_status  = 'request';
                 $wt->transaction_id = time().'WDL'.$user->id;
+                $wt->withdraw_status = 1;
+                $wt->payment_status = 'Pending';
+                $wt->debit_credit_status = "-";
                 $wt->save();
                 \DB::commit();
             }

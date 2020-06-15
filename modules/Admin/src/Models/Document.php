@@ -33,7 +33,7 @@ class Document extends Eloquent {
 
     public function user()
     {
-        return $this->hasOne('Modules\Admin\Models\User','id' , 'user_id')->select('id','first_name','last_name','email','profile_image','phone');
+        return $this->hasOne('Modules\Admin\Models\User','id' , 'user_id');
     }
  
   }

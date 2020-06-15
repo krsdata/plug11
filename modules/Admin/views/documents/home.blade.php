@@ -1,4 +1,12 @@
-
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 5px;
+}
+</style>
             <!-- END SIDEBAR -->
             <!-- BEGIN CONTENT -->
              <div class="page-content-wrapper">
@@ -62,13 +70,15 @@
                                         <thead>
                                             <tr>
                                                 <th> Sno. </th>
-                                                <th> User Details </th> 
-                                                <th> Document Type </th> 
-                                                <th> Document Numebr</th> 
-                                                <th> Image </th> 
-                                                <th> Status </th> 
+                                                <th> Bank details </th>
+                                                <th> Bank Docs </th>
+                                                <th> Doc Type </th> 
+                                                <th> Doc Numebr</th> 
+                                                <th> Doc Proof </th> 
+                                                
+                                                <th>Status</th>
                                                 <th>Action</th>
-                                                <th>Created date</th> 
+                                                <th>date</th> 
                                                <!--  <th>Action</th>  -->
                                             </tr>
                                         </thead>
@@ -77,14 +87,68 @@
                                             <tr>
                                                  <td>   {{ (($documents->currentpage()-1)*15)+(++$key) }} 
                                                 </td>
-                                                <td>  
+                                                <td>
+
+                                            @if($result->bankAccount)
+                                            <table class="bordered"  border="1">
+                                                
+                                              <tr>
+                                                  <td>
+                                                  Acc Holder: 
+                                                  </td>
+                                                  <td> {{
+                                                    $result->bankAccount->account_name
+                                                  }}
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                  <td>
+                                                    Bank Name: 
+                                                  </td>
+                                                  <td>{{
+                                                    $result->bankAccount->bank_name
+                                                  }}
+                                                </td>
+                                                </tr>
+                                              <tr>
+                                                <td>
+                                                  Acc Number: 
+                                                </td>
+                                                <td> {{
+                                                    $result->bankAccount->account_number
+                                                  }}
+                                                </td>
+                                              </tr>
+                                              <tr><td>
+                                                  Ifsc: 
+                                                </td>
+                                                <td>{{
+                                                    $result->bankAccount->ifsc_code
+                                                  }}</td>
+                                              </tr>
+                                              <tr>
+                                                  <td>
+                                                  Acc Type: 
+                                                </td>
+                                                <td>
+                                                  {{
+                                                    $result->bankAccount->account_type
+                                                  }}
+                                                </td>
+                                              </tr>
+                                            </table>
+                                            @endif  
+                                          </td>
+                                          <td><a href="{{$result->bankAccount->bank_passbook_url??'#'}}">Passbook Url </a></td>
+                                                <!-- <td>  
                                                     @if(isset($result->user))
-                                                    {{$result->user->first_name}}
-                                                     <!-- | {{
+                                                    Name: {{$result->user->name}}
+                                                      <br>
+                                                      Email: {{
                                                     $result->user->email
-                                                }}  -->
+                                                }}  
                                                 @endif
-                                            </td>  
+                                            </td>   -->
                                                 <td>  {{$result->doc_type}} </td> 
                                                  <td>  {{$result->doc_number}} </td> 
                                                 <td>
@@ -175,16 +239,20 @@
                                                 @endif
 
                                                 </td>
+                                           
                                                 <td> 
-                                                  @if($result->status==2) Approved
-                                                  @elseif($result->status==3) Rejected
+                                                  @if($result->status==2) 
+                                                  <span class="btn btn-success">Approved</span>
+                                                  @elseif($result->status==3) <span class="btn btn-danger">Rejected</span>
+                                                  @elseif($result->status==4) <span class="btn btn-default">ReUpload </span>
                                                   @else
-                                                  Pending
+                                                  <span class="btn btn-warning">Pending </span>
                                                   @endif 
 
                                                  </td>
                                                  <td>
-                                                  <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal" onclick="getCategory('{{$result->id}}','{{$result->status}}')" >Approve</button>
+                                                  <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#myModal" onclick="getCategory('{{$result->id}}','{{$result->bankAccount->id??0}}',
+                                                  '{{$result->status}}')" >Approve</button>
                                                     
                                                     @if($result->status==2)
                                                     <span class="glyphicon glyphicon-ok"></span>
@@ -241,11 +309,14 @@
       <div class="modal-body">   
         <div class="form-group">
           <input type="hidden" name="doc_id" id="doc_id">
+          <input type="hidden" name="bank_doc_id" id="bank_doc_id">
             <label for="sel1">Select Status:</label>
         <select class="form-control" id="document_status" name="document_status">
           <option value="0">Select Status</option>
+          <option value="1">Pending</option>
           <option value="2">Approved</option>
-          <option value="3">Rejected</option> 
+          <option value="3">Rejected</option>
+          <option value="4">Re Upload</option> 
         </select>
       </div>
       <div class="form-group">
@@ -265,8 +336,9 @@ notes
 
 <script type="text/javascript">
     
-    function getCategory(doc_id,status) {
+    function getCategory(doc_id,bank_doc_id,status) {
         document.getElementById("doc_id").value  = doc_id;
+        document.getElementById("bank_doc_id").value  = bank_doc_id;
         var doc_id = $("#document_status option[value='"+status+"']").attr("selected","selected");
 
     }
