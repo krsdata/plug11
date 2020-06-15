@@ -476,8 +476,8 @@ class ApiController extends BaseController
                            $p11=1;
                         }
                         if(!isset($p11)){
-                           $item->playing11 = false; 
-                           $item->role = $item->role;
+                         //  $item->playing11 = false; 
+                          // $item->role = $item->role;
                         }             
                         $item->role = $pids_role[$item->pid];
                         return $item;
