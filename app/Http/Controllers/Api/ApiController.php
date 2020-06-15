@@ -3550,7 +3550,7 @@ class ApiController extends BaseController
                 $data2['rank']      = $result->ranks??$result->rank;
                 $data2['points']    = $result->points;
                 if(isset($result->prize_amount)){
-                    $data2['prize_amount']    = (int)$result->prize_amount??0; 
+                    $data2['prize_amount']    = $result->prize_amount??0; 
                 }
                 $matchcontests[] =  $data2 ;
                 $data2 = [];
