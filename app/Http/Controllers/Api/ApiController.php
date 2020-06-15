@@ -2582,9 +2582,13 @@ class ApiController extends BaseController
                     }   */ 
 
                     $t1 = $item->timestamp_start;
+
+                    $date_start = date('h:i:s',$t1);
+                    $item->date_start = $date_start;
+
                     $t2 = time();
                     $td = round((($t1 - $t2)/60),2);
-                    
+                                        
                     $item->time_left = ($td>0)?$td.'Min':'time up';    
 
                     if($td>(0.5)){
@@ -4888,7 +4892,7 @@ class ApiController extends BaseController
                                    // dd($item->entry_fees);
                                     if($item->entry_fees!=0 && $total_winning_prize > $total_amount_recvd && $item->total_winning_prize!=0
                                         && $item->entry_fees!=5){
-                                        
+
                                         $match_id = $item->match_id;
                                         $contest_id = $item->id;
                                         $c =$this->cancelContest($match_id,$contest_id);
