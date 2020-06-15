@@ -467,20 +467,20 @@ class ApiController extends BaseController
                                     ->first();
                         $role_cat = ['wkcap','cap','squad'];
                                     
-                        if($playing11_a && !in_array($playing11_a->role, $role_cat)){
+                        if($playing11_a){
                             $item->role = $playing11_a->role;
                             $item->playing11 = 'true';
                             $p11=1;
                         }
-                        elseif($playing11_b && !in_array($playing11_b->role, $role_cat)) {
-
+                        elseif($playing11_b) {
+                            
                            $item->role = $playing11_b->role; 
                            $item->playing11 = 'true';
                            $p11=1;
                         }else{
                            $item->playing11 = false; 
                         }
-
+                        
                         $item->role = $pids_role[$item->pid];
                         return $item;
                     });
