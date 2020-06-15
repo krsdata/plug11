@@ -400,10 +400,12 @@ class ApiController extends BaseController
                         $playing11_a = \DB::table('team_a_squads')
                                     ->where('match_id',$item->match_id)
                                     ->where('player_id',$item->pid)
+                                    ->where('playing11','true')
                                     ->first();
                         $playing11_b = \DB::table('team_b_squads')
                                     ->where('match_id',$item->match_id)
                                     ->where('player_id',$item->pid)
+                                    ->where('playing11','true')
                                     ->first();
                         if($playing11_a){
                             $item->playing11 = $playing11_a->playing11=='true'?true:false;
@@ -456,9 +458,11 @@ class ApiController extends BaseController
                         $playing11_a = \DB::table('team_a_squads')
                                     ->where('match_id',$item->match_id)
                                     ->where('player_id',$item->pid)
+                                    ->where('playing11','true')
                                     ->first();
                         $playing11_b = \DB::table('team_b_squads')
                                     ->where('match_id',$item->match_id)
+                                    ->where('playing11','true')
                                     ->where('player_id',$item->pid)
                                     ->first();
                         $role_cat = ['wkcap','cap','squad'];
@@ -476,8 +480,7 @@ class ApiController extends BaseController
                            $p11=1;
                         }
                         if(!isset($p11)){
-                         //  $item->playing11 = false; 
-                          // $item->role = $item->role;
+                           $item->playing11 = false; 
                         }             
                         $item->role = $pids_role[$item->pid];
                         return $item;
