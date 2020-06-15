@@ -55,7 +55,7 @@ class ApiController extends BaseController
         }
     }
 
-    public function contestFillNotify()
+    public function contestFillNotify(Request $request)
     {
         $device_id = User::whereNotNull('device_id')->pluck('device_id')->toArray();
 
@@ -67,15 +67,20 @@ class ApiController extends BaseController
         $t1 = $match->timestamp_start;
         $t2 = time();
         $td = round((($t1 - $t2)/60),2);
-                        
-        if($td>5 && $td%15==0){
-            $data = [
+        $cf = $match->short_title??'Contest Filling fast';
+        $data = [
             'action' => 'notify' ,
-            'title' => "🏏 $match->short_title  🕚 🏆🏆 🔔",
+            'title' => "🏏 $cf  🕚 🏆🏆 🔔",
             'message' => '**Contest is filling fast. Create your team and join the contest. Hurry up!!**'
-            ];
-        
-        $this->sendNotification($device_id, $data);   
+        ];
+                        
+        if($td>5 && $td%15==0){        
+            $this->sendNotification($device_id, $data);  
+            return ['true']; 
+        }
+        if($request->status==1){
+            $this->sendNotification($device_id, $data);  
+            return ['true'];
         }
     }
 
