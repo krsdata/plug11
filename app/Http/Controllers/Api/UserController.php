@@ -1117,6 +1117,7 @@ class UserController extends BaseController
             if($user){
                 $this->generateOtp($request);
                 $user->mobile_number = $request->mobile_number;
+                $user->is_account_verified=0;
                 $user->save();
 
             return response()->json([
