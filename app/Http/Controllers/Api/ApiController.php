@@ -2063,10 +2063,9 @@ class ApiController extends BaseController
 
             }
             if(count($mid)){
-
-                $player_match_id =  Player::whereIn('match_id',$mid)->groupBy('match_id')->pluck('match_id')->toArray();               
-                $arr = array_diff($mid,$player_match_id);
-                $this->getSquad($arr);
+              //  $player_match_id =  Player::whereIn('match_id',$mid)->groupBy('match_id')->pluck('match_id')->toArray();               
+              //  $arr = array_diff($mid,$player_match_id);
+                $this->getSquad($mid);
             }
         }
         
