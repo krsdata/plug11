@@ -4065,8 +4065,8 @@ class ApiController extends BaseController
     /*getScore*/
     public function getScore(Request $request){
 
-        $this->updatePointsAndPlayerByMatchId($request);
-        $this->updateUserMatchPoints($request);
+        //$this->updatePointsAndPlayerByMatchId($request);
+        //$this->updateUserMatchPoints($request);
         $this->prizeDistribution($request);
 
         $score = Matches::with(['teama' => function ($query) {
