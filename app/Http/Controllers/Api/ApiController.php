@@ -514,11 +514,12 @@ class ApiController extends BaseController
                 if($result->role=='wkbat'){
                     $result->role = "wk";
                 }
+                //$short_name??$result->name
                 $data[] = [
                     'pid'       => $result->pid,
                     'team_id'   => $player_team_id[$result->pid]??null,
                     'name'      => $result->name,
-                    'short_name'=> $short_name??$result->name,
+                    'short_name'=> $result->name,
                     'points'    => (float)$point,
                     'rating'    => (float)$result->rating,
                     'role'      => ($result->role=='wkbat')?'wk':$result->role,
