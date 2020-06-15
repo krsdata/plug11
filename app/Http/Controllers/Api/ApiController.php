@@ -2272,7 +2272,7 @@ class ApiController extends BaseController
                     ->toArray()
             )
             ->whereIn('status',[2,4])
-            ->orderBy('match_id','desc')
+            ->orderBy('timestamp_start','desc')
             ->get()
             ->transform(function($items,$key)use($user_id){
                 //  dd($items);
