@@ -2583,7 +2583,7 @@ class ApiController extends BaseController
 
                     $t1 = $item->timestamp_start;
 
-                    $date_start = date('h:i:s',$t1);
+                    $date_start = date('h:i A',$t1);
                     $item->date_start = $date_start;
 
                     $t2 = time();
