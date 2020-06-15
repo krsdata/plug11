@@ -917,8 +917,8 @@ class ApiController extends BaseController
             $data['team'] = $value->team_count;
             $data['point'] = $value->points;
             $data['rank'] = $value->ranks;
-            $data['prize_amount'] = (int)$value->prize_amount;
-            $data['winning_amount'] = (int)$value->winning_amount;
+            $data['prize_amount'] = $value->prize_amount;
+            $data['winning_amount'] = $value->winning_amount;
 
             $user_data =  $value->user->name;
             $fn = explode(" ",$user_data);
@@ -946,8 +946,8 @@ class ApiController extends BaseController
             $data['team'] = $value->team_count;
             $data['point'] = $value->points;
             $data['rank'] = $value->ranks;
-            $data['prize_amount'] = (int)$value->prize_amount;
-            $data['winning_amount'] = (int)$value->winning_amount;
+            $data['prize_amount'] =  $value->prize_amount;
+            $data['winning_amount'] = $value->winning_amount;
             $user_data =  $value->user->name;
             $fn = explode(" ",$user_data);
 
