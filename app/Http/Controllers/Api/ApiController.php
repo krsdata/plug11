@@ -468,20 +468,19 @@ class ApiController extends BaseController
                         $role_cat = ['wkcap','cap','squad'];
                                     
                         if($playing11_a && !in_array($playing11_a->role, $role_cat)){
-
                             $item->role = $playing11_a->role;
-                            $item->playing11 = $playing11_a->playing11=='true'?true:false;
+                            $item->playing11 = 'true';
                             $p11=1;
                         }
-                        if ($playing11_b && !in_array($playing11_b->role, $role_cat)) {
+                        elseif($playing11_b && !in_array($playing11_b->role, $role_cat)) {
 
                            $item->role = $playing11_b->role; 
-                           $item->playing11 = $playing11_b->playing11=='true'?true:false;
+                           $item->playing11 = 'true';
                            $p11=1;
-                        }
-                        if(!isset($p11)){
+                        }else{
                            $item->playing11 = false; 
-                        }             
+                        }
+
                         $item->role = $pids_role[$item->pid];
                         return $item;
                     });
