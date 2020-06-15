@@ -1111,6 +1111,7 @@ class UserController extends BaseController
                             );
                         }
                     }
+
             $user = User::find($request->user_id);
 
             if($user){
@@ -1121,7 +1122,7 @@ class UserController extends BaseController
             return response()->json([
                 "status"=>true,
                 "code"=>200,
-                "message" => 'Mobile number updated'
+                "message" => 'Mobile number updated and otp sent'
 
             ]);
 
@@ -1817,8 +1818,8 @@ class UserController extends BaseController
         $user = User::find($request->get('user_id'));
 
         if($user){
-            $data['mobile'] = $user->mobile_number;
-            $request->merge(['mobile_number' => $user->mobile_number]);
+            $data['mobile'] = $request->mobile_number??$user->mobile_number;
+            $request->merge(['mobile_number' => $request->mobile_number??$user->mobile_number]);
         }else{
             $data['mobile'] = $request->get('mobile_number');
         }
@@ -1962,7 +1963,7 @@ class UserController extends BaseController
             'datetime' => date('Y-m-d H:i:s'),
             'to' => implode(';', $recipients),
         );
-
+        //dd($param);
         $post = http_build_query($param, '', '&');
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
