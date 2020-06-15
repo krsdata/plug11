@@ -2231,6 +2231,11 @@ class ApiController extends BaseController
                     $items->has_free_contest= true;
                 }
 
+                $t1 = $items->timestamp_start;
+
+                $date_start = date('h:i A',$t1);
+                $items->date_start = $date_start;
+
                 $total_joined_team = \DB::table('join_contests')
                     ->where('match_id' ,$items->match_id)
                     ->where('user_id',$user_id)
@@ -2291,7 +2296,10 @@ class ApiController extends BaseController
                     $items->has_free_contest= true;
                 }
 
+                $t1 = $items->timestamp_start;
 
+                $date_start = date('h:i A',$t1);
+                $items->date_start = $date_start;
 
                 $total_joined_team = \DB::table('join_contests')
                     ->where('match_id' ,$items->match_id)
@@ -2364,7 +2372,10 @@ class ApiController extends BaseController
                     $items->has_free_contest= true;
                 }
 
+                $t1 = $items->timestamp_start;
 
+                $date_start = date('h:i A',$t1);
+                $items->date_start = $date_start;
 
                 $total_joined_team = \DB::table('join_contests')
                     ->where('match_id' ,$items->match_id)
