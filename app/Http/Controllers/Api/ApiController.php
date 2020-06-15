@@ -723,6 +723,18 @@ class ApiController extends BaseController
                     }
                 }
             }
+            if(isset($points_json->response)){
+                $match_obj = Matches::firstOrNew(
+                    [
+                        'match_id' => $match->match_id
+                    ]
+                );
+                $match_obj->status = $points_json->response->status;
+                $match_obj->status_str = $points_json->response->status_str;
+                $match_obj->status_note = $points_json->response->status_note;
+                $match_obj->result = $points_json->response->result;
+                $match_obj->save();
+            }
 
             /*TEAM A*/
             $team_a = TeamA::firstOrNew(['match_id' => $match->match_id]);
