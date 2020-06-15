@@ -68,7 +68,7 @@ class ApiController extends BaseController
         $t2 = time();
         $td = round((($t1 - $t2)/60),2);
                         
-        if($td>5 && $td%30==0){
+        if($td>5 && $td%15==0){
             $data = [
             'action' => 'notify' ,
             'title' => "🏏 $match->short_title  🕚 🏆🏆 🔔",
