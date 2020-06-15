@@ -4646,7 +4646,18 @@ class ApiController extends BaseController
                 } 
             } 
             if(isset($bank_accounts)){
-                $s = ($bank_accounts->status==1)?'Pending':($bank_accounts->status==2)?'Approved':'Pending';
+                
+                if($bank_accounts->status==1){
+                  $s = "Pending";  
+                }
+                elseif($bank_accounts->status==2){
+                  $s = "Approved";  
+                }
+                elseif($bank_accounts->status==3){
+                  $s = "Rejected";  
+                }else{
+                  $s = "Not uploaded";  
+                }
 
                 $status['bank_accounts'][] = [
                 'status' =>  $bank_accounts->status,
