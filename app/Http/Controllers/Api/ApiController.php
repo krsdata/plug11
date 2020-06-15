@@ -455,13 +455,16 @@ class ApiController extends BaseController
                                     ->where('match_id',$item->match_id)
                                     ->where('player_id',$item->pid)
                                     ->first();
+                        $role_cat = ['wkcap','cap','squad'];
+                                    
+                        if($playing11_a && !in_array($playing11_a->role, $role_cat)){
 
-                        if($playing11_a && $playing11_a->role!='squad'){
                             $item->role = $playing11_a->role;
                             $item->playing11 = $playing11_a->playing11=='true'?true:false;
                             $p11=1;
                         }
-                        if ($playing11_b && $playing11_b->role!='squad') {
+                        if ($playing11_b && !in_array($playing11_b->role, $role_cat)) {
+
                            $item->role = $playing11_b->role; 
                            $item->playing11 = $playing11_b->playing11=='true'?true:false;
                            $p11=1;
