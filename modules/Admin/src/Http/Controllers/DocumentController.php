@@ -94,22 +94,34 @@ class DocumentController extends Controller
         // Search by name ,email and  
         $search = Input::get('search'); 
         $user = User::where('email','LIKE',"%$search%")
-                            ->orWhere('first_name','LIKE',"%$search%")
+                            ->orWhere('name','LIKE',"%$search%")
+                            ->orWhere('team_name','LIKE',"%$search%")
                             ->get('id')->pluck('id');
-          
+         
         if ((isset($search) && !empty($search))) {
 
             $documents = Document::with('user')->where(function ($query) use ($search,$user) {
                 if (!empty($search) && !empty($user)) {
-                   $query->whereIn('user', $user);
+                   $query->whereIn('user_id', $user);
                 }
             })->orderBy('id','desc')->Paginate($this->record_per_page);
+           // dd($documents);
+            $documents->transform(function($item,$key){
+                $bankAccount = \DB::table('bank_accounts')->where('user_id',$item->user_id)->first();
+                $item->bankAccount = $bankAccount;
+                return $item;
+            });
         } else {
             $documents = Document::with('user')
                         ->orderBy('id','desc')
                         ->Paginate($this->record_per_page);
+            $documents->transform(function($item,$key){
+                $bankAccount = \DB::table('bank_accounts')->where('user_id',$item->user_id)->first();
+                $item->bankAccount = $bankAccount;
+                return $item;
+            });
         }
-        //dd($documents);
+        //return ($documents);
         return view('packages::documents.index', compact('documents', 'page_title', 'page_action', 'sub_page_title'));
     }
 
@@ -127,25 +139,44 @@ class DocumentController extends Controller
      * */
     public function store(Request $request, Document $documents)
     { 
-         
-        if($request->bank_doc_id){
-            $documents = BankAccounts::where('id',$request->bank_doc_id)->first();
-            $return_url = 'admin/bankAccount';
-            $msg = 'Bank Account status  successfully  updated!';
-        }
-        elseif($request->doc_id){
-            $documents =  Document::where('id',$request->doc_id)->first();
+        
+        if($request->doc_id){
+           // dd(1);
+            $documents1 =  Document::where('id',$request->doc_id)->first();
              $return_url = route('documents');
              $msg = 'Document status  successfully  updated!';
+           //  $request->merge(['bank_doc_uid'=>$documents->user_id]);
+            $documents1->status  = $request->document_status;
+            $documents1->notes   = $request->notes;
         }
 
-        if($documents && $request->document_status){
-            $documents->status  = $request->document_status;
-            $documents->notes   = $request->notes;
-            $documents->save(); 
+        if($request->bank_doc_id){
+            $documents2 = BankAccounts::where('id',$request->bank_doc_id)->first();
+            $return_url = 'admin/bankAccount';
+            $msg = 'Bank Account status  successfully  updated!';
+            $documents2->status  = $request->document_status;
+            $documents2->notes   = $request->notes;
         }
 
-        return Redirect::to($return_url)
+        if($request->doc_id && $request->bank_doc_id){
+            
+            $documents1->save(); 
+            $documents2->save();
+            $msg = "Document Verified"; 
+        }else{
+            if($request->document_status==2){
+
+            }else{
+                if($request->doc_id){
+                    $documents1->save();
+                }
+                if($request->bank_doc_id){
+                    $documents2->save();
+                }
+            }
+            $msg = "User has not uploaded bank account details";
+        }
+        return Redirect::to('admin/documents')
                             ->with('flash_alert_notice', $msg);
     }
     /*
