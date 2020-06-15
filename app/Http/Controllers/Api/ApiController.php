@@ -380,7 +380,8 @@ class ApiController extends BaseController
             ->whereIn('pid',$player_id);
 
         $pids = $playerObject->pluck('pid');
-        //dd($pids);
+        $pids_role = $playerObject->pluck('playing_role','pid');
+
         $player_team_id = $playerObject->pluck('team_id','pid')->toArray();
 
         if(!$mpObject){
@@ -445,7 +446,7 @@ class ApiController extends BaseController
                 ->whereIn('pid',$pids)
                 ->select('match_id','pid','name','role','rating','point','starting11')->get();
            // return $mpObject ;    
-            $mpObject->transform(function($item,$key){
+            $mpObject->transform(function($item,$key)use($pids_role){
 
                         $playing11_a = \DB::table('team_a_squads')
                                     ->where('match_id',$item->match_id)
@@ -473,7 +474,7 @@ class ApiController extends BaseController
                            $item->playing11 = false; 
                            $item->role = $item->role;
                         }             
-
+                        $item->role = $pids_role[$item->pid];
                         return $item;
                     });
             //mp=match point
