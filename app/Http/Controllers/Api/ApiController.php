@@ -2749,10 +2749,10 @@ class ApiController extends BaseController
 
             $fl = strlen(trim($fname.trim($lname)));
             
-            if($fl<=10){
+            if($fl<=20){
                 $data['short_name'] = $results->short_name;
             }else{
-                if(strlen($lname)>=10)
+                if(strlen($lname)>=20)
                 {
                     $data['short_name'] = $fname." ".$lname;
                 }
@@ -2765,7 +2765,7 @@ class ApiController extends BaseController
                     
                 }
             }
-                       
+            $data['short_name'] =  $results->title;           
             $data['fantasy_player_rating'] = ($results->fantasy_player_rating);
 
             $sel_per = $analytics->where('player_id',$results->pid)->first();
