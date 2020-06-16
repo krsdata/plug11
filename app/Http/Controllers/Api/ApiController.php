@@ -862,9 +862,9 @@ class ApiController extends BaseController
             })
             ->orderBy('ranks','ASC')
             ->get();
-
+            
             $leader_board1->transform(function($item,$key){
-                $prize = \DB::table('prize_distributions')
+               /* $prize = \DB::table('prize_distributions')
                         ->where('match_id' ,$item->match_id)
                         ->where('user_id',$item->user_id)
                         ->where('contest_id',$item->contest_id)
@@ -875,7 +875,9 @@ class ApiController extends BaseController
                     $item->prize_amount = $prize->prize_amount??$item->winning_amount;    
                 }else{
                     $item->prize_amount = $item->winning_amount??0;
-                }     
+                } */ 
+
+                $item->prize_amount = $item->winning_amount??0;   
                 return $item;
                 
             });
@@ -896,7 +898,7 @@ class ApiController extends BaseController
             ->orderBy('ranks','ASC')
             ->get()
             ->transform(function($item,$key){
-                $prize = \DB::table('prize_distributions')
+               /* $prize = \DB::table('prize_distributions')
                         ->where('match_id' ,$item->match_id)
                         ->where('user_id',$item->user_id)
                         ->where('contest_id',$item->contest_id)
@@ -907,7 +909,8 @@ class ApiController extends BaseController
                     $item->prize_amount = $prize->prize_amount??$item->winning_amount;
                 }else{
                     $item->prize_amount = $item->winning_amount??0;
-                }     
+                } */ 
+                $item->prize_amount = $item->winning_amount??0;   
                 return $item;
             });
         $lb = [];    
@@ -3528,7 +3531,7 @@ class ApiController extends BaseController
             ->orderBy('ranks','ASC')
             ->get()
             ->transform(function($item,$key){
-                 $prize = \DB::table('prize_distributions')
+                 /*$prize = \DB::table('prize_distributions')
                         ->where('match_id' ,$item->match_id)
                         ->where('user_id',$item->user_id)
                         ->where('contest_id',$item->contest_id)
@@ -3539,8 +3542,8 @@ class ApiController extends BaseController
                     $item->prize_amount = $prize->prize_amount??$item->winning_amount;    
                 }else{
                     $item->prize_amount = $item->winning_amount??0;
-                }
-                
+                }*/
+                $item->prize_amount = $item->winning_amount??0;
                 return $item;
             });
 
