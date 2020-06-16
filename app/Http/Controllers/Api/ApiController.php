@@ -272,7 +272,7 @@ class ApiController extends BaseController
     public function updateUserMatchPoints(Request $request){
         if($request->match_id){
             $matches = Matches::where('match_id',$request->match_id)
-                        ->whereDate('date_start',\Carbon\Carbon::today())
+                       // ->whereDate('date_start',\Carbon\Carbon::today())
                         ->get();
         }else{
             $matches = Matches::where('status',3)
