@@ -1924,7 +1924,7 @@ class UserController extends BaseController
     /*get profile*/
     public function getProfile(Request $request){
 
-        $user = User::select('id','name','email','user_name','referal_code','profile_image','mobile_number','birthday','status','city','gender','dateOfBirth','team_name')->find($request->user_id);
+        $user = User::select('id','name','email','referal_code','profile_image','mobile_number','birthday','status','city','gender','dateOfBirth','team_name')->find($request->user_id);
         if($user){
 
             $status = true;
