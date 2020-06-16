@@ -938,6 +938,7 @@ class ApiController extends BaseController
                 'last_name'     => $value->user->last_name,
                 'name'          => $value->user->name,
                 'user_name'     => $value->user->team_name??reset($fn),
+                'team_name'     => $value->user->team_name,
                 'profile_image' => $value->user->profile_image,
                 'short_name'    => substr($value->user->first_name,0,1).substr($value->user->last_name,0,1)
             ];
@@ -967,6 +968,7 @@ class ApiController extends BaseController
                 'last_name'     => end($fn),
                 'name'          => reset($fn).' '.end($fn),
                 'user_name'     => $value->user->team_name??reset($fn),
+                'team_name'     => $value->user->team_name,
                 'profile_image' => isset($user_data)?$value->user->profile_image:null,
                 'short_name'    => substr(reset($fn),0,1).substr(end($fn),0,1)
             ];
