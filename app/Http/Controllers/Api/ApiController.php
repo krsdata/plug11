@@ -4441,10 +4441,9 @@ class ApiController extends BaseController
 
             $helper = new Helper;
 
-            $msg = "$user->name has uploaded $documentType";
-
-            $helper = new Helper;
-            $helper->notifyToAdmin('🗎 Document uploaded 🗎',$msg);
+          //  $msg = "$user->name has uploaded $documentType";
+            
+          //  $helper->notifyToAdmin('🗎 Document uploaded 🗎',$msg);
 
             if($documentType=='pancard'){
                 $data = array();
