@@ -872,9 +872,9 @@ class ApiController extends BaseController
                         ->first();
 
                 if(isset($prize->rank)){
-                  //  $item->prize_amount = $prize->prize_amount??0;    
+                    $item->prize_amount = $prize->prize_amount??$item->winning_amount;    
                 }else{
-                   // $item->prize_amount = 0;
+                    $item->prize_amount = $item->winning_amount??0;
                 }     
                 return $item;
                 
@@ -904,9 +904,9 @@ class ApiController extends BaseController
                         ->first();
               //  $item->prize_amount = $prize;
                 if(isset($prize->rank)){
-                  //  $item->prize_amount = $prize->prize_amount??0;    
+                    $item->prize_amount = $prize->prize_amount??$item->winning_amount;
                 }else{
-                  //  $item->prize_amount = 0;
+                    $item->prize_amount = $item->winning_amount??0;
                 }     
                 return $item;
             });
