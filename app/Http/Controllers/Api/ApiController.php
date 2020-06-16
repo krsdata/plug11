@@ -4454,16 +4454,7 @@ class ApiController extends BaseController
                 $data['doc_name'] = $request->panCardName;
                 $data['doc_url_front'] = $request->pancardDocumentUrl;
                 $data['status']  =1;
-
-                $is_exist = \DB::table('verify_documents')->where('user_id',$request->user_id)->where('doc_type','pancard')->first();
-                if($is_exist){
-                    \DB::table('verify_documents')
-                            ->where('user_id',$request->user_id)
-                            ->where('doc_type','pancard')
-                            ->update($data);
-                } else{
-                     \DB::table('verify_documents')->insert($data);
-                }
+                \DB::table('verify_documents')->updateOrInsert($data,['user_id' => $request->user_id,'doc_type'=>$documentType]);
                
             }elseif($documentType=='adharcard'){
                 $data = array();
@@ -4475,7 +4466,7 @@ class ApiController extends BaseController
                 $data['doc_url_back'] = $request->aadharCardDocumentUrlBack;
                 $data['status']  =1;
 
-                \DB::table('verify_documents')->updateOrInsert(['user_id' => $request->user_id,'doc_type'=>$documentType],$data);
+                \DB::table('verify_documents')->updateOrInsert($data,['user_id' => $request->user_id,'doc_type'=>$documentType]);
                
             }elseif($documentType=='paytm'){
                 $data = array();
@@ -4483,7 +4474,7 @@ class ApiController extends BaseController
                 $data['doc_type'] = $documentType;
                 $data['doc_number'] = $request->paytmNumber;
                 $data['status']  =1;
-                \DB::table('verify_documents')->updateOrInsert(['user_id' => $request->user_id,'doc_type'=>$documentType],$data);
+                \DB::table('verify_documents')->updateOrInsert($data,['user_id' => $request->user_id,'doc_type'=>$documentType]);
                 
             }else
                 if($documentType=='passbook'){
@@ -4496,7 +4487,7 @@ class ApiController extends BaseController
                     $data['account_type'] = $request->accountType;
                     $data['bank_passbook_url'] = $request->bankPassbookUrl;
                     $data['status']  =1;
-                    \DB::table('bank_accounts')->updateOrInsert(['user_id' => $request->user_id],$data);
+                    \DB::table('bank_accounts')->updateOrInsert($data,['user_id' => $request->user_id]);
                   
                 }
             return response()->json(
