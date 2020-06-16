@@ -590,9 +590,9 @@ class UserController extends BaseController
             'city' => 'required',
             'dateOfBirth' => 'required',
             'gender' => 'required',
-            'name' => 'required'
+            'name' => 'required',
+            'team_name' => 'required'
         ]);
-
 
         // Return Error Message
         if ($validator->fails()) {
@@ -641,7 +641,7 @@ class UserController extends BaseController
             $user->city = $request->city;
             $user->dateOfBirth = $request->dateOfBirth;
             $user->gender = $request->gender;
-
+            $user->team_name = $request->team_name;
             $user->save();
 
             return response()->json(
@@ -1920,7 +1920,7 @@ class UserController extends BaseController
     /*get profile*/
     public function getProfile(Request $request){
 
-        $user = User::select('id','name','email','user_name','referal_code','profile_image','mobile_number','birthday','status','city','gender','dateOfBirth')->find($request->user_id);
+        $user = User::select('id','name','email','user_name','referal_code','profile_image','mobile_number','birthday','status','city','gender','dateOfBirth','team_name')->find($request->user_id);
         if($user){
 
             $status = true;
