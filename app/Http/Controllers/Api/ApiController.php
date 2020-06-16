@@ -2534,6 +2534,11 @@ class ApiController extends BaseController
                     ($join_match->status==2 && $join_match->current_status!=1)     
                     ){
                     $join_match->status_str = "In Review";
+
+                    if($join_match->status==4){
+                       $join_match->status_str = 'Abandoned'; 
+                    } 
+                    
                 }elseif($join_match->current_status==1){
                     $join_match->status_str = "Completed";
                 }else{
