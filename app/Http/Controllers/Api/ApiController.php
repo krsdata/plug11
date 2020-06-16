@@ -4454,7 +4454,16 @@ class ApiController extends BaseController
                 $data['doc_name'] = $request->panCardName;
                 $data['doc_url_front'] = $request->pancardDocumentUrl;
                 $data['status']  =1;
-                \DB::table('verify_documents')->updateOrInsert(['user_id' => $request->user_id,'doc_type'=>$documentType],$data);
+
+                $is_exist = \DB::table('verify_documents')->where('user_id',$request->user_id)->where('doc_type','pancard')->first();
+                if($is_exist){
+                    \DB::table('verify_documents')
+                            ->where('user_id',$request->user_id)
+                            ->where('doc_type','pancard')
+                            ->update($data);
+                } else{
+                     \DB::table('verify_documents')->insert($data);
+                }
                
             }elseif($documentType=='adharcard'){
                 $data = array();
