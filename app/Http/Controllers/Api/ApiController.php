@@ -4454,7 +4454,7 @@ class ApiController extends BaseController
                 $data['doc_name'] = $request->panCardName;
                 $data['doc_url_front'] = $request->pancardDocumentUrl;
                 $data['status']  =1;
-                \DB::table('verify_documents')->updateOrInsert($data,['user_id' => $request->user_id,'doc_type'=>$documentType]);
+                \DB::table('verify_documents')->updateOrInsert(['user_id' => $request->user_id,'doc_type'=>$documentType],$data);
                
             }elseif($documentType=='adharcard'){
                 $data = array();
@@ -4466,7 +4466,7 @@ class ApiController extends BaseController
                 $data['doc_url_back'] = $request->aadharCardDocumentUrlBack;
                 $data['status']  =1;
 
-                \DB::table('verify_documents')->updateOrInsert($data,['user_id' => $request->user_id,'doc_type'=>$documentType]);
+                \DB::table('verify_documents')->updateOrInsert(['user_id' => $request->user_id,'doc_type'=>$documentType],$data);
                
             }elseif($documentType=='paytm'){
                 $data = array();
@@ -4474,7 +4474,7 @@ class ApiController extends BaseController
                 $data['doc_type'] = $documentType;
                 $data['doc_number'] = $request->paytmNumber;
                 $data['status']  =1;
-                \DB::table('verify_documents')->updateOrInsert($data,['user_id' => $request->user_id,'doc_type'=>$documentType]);
+                \DB::table('verify_documents')->updateOrInsert(['user_id' => $request->user_id,'doc_type'=>$documentType],$data);
                 
             }else
                 if($documentType=='passbook'){
@@ -4487,7 +4487,7 @@ class ApiController extends BaseController
                     $data['account_type'] = $request->accountType;
                     $data['bank_passbook_url'] = $request->bankPassbookUrl;
                     $data['status']  =1;
-                    \DB::table('bank_accounts')->updateOrInsert($data,['user_id' => $request->user_id]);
+                    \DB::table('bank_accounts')->updateOrInsert(['user_id' => $request->user_id],$data);
                   
                 }
             return response()->json(
