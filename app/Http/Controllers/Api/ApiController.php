@@ -4419,7 +4419,6 @@ class ApiController extends BaseController
             'documentType' => 'required'
         ]);
 
-
         // Return Error Message
         if ($validator->fails()) {
             $error_msg  =   [];
@@ -4439,6 +4438,14 @@ class ApiController extends BaseController
 
         if($user){
             $documentType = $request->documentType;
+
+            $helper = new Helper;
+
+            $msg = "$user->name has uploaded $documentType";
+
+            $helper = new Helper;
+            $helper->notifyToAdmin('🗎 Document uploaded 🗎',$msg);
+
             if($documentType=='pancard'){
                 $data = array();
                 $data['user_id'] = $request->user_id;
@@ -4448,7 +4455,7 @@ class ApiController extends BaseController
                 $data['doc_url_front'] = $request->pancardDocumentUrl;
                 $data['status']  =1;
                 \DB::table('verify_documents')->updateOrInsert($data,['user_id' => $request->user_id,'doc_type'=>$documentType]);
-                $this->notifyToAdmin();
+               
             }elseif($documentType=='adharcard'){
                 $data = array();
                 $data['user_id'] = $request->user_id;
@@ -4460,7 +4467,7 @@ class ApiController extends BaseController
                 $data['status']  =1;
 
                 \DB::table('verify_documents')->updateOrInsert($data,['user_id' => $request->user_id,'doc_type'=>$documentType]);
-                $this->notifyToAdmin();
+               
             }elseif($documentType=='paytm'){
                 $data = array();
                 $data['user_id'] = $request->user_id;
@@ -4468,7 +4475,7 @@ class ApiController extends BaseController
                 $data['doc_number'] = $request->paytmNumber;
                 $data['status']  =1;
                 \DB::table('verify_documents')->updateOrInsert($data,['user_id' => $request->user_id,'doc_type'=>$documentType]);
-                $this->notifyToAdmin();
+                
             }else
                 if($documentType=='passbook'){
                     $data = array();
@@ -4481,7 +4488,7 @@ class ApiController extends BaseController
                     $data['bank_passbook_url'] = $request->bankPassbookUrl;
                     $data['status']  =1;
                     \DB::table('bank_accounts')->updateOrInsert($data,['user_id' => $request->user_id]);
-                    $this->notifyToAdmin();
+                  
                 }
             return response()->json(
                 [
@@ -5158,6 +5165,7 @@ class ApiController extends BaseController
                 
                 $amt  = $prize-$withdraw_amount;
                 $prize = $wallet->where('payment_type',4)->first();
+                $tota_balance = $prize->amount;
                 $prize->amount = $amt;
                 $access = true;
 
@@ -5165,6 +5173,7 @@ class ApiController extends BaseController
                 
                 $amt    = $referral-$withdraw_amount;
                 $prize  = $wallet->where('payment_type',2)->first();
+                $tota_balance = $prize->amount;
                 $prize->amount = $amt;
                 $access = true;
 
@@ -5176,14 +5185,13 @@ class ApiController extends BaseController
                     "message" => "You don't have sufficient balance to withdraw"
                 ]
                 );
-
             } 
 
             if($access){
                 if($prize){
-                    $prize->total_withdrawal_amount = $prize->amount;
+                    $prize->total_withdrawal_amount = $withdraw_amount;
                 }
-                
+
                 \DB::beginTransaction();
                 $prize->save();
                 $wdl = Wallet::firstOrNew([
@@ -5211,6 +5219,10 @@ class ApiController extends BaseController
                 $wt->save();
                 \DB::commit();
             }
+
+            $msg = "Hi Admin, $user->name has requested withdrawal amount $withdraw_amount. His total balance is $tota_balance";
+            $helper = new Helper;
+            $helper->notifyToAdmin('₹ Withdrawal Request ₹',$msg);
 
             return response()->json(
                 [
