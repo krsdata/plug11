@@ -956,8 +956,6 @@ class UserController extends BaseController
                 $data['city'] = $usermodel->city;
                 $data['dateOfBirth'] = $usermodel->dateOfBirth;
                 $data['gender'] = $usermodel->gender;
-                $data['pinCode'] = $usermodel->pinCode;
-                $data['state'] = $usermodel->state;
                 $status = true;
             }
             $devD = \DB::table('hardware_infos')->where('user_id',$usermodel->id)->first();
@@ -1922,7 +1920,7 @@ class UserController extends BaseController
     /*get profile*/
     public function getProfile(Request $request){
 
-        $user = User::select('id','name','email','user_name','referal_code','profile_image','mobile_number','birthday','status','city','gender','dateOfBirth','state','pinCode')->find($request->user_id);
+        $user = User::select('id','name','email','user_name','referal_code','profile_image','mobile_number','birthday','status','city','gender','dateOfBirth')->find($request->user_id);
         if($user){
 
             $status = true;
