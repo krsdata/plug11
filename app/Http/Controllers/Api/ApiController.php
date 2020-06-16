@@ -276,10 +276,10 @@ class ApiController extends BaseController
                         ->get();
         }else{
             $matches = Matches::where('status',3)
-            ->whereDate('date_start',\Carbon\Carbon::today())
+            //->whereDate('date_start',\Carbon\Carbon::today())
             ->get();
         }
-
+        
         $matches->transform(function($item,$key)use($request){
                 
                 $request->merge(['match_id'=>$item->match_id]);  
@@ -291,7 +291,7 @@ class ApiController extends BaseController
                     ->where('is_cancelled',0)
                     ->get();
                     // get contest based on contest
-                    $contests->transform(function($item,$key){
+                $contests->transform(function($item,$key){
                         $jc = \DB::table('match_stats')
                             ->where('match_id',$item->match_id)
                             ->where('contest_id',$item->id)
@@ -300,6 +300,8 @@ class ApiController extends BaseController
                                 $this->updateMatchRankByMatchId($item->match_id,$item->contest_id);      
                             });
                 });
+                 
+                $this->WinningPrizeDistribution($request);
             });
 
         return [
@@ -2538,7 +2540,7 @@ class ApiController extends BaseController
                     if($join_match->status==4){
                        $join_match->status_str = 'Abandoned'; 
                     } 
-                    
+
                 }elseif($join_match->current_status==1){
                     $join_match->status_str = "Completed";
                 }else{
@@ -3937,6 +3939,67 @@ class ApiController extends BaseController
         }
     }
 
+    public function WinningPrizeDistribution(Request $request)
+    {  
+        $match_id = $request->match_id;  
+        $get_join_contest = JoinContest::where('match_id',  $match_id)
+          ->get();
+
+        $get_join_contest->transform(function ($item, $key)   {
+            
+            $ct = CreateTeam::where('match_id',$item->match_id)
+                            ->where('user_id',$item->user_id)
+                            ->where('id',$item->created_team_id)
+                            ->first();
+            
+            $user = User::where('id',$item->user_id)->select('id','first_name','last_name','user_name','email','profile_image','validate_user','phone','device_id','name')->first();
+             
+            $team_id    =   $item->created_team_id;
+            $match_id   =   $item->match_id;
+            $user_id    =   $item->user_id;
+            $rank       =   $item->ranks; 
+            $team_name  =   $item->team_count;
+            $points     =   $item->points;
+            $contest_id =   $item->contest_id;
+
+            $contest    =  CreateContest::with('contestType','defaultContest')
+                              ->with(['prizeBreakup'=>function($q) use($rank,$points,$contest_id  )
+                                {
+                                  $q->where('rank_from','>=',$rank);
+                                  $q->orwhere('rank_upto','<=',$rank)
+                                  ->where('rank_from','>=',$rank); 
+                                }
+                              ]
+                            )
+                          ->where('match_id',$item->match_id)
+                          ->where('id',$item->contest_id) 
+                          ->where('is_cancelled',0) 
+                          ->get() 
+                          ->transform(function ($contestItem, $ckey) use($team_id,$match_id,$user_id,$rank,$team_name,$points, $contest_id,$item)  {
+                            // check wether rank is repeated
+                            
+                            $rank_repeat = $this->checkReaptedRank($rank, $match_id,$contest_id);
+                            //get average amount in case of repeated rank
+                            $rank_amount = $this->getAmountPerRank($rank,$match_id,$contestItem->default_contest_id,$rank_repeat);
+                              
+                           /*  $contestItem->prize_amount = $rank?$rank_amount:0;
+                             $contestItem->team_id = $team_id;
+                             $contestItem->match_id = $match_id;
+                             $contestItem->user_id = $user_id;
+                             $contestItem->rank = $rank;
+                             $contestItem->team_name = $team_name;
+                           */ //Rank Amount
+                            
+                            $update_join_contest = JoinContest::find($item->id);
+                            $update_join_contest->winning_amount = $rank?$rank_amount:0;
+                            $update_join_contest->save();
+                            return $contestItem;
+
+                           }); 
+        });
+        
+        return  ['winningAmount'=>'updated'];
+    }
     public function prizeDistribution(Request $request)
     {  
         $match_id = $request->match_id;  
