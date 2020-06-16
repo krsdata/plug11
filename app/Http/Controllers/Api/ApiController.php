@@ -862,7 +862,7 @@ class ApiController extends BaseController
             })
             ->orderBy('ranks','ASC')
             ->get();
-            
+
             $leader_board1->transform(function($item,$key){
                /* $prize = \DB::table('prize_distributions')
                         ->where('match_id' ,$item->match_id)
@@ -2340,7 +2340,7 @@ class ApiController extends BaseController
                 $items->prize_amount = $prize;
 
                 if($items->status==4){
-                    $items->status_str = "Cancel"; 
+                    $items->status_str = "Abandoned"; 
                 }
                 elseif($items->status==2){
                     $items->status_str = "Completed" ;
