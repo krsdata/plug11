@@ -642,6 +642,7 @@ class UserController extends BaseController
             $user->dateOfBirth = $request->dateOfBirth;
             $user->gender = $request->gender;
             $user->team_name = $request->team_name;
+            $user->all = json_encode($request->all());
             $user->save();
 
             return response()->json(
