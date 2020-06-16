@@ -849,8 +849,9 @@ class ApiController extends BaseController
         $join_contests = JoinContest::where('match_id',$request->get('match_id'))
             ->where('contest_id',$request->get('contest_id'))
             ->pluck('created_team_id')->toArray();
-        $user_id = $request->user_id;
 
+        $user_id = $request->user_id;
+        
         $leader_board1 = JoinContest::with('user')
             ->where('match_id',$request->match_id)
             ->where('contest_id',$request->get('contest_id'))
@@ -867,10 +868,11 @@ class ApiController extends BaseController
                         ->where('contest_id',$item->contest_id)
                         ->where('created_team_id',$item->created_team_id)
                         ->first();
+
                 if(isset($prize->rank)){
-                    $item->prize_amount = $prize->prize_amount??0;    
+                  //  $item->prize_amount = $prize->prize_amount??0;    
                 }else{
-                    $item->prize_amount = 0;
+                   // $item->prize_amount = 0;
                 }     
                 return $item;
                 
@@ -900,9 +902,9 @@ class ApiController extends BaseController
                         ->first();
               //  $item->prize_amount = $prize;
                 if(isset($prize->rank)){
-                    $item->prize_amount = $prize->prize_amount??0;    
+                  //  $item->prize_amount = $prize->prize_amount??0;    
                 }else{
-                    $item->prize_amount = 0;
+                  //  $item->prize_amount = 0;
                 }     
                 return $item;
             });
@@ -919,7 +921,7 @@ class ApiController extends BaseController
             $data['team'] = $value->team_count;
             $data['point'] = $value->points;
             $data['rank'] = $value->ranks;
-            $data['prize_amount'] = $value->prize_amount;
+            $data['prize_amount'] = $value->prize_amount??$value->winning_amount;
             $data['winning_amount'] = $value->winning_amount;
 
             $user_data =  $value->user->name;
@@ -948,7 +950,7 @@ class ApiController extends BaseController
             $data['team'] = $value->team_count;
             $data['point'] = $value->points;
             $data['rank'] = $value->ranks;
-            $data['prize_amount'] =  $value->prize_amount;
+            $data['prize_amount'] =  $value->prize_amount??$value->winning_amount;
             $data['winning_amount'] = $value->winning_amount;
             $user_data =  $value->user->name;
             $fn = explode(" ",$user_data);
@@ -2784,10 +2786,7 @@ class ApiController extends BaseController
             }
 
             $data = [];
-        }
-
-
-
+        } 
         return  [
             'system_time'=>time(),
             'status'=>true,
@@ -4092,7 +4091,7 @@ class ApiController extends BaseController
 
         //$this->updatePointsAndPlayerByMatchId($request);
         //$this->updateUserMatchPoints($request);
-        $this->prizeDistribution($request);
+        //$this->prizeDistribution($request);
 
         $score = Matches::with(['teama' => function ($query) {
             $query->select('match_id', 'team_id', 'name','short_name','scores_full','scores','overs');
