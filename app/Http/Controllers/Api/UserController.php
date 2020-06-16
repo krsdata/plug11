@@ -586,12 +586,12 @@ class UserController extends BaseController
         $myArr = [];
 
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
+            'user_id' => 'required'/*,
             'city' => 'required',
             'dateOfBirth' => 'required',
             'gender' => 'required',
             'name' => 'required',
-            'team_name' => 'required'
+            'team_name' => 'required'*/
         ]);
 
         // Return Error Message
