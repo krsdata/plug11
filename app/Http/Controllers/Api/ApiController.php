@@ -2675,9 +2675,6 @@ class ApiController extends BaseController
                 $vc_per = ($vc/$ct)*100;
                 $captain_per = ($captain/$ct)*100;
                 
-
-
-                
                 $item->selection = number_format($percent,1);
                 $item->trump = $trump_per;  
                 $item->vice_captain = $vc_per;
@@ -2694,9 +2691,6 @@ class ApiController extends BaseController
     public function getPlayer(Request $request)
     {
         $analytics  = $this->getAnalytics($request->match_id);
-
-        //dd($analytics->where('player_id',950483)->first());
-
         $match_id   =  $request->get('match_id');
         $matchVald  = Matches::where('match_id',$request->match_id)->count();
         if(!$matchVald){
@@ -5120,24 +5114,13 @@ class ApiController extends BaseController
 
         $user = $request->user_id;
 
-        $user = User::find($request->user_id);
-
         $verify_documents = \DB::table('verify_documents')
                 ->where('user_id',$user)
                 ->where('status',2)
-                ->get();
-        if($verify_documents->count() && $verify_documents->count()<2){
-            $msg = "Document approval pending";
-            return response()->json(
-                [
-                    "status"=>false,
-                    "code"=>201,
-                    "message" => $msg 
-                ]
-                );
-        }else{
-            $msg = "Document upload is pending";
+                ->count();
 
+        if($verify_documents && $verify_documents<2){
+            $msg = "Document approval pending";
             return response()->json(
                 [
                     "status"=>false,
@@ -5147,13 +5130,14 @@ class ApiController extends BaseController
                 );
         }
 
+        $user = User::find($request->user_id);
         if($user && $request->withdraw_amount){
-
+            
             $withdraw_amount = $request->withdraw_amount;
             $wallet = Wallet::where('user_id',$user->id)
                             ->whereIn('payment_type',[2,3,4])
                             ->get();
-
+                            
             $referral   = $wallet->where('payment_type',2)->first()->amount??0;
             //$deposit    = $wallet->where('payment_type',3)->first()->amount??0;
             $prize      = $wallet->where('payment_type',4)->first()->amount??0;
@@ -5199,7 +5183,7 @@ class ApiController extends BaseController
                 if($prize){
                     $prize->total_withdrawal_amount = $prize->amount;
                 }
-
+                
                 \DB::beginTransaction();
                 $prize->save();
                 $wdl = Wallet::firstOrNew([
