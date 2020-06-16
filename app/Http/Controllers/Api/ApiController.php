@@ -851,7 +851,7 @@ class ApiController extends BaseController
             ->pluck('created_team_id')->toArray();
 
         $user_id = $request->user_id;
-        
+
         $leader_board1 = JoinContest::with('user')
             ->where('match_id',$request->match_id)
             ->where('contest_id',$request->get('contest_id'))
@@ -2538,7 +2538,7 @@ class ApiController extends BaseController
                     $join_match->status_str = "Completed";
                 }else{
                     if($join_match->status==4){
-                       $join_match->status_str = $join_match->status_note??'Cancelled'; 
+                       $join_match->status_str = 'Abandoned'; 
                     }elseif($join_match->status==2){
                        $join_match->status_str = "Completed" ;
                     }
