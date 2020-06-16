@@ -613,7 +613,7 @@ class UserController extends BaseController
    // $password      = $request->password;
     $user = User::find($request->user_id);
      
-    if($new_password && $password){
+    /*if($new_password && $password){
 
         $credentials = [
                     'email'     =>$request->get('email'),
@@ -633,9 +633,9 @@ class UserController extends BaseController
                 )
             );
         }
-    }
+    }*/
 
-    $user = User::find($request->user_id);
+   // $user = User::find($request->user_id);
     
     if($user){
             $user->city = $request->city;
