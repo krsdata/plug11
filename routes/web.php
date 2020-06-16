@@ -19,6 +19,8 @@ Route::get('apk',function(){
 });
 
 
+Route::get('liveChat','HomeController@liveChat');
+
 Route::get('chart-line', 'ChartController@chartLine');
 Route::get('chart-line-ajax', 'ChartController@chartLineAjax');
 Route::get('charts', 'ChartController@index');
@@ -63,3 +65,4 @@ Route::match(
         'uses' => 'HomeController@getPage',
     ]
 );
+
