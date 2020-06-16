@@ -1262,7 +1262,7 @@ class UserController extends BaseController
                         if($usermodel->team_name){
                           // $usermodel->user_name = $usermodel->team_name; 
                         }else{
-                            $usermodel->team_name = $usermodel->name;
+                            $usermodel->team_name = $usermodel->team_name;
                         } 
                     }
 
