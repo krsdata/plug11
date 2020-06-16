@@ -276,7 +276,7 @@ class ApiController extends BaseController
                         ->get();
         }else{
             $matches = Matches::where('status',3)
-            //->whereDate('date_start',\Carbon\Carbon::today())
+            ->whereDate('date_start',\Carbon\Carbon::today())
             ->get();
         }
         
