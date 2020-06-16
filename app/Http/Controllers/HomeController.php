@@ -43,6 +43,11 @@ class HomeController extends BaseController
     public function home(Request $request){
          return view('home');
     }
+
+    public function liveChat(Request $request){
+        return view('liveChat');
+    }
+
     public function aboutus(Request $request){
 
         return view('aboutus');
