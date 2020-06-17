@@ -938,7 +938,7 @@ class ApiController extends BaseController
                 'last_name'     => $value->user->last_name,
                 'name'          => $value->user->name,
                 'user_name'     => $value->user->team_name??reset($fn),
-                'team_name'     => $value->user->team_name??$value->user->name,
+                'team_name'     => $value->user->team_name??reset($fn),
                 'profile_image' => $value->user->profile_image,
                 'short_name'    => substr($value->user->first_name,0,1).substr($value->user->last_name,0,1)
             ];
@@ -968,7 +968,7 @@ class ApiController extends BaseController
                 'last_name'     => end($fn),
                 'name'          => reset($fn).' '.end($fn),
                 'user_name'     => $value->user->team_name??reset($fn),
-                'team_name'     => $value->user->team_name??$value->user->name,
+                'team_name'     => $value->user->team_name??reset($fn),
                 'profile_image' => isset($user_data)?$value->user->profile_image:null,
                 'short_name'    => substr(reset($fn),0,1).substr(end($fn),0,1)
             ];
@@ -1291,7 +1291,12 @@ class ApiController extends BaseController
         $default_contest = \DB::table('default_contents')
             ->where('match_id',$match_id)
             ->whereNull('deleted_at')
-            ->get();
+            ->get()
+            ->transform(function($item,$key){
+                $contest_type = \DB::table('contest_types')->select('sort_by')->first();
+                $item->sort_by = $contest_type->sort_by??0;
+                return $item;
+            });;
 
         foreach ($default_contest as $key => $result) {
             $createContest = CreateContest::firstOrNew(
@@ -1305,6 +1310,7 @@ class ApiController extends BaseController
                 ]
             );
 
+            $createContest->sort_by            =    $result->sort_by;
             $createContest->match_id            =   $match_id;
             $createContest->contest_type        =   $result->contest_type;
             $createContest->total_winning_prize =   $result->total_winning_prize;
@@ -1327,7 +1333,8 @@ class ApiController extends BaseController
             ->whereNull('deleted_at')
             ->get()
             ->transform(function($item,$key){
-                $contest_type = \DB::table('contest_types')->select('sort_by')->first();
+                $contest_type = \DB::table('contest_types')
+                                ->where('id',$item->contest_type)->select('sort_by')->first();
                 $item->sort_by = $contest_type->sort_by??0;
                 return $item;
             });
@@ -1344,7 +1351,6 @@ class ApiController extends BaseController
 
                 ]
             );
-
             $createContest->sort_by             =   $result->sort_by;
             $createContest->match_id            =   $match_id;
             $createContest->contest_type        =   $result->contest_type;
@@ -1421,27 +1427,6 @@ class ApiController extends BaseController
 
             ];
         }
-
-        $validator = Validator::make($request->all(), [
-            //  'match_id' => 'required'
-        ]);
-
-        // Return Error Message
-        if ($validator->fails()) {
-            $error_msg  =   [];
-            foreach ( $validator->messages()->all() as $key => $value) {
-                array_push($error_msg, $value);
-            }
-
-            return Response::json(array(
-                    'system_time'=>time(),
-                    'status' => false,
-                    "code"=> 201,
-                    'message' => $error_msg[0]
-                )
-            );
-        }
-
         $contest = CreateContest::with('contestType')
             ->where('match_id',$match_id)
             ->where('is_cancelled',0)
@@ -1462,6 +1447,7 @@ class ApiController extends BaseController
                 $data2['isCancelled'] =   $result->is_cancelled?true:false;
                 $data2['totalSpots'] =   $result->total_spots;
                 $data2['firstPrice'] =   $result->first_prize;
+                $data2['sort_by'] =   $result->sort_by;
                 $data2['totalWinningPrize'] =    $result->total_winning_prize;
                 if($result->total_spots==0)
                 {
@@ -2087,13 +2073,21 @@ class ApiController extends BaseController
                 $matches->save();
 
                 $mid[] = $data_set['match_id'];
-                $this->createContest($data_set['match_id']);
+
+                if($matches->status==1){
+                    //$this->createContest($data_set['match_id']);    
+                }
                 //
 
             }
             if(count($mid)){
-              //  $player_match_id =  Player::whereIn('match_id',$mid)->groupBy('match_id')->pluck('match_id')->toArray();               
-              //  $arr = array_diff($mid,$player_match_id);
+                $player_match_id =  Matches::whereIn('match_id',$mid)->groupBy('match_id')->pluck('match_id')->toArray();               
+                $arr = array_diff($mid,$player_match_id);
+
+                foreach ($arr as $key => $mid) {
+                    $this->createContest($mid );
+                }
+
                 $this->getSquad($mid);
             }
         }
@@ -2520,8 +2514,14 @@ class ApiController extends BaseController
                         ->where('user_id',$request->user_id)
                         ->where('rank','>',0)
                         ->sum('prize_amount');
+
+                $winning_amount = \DB::table('create_contests')
+                        ->where('match_id' ,$jmatches->match_id)
+                        ->where('user_id',$request->user_id)
+                        ->where('rank','>',0)
+                        ->sum('winning_amount');
                 
-                $jmatches->prize_amount = $prize;
+                $jmatches->prize_amount = $prize??$winning_amount;
 
                 $jmatches->league_title = $league_title;
 
