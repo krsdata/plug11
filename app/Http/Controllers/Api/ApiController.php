@@ -2515,10 +2515,10 @@ class ApiController extends BaseController
                         ->where('rank','>',0)
                         ->sum('prize_amount');
 
-                $winning_amount = \DB::table('create_contests')
+                $winning_amount = \DB::table('join_contests')
                         ->where('match_id' ,$jmatches->match_id)
                         ->where('user_id',$request->user_id)
-                        ->where('rank','>',0)
+                        ->where('ranks','>',0)
                         ->sum('winning_amount');
                 
                 $jmatches->prize_amount = $prize??$winning_amount;
