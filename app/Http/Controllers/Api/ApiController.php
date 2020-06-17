@@ -2303,7 +2303,7 @@ class ApiController extends BaseController
 
                 $t1 = $items->timestamp_start;
 
-                $date_start = date('d,M Y,h:i A',$t1);
+                $date_start = date('d,M Y, h:i A',$t1);
                 $items->date_start = $date_start;
 
                 $total_joined_team = \DB::table('join_contests')
