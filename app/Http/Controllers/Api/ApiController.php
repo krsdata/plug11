@@ -641,7 +641,7 @@ class ApiController extends BaseController
             ->get();
         foreach ($matches as $key => $match) {   # code...
 
-            $points = file_get_contents('https://rest.entitysport.com/v2/matches/'.$match->match_id.'/point?token='.$this->token);
+            $points = file_get_contents($this->cric_url.'matches/'.$match->match_id.'/point?token='.$this->token);
         
             $this->storeMatchInfoAtMachine($points,'info/'.$match->match_id.'.txt');
             $points_json = json_decode($points);
@@ -678,7 +678,7 @@ class ApiController extends BaseController
 
         foreach ($matches as $key => $match) {   # code...
 
-            $points = file_get_contents('https://rest.entitysport.com/v2/matches/'.$match->match_id.'/point?token='.$this->token);
+            $points = file_get_contents($this->cric_url.'matches/'.$match->match_id.'/point?token='.$this->token);
             $points_json = json_decode($points);
             $this->storeMatchInfoAtMachine($points,'point/'.$match->match_id.'.txt');
             
@@ -718,7 +718,7 @@ class ApiController extends BaseController
         $m = [];
         foreach ($matches as $key => $match) {   # code...
 
-            $points = file_get_contents('https://rest.entitysport.com/v2/matches/'.$match->match_id.'/point?token='.$this->token);
+            $points = file_get_contents($this->cric_url.'matches/'.$match->match_id.'/point?token='.$this->token);
             $points_json = json_decode($points);
                         
             foreach ($points_json->response->points as $team => $teams) {
@@ -840,7 +840,7 @@ class ApiController extends BaseController
     // update points by LIVE Match ID
     public function getPointsByMatch(Request $request){
 
-        $points = file_get_contents('https://rest.entitysport.com/v2/matches/'.$request->match_id.'/point?token='.$this->token);
+        $points = file_get_contents($this->cric_url.'matches/'.$request->match_id.'/point?token='.$this->token);
         $points_json = json_decode($points);
         $this->storeMatchInfoAtMachine($points,'point/'.$request->match_id.'.txt');
             
@@ -1573,19 +1573,19 @@ class ApiController extends BaseController
     public function getMatchDataFromApi()
     {
         //upcoming
-        $upcoming =    file_get_contents('https://rest.entitysport.com/v2/matches/?status=1&token='.$this->token);
+        $upcoming =    file_get_contents($this->cric_url.'matches/?status=1&token='.$this->token);
         $this->storeMatchInfoAtMachine($upcoming,'upcoming/'.'upcoming.txt');
         
         \File::put(public_path('/upload/json/upcoming.txt'),$upcoming);
 
         //complted
-        $completed =    file_get_contents('https://rest.entitysport.com/v2/matches/?status=2&token='.$this->token);
+        $completed =    file_get_contents($this->cric_url.'matches/?status=2&token='.$this->token);
 
         $this->storeMatchInfoAtMachine($completed,'completed/'.'completed.txt');
         \File::put(public_path('/upload/json/completed.txt'),$completed);
 
         //live
-        $live =    file_get_contents('https://rest.entitysport.com/v2/matches/?status=3&token='.$this->token);
+        $live =    file_get_contents($this->cric_url.'matches/?status=3&token='.$this->token);
 
         $this->storeMatchInfoAtMachine($live,'live/'.'live.txt');
         \File::put(public_path('/upload/json/live.txt'),$live);
@@ -1598,7 +1598,7 @@ class ApiController extends BaseController
             $setPlaying = $is_playing;
          # code...
             $token =  $this->token;
-            $path = 'https://rest.entitysport.com/v2/matches/'.$match_id.'/squads/?token='.$token;
+            $path = $this->cric_url.'matches/'.$match_id.'/squads/?token='.$token;
             $data = $this->getJsonFromLocal($path);
             // update team a players
             $teama = $data->response->teama;
@@ -1649,7 +1649,7 @@ class ApiController extends BaseController
             );
          
         //upcoming
-        $data =  file_get_contents('https://rest.entitysport.com/v2/matches/'.$match_id.'/info?token='.$this->token);
+        $data =  file_get_contents($this->cric_url.'matches/'.$match_id.'/info?token='.$this->token);
 
         $json = json_decode($data);
         $title = $json->response->title??null;
@@ -1671,7 +1671,7 @@ class ApiController extends BaseController
 
     public function updateMatchDataById($match_id=null)
     {
-       $endpoint = 'https://rest.entitysport.com/v2/matches/'.$match_id.'/info?token='.$this->token;
+       $endpoint = $this->cric_url.'matches/'.$match_id.'/info?token='.$this->token;
         //$response = Curl::to($endpoint)->get();
         $data =    file_get_contents($endpoint);
        // $this->saveMatchDataFromAPI2DB($data);
@@ -1688,7 +1688,7 @@ class ApiController extends BaseController
                     
         foreach ($matches as $key => $result) {
             $match_id = $result->match_id;
-            $data =    file_get_contents('https://rest.entitysport.com/v2/matches/'.$match_id.'/info?token='.$this->token);
+            $data =    file_get_contents($this->cric_url.'matches/'.$match_id.'/info?token='.$this->token);
 
             $match = json_decode($data);
             if(isset($match->response)){
@@ -1720,7 +1720,7 @@ class ApiController extends BaseController
         
         foreach ($matches as $key => $match) {
 
-            $data =    file_get_contents('https://rest.entitysport.com/v2/matches/'.$match->match_id.'/info?token='.$this->token);
+            $data =    file_get_contents($this->cric_url.'matches/'.$match->match_id.'/info?token='.$this->token);
                 $this->saveMatchDataFromAPI2DB($data);
         }
 
@@ -1733,7 +1733,7 @@ class ApiController extends BaseController
         $match = Matches::where('status',3)->get();
         foreach ($match as $key => $result) {
 
-            $data =    file_get_contents('https://rest.entitysport.com/v2/matches/'.$result->match_id.'/info?token='.$this->token);
+            $data =    file_get_contents($this->cric_url.'matches/'.$result->match_id.'/info?token='.$this->token);
 
             $this->saveMatchDataById($data);
         }
@@ -1790,7 +1790,7 @@ class ApiController extends BaseController
         }
         // https://rest.entitysport.com/v2/matches/44198/info
         //upcoming
-        $data =    file_get_contents('https://rest.entitysport.com/v2/matches/'.$match_id.'/info?token='.$this->token);
+        $data =    file_get_contents($this->cric_url.'matches/'.$match_id.'/info?token='.$this->token);
 
         $this->storeMatchInfoAtMachine($data,'info/'.$match_id.'.txt');
         
@@ -2125,7 +2125,7 @@ class ApiController extends BaseController
             $cid = Competition::where('match_id',$match_id)->first();
 
             $token =  $this->token;
-            $path = 'https://rest.entitysport.com/v2/competitions/'.$cid->cid.'/squads/'.$match_id.'?token='.$this->token;
+            $path = $this->cric_url.'competitions/'.$cid->cid.'/squads/'.$match_id.'?token='.$this->token;
 
             $data_sqd = file_get_contents($path);
             $this->storeMatchInfoAtMachine($data_sqd,'squads/'.$match_id.'.txt');
@@ -2174,7 +2174,7 @@ class ApiController extends BaseController
         $cid = Competition::where('match_id',$match_id)->first();
 
         $token =  $this->token;
-        $path = 'https://rest.entitysport.com/v2/competitions/'.$cid->cid.'/squads/'.$match_id.'?token='.$this->token;
+        $path = $this->cric_url.'competitions/'.$cid->cid.'/squads/'.$match_id.'?token='.$this->token;
 
         $data = $this->getJsonFromLocal($path);
 
@@ -2845,7 +2845,7 @@ class ApiController extends BaseController
             # code...
             $t1 =  date('h:i:s');
             $token =  $this->token;
-            $path = 'https://rest.entitysport.com/v2/matches/'.$match_id.'/squads/?token='.$token;
+            $path = $this->cric_url.'matches/'.$match_id.'/squads/?token='.$token;
             $data = $this->getJsonFromLocal($path);
             // update team a players
             $teama = $data->response->teama;
@@ -2949,7 +2949,7 @@ class ApiController extends BaseController
 
         foreach ($com as $key => $result) {
 
-            $path = 'https://rest.entitysport.com/v2/competitions/'.$result->cid.'/squads/?token='.$token;
+            $path = $this->cric_url.'competitions/'.$result->cid.'/squads/?token='.$token;
 
             $data = $this->getJsonFromLocal($path);
 
@@ -4909,7 +4909,8 @@ class ApiController extends BaseController
 
             try{
                 $token =  $this->token;
-                $path = 'https://rest.entitysport.com/v2/matches/'.$match_id.'/squads/?token='.$token;
+                $path = $this->cric_url.'matches/'.$match_id.'/squads/?token='.$token;
+
                 $data = $this->getJsonFromLocal($path);
             }catch(\ErrorException $e){
                 continue;
