@@ -62,7 +62,7 @@ class AppServiceProvider extends ServiceProvider
         } 
         
         View::share('main_menu',$main_menu??null); 
-        View::share('setting',$setting);
+        View::share('setting',$setting??null);
     }
 
     /**
