@@ -711,12 +711,13 @@ class ApiController extends BaseController
                 ->whereDate('updated_at',\Carbon\Carbon::today())
                 ->get(); 
         }
+        $m = [];
         foreach ($matches as $key => $match) {   # code...
 
             $points = file_get_contents('https://rest.entitysport.com/v2/matches/'.$match->match_id.'/point?token='.$this->token);
             $points_json = json_decode($points);
          //   $this->storeMatchInfoAtMachine($points,'point/'.$match->match_id.'.txt');
-            $m = [];
+            
             foreach ($points_json->response->points as $team => $teams) {
                
                 if($teams==""){
