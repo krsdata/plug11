@@ -5006,7 +5006,7 @@ class ApiController extends BaseController
     /*Match auto cancel if not filled*/
     public function matchAutoCancel(){
 
-        $cancel_match = Matches::whereIn('status',[1,3])
+        $cancel_match = Matches::whereIn('status',[3])
                        ->whereDate('date_start',\Carbon\Carbon::today())
                        ->get()
                         ->transform(function($item,$key){
@@ -5015,7 +5015,6 @@ class ApiController extends BaseController
                             $t2 = time();
                             //time diff
                             $td = round((($t1 - $t2)/60),2);    
-                       // if(1){    
                         if($td<=0){
                             $contests = CreateContest::where('match_id',$item->match_id)
                                         ->where('total_spots','>',0)
@@ -5025,7 +5024,6 @@ class ApiController extends BaseController
                                            
                                     $total_winning_prize = $item->total_winning_prize;
                                     $total_amount_recvd = $item->filled_spot*$item->entry_fees;
-                                    //if($item->entry_fees!=0 && $total_winning_prize < $total_amount_recvd){
                                    // dd($item->entry_fees);
                                     if($item->entry_fees!=0 && $total_winning_prize > $total_amount_recvd && $item->total_winning_prize!=0
                                         ){
