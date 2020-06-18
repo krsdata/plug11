@@ -703,10 +703,14 @@ class ApiController extends BaseController
     }
     // update points by LIVE Match
     public function updatePoints(Request $request){
-        $matches = Matches::where('status',3)
-                ->whereDate('updated_at',\Carbon\Carbon::today())
+        if($request->match_id){
+            $matches = Matches::where('match_id',$request->match_id)
                 ->get();
-
+        }else{
+           $matches = Matches::where('status',3)
+                ->whereDate('updated_at',\Carbon\Carbon::today())
+                ->get(); 
+        }
         foreach ($matches as $key => $match) {   # code...
 
             $points = file_get_contents('https://rest.entitysport.com/v2/matches/'.$match->match_id.'/point?token='.$this->token);
