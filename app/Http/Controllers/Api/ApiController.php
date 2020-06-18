@@ -270,6 +270,7 @@ class ApiController extends BaseController
     }
 
     public function updateUserMatchPoints(Request $request){
+
         if($request->match_id){
             $matches = Matches::where('match_id',$request->match_id)
                        // ->whereDate('date_start',\Carbon\Carbon::today())
@@ -703,7 +704,9 @@ class ApiController extends BaseController
     }
     // update points by LIVE Match
     public function updatePoints(Request $request){
+        
         if($request->match_id){
+            echo date('H:i:s A <-> ');
             $matches = Matches::where('match_id',$request->match_id)
                 ->get();
         }else{
@@ -711,13 +714,13 @@ class ApiController extends BaseController
                 ->whereDate('updated_at',\Carbon\Carbon::today())
                 ->get(); 
         }
+
         $m = [];
         foreach ($matches as $key => $match) {   # code...
 
             $points = file_get_contents('https://rest.entitysport.com/v2/matches/'.$match->match_id.'/point?token='.$this->token);
             $points_json = json_decode($points);
-         //   $this->storeMatchInfoAtMachine($points,'point/'.$match->match_id.'.txt');
-            
+                        
             foreach ($points_json->response->points as $team => $teams) {
                
                 if($teams==""){
@@ -730,14 +733,23 @@ class ApiController extends BaseController
                         if($result->pid==null){
                             continue;
                         }
-                        $m[$result->name] = $result->point;
+                        
+                        $m[$result->role][] = [
+                            'name'=>$result->name,
+                            'point'=> $result->point,
+                            'role' => $result->role
+                        ];
+
                         MatchPoint::updateOrCreate(
                             ['match_id'=>$match->match_id,'pid'=>$result->pid],
                             (array)$result);
                     }
                 }
             }
-            //dd($m);
+
+            $request->merge(['match_id' =>  $match->match_id]);
+            $this->updateUserMatchPoints($request);    
+            
             if(isset($points_json->response)){
                 $match_obj = Matches::firstOrNew(
                     [
@@ -774,9 +786,10 @@ class ApiController extends BaseController
             }  
             $team_b->save(); 
         }
-
-        if($request->user_id && $m){
-            return $m;  
+        if($request->user_id==285 && $m){
+            $this->updateUserMatchPoints($request);
+            echo date('H:i:s A -');
+            return $m;
         }else{
             return 'points updated';
         } 
