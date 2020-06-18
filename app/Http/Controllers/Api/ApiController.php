@@ -2530,7 +2530,7 @@ class ApiController extends BaseController
                 $jmatches->winning_amount = $winning_amount;
 
                 $join_match->winning_amount = $winning_amount;
-                $join_match->prize_amount = $winning_amount;
+                $join_match->prize_amount = $winning_amount??$prize;
                 $jmatches->league_title = $league_title;
 
                 if($jmatches->is_free==0){
