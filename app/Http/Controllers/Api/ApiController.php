@@ -353,7 +353,7 @@ class ApiController extends BaseController
         return ['match_id'=>$match_id];
 
     }
-    
+
     public function getPoints(request $request){
 
         $team_id = CreateTeam::find($request->team_id);
@@ -739,7 +739,7 @@ class ApiController extends BaseController
                             'point'=> $result->point,
                             'role' => $result->role
                         ];
-                        
+
                         MatchPoint::updateOrCreate(
                             ['match_id'=>$match->match_id,'pid'=>$result->pid],
                             (array)$result);
@@ -4864,7 +4864,7 @@ class ApiController extends BaseController
         $matches = Matches::whereIn('status',[1,3])
                    ->whereDate('date_start',\Carbon\Carbon::today())
                     ->get(['match_id','timestamp_start','status']);
-                   
+                
         foreach ($matches as $key => $match) {
             $match_id = $match->match_id;
 
@@ -4879,33 +4879,41 @@ class ApiController extends BaseController
                     )->where('playing11',true)->count();
 
             if($td>0 && $td<=60){
-                $this->isLineUp($match_id);
+                if($p11){
+                    $this->isLineUp($match_id);
+                     continue;    
+                }
             }else{
                 continue;
             }
 
             if($p11){
+               
                 if($match->status==3){
-                    continue;
-                }
-
-                $match_obj = Match::firstOrNew(
+                    $match_obj = Match::firstOrNew(
                         [
                             'match_id'=>$match_id
                         ]
                     );
+                    if($match_obj->status==3){
+                        continue;
+                    }
 
                     $match_obj->status =  3;
                     $match_obj->save();
-
+                    continue;
+                }
                 continue;
             }
             # code...
-            $token =  $this->token;
-            $path = 'https://rest.entitysport.com/v2/matches/'.$match_id.'/squads/?token='.$token;
 
-            $data = $this->getJsonFromLocal($path);
-
+            try{
+                $token =  $this->token;
+                $path = 'https://rest.entitysport.com/v2/matches/'.$match_id.'/squads/?token='.$token;
+                $data = $this->getJsonFromLocal($path);
+            }catch(\ErrorException $e){
+                continue;
+            }
             // update team a players
             $teama = $data->response->teama;
             if(isset($teama)){
