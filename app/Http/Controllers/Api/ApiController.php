@@ -774,7 +774,7 @@ class ApiController extends BaseController
             $team_b->save(); 
         }
 
-        if($request->user_id){
+        if($request->user_id && $m){
             return $m;  
         }else{
             return 'points updated';
