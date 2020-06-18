@@ -340,7 +340,7 @@ class ApiController extends BaseController
                     ['ranking'=>$row->rank]);
 
                     $jc = JoinContest::find($row->join_contest_id);
-                        
+                                        
                     if($jc){
                         $jc->ranks = $row->rank;
                         $jc->save();
@@ -353,7 +353,7 @@ class ApiController extends BaseController
         return ['match_id'=>$match_id];
 
     }
-
+    
     public function getPoints(request $request){
 
         $team_id = CreateTeam::find($request->team_id);
@@ -739,7 +739,7 @@ class ApiController extends BaseController
                             'point'=> $result->point,
                             'role' => $result->role
                         ];
-
+                        
                         MatchPoint::updateOrCreate(
                             ['match_id'=>$match->match_id,'pid'=>$result->pid],
                             (array)$result);
