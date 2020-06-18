@@ -2075,7 +2075,7 @@ class ApiController extends BaseController
                 $mid[] = $data_set['match_id'];
 
                 if($matches->status==1){
-                    //$this->createContest($data_set['match_id']);    
+                    $this->createContest($data_set['match_id']);   
                 }
                 //
 
@@ -2509,26 +2509,26 @@ class ApiController extends BaseController
                 //dd($jmatches);
 
                $winning_amount = $join_cont->where('user_id',$request->user_id)         ->where('match_id',$jmatches->match_id)
+                            ->where('ranks','>',0)
                             ->sum('winning_amount');
 
                 $join_match = $jmatches;
-                $league_title = \DB::table('competitions')->where('id',$jmatches->competition_id)->first()->title??null;
+                $league_title = \DB::table('competitions')->where('id',$jmatches->competition_id)
+                    ->first()->title??null;
 
                 $prize = \DB::table('prize_distributions')
                         ->where('match_id' ,$jmatches->match_id)
                         ->where('user_id',$request->user_id)
                         ->where('rank','>',0)
                         ->sum('prize_amount');
-
+                        /*
                 $winning_amount = \DB::table('join_contests')
                         ->where('match_id' ,$jmatches->match_id)
                         ->where('user_id',$request->user_id)
                         ->where('ranks','>',0)
-                        ->sum('winning_amount');
+                        ->sum('winning_amount');*/
                 
-                $jmatches->prize_amount = $prize??$winning_amount;
-                $jmatches->winning_amount = $winning_amount;
-
+              //  $jmatches->prize_amount = $prize??$winning_amount;
                 $join_match->winning_amount = $winning_amount;
                 $join_match->prize_amount = $winning_amount??$prize;
                 $jmatches->league_title = $league_title;
