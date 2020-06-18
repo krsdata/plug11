@@ -2488,9 +2488,10 @@ class ApiController extends BaseController
     public function getMatch(Request $request){
         $user = $request->user_id;
         $banner = \DB::table('banners')->select('title','url','actiontype')->get();
-        $join_contests =  \DB::table('join_contests')->where('user_id',$user)->get('match_id');
+        $join_cont =  \DB::table('join_contests')->where('user_id',$user);
+        $join_contests = $join_cont->get('match_id');
+        
         $jm = [];
-
         $created_team = CreateTeam::where('user_id',$user)
            // ->where('team_join_status',1)
             ->orderBy('updated_at','desc')
@@ -2506,6 +2507,10 @@ class ApiController extends BaseController
                     ->orderBy('status','DESC')
                     ->first();
                 //dd($jmatches);
+
+               $winning_amount = $join_cont->where('user_id',$request->user_id)         ->where('match_id',$jmatches->match_id)
+                            ->sum('winning_amount');
+
                 $join_match = $jmatches;
                 $league_title = \DB::table('competitions')->where('id',$jmatches->competition_id)->first()->title??null;
 
@@ -2522,6 +2527,7 @@ class ApiController extends BaseController
                         ->sum('winning_amount');
                 
                 $jmatches->prize_amount = $prize??$winning_amount;
+                $jmatches->winning_amount = $winning_amount;
 
                 $jmatches->league_title = $league_title;
 
@@ -5250,5 +5256,4 @@ class ApiController extends BaseController
             );
         }
     }
-    
 }
