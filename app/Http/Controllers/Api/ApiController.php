@@ -716,7 +716,6 @@ class ApiController extends BaseController
             $points = file_get_contents('https://rest.entitysport.com/v2/matches/'.$match->match_id.'/point?token='.$this->token);
             $points_json = json_decode($points);
          //   $this->storeMatchInfoAtMachine($points,'point/'.$match->match_id.'.txt');
-            
             $m = [];
             foreach ($points_json->response->points as $team => $teams) {
                
@@ -724,18 +723,20 @@ class ApiController extends BaseController
                     continue;
                 }
                 foreach ($teams as $key => $players) {
+
                     foreach ($players as $key => $result) {
                         $result->match_id = $match->match_id;
                         if($result->pid==null){
                             continue;
                         }
-
+                        $m[$result->name] = $result->point;
                         MatchPoint::updateOrCreate(
                             ['match_id'=>$match->match_id,'pid'=>$result->pid],
                             (array)$result);
                     }
                 }
             }
+            //dd($m);
             if(isset($points_json->response)){
                 $match_obj = Matches::firstOrNew(
                     [
@@ -771,10 +772,14 @@ class ApiController extends BaseController
                 }
             }  
             $team_b->save(); 
-
         }
 
-        echo 'points_updated';
+        if($request->user_id){
+            return $m;  
+        }else{
+            return 'points updated';
+        } 
+       
     }
 
     public function getContestStat(Request $request){
