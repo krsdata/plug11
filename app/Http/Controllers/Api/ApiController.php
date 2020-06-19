@@ -2115,10 +2115,6 @@ class ApiController extends BaseController
                 //$player_match_id =  Matches::whereIn('match_id',$mid)->groupBy('match_id')->pluck('match_id')->toArray();               
                 //$arr = array_diff($mid,$player_match_id);
 
-                foreach ($arr as $key => $mid) {
-                  //  $this->createContest($mid );
-                }
-
                 $this->getSquad($mid);
             }
         }
