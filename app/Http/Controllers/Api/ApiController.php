@@ -1767,7 +1767,7 @@ class ApiController extends BaseController
         }
 
         //upcoming $this->cric_url
-        $data =    file_get_contents($this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=30');
+        $data =    file_get_contents($this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=10');
 
         \File::put(public_path('/upload/json/'.$fileName.'.txt'),$data);
         
@@ -2105,18 +2105,18 @@ class ApiController extends BaseController
 
                 $mid[] = $data_set['match_id'];
 
-                if($matches->status==1){
+               // if($matches->status==1){
                     $this->createContest($data_set['match_id']);   
-                }
+               // }
                 //
 
             }
             if(count($mid)){
-                $player_match_id =  Matches::whereIn('match_id',$mid)->groupBy('match_id')->pluck('match_id')->toArray();               
-                $arr = array_diff($mid,$player_match_id);
+                //$player_match_id =  Matches::whereIn('match_id',$mid)->groupBy('match_id')->pluck('match_id')->toArray();               
+                //$arr = array_diff($mid,$player_match_id);
 
                 foreach ($arr as $key => $mid) {
-                    $this->createContest($mid );
+                  //  $this->createContest($mid );
                 }
 
                 $this->getSquad($mid);
