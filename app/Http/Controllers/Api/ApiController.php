@@ -2531,9 +2531,11 @@ class ApiController extends BaseController
                     ->first();
                 //dd($jmatches);
 
-               $winning_amount = $join_cont->where('user_id',$request->user_id)         ->where('match_id',$jmatches->match_id)
-                            ->where('ranks','>',0)
-                            ->sum('winning_amount');
+               $winning_amount = $join_cont->where('cancel_contest',0)
+                        ->where('user_id',$request->user_id)
+                        ->where('match_id',$jmatches->match_id)
+                        ->where('ranks','>',0)
+                        ->sum('winning_amount');
 
                 $join_match = $jmatches;
                 $league_title = \DB::table('competitions')->where('id',$jmatches->competition_id)
