@@ -4841,9 +4841,10 @@ class ApiController extends BaseController
             ->where('is_cloned','!=',1)
             ->where('entry_fees','>',0)
             ->where('total_spots','!=',30)
+            ->where('total_spots','!=',20)
            /* ->where('total_spots','>',20)
             ->where('total_spots','!=',3)
-            ->where('total_spots','!=',5)
+            
             ->where('total_spots','!=',2)*/
             ->get();
         //->where('entry_fees','>',0)
