@@ -12,7 +12,7 @@
 */
 
 Route::get('apkDownload',function(){
-   return \Response::download('public/upload/apk/sportsfight.apk'); 
+   return redirect(url('public/upload/apk/sportsfight.apk'));
 });
 Route::get('apk',function(){
    return \Response::download('public/upload/apk/sportsfight.apk'); 
