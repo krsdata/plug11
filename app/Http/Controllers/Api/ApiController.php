@@ -899,8 +899,12 @@ class ApiController extends BaseController
                 }else{
                     $item->prize_amount = $item->winning_amount??0;
                 } */ 
+                $item->prize_amount = $item->winning_amount??0;
+                if($item->cancel_contest==1){
+                    $item->prize_amount = 0;    
+                }
 
-                $item->prize_amount = $item->winning_amount??0;   
+                   
                 return $item;
                 
             });
@@ -933,7 +937,11 @@ class ApiController extends BaseController
                 }else{
                     $item->prize_amount = $item->winning_amount??0;
                 } */ 
-                $item->prize_amount = $item->winning_amount??0;   
+                //$item->prize_amount = $item->winning_amount??0;  
+                $item->prize_amount = $item->winning_amount??0;
+                if($item->cancel_contest==1){
+                    $item->prize_amount = 0;    
+                } 
                 return $item;
             });
         $lb = [];    
