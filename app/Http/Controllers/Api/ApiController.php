@@ -3393,7 +3393,6 @@ class ApiController extends BaseController
             foreach ( $validator->messages()->all() as $key => $value) {
                 array_push($error_msg, $value);
             }
-
             return Response::json(array(
                     'system_time'=>time(),
                     'status' => false,
@@ -3408,7 +3407,6 @@ class ApiController extends BaseController
             ->whereIn('id',$join_contests)
             ->orderBy('sort_by','ASC')
             ->get();
-
 
         if($contest){
             $matchcontests = [];
@@ -3435,19 +3433,17 @@ class ApiController extends BaseController
                   //  continue;
                 }
 
-                $data2['contestTitle'] = $result->contestType->contest_type;
-                $data2['contestSubTitle'] =$result->contestType->description;
-                $data2['contestId'] =    $result->id;
-                //  $data2['totalWinningPrize'] =    $result->total_winning_prize;
-                $data2['entryFees'] =    $result->entry_fees;
-                // $data2['totalSpots'] =   $result->total_spots;
-                $data2['filledSpots'] =  $result->filled_spot;
-                //  $data2['firstPrice'] =   $result->first_prize;
-                $data2['winnerPercentage'] = $result->winner_percentage;
-                $data2['maxAllowedTeam'] =   $result->contestType->max_entries;
-                $data2['cancellation'] = $result->cancellable;
-                $data2['maxEntries'] =  $result->contestType->max_entries;
-                $data2['joinedTeams'] = $myjoinedContest;
+                $data2['contestTitle']      =  $result->contestType->contest_type;
+                $data2['contestSubTitle']   =  $result->contestType->description;
+                $data2['contestId']         =  $result->id;
+
+                $data2['entryFees']         =  $result->entry_fees;
+                $data2['filledSpots']       =  $result->filled_spot;
+                $data2['winnerPercentage']  =  $result->winner_percentage;
+                $data2['maxAllowedTeam']    =  $result->contestType->max_entries;
+                $data2['cancellation']      =  $result->cancellable;
+                $data2['maxEntries']        =  $result->contestType->max_entries;
+                $data2['joinedTeams']       =  $myjoinedContest;
 
 
                 $matchcontests[] = $data2;
@@ -3456,7 +3452,7 @@ class ApiController extends BaseController
 
             $match_info = $this->setMatchStatusTime($match_id);
           //  dd($match_info);
-            return response()->json(
+             return response()->json(
                 [
                     'system_time'=>time(),
                     'match_status' => $match_info['match_status']??null,
@@ -3570,7 +3566,11 @@ class ApiController extends BaseController
                 }else{
                     $item->prize_amount = $item->winning_amount??0;
                 }*/
-                $item->prize_amount = $item->winning_amount??0;
+                $item->prize_amount = 0;
+                if($item->cancel_contest==1){
+                    $item->prize_amount = $item->winning_amount??0;
+                }
+                
                 return $item;
             });
 
