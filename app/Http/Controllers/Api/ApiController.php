@@ -4892,7 +4892,7 @@ class ApiController extends BaseController
                         [
                             'match_id'=>$match_id
                         ]
-                    )->where('playing11',true)->count();
+                    )->where('playing11','true')->count();
 
             if($td>0 && $td<=60){
                 if($p11){
@@ -4903,8 +4903,7 @@ class ApiController extends BaseController
             }
 
             if($p11){
-               
-                if($match->status==3){
+                if($match->status==1){
                     $match_obj = Match::firstOrNew(
                         [
                             'match_id'=>$match_id
