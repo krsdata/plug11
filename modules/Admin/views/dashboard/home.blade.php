@@ -258,7 +258,7 @@
                                 <div class="display">
                                     <div class="number">
                                         <h3 class="font-blue-sharp">
-                                            <span data-counter="counterup" data-value="567">{{$join_contest_amt}} INR  </span>
+                                            <span data-counter="counterup" data-value="567">{{round($join_contest_amt,2)}} INR  </span>
                                         </h3>
                                         <small> Total Contest Amount </small>
                                     </div>
