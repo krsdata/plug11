@@ -90,6 +90,14 @@ class TransactionController extends Controller {
             $wt->debit_credit_status = '+';  
            }
 
+           $data = [
+                        'action' => 'notify' ,
+                        'title' => "$wt->payment_status",
+                        'message' => "Hi $user->name, Your $wt->payment_status"
+                    ];
+            $this->sendNotification($token, $data);
+            
+
            $wt->save(); 
         }
 
@@ -219,9 +227,10 @@ class TransactionController extends Controller {
 
             $data = [
                         'action' => 'notify' ,
-                        'title' => "Withdraw Released ",
-                        'message' => "Hi $user->name, Your withdraw amount successfully sent"
+                        'title' => "Amount Withdrawal Released ",
+                        'message' => "Hi $user->name, Your withdraw amount ₹ $wt->amount successfully sent"
                     ];
+
             if($user){        
                 $wt->payment_type_string =  'Withdraw amount Released';
                 $wt->payment_status      =  'Withdraw amount Released';
