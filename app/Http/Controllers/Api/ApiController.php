@@ -74,7 +74,7 @@ class ApiController extends BaseController
             'message' => '**Contest is filling fast. Create your team and join the contest. Hurry up!!**'
         ];
                         
-        if($td>5 && $td%15==0){        
+        if($td>5 && $td%15==0 || $td<120){        
             $this->sendNotification($device_id, $data);  
             return ['true']; 
         }
