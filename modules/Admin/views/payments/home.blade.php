@@ -47,7 +47,7 @@
                                            
                                         </form>
                                          <div class="col-md-2">
-                                             <a href="{{ route('transaction') }}">   <input type="submit" value="Reset" class="btn btn-default form-control"> </a>
+                                             <a href="{{ route('payments') }}">   <input type="submit" value="Reset" class="btn btn-default form-control"> </a>
                                         </div>
                                        
                                         </div>
@@ -58,6 +58,8 @@
                                             <tr>
                                                 <th> Sno. </th>
                                                 <th>   Name </th>
+                                                <th>Bank details</th>
+                                                <th>Transaction</th>
                                                 <th> Available Balance</th> 
                                                 <th> Request Amount </th> 
                                                 <th> Status</th>  
@@ -84,6 +86,18 @@
                                                   <br>{{$result->email}}
                                                 </a>
                                                    </td>
+                                                   <td>
+                                                    <a href="{{url('admin/documents?search='.$result->email)}}" target="_blank">
+                                                   View Account
+                                                 </a>
+                                                 </td>
+
+                                                 <td>
+                                                    <a href="{{url('admin/wallets?search='.$result->email)}}" target="_blank">
+                                                   View Wallet
+                                                 </a>
+                                                 </td>
+
                                                 <td>INR {{$result->total_balance-$result->paid_balance}} </td>
                                                  <td>INR {{$result->amount}} </td>
                                                  <td>{{$result->withdraw_status}}
@@ -95,10 +109,9 @@
         <li class="dropdown ">
           <a href="#" class="dropdown-toggle btn-danger btn btn-sm" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Payment Action <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="{{url('admin/payments?status=1&txt_id='.$result->id)}}">Payment Initiated</a></li>
-            <li><a href="{{url('admin/payments?status=2&txt_id='.$result->id)}}">Payment Hold</a></li>
-            <li><a href="{{url('admin/payments?status=3&txt_id='.$result->id)}}">Payment Failed</a></li>
-            <li><a href="{{url('admin/payments?status=4&txt_id='.$result->id)}}">Payment Rejected</a></li> 
+            <li><a href="{{url('admin/payments?status=2&txt_id='.$result->id)}}">Payment Initiated</a></li>
+            <li><a href="{{url('admin/payments?status=3&txt_id='.$result->id)}}">Payment Hold</a></li>
+            <li><a href="{{url('admin/payments?status=4&txt_id='.$result->id)}}">Payment Refund</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="#"   data-toggle="modal" data-target="#myModal" onclick="payment('{{$result->id}}',{{$result->amount}})">Release Fund</a></li>
             <li role="separator" class="divider"></li> 

@@ -25,9 +25,9 @@ use Session;
 use Route;
 use Crypt;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Dispatcher; 
-use Modules\Admin\Helpers\Helper as Helper; 
+use Illuminate\Http\Dispatcher;
 use App\Helpers\FCMHelper;
+use App\Helpers\Helper;
 use Response;
 use App\Models\Wallet;
 use App\Models\WalletTransaction;
@@ -72,7 +72,26 @@ class TransactionController extends Controller {
         $user = User::where('email','LIKE',"%$search%")
                             ->orWhere('name','LIKE',"%$search%")
                             ->get('id')->pluck('id');
-       // dd($user);
+        
+        $payment_string = ['2'=>'Withdraw Initiated','3'=>'Payment Hold','4'=>'Withdraw amount Refunded','5'=>'Withdraw amount Released'];
+
+        $wt = WalletTransaction::find($request->txt_id);   
+        if($wt && $request->status>1){
+           $wt->payment_type_string =  $payment_string[$request->status];
+           $wt->payment_status      =  $payment_string[$request->status];
+           $wt->withdraw_status     =  $request->status;
+
+           if($request->status==4 && $wt->payment_status!=4){
+                $Wallet = Wallet::where('user_id',$wt->user_id)
+                            ->where('payment_type',4)
+                            ->first();
+                $Wallet->amount = $Wallet->amount+$wt->amount;
+                $Wallet->save();
+           }
+
+           $wt->save(); 
+        }
+
         if ((isset($search) && !empty($search))) { 
                
             $transaction = $transaction->where(function ($query) use ($search,$user) {
@@ -80,13 +99,12 @@ class TransactionController extends Controller {
                    $query->whereIn('user_id', $user);
                 }
             })
-            ->where('withdraw_status',1)
             ->select("*",
                         \DB::raw('(CASE 
                         WHEN withdraw_status = 1 THEN "New Request"
                         WHEN withdraw_status = 2 THEN "Initiated"
                         WHEN withdraw_status = 3 THEN "Payment Hold"
-                        WHEN withdraw_status = 4 THEN "Payment Rejected"
+                        WHEN withdraw_status = 4 THEN "Payment Refunded"
                         WHEN withdraw_status = 5 THEN "Payment Released"
                         ELSE "New Request" 
                         END) AS withdraw_status'))
@@ -119,16 +137,17 @@ class TransactionController extends Controller {
         } else {   
 
             $transaction = WalletTransaction::where('payment_type',5)
-                        ->orderBy('id','desc')
                         ->select("*",
                         \DB::raw('(CASE 
                         WHEN withdraw_status = 1 THEN "New Request"
                         WHEN withdraw_status = 2 THEN "Initiated"
                         WHEN withdraw_status = 3 THEN "Payment Hold"
-                        WHEN withdraw_status = 4 THEN "Payment Rejected"
+                        WHEN withdraw_status = 4 THEN "Payment Refund"
                         WHEN withdraw_status = 5 THEN "Payment Released"
                         ELSE "New Request" 
-                        END) AS withdraw_status'))->Paginate($this->record_per_page);
+                        END) AS withdraw_status'))
+                        ->whereIn('withdraw_status',[1,2,3,5])
+                        ->orderBy('withdraw_status','ASC')->Paginate($this->record_per_page);
                         
                         $transaction->transform(function($item, $Key){
                             $item->withdraw_amount = WalletTransaction::where('withdraw_status',1)
@@ -185,35 +204,78 @@ class TransactionController extends Controller {
      * Save Group method
      * */
 
-    public function store(Request $request, Transaction $transaction) 
+    public function store(Request $request, WalletTransaction $transaction) 
     {
-        $transaction = Transaction::find($request->payment_id);   
+        $wt = WalletTransaction::find($request->payment_id);   
         
-        if($transaction){
-            $user     = User::find($transaction->user_id);
+        if($wt){
+            $user     = User::find($wt->user_id??0);
             $adminUser  = User::find(env('DEFAULT_USER_ID'));
-          
+            
             $registatoin_ids=array();
 
-            $registatoin_ids[]= $user->notification_id;
-            $registatoin_ids[]= $adminUser->notification_id;
-            
-            $type = "Android";
-            $message["title"] = "Order is Ready ";
-            $message["action"] = "notify";
-            $message["message"] = "Your order id ".$transaction->order_id." is ready to download";
-            $transaction->status = 5;
-            $transaction->request_status = 2;
-            $transaction->remarks = $request->remarks;
-            $transaction->save();
+            $token =  $user->device_id;
 
-            $fcmHelper = new FCMHelper;
-            $fcmHelper->send_notification($registatoin_ids,$message,$type);
+            $data = [
+                        'action' => 'notify' ,
+                        'title' => "Withdraw Released ",
+                        'message' => "Hi $user->name, Your withdraw amount successfully sent"
+                    ];
+            if($user){        
+                $wt->payment_type_string =  'Withdraw amount Released';
+                $wt->payment_status      =  'Withdraw amount Released';
+                $wt->withdraw_status     =  5;
+                $wt->save();
+                $this->sendNotification($token, $data);
+            }
         }
-        
-        
+
         return Redirect::to(route('payments'))
-                            ->with('flash_alert_notice', 'Payment Done');
+                            ->with('flash_alert_notice', 'Payment Released');
+    }
+
+    public function sendNotification($token, $data){
+     
+        $serverLKey = 'AIzaSyAFIO8uE_q7vdcmymsxwmXf-olotQmOCgE';
+        $fcmUrl = 'https://fcm.googleapis.com/fcm/send';
+
+       $extraNotificationData = $data;
+
+       if(is_array($token)){
+            $fcmNotification = [
+               'registration_ids' => $token, //multple token array
+              // 'to' => $token, //single token
+               //'notification' => $notification,
+               'data' => $extraNotificationData
+            ];
+       }else{
+            $fcmNotification = [
+           //'registration_ids' => $tokenList, //multple token array
+           'to' => $token, //single token
+           //'notification' => $notification,
+           'data' => $extraNotificationData
+        ];
+        }
+       
+
+       $headers = [
+           'Authorization: key='.$serverLKey,
+           'Content-Type: application/json'
+       ];
+
+
+       $ch = curl_init();
+       curl_setopt($ch, CURLOPT_URL, $fcmUrl);
+       curl_setopt($ch, CURLOPT_POST, true);
+       curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+       curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+       curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fcmNotification));
+       $result = curl_exec($ch);
+       //echo "result".$result;
+       //die;
+       curl_close($ch);
+       return true;
     }
     /*
      * Edit Group method
