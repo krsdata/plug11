@@ -59,11 +59,11 @@ class ApiController extends BaseController
     {
         $device_id = User::whereNotNull('device_id')->pluck('device_id')->toArray();
 
-        $match = Matches::whereIn('status',[1,3])
+        $match = Matches::where('status',1)
                 ->whereDate('date_start',\Carbon\Carbon::today())
                 ->orderBy('timestamp_start','ASC')
                 ->first();
-
+                
         $t1 = $match->timestamp_start;
         $t2 = time();
         $td = round((($t1 - $t2)/60),2);
