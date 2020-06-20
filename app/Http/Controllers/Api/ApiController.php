@@ -4904,7 +4904,7 @@ class ApiController extends BaseController
 
             if($p11){
                 if($match->status==1){
-                    $match_obj = Match::firstOrNew(
+                    $match_obj = Matches::firstOrNew(
                         [
                             'match_id'=>$match_id
                         ]
