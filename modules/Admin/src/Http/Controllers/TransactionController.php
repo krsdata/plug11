@@ -81,7 +81,8 @@ class TransactionController extends Controller {
            $wt->payment_status      =  $payment_string[$request->status];
            $wt->withdraw_status     =  $request->status;
 
-           if($request->status==4 && $wt->payment_status!=4){
+           $user     = User::find($wt->user_id);
+           if($user && $request->status==4 && $wt->payment_status!=4){
                 $Wallet = Wallet::where('user_id',$wt->user_id)
                             ->where('payment_type',4)
                             ->first();
@@ -89,16 +90,16 @@ class TransactionController extends Controller {
                 $Wallet->save();
             $wt->debit_credit_status = '+';  
            }
-
-           $data = [
+           if($user){
+                $data = [
                         'action' => 'notify' ,
                         'title' => "$wt->payment_status",
                         'message' => "Hi $user->name, Your $wt->payment_status"
                     ];
-            $this->sendNotification($token, $data);
+                $this->sendNotification($token, $data);
+                $wt->save();
+           }
             
-
-           $wt->save(); 
         }
 
         if ((isset($search) && !empty($search))) { 
