@@ -4889,7 +4889,6 @@ class ApiController extends BaseController
             if($td>0 && $td<=60){
                 if($p11){
                     $this->isLineUp($match_id);
-                     continue;    
                 }
             }else{
                 continue;
@@ -4906,7 +4905,7 @@ class ApiController extends BaseController
                     if($match_obj->status==3){
                         continue;
                     }
-
+                    
                     $match_obj->status =  3;
                     $match_obj->save();
                     continue;
