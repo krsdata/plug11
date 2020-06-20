@@ -4978,7 +4978,7 @@ class ApiController extends BaseController
                             
                             $device_id = User::whereNotNull('device_id')->pluck('device_id')->toArray();
                                                                   
-                            if($td>0 && $td%10==0){
+                            if($td>0 && $td%5==0){
                                     $data = [
                                         'action' => 'notify' ,
                                         'title' => "🏏 $item->short_title  🕚 🏆🏆",
@@ -4987,11 +4987,11 @@ class ApiController extends BaseController
                                     $this->sendNotification($device_id, $data);
                                 
                             }
-                            
-                            if($lineup || $td > 0 && $td%5==0){ 
+                            //&& $td%5==0
+                            if($lineup || $td > 0 ){ 
                                 $td = (int)$td;
                                 if($td>30){
-                                    $msg = "Lined up and $td minute left. Create, Join or edit  your team";
+                                    $msg = "$td minute left. Create, Join or edit  your team";
                                 }else{
                                     $msg = "Last $td minute left.Create, Join or edit  your team. Hurry Up!!";
                                 }
