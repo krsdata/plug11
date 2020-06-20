@@ -29,6 +29,8 @@ use Illuminate\Http\Dispatcher;
 use Modules\Admin\Helpers\Helper as Helper; 
 use App\Helpers\FCMHelper;
 use Response;
+use App\Models\Wallet;
+use App\Models\WalletTransaction;
 
 /**
  * Class AdminController
@@ -59,137 +61,101 @@ class TransactionController extends Controller {
      * Dashboard
      * */
 
-    public function index(Transaction $transaction, Request $request) 
+    public function index(WalletTransaction $transaction, Request $request) 
     { 
-        $page_title = 'Payment';
+
+        $page_title = 'Payment Withdraw';
         $page_action = 'View Transaction'; 
         $msg = null;
         
-        if ($request->status && $request->txt_id) {
-            
-            $txt = Transaction::find($request->txt_id);
-            $txt->status = $request->status;
-            $txt->save();
-            $msg = "Payments status updated.";
-
-           // $user       = User::find($txt->user_id);
-            $user     = User::find($txt->user_id);
-            $adminUser  = User::find(env('DEFAULT_USER_ID'));
-
-            $registatoin_ids = array();
-            if($request->status==2){ 
-                $title = "Payment Hold";
-                $msg2 = "Your request payment  ".$txt->payable_amount." is on hold";
-            }
-            elseif($request->status==3){
-                $title = "Payment Failed";
-                $msg2 = "Your request payment  ".$txt->payable_amount." is on Failed";
-            }
-
-            elseif($request->status==4){
-                $title = "Payment Rejected";
-                $msg2 = "Your request payment  ".$txt->payable_amount." is on Rejected";
-            }
-             elseif($request->status==4){
-                $title = "Payment Rejected";
-                $msg2 = "Your request payment  ".$txt->payable_amount." is on Rejected";
-            }
-
-        //    $registatoin_ids[]= $user->notification_id;
-            $registatoin_ids[]= $user->notification_id;
-            $registatoin_ids[]= $adminUser->notification_id;
-            
-            $type = "Android"; 
-            $message["title"]   = $title ;
-
-            $message["action"]  = "notify";
-            $message["message"] = $msg2." for order id ".$txt->order_id;
-
-            $fcmHelper = new FCMHelper;
-           // $fcmHelper->send_notification($registatoin_ids,$message,$type);
-
-        }
-        
         $search = Input::get('search'); 
         $user = User::where('email','LIKE',"%$search%")
-                            ->orWhere('first_name','LIKE',"%$search%")
+                            ->orWhere('name','LIKE',"%$search%")
                             ->get('id')->pluck('id');
        // dd($user);
         if ((isset($search) && !empty($search))) { 
                
-            $transaction = $transaction->with('user','order')->where(function ($query) use ($search,$user) {
+            $transaction = $transaction->where(function ($query) use ($search,$user) {
                 if (!empty($search) && !empty($user)) {
                    $query->whereIn('user_id', $user);
                 }
-                 
             })
-            ->where('request_status',1)
+            ->where('withdraw_status',1)
             ->select("*",
                         \DB::raw('(CASE 
-                        WHEN status = 6 THEN "New Request" 
-                        WHEN status = 1 THEN "Payment Initiated"
-                        WHEN status = 2 THEN "Payment on Hold"
-                        WHEN status = 3 THEN "Payment Failed"
-                        WHEN status = 4 THEN "Payment Rejected" 
-                        WHEN status = 5 THEN "Payment Done"
+                        WHEN withdraw_status = 1 THEN "New Request"
+                        WHEN withdraw_status = 2 THEN "Initiated"
+                        WHEN withdraw_status = 3 THEN "Payment Hold"
+                        WHEN withdraw_status = 4 THEN "Payment Rejected"
+                        WHEN withdraw_status = 5 THEN "Payment Released"
                         ELSE "New Request" 
-                        END) AS status'))
+                        END) AS withdraw_status'))
             ->orderBy('id','desc')->Paginate($this->record_per_page);
-
             $transaction->transform(function($item, $Key){
-                            $item->paid_balance = Transaction::where('request_status',2)
+                            $item->withdraw_amount = WalletTransaction::where('withdraw_status',1)
+                                ->where('payment_type',5)
                                 ->where('user_id',$item->user_id)
-                                ->sum('payable_amount');
+                                ->sum('amount');
 
-                            $item->total_balance = Transaction::where('request_status',0)
+                            $item->total_balance = round(Wallet::whereIn('payment_type',[2,4])
                                 ->where('user_id',$item->user_id)
-                                ->sum('payable_amount'); 
-                            return $item;
-                                 
-                        });
-
-        } else {   
-            $transaction = $transaction->whereHas('user',function($q){
-                            $q->where('name','!=',"");
-                        })
-                        ->orderBy('id','desc')
-                        ->select("*",
-                        \DB::raw('(CASE 
-                        WHEN status = 6 THEN "New Request" 
-                        WHEN status = 1 THEN "Payment Initiated"
-                        WHEN status = 2 THEN "Payment on Hold"
-                        WHEN status = 3 THEN "Payment Failed"
-                        WHEN status = 4 THEN "Payment Rejected" 
-                        WHEN status = 5 THEN "Payment Done"
-                        ELSE "New Request" 
-                        END) AS status')
-                        )
-                        ->Paginate($this->record_per_page); 
-                       
-            $transaction->transform(function($item, $Key){
-                            $item->paid_balance = Transaction::where('request_status',2)
-                                ->where('user_id',$item->user_id)
-                                ->sum('payable_amount');
-
-                            $item->total_balance = Transaction::where('request_status',0)
-                                ->where('user_id',$item->user_id)
-                                ->sum('payable_amount'); 
+                                ->sum('amount'),2);
 
                             $user = User::find($item->user_id);
+                            
                             if($user){
                                 $item->name     =  $user->name;    
-                                $item->email    =  $user->email;      
+                                $item->email    =  $user->email;
+                                $item->user_id    =  $user->id;      
                             }else{
                                 $item->name     =  "";    
                                 $item->email    =  "";
+                                $item->user_id    =  "";
                             }
-                          
-                            return $item;
-                                 
+                            return $item;    
+                        });
+
+                        
+        } else {   
+
+            $transaction = WalletTransaction::where('payment_type',5)
+                        ->orderBy('id','desc')
+                        ->select("*",
+                        \DB::raw('(CASE 
+                        WHEN withdraw_status = 1 THEN "New Request"
+                        WHEN withdraw_status = 2 THEN "Initiated"
+                        WHEN withdraw_status = 3 THEN "Payment Hold"
+                        WHEN withdraw_status = 4 THEN "Payment Rejected"
+                        WHEN withdraw_status = 5 THEN "Payment Released"
+                        ELSE "New Request" 
+                        END) AS withdraw_status'))->Paginate($this->record_per_page);
+                        
+                        $transaction->transform(function($item, $Key){
+                            $item->withdraw_amount = WalletTransaction::where('withdraw_status',1)
+                                ->where('payment_type',5)
+                                ->where('user_id',$item->user_id)
+                                ->sum('amount');
+
+                            $item->total_balance = round(Wallet::whereIn('payment_type',[2,4])
+                                ->where('user_id',$item->user_id)
+                                ->sum('amount'),2);
+
+                            $user = User::find($item->user_id);
+                            
+                            if($user){
+                                $item->name     =  $user->name;    
+                                $item->email    =  $user->email;
+                                $item->user_id    =  $user->id;      
+                            }else{
+                                $item->name     =  "";    
+                                $item->email    =  "";
+                                $item->user_id    =  "";
+                            }
+                            return $item;    
                         });
 
         }
-        //dd($transaction);
+        //return $transaction;
         return view('packages::payments.index', compact('transaction', 'page_title', 'page_action','msg'));
    
     }

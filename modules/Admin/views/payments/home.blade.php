@@ -62,7 +62,7 @@
                                                 <th> Request Amount </th> 
                                                 <th> Status</th>  
                                                 <th> </th> 
-                                                <th>Last update</th>  
+                                                <th>Date</th>  
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -78,11 +78,16 @@
                                             <tr>
                                                  <td>{{ (($transaction->currentpage()-1)*15)+(++$key) }} 
                                                 </td>
-                                                <td> {{$result->name}},{{$result->email}} </td>
-                                                <td>{{$result->total_balance-$result->paid_balance}} </td>
-                                                 <td>{{$result->amount}} </td>
-                                                 <td>{{$result->status}}
-                                                 </td>                         
+                                                <td> 
+                                                  <a href="{{url('admin/wallets?search='.$result->email)}}" target="_blank"> 
+                                                  {!!'Customer Id: '.$result->user_id.'<br>'.$result->name!!},
+                                                  <br>{{$result->email}}
+                                                </a>
+                                                   </td>
+                                                <td>INR {{$result->total_balance-$result->paid_balance}} </td>
+                                                 <td>INR {{$result->amount}} </td>
+                                                 <td>{{$result->withdraw_status}}
+                                                 </td>                     
                                                 <td>  
                                                    
      <ul class="nav navbar-nav">
