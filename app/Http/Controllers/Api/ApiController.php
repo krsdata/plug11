@@ -61,9 +61,8 @@ class ApiController extends BaseController
 
         $match = Matches::where('status',1)
                 ->whereDate('date_start',\Carbon\Carbon::today())
-                ->orderBy('timestamp_start','ASC')
+                ->where('timestamp_start','>=',time())
                 ->first();
-                
         $t1 = $match->timestamp_start;
         $t2 = time();
         $td = round((($t1 - $t2)/60),2);
