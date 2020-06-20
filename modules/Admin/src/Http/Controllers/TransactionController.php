@@ -87,6 +87,7 @@ class TransactionController extends Controller {
                             ->first();
                 $Wallet->amount = $Wallet->amount+$wt->amount;
                 $Wallet->save();
+            $wt->debit_credit_status = '+';  
            }
 
            $wt->save(); 
