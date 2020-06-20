@@ -2805,7 +2805,7 @@ class ApiController extends BaseController
                     if($lname==""){
                         $data['short_name'] = $results->short_name;
                     }else{
-                        $data['short_name'] = $fname[0].' '.$lname;    
+                        $data['short_name'] = $fname.' '.$lname;    
                     }
                     
                 }
