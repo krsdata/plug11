@@ -227,7 +227,7 @@ class TransactionController extends Controller {
 
             $data = [
                         'action' => 'notify' ,
-                        'title' => "Amount Withdrawal Released ",
+                        'title' => "₹ Amount Withdrawal Released ",
                         'message' => "Hi $user->name, Your withdraw amount ₹ $wt->amount successfully sent"
                     ];
 
