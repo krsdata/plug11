@@ -91,6 +91,7 @@ class TransactionController extends Controller {
             $wt->debit_credit_status = '+';  
            }
            if($user){
+                $token = $user->device_id;
                 $data = [
                         'action' => 'notify' ,
                         'title' => "$wt->payment_status",
