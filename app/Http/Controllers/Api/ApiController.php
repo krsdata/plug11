@@ -706,7 +706,6 @@ class ApiController extends BaseController
     public function updatePoints(Request $request){
         
         if($request->match_id){
-            echo date('H:i:s A <-> ');
             $matches = Matches::where('match_id',$request->match_id)
                 ->get();
         }else{
@@ -2530,7 +2529,7 @@ class ApiController extends BaseController
             foreach ($created_team as $match_id => $join_contest) {
 
                 # code...
-                $jmatches = Matches::with('teama','teamb')->where('match_id',$match_id)->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','game_state','game_state_str','current_status','competition_id')
+                $jmatches = Matches::with('teama','teamb')->where('match_id',$match_id)->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','game_state','game_state_str','current_status','competition_id','timestamp_end')
                     ->orderBy('status','DESC')
                     ->first();
                 //dd($jmatches);
@@ -2595,6 +2594,14 @@ class ApiController extends BaseController
                        $join_match->status_str = "Upcoming"; 
                     }elseif($join_match->status==3){
                        $join_match->status_str = "Live" ;
+                        
+                        $t11 = $item->timestamp_end;
+                        $t21 = time();
+                        $td11 = round((($t11 - $t21)/60),2);
+                        $request->merge(['match_id'=>$item->match_id]);
+                        if($td11<0){
+                            $this->updatePoints($request);     
+                        }
                     }
                 }
 
@@ -4905,7 +4912,7 @@ class ApiController extends BaseController
                     if($match_obj->status==3){
                         continue;
                     }
-                    
+
                     $match_obj->status =  3;
                     $match_obj->save();
                     continue;
