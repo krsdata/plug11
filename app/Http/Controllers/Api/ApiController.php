@@ -2794,10 +2794,10 @@ class ApiController extends BaseController
 
             $fl = strlen(trim($fname.trim($lname)));
             
-            if($fl<=23){
+            if($fl<=25){
                 $data['short_name'] = $results->short_name;
             }else{
-                if(strlen($lname)>=23)
+                if(strlen($lname)>=25)
                 {
                     $data['short_name'] = $fname." ".$lname;
                 }
