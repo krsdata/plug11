@@ -2595,13 +2595,14 @@ class ApiController extends BaseController
                     }elseif($join_match->status==3){
                        $join_match->status_str = "Live" ;
                         
-                        $t11 = $item->timestamp_end;
+                        $t11 = $jmatches->timestamp_end;
                         $t21 = time();
                         $td11 = round((($t11 - $t21)/60),2);
-                        $request->merge(['match_id'=>$item->match_id]);
+                        $request->merge(['match_id'=>$jmatches->match_id]);
                         if($td11<0){
                             $this->updatePoints($request);     
                         }
+                       
                     }
                 }
 
