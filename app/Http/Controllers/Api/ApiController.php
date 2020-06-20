@@ -59,7 +59,7 @@ class ApiController extends BaseController
     {
         $device_id = User::whereNotNull('device_id')->pluck('device_id')->toArray();
 
-        $match = Matches::where('status',1)
+        $match = Matches::whereIn('status',[1,3])
                 ->whereDate('date_start',\Carbon\Carbon::today())
                 ->orderBy('timestamp_start','ASC')
                 ->first();
@@ -4910,7 +4910,7 @@ class ApiController extends BaseController
                         ]
                     );
                     if($match_obj->status==3){
-                        continue;  
+                        continue;   
                     }
 
                     $match_obj->status =  3;
@@ -4920,7 +4920,6 @@ class ApiController extends BaseController
                 continue;
             }
             # code...
-
             try{
                 $token =  $this->token;
                 $path = $this->cric_url.'matches/'.$match_id.'/squads/?token='.$token;
@@ -4946,7 +4945,7 @@ class ApiController extends BaseController
                     $teama_obj->save();
                 }
             }   
-            
+                
             $teamb = $data->response->teamb;
             if(isset($teamb)){
                 foreach ($teamb->squads as $key => $squads) {
