@@ -95,8 +95,16 @@
                                                    Phone : {{$result->phone}} </td>
                                                 
                                                  <td>{{$result->payment_type_string}} </td>
-                                                 <td>{{$result->amount}} </td>
-
+                                                 <td>
+                                                  @if($result->debit_credit_status=="+")
+                                                  <div class=" alert-success"> {{$result->debit_credit_status.$result->amount}} INR</div>
+                                                  @else
+                                                  <div class=" alert-danger">
+                                                  {{$result->debit_credit_status.$result->amount}} INR
+                                                </div>
+                                                  @endif
+                                                   </td>
+                                                 
                                                  <td>{{$result->payment_status}}
                                                  </td>                         
                                                 
