@@ -148,6 +148,7 @@ class TransactionController extends Controller {
         } else {   
 
             $transaction = WalletTransaction::where('payment_type',5)
+                        ->orderBy('id','desc')
                         ->select("*",
                         \DB::raw('(CASE 
                         WHEN withdraw_status = 1 THEN "New Request"
@@ -158,7 +159,8 @@ class TransactionController extends Controller {
                         ELSE "New Request" 
                         END) AS withdraw_status'))
                         ->whereIn('withdraw_status',[1,2,3,5])
-                        ->orderBy('withdraw_status','ASC')->Paginate($this->record_per_page);
+                       // ->orderBy('withdraw_status','ASC')
+                        ->Paginate($this->record_per_page);
                         
                         $transaction->transform(function($item, $Key){
                             $item->withdraw_amount = WalletTransaction::where('withdraw_status',1)
