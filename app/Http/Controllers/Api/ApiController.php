@@ -1469,7 +1469,6 @@ class ApiController extends BaseController
                     continue;
                 }
                 //notification per
-                
 
                 $data2['isCancelled'] =   $result->is_cancelled?true:false;
                 $data2['totalSpots'] =   $result->total_spots;
