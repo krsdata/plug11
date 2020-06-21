@@ -435,7 +435,7 @@ class MatchController extends Controller {
                          
                         
                     })
-                    ->whereDate('date_start','>=',\Carbon\Carbon::yesterday())
+                  //  ->whereDate('date_start','>=',\Carbon\Carbon::yesterday())
                     ->orderBy('date_start','DESC')
                     ->Paginate($this->record_per_page);
 
