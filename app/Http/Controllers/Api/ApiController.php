@@ -701,7 +701,7 @@ class ApiController extends BaseController
     }
     // update points by LIVE Match
     public function updatePoints(Request $request){
-        
+        sleep(5);
         if($request->match_id){
             $matches = Matches::where('match_id',$request->match_id)
                 ->get();
@@ -4197,8 +4197,7 @@ class ApiController extends BaseController
         $prize_amount = array_sum($amt)/$repeat_rank;
         
         return $prize_amount;
-        dd($prize_amount);
-
+        /*
         $rank_prize  = \DB::table('prize_breakups')
                         ->where(function($q) use ($rank,$cid,$rank_to){
                             $q->where('rank_upto','>=',$rank_to);
@@ -4227,7 +4226,7 @@ class ApiController extends BaseController
             return $prizeBreakup;    
         }else{
             return $prizeBreakup=0;
-        } 
+        } */
     }
     /*getScore*/
     public function getScore(Request $request){
@@ -4906,7 +4905,7 @@ class ApiController extends BaseController
 
     }
     public  function getPlaying11()
-    {   
+    {   sleep(5);
         $matches = Matches::whereIn('status',[1,3])
                    ->whereDate('date_start',\Carbon\Carbon::today())
                     ->get(['match_id','timestamp_start','status']);
@@ -5048,8 +5047,8 @@ class ApiController extends BaseController
     }
     /*Match auto cancel if not filled*/
     public function matchAutoCancel(){
-
-        $cancel_match = Matches::whereIn('status',[3])
+        sleep(5);
+        $cancel_match = Matches::where('status',3)
                        ->whereDate('date_start',\Carbon\Carbon::today())
                        ->get()
                         ->transform(function($item,$key){
