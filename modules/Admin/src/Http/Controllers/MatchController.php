@@ -407,9 +407,9 @@ class MatchController extends Controller {
                                 $query->orderBy('timestamp_start','ASC');
                                 $query->where('status',1);
                             }
-                            if($status==2){
+                            if($status==2){ 
                                 $query->orderBy('timestamp_start','DESC');
-                                $query->where('status','=',2);
+                                $query->where('status',2);
                             }
                             if($status==3){ 
                                 $query->orderBy('timestamp_start','DESC');
@@ -425,18 +425,18 @@ class MatchController extends Controller {
                                 $query->where('status', $status);
                             }elseif(!empty($search)){
                                 $query->orWhere('match_id',$search);
+                                $query->orWhere('status',$status);
                                 $query->orWhere('title', 'LIKE', "$search%");
                                 $query->orWhere('short_title', 'LIKE', "$search%"); 
-                                $query->orWhere('title', 'LIKE', "%$search");
-                                $query->orWhere('short_title', 'LIKE', "%$search"); 
-                               // $query->orWhere('title', 'LIKE', "%$search%"); 
+                                
                             }    
                         }
                          
                         
                     })
-                  //  ->whereDate('date_start','>=',\Carbon\Carbon::yesterday())
-                    ->orderBy('date_start','DESC')
+                     ->whereDate('date_start','<=',\Carbon\Carbon::today())
+                    ->WhereMonth('date_start',date('m'))
+                    ->orderBy('date_start','desc')
                     ->Paginate($this->record_per_page);
 
                 $match->transform(function($item,$key){
@@ -467,8 +467,9 @@ class MatchController extends Controller {
         } else {
             $match = Match::with('teama','teamb')
                 ->where('status','1')
-                ->whereDate('date_start','>=',\Carbon\Carbon::yesterday())
-                ->orderBy('date_start','DESC')
+                ->WhereMonth('date_start',date('m'))
+               // ->whereDate('date_start','>=',\Carbon\Carbon::yesterday())
+                ->orderBy('date_start','ASC')
                 ->Paginate($this->record_per_page);
             $match->transform(function($item,$key){
 

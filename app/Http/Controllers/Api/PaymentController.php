@@ -72,7 +72,10 @@ class PaymentController extends BaseController
         $rank_to   = $rank+($repeat_rank-1);
       
         $cid = $contest_id;  
-        $rank_prize    =    $prizeBreakup = \DB::table('prize_breakups')
+        
+        $rank_id = \DB::table('prize_breakups')->where('default_contest_id',$cid)->where('rank_upto','>',$rank_from)->count();
+
+        $rank_prize  = \DB::table('prize_breakups')
                                 ->where(function($q) use ($rank,$cid,$rank_to){
                                     $q->where('rank_upto','>=',$rank_to);
                                     $q->where('rank_from','<=',$rank_to);
@@ -83,8 +86,14 @@ class PaymentController extends BaseController
                                     $q->where('rank_from','>=',$rank_from);
                                     $q->where('rank_from','<=',$rank_to);
                                     $q->where('default_contest_id',$cid);
-                                }) 
-                                ->avg('prize_amount');  
+                                }) ;
+                                if($rank_id==0){
+                                    $amt  =  $rank_prize->sum('prize_amount')??0;
+                                    $prizeBreakup = $amt/$repeat_rank;
+                                  }else{
+                                    $prizeBreakup=  $rank_prize->avg('prize_amount')??0;
+                                }
+                        //        ->avg('prize_amount');  
         if($rank_prize){
             return $prizeBreakup;    
         }else{
@@ -103,6 +112,7 @@ class PaymentController extends BaseController
         $get_join_contest = JoinContest::where('match_id',  $match_id)
           ->where('ranks','>',0)  
           ->get();
+        
         $get_join_contest->transform(function ($item, $key)   {
             
             $ct = CreateTeam::where('match_id',$item->match_id)

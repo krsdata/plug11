@@ -1763,10 +1763,10 @@ class ApiController extends BaseController
         else{
             return ['data not available'];
         }
-
+       // echo $this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=30'; die;
         //upcoming $this->cric_url
-        $data =    file_get_contents($this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=10');
-
+        $data =    file_get_contents($this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=30');
+       // return  $data;
         \File::put(public_path('/upload/json/'.$fileName.'.txt'),$data);
         
         //$this->storeMatchInfoAtMachine($data,'status/'.$fileName.'.txt');
@@ -2450,15 +2450,18 @@ class ApiController extends BaseController
                    $items->status_str = $items->status_str; 
                 }
 
-                    $t1 = $items->timestamp_start;
-                    $t2 = time();
-                    $td = round((($t1 - $t2)/60),2);
-                    
-                  
-                    if($td>(0.5)){
-                        $items->status=3;
-                        $items->status_str='Upcoming Live';
-                    }
+                if($items->status==2 && $items->current_status==0){
+                    $items->status_str = "In Review" ;
+                }
+
+                $t1 = $items->timestamp_start;
+                $t2 = time();
+                $td = round((($t1 - $t2)/60),2);
+                                  
+                if($td>(0.5)){
+                    $items->status=3;
+                    $items->status_str='Upcoming Live';
+                }
 
                 return $items;
             });
@@ -2573,13 +2576,15 @@ class ApiController extends BaseController
                     ->get();
 
                 if((($join_match->timestamp_end < time())  && $join_match->timestamp_end > strtotime("-1440 minutes") &&  $join_match->current_status!=1) ||
-                    ($join_match->status==2 && $join_match->current_status!=1)     
+                    ($join_match->status==2 && $join_match->current_status!=1) 
+
                     ){
                    // $join_match->status_str = "In Review";
 
                     if($join_match->status==4){
                        $join_match->status_str = 'Abandoned'; 
                     } 
+
 
                 }elseif($join_match->current_status==1){
                     $join_match->status_str = "Completed";
@@ -4175,23 +4180,32 @@ class ApiController extends BaseController
     */
     public function getAmountPerRank($rank,$match_id=null,$contest_id=null,$repeat_rank=1)
     {
-        $rank_from = $rank; //$rank;
-        $rank_to   = $rank+($repeat_rank-1);
-      
+        $rank_from =  $rank; //$rank;
+        $rank_to   =  $rank+($repeat_rank-1);
         $cid = $contest_id;  
-        $rank_prize    =    $prizeBreakup = \DB::table('prize_breakups')
-                                ->where(function($q) use ($rank,$cid,$rank_to){
-                                    $q->where('rank_upto','>=',$rank_to);
-                                    $q->where('rank_from','<=',$rank_to);
-                                    $q->where('default_contest_id',$cid);
 
-                                })
-                                ->orwhere(function($q) use ($rank_from,$rank_to,$cid){
-                                    $q->where('rank_from','>=',$rank_from);
-                                    $q->where('rank_from','<=',$rank_to);
-                                    $q->where('default_contest_id',$cid);
-                                }) 
-                                ->avg('prize_amount');  
+        $rank_id = \DB::table('prize_breakups')->where('default_contest_id',$cid)->where('rank_upto','>',$rank_from)->count();
+        
+        $rank_prize  = \DB::table('prize_breakups')
+                        ->where(function($q) use ($rank,$cid,$rank_to){
+                            $q->where('rank_upto','>=',$rank_to);
+                            $q->where('rank_from','<=',$rank_to);
+                            $q->where('default_contest_id',$cid);
+
+                        })
+                        ->orwhere(function($q) use ($rank_from,$rank_to,$cid){
+                            $q->where('rank_from','>=',$rank_from);
+                            $q->where('rank_from','<=',$rank_to);
+                            $q->where('default_contest_id',$cid);
+                        });
+                       
+                        if($rank_id==0){
+                          $amt  =  $rank_prize->sum('prize_amount')??0;
+                          $prizeBreakup = $amt/$repeat_rank;
+                        }else{
+                            $prizeBreakup=  $rank_prize->avg('prize_amount')??0;
+                        }
+           // $prizeBreakup=  $rank_prize->avg('prize_amount')??0;
         if($rank_prize){
             return $prizeBreakup;    
         }else{
