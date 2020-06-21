@@ -300,10 +300,8 @@ class ApiController extends BaseController
                                 $this->updateMatchRankByMatchId($item->match_id,$item->contest_id);      
                             });
                 });
-                 
-                $this->WinningPrizeDistribution($request);
             });
-
+        $this->WinningPrizeDistribution($request);
         return [
             'status'=>true,
             'code' => 200,
@@ -4031,14 +4029,6 @@ class ApiController extends BaseController
                             //get average amount in case of repeated rank
                             $rank_amount = $this->getAmountPerRank($rank,$match_id,$contestItem->default_contest_id,$rank_repeat);
                               
-                           /*  $contestItem->prize_amount = $rank?$rank_amount:0;
-                             $contestItem->team_id = $team_id;
-                             $contestItem->match_id = $match_id;
-                             $contestItem->user_id = $user_id;
-                             $contestItem->rank = $rank;
-                             $contestItem->team_name = $team_name;
-                           */ //Rank Amount
-                            
                             $update_join_contest = JoinContest::find($item->id);
                             $update_join_contest->winning_amount = $rank?$rank_amount:0;
                             $update_join_contest->save();
@@ -4179,13 +4169,36 @@ class ApiController extends BaseController
     *Description get Amount as per Rank
     */
     public function getAmountPerRank($rank,$match_id=null,$contest_id=null,$repeat_rank=1)
-    {
-        $rank_from =  $rank; //$rank;
+    {   
+        $rank_from = $rank; 
         $rank_to   =  $rank+($repeat_rank-1);
-        $cid = $contest_id;  
-
-        $rank_id = \DB::table('prize_breakups')->where('default_contest_id',$cid)->where('rank_upto','>',$rank_from)->count();
+        $cid =  $contest_id; 
         
+        $rank_id =0 ;// \DB::table('prize_breakups')->where('default_contest_id',$cid)->whereBetween('rank_upto',[$rank,$rank_to])->count();
+        $amt = [];
+        $count  =1;
+        for($i=$rank_from; $i<=$rank_to; $i++){
+
+            $sum_amt = \DB::table('prize_breakups')
+                ->where('default_contest_id',$cid)
+                ->where('rank_from','<=',$i)
+                ->where('rank_upto','>=',$i)
+                ->sum('prize_amount');
+            if($sum_amt==0){
+                $sum_amt = \DB::table('prize_breakups')
+                ->where('default_contest_id',$cid)
+                ->where('rank_from','=',$i)
+                ->where('rank_upto','>=',1)
+                ->sum('prize_amount');
+            }
+            $amt[] = $sum_amt;
+        } 
+        
+        $prize_amount = array_sum($amt)/$repeat_rank;
+        
+        return $prize_amount;
+        dd($prize_amount);
+
         $rank_prize  = \DB::table('prize_breakups')
                         ->where(function($q) use ($rank,$cid,$rank_to){
                             $q->where('rank_upto','>=',$rank_to);
@@ -4203,7 +4216,11 @@ class ApiController extends BaseController
                           $amt  =  $rank_prize->sum('prize_amount')??0;
                           $prizeBreakup = $amt/$repeat_rank;
                         }else{
-                            $prizeBreakup=  $rank_prize->avg('prize_amount')??0;
+                            $amt =  $rank_prize->sum('prize_amount')??0;
+                            if($rank_to==8){
+                                dd($amt);
+                            }
+                            $prizeBreakup = $amt/$repeat_rank;
                         }
            // $prizeBreakup=  $rank_prize->avg('prize_amount')??0;
         if($rank_prize){

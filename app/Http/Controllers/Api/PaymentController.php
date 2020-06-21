@@ -91,7 +91,9 @@ class PaymentController extends BaseController
                                     $amt  =  $rank_prize->sum('prize_amount')??0;
                                     $prizeBreakup = $amt/$repeat_rank;
                                   }else{
-                                    $prizeBreakup=  $rank_prize->avg('prize_amount')??0;
+                                    $prizeBreakup=  $rank_prize->sum('prize_amount')??0;
+
+                                    
                                 }
                         //        ->avg('prize_amount');  
         if($rank_prize){
