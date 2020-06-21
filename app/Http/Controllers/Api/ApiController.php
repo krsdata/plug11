@@ -2575,7 +2575,7 @@ class ApiController extends BaseController
                 if((($join_match->timestamp_end < time())  && $join_match->timestamp_end > strtotime("-1440 minutes") &&  $join_match->current_status!=1) ||
                     ($join_match->status==2 && $join_match->current_status!=1)     
                     ){
-                    $join_match->status_str = "In Review";
+                   // $join_match->status_str = "In Review";
 
                     if($join_match->status==4){
                        $join_match->status_str = 'Abandoned'; 
