@@ -62,17 +62,23 @@ class MatchContestController extends Controller {
                             ->orWhere('first_name','LIKE',"%$search%")
                             ->orWhere('phone','LIKE',"%$search%")
                             ->get('id')->pluck('id');
+        $contest_id = $request->contest_id;   
+
+        $created_team_id = JoinContest::where('match_id',$search)->where('contest_id',$contest_id)->pluck('created_team_id')->toArray();
+        
 
         if ((isset($search) && !empty($search))) { 
 
-            $matchTeams = MatchTeams::where(function($query) use($search,$status,$user) {
-                        if (!empty($search)) {
-                             $query->where('match_id', $search);
+            $matchTeams = MatchTeams::where(function($query) use($search,$status,$user,$contest_id,$created_team_id) {
 
+                        if (!empty($search)) {
+                            $query->where('match_id', $search);
                          }
-                         if (!empty($user)) {
-                             $query->orwhereIn('user_id', $user);
-                             
+                         if ($user->count()) {
+                             $query->whereIn('user_id', $user);
+                         }
+                         if($created_team_id){
+                            $query->whereIn('id', $created_team_id);
                          }
                     })->orderBy('created_at','desc')->Paginate($this->record_per_page);
             
@@ -97,7 +103,7 @@ class MatchContestController extends Controller {
             });
         } else {
             $matchTeams = MatchTeams::orderBy('created_at','desc')->orderBy('created_at','desc')->Paginate($this->record_per_page);
-                                                    
+                                                  
             $matchTeams->transform(function($item,$key){ 
                     $match = Match::where('match_id',$item->match_id)->select('short_title','status_str')->first();
                     $item->status = $match->status_str??null;
@@ -174,7 +180,7 @@ class MatchContestController extends Controller {
                     return $item; 
             });
         } else {
-            $matchContest = MatchContest::orderBy('created_at','desc')->Paginate(8);
+            $matchContest = MatchContest::orderBy('created_at','desc')->Paginate(15);
                                                     
             $matchContest->transform(function($item,$key){ 
                     $contest_name = \DB::table('contest_types')->where('id',$item->contest_type)->first();
@@ -189,7 +195,7 @@ class MatchContestController extends Controller {
         
         $table_cname = \Schema::getColumnListing('create_contests');
         
-        $except = ['id','created_at','updated_at','winner_percentage','prize_percentage','is_cancelled','contest_type','default_contest_id','cancellation','is_free','is_cloned','is_full'];
+        $except = ['created_at','updated_at','winner_percentage','prize_percentage','is_cancelled','contest_type','default_contest_id','cancellation','is_free','is_cloned','is_full'];
         $data = [];
 
         $tables[] = 'contest_name';

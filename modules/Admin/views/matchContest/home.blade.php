@@ -89,7 +89,7 @@
                             <i class="fa fa-fw fa-eye" title="edit"></i> 
                             </button>
                         </a>
-                        <a href="{{ route('matchTeams','search='.$result->match_id)}}">
+                        <a href="{{ route('matchTeams','search='.$result->match_id.'&contest_id='.$result->id)}}">
                             <button class="btn btn-success btn-xs">
                                View Teams
                             <i class="fa fa-fw fa-eye" title="edit"></i> 
