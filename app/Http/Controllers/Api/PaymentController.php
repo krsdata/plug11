@@ -68,13 +68,34 @@ class PaymentController extends BaseController
     */
     public function getAmountPerRank($rank,$match_id=null,$contest_id=null,$repeat_rank=1)
     {
-        $rank_from = $rank; //$rank;
-        $rank_to   = $rank+($repeat_rank-1);
-      
-        $cid = $contest_id;  
+        $rank_from  = $rank; //$rank;
+        $rank_to    = $rank+($repeat_rank-1);
+        $cid        = $contest_id;  
         
-        $rank_id = \DB::table('prize_breakups')->where('default_contest_id',$cid)->where('rank_upto','>',$rank_from)->count();
+        //$rank_id = \DB::table('prize_breakups')->where('default_contest_id',$cid)->where('rank_upto','>',$rank_from)->count();
 
+        $amt = [];
+        $count  =1;
+        for($i=$rank_from; $i<=$rank_to; $i++){
+            $sum_amt = \DB::table('prize_breakups')
+                ->where('default_contest_id',$cid)
+                ->where('rank_from','<=',$i)
+                ->where('rank_upto','>=',$i)
+                ->sum('prize_amount');
+            if($sum_amt==0){
+                $sum_amt = \DB::table('prize_breakups')
+                ->where('default_contest_id',$cid)
+                ->where('rank_from','=',$i)
+                ->where('rank_upto','>=',1)
+                ->sum('prize_amount');
+            }
+            $amt[] = $sum_amt;
+        } 
+        
+        $prize_amount = array_sum($amt)/$repeat_rank;
+        return $prize_amount;
+        
+        /*
         $rank_prize  = \DB::table('prize_breakups')
                                 ->where(function($q) use ($rank,$cid,$rank_to){
                                     $q->where('rank_upto','>=',$rank_to);
@@ -93,7 +114,7 @@ class PaymentController extends BaseController
                                   }else{
                                     $prizeBreakup=  $rank_prize->sum('prize_amount')??0;
 
-                                    
+
                                 }
                         //        ->avg('prize_amount');  
         if($rank_prize){
@@ -101,6 +122,7 @@ class PaymentController extends BaseController
         }else{
             return $prizeBreakup=0;
         }
+        */
         
     }
 

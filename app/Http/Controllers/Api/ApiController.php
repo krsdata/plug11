@@ -2504,13 +2504,12 @@ class ApiController extends BaseController
         }else{
             $data['matchdata'] = null;
         }
-
-
         return ['status'=>true,'code'=>200,'message'=>'success','system_time'=>time(),'response'=>$data];
     }
 
     // get Match by status and all
     public function getMatch(Request $request){
+        
         $user = $request->user_id;
         $banner = \DB::table('banners')->select('title','url','actiontype')->get();
         $join_cont =  \DB::table('join_contests')->where('user_id',$user);
