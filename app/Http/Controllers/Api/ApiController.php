@@ -53,6 +53,13 @@ class ApiController extends BaseController
         if ($request->header('Content-Type') != "application/json")  {
             $request->headers->set('Content-Type', 'application/json');
         }
+        $user_name = $request->user_id;
+        $user = User::where('user_name',$user_name)->first();
+        if($user){
+            $request->merge(['user_id'=>$user->id]);    
+        }else{
+            $request->merge(['user_id'=>null]);
+        }
     }
 
     public function contestFillNotify(Request $request)
@@ -790,7 +797,7 @@ class ApiController extends BaseController
         }
         if($request->user_id==285 && $m){
             $this->updateUserMatchPoints($request);
-            echo date('H:i:s A -');
+            //echo date('H:i:s A -');
             return $m;
         }else{
             return 'points updated';

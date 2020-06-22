@@ -46,7 +46,14 @@ class PaymentController extends BaseController
         $this->date = date('Y-m-d');
         if ($request->header('Content-Type') != "application/json")  {
             $request->headers->set('Content-Type', 'application/json');
-        }  
+        } 
+        $user_name = $request->user_id;
+        $user = User::where('user_name',$user_name)->first();
+        if($user){
+            $request->merge(['user_id'=>$user->id]);    
+        }else{
+            $request->merge(['user_id'=>null]);
+        } 
        // $uname      = Helper::generateRandomString(); 
     } 
   /**
