@@ -53,7 +53,7 @@ class UserController extends BaseController
         }
         $user_name = $request->user_id;
         $user = User::where('user_name',$user_name)->first();
-        if($user){
+        if($user && $request->user_id){
             $request->merge(['user_id'=>$user->id]);    
         }else{
             $request->merge(['user_id'=>null]);
@@ -948,7 +948,7 @@ class UserController extends BaseController
                             $usermodel->team_name = $usermodel->name;
                         }
                     }
-
+                    $usermodel->provider_id = $request->provider_id; 
                     $usermodel->save();
                     $status = true;
                     $code = 200;
