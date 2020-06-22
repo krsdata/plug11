@@ -2369,7 +2369,10 @@ class ApiController extends BaseController
                    $items->status_str = "Live" ;
                 }else{
                    $items->status_str = $items->status_str; 
-                }        
+                }  
+                if($items->status==2 && $items->current_status==0){
+                    $items->status_str = "In Review" ;
+                }      
 
                 return $items;
             });
@@ -2509,7 +2512,7 @@ class ApiController extends BaseController
 
     // get Match by status and all
     public function getMatch(Request $request){
-        
+
         $user = $request->user_id;
         $banner = \DB::table('banners')->select('title','url','actiontype')->get();
         $join_cont =  \DB::table('join_contests')->where('user_id',$user);
@@ -2530,9 +2533,8 @@ class ApiController extends BaseController
                 $jmatches = Matches::with('teama','teamb')->where('match_id',$match_id)->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','game_state','game_state_str','current_status','competition_id','timestamp_end')
                     ->orderBy('status','DESC')
                     ->first();
-                //dd($jmatches);
 
-               $winning_amount = $join_cont->where('cancel_contest',0)
+                $winning_amount = $join_cont->where('cancel_contest',0)
                         ->where('user_id',$request->user_id)
                         ->where('match_id',$jmatches->match_id)
                         ->where('ranks','>',0)
@@ -2572,11 +2574,9 @@ class ApiController extends BaseController
                     ->get();
 
                 if((($join_match->timestamp_end < time())  && $join_match->timestamp_end > strtotime("-1440 minutes") &&  $join_match->current_status!=1) ||
-                    ($join_match->status==2 && $join_match->current_status!=1) 
-
+                    ($join_match->status==2 && $join_match->current_status==0) 
+                      //  $join_match->status_str = "In Review";
                     ){
-                   // $join_match->status_str = "In Review";
-
                     if($join_match->status==4){
                        $join_match->status_str = 'Abandoned'; 
                     } 
@@ -2605,8 +2605,12 @@ class ApiController extends BaseController
                        
                     }
                 }
+                
+                if($join_match->status==2 && $join_match->current_status==0){
+                    $join_match->status_str = "In Review" ;
+                }
 
-                 $lineup = \DB::table('team_a_squads')->where('match_id',$join_match->match_id)
+                $lineup = \DB::table('team_a_squads')->where('match_id',$join_match->match_id)
                                 ->where('playing11',"true")->count();
 
                 if($lineup && $join_match->status==1){
