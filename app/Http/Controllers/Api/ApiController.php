@@ -55,7 +55,7 @@ class ApiController extends BaseController
         }
         $user_name = $request->user_id;
         $user = User::where('user_name',$user_name)->first();
-        if($user){
+        if($user && $request->user_id){
             $request->merge(['user_id'=>$user->id]);    
         }else{
             $request->merge(['user_id'=>null]);
@@ -3696,8 +3696,8 @@ class ApiController extends BaseController
     //Added by manoj
     public function getWallet(Request $request){
         $myArr = array();
-
         $user_id = User::find($request->user_id);
+        
         $wallet = Wallet::where('user_id',$request->user_id)->first();
         if($wallet){
             $myArr['wallet_amount']   = $wallet->usable_amount;
