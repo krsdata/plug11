@@ -703,14 +703,20 @@ class ApiController extends BaseController
     public function updatePoints(Request $request){
         sleep(5);
         if($request->match_id){
-            $matches = Matches::where('match_id',$request->match_id)
+            if($request->status==3){
+                $matches = Matches::where('status',3)
+                        ->where('match_id',$request->match_id)
+                        ->get();
+            }else{
+                $matches = Matches::where('match_id',$request->match_id)
                 ->get();
+            }
+            
         }else{
            $matches = Matches::where('status',3)
                 ->whereDate('updated_at',\Carbon\Carbon::today())
                 ->get(); 
         }
-
         $m = [];
         foreach ($matches as $key => $match) {   # code...
 
@@ -2599,13 +2605,13 @@ class ApiController extends BaseController
                         $t21 = time();
                         $td11 = round((($t11 - $t21)/60),2);
                         $request->merge(['match_id'=>$jmatches->match_id]);
+                        $request->merge(['status'=>3]);
                         if($td11<0){
                             $this->updatePoints($request);     
                         }
-                       
                     }
-                }
-                
+                }                
+
                 if($join_match->status==2 && $join_match->current_status==0){
                     $join_match->status_str = "In Review" ;
                 }
