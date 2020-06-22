@@ -2701,7 +2701,7 @@ class ApiController extends BaseController
         $data['matchdata'][] = ['viewType'=>2,'banners'=>$banner];
         $data['matchdata'][] = ['viewType'=>3,'upcomingmatches'=>$match];
         
-        Log::channel('after_getMatch')->info($request->all());
+        Log::channel('getMatch')->info($request->all());
         return ['total_result'=>count($match),'status'=>true,'code'=>200,'message'=>'success','system_time'=>time(),'response'=>$data];
     }
 

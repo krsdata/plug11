@@ -1122,6 +1122,7 @@ class UserController extends BaseController
             $usermodel->user_name = $user_id;       
             $usermodel->save();
 
+            Log::channel('getMatch')->info($data);
             return response()->json([
                 "status"=>$status,
                 "is_account_verified" => $usermodel->is_account_verified??0,
