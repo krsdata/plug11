@@ -5345,4 +5345,27 @@ class ApiController extends BaseController
             );
         }
     }
+
+    public function getNotification(Request $request)
+    {
+        $data[] = [
+                'title' => 'title',
+                'messages' => 'messages'
+        ];
+        $data[] = [
+                'title' => 'title2',
+                'messages' => 'messages2'
+        ];
+
+
+        return response()->json(
+                [
+                    "status"=>true,
+                    "code"=>200,
+                    "message" => "You have notification",
+                    "data" => $data
+                ]
+            );
+
+    }
 }

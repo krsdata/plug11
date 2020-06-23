@@ -213,6 +213,10 @@ Route::group([
     Route::match(['post','get'],'updateProfile', 'Api\UserController@updateProfile');
 
     Route::match(['post','get'],'getAnalytics', 'Api\ApiController@getAnalytics');
+    
+    Route::match(['post','get'],'getNotification', 'Api\ApiController@getNotification');
+
+    
 }
 );
 
