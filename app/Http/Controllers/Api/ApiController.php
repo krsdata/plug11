@@ -2849,14 +2849,13 @@ class ApiController extends BaseController
             $fname = $results->first_name;
             $lname = $results->last_name;
 
-            $title = $results->title;
-            
-            $fn = explode(" ",$title);
-            $f1  = reset($fn);
-            $ln  = end($fn);
+            $title  = $results->title??$results->short_name;
+            $fn     = explode(" ",$results->title??$results->short_name);
+            $f1     = reset($fn);
+            $ln     = end($fn);
             $fname  = reset($fn);
-            if(strlen($result->name)>15){
-               $fname = $f1[0];    
+            if(strlen($title)>15){
+               $fname = $f1[0]; 
             }
 
             
