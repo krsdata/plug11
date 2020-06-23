@@ -42,6 +42,7 @@ class ApiController extends BaseController
     public $token;
     public $date;
     public $cric_url;
+    public $is_session_expire;
 
     public function __construct(Request $request) {
         $this->date = date('Y-m-d');
@@ -60,6 +61,7 @@ class ApiController extends BaseController
         }else{
             $request->merge(['user_id'=>null]);
         }
+        $this->is_session_expire = false;
     }
 
     public function contestFillNotify(Request $request)
@@ -1570,6 +1572,7 @@ class ApiController extends BaseController
           //  dd($match_info);
             return response()->json(
                 [
+                    'session_expired'=>$this->is_session_expire,
                     'system_time'=>time(),
                     'match_status' => $match_info['match_status']??null,
                     'match_time' => $match_info['match_time']??null,
@@ -2702,7 +2705,16 @@ class ApiController extends BaseController
         $data['matchdata'][] = ['viewType'=>3,'upcomingmatches'=>$match];
         
         Log::channel('getMatch')->info($request->all());
-        return ['total_result'=>count($match),'status'=>true,'code'=>200,'message'=>'success','system_time'=>time(),'response'=>$data];
+        
+        return [
+            'session_expired'=>$this->is_session_expire,
+            'total_result'=>count($match),
+            'status'=>true,
+            'code'=>200,
+            'message'=>'success',
+            'system_time'=>time(),
+            'response'=>$data
+        ];
     }
 
     public function getAllCompetition(){
@@ -3141,6 +3153,7 @@ class ApiController extends BaseController
             }
 
             return Response::json(array(
+                    'session_expired'=>$this->is_session_expire,
                     'system_time'=>time(),
                     'status' => false,
                     "code"=> 201,
@@ -3160,6 +3173,7 @@ class ApiController extends BaseController
 
         if(count($created_team_id)==1 AND  $check_join_contest->count()==1){
             return [
+                'session_expired'=>$this->is_session_expire,
                 'status'=>false,
                 'code' => 201,
                 'message' => 'This team already Joined'
@@ -3171,6 +3185,7 @@ class ApiController extends BaseController
 
         if($cc && ($cc->total_spots!=0 && $cc->filled_spot>=$cc->total_spots)){
             return [
+                'session_expired'=>$this->is_session_expire,
                 'status'=>false,
                 'code' => 201,
                 'message' => 'This contest already full'
@@ -3188,6 +3203,7 @@ class ApiController extends BaseController
 
         if(!$userVald || !$matchVald || !$contest_id){
             return [
+                'session_expired'=>$this->is_session_expire,
                 'status'=>false,
                 'code' => 201,
                 'message' => 'user_id or match_id or contest_id is invalid'
@@ -3209,6 +3225,7 @@ class ApiController extends BaseController
                 $is_full = CreateContest::find($contest_id);
                 if($is_full==null){
                     return [
+                        'session_expired'=>$this->is_session_expire,
                         'status'=>false,
                         'code' => 201,
                         'message' => 'invalid contest'
@@ -3216,6 +3233,7 @@ class ApiController extends BaseController
                 }
                 if($is_full && $is_full->total_spots>0  && ($is_full->total_spots==$is_full->filled_spot)){
                     return [
+                        'session_expired'=>$this->is_session_expire,
                         'status'=>false,
                         'code' => 201,
                         'message' => 'This Contest is already full'
@@ -3243,6 +3261,7 @@ class ApiController extends BaseController
                 ){
 
                     return [
+                        'session_expired'=>$this->is_session_expire,
                         'status'=>false,
                         'code' => 201,
                         'message' => "Only $contestTyp->max_entries teams are allowed"
@@ -3316,6 +3335,7 @@ class ApiController extends BaseController
 
                         if(isset($is_full) && $is_full->entry_fees>0){
                              return [
+                                'session_expired'=>$this->is_session_expire,
                                 'status'=>false,
                                 'code' => 201,
                                 'message' => "You don't have sufficient balance!"
@@ -3381,6 +3401,7 @@ class ApiController extends BaseController
           //  dd($match_info);
             return response()->json(
                 [
+                'session_expired'=>$this->is_session_expire,    
                 'system_time'=>time(),
                 'match_status' => $match_info['match_status']??null,
                 'match_time' => $match_info['match_time']??null,
@@ -4263,6 +4284,7 @@ class ApiController extends BaseController
           //  dd($match_info);
             return response()->json(
             [
+                'session_expired'=>$this->is_session_expire,
                 'system_time'=>time(),
                 'match_status' => $match_info['match_status']??null,
                 'match_time' => $match_info['match_time']??null,
