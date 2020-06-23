@@ -963,13 +963,13 @@ class ApiController extends BaseController
         $lb = [];    
         foreach ($leader_board1 as $key => $value) {
 
-            if(!isset($value->user)){
+            if(!isset($value->user->user_name)){
                 continue;
             }
-
+            $user = 
             $data['match_id'] = $value->match_id;
             $data['team_id'] = $value->created_team_id;
-            $data['user_id'] = $value->user_name;
+            $data['user_id'] = $value->user->user_name;
             $data['team'] = $value->team_count;
             $data['point'] = $value->points;
             $data['rank'] = $value->ranks;
@@ -993,13 +993,13 @@ class ApiController extends BaseController
         }
         foreach ($leader_board2 as $key => $value) {
 
-            if(!isset($value->user)){
+            if(!isset($value->user->user_name)){
                 continue;
             }
 
             $data['match_id'] = $value->match_id;
             $data['team_id'] = $value->created_team_id;
-            $data['user_id'] = $value->user_name;
+            $data['user_id'] = $value->user->user_name;
             $data['team'] = $value->team_count;
             $data['point'] = $value->points;
             $data['rank'] = $value->ranks;

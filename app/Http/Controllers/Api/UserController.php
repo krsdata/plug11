@@ -992,7 +992,7 @@ class UserController extends BaseController
                     $user->reference_code = $request->referral_code;
                     $user->email_verified_at = 1;
                     $user->save() ;
-
+                    
                     $msg = "$user->name has registered using gmail id $user->email";
 
                     $helper = new Helper;
