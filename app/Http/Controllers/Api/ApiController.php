@@ -2852,17 +2852,17 @@ class ApiController extends BaseController
             $fl = strlen(trim($fname.trim($lname)));
             
             if($fl>=25){
-                $data['short_name'] = $fname; //$results->short_name;
+                $data['short_name'] = $results->short_name;
             }else{
                 if(strlen($lname)<=25)
                 {
-                    $data['short_name'] = $fname." ".$lname;
+                    $data['short_name'] = $fname[0]." ".$lname;
                 }
                 else{
                     if($lname==""){
                         $data['short_name'] = $results->short_name;
                     }else{
-                        $data['short_name'] = $fname.' '.$lname;    
+                        $data['short_name'] = $fname[0].' '.$lname;    
                     }
                     
                 }
