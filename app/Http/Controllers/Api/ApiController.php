@@ -2849,25 +2849,35 @@ class ApiController extends BaseController
             $fname = $results->first_name;
             $lname = $results->last_name;
 
-            $fl = strlen(trim($fname.trim($lname)));
+            $title = $results->title;
+            
+            $fn = explode(" ",$title);
+            $f1  = reset($fn);
+            $ln  = end($fn);
+            $fname  = reset($fn);
+            if(strlen($result->name)>15){
+               $fname = $f1[0];    
+            }
+
             
             if($fl>=25){
                 $data['short_name'] = $results->short_name;
             }else{
                 if(strlen($lname)<=25)
                 {
-                    $data['short_name'] = $fname[0]." ".$lname;
+                    $data['short_name'] = $fname." ".$lname;
                 }
                 else{
                     if($lname==""){
                         $data['short_name'] = $results->short_name;
                     }else{
-                        $data['short_name'] = $fname[0].' '.$lname;    
+                        $data['short_name'] = $fname.' '.$lname;    
                     }
                     
                 }
             }
-          //  $data['short_name'] =  $results->title;           
+            $data['short_name'] =  $fname.' '.$ln;
+
             $data['fantasy_player_rating'] = ($results->fantasy_player_rating);
 
             $sel_per = $analytics->where('player_id',$results->pid)->first();
