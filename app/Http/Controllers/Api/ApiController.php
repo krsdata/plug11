@@ -2858,7 +2858,7 @@ class ApiController extends BaseController
                $fname = $f1[0]; 
             }
 
-            
+           /* 
             if($fl>=25){
                 $data['short_name'] = $results->short_name;
             }else{
@@ -2874,7 +2874,7 @@ class ApiController extends BaseController
                     }
                     
                 }
-            }
+            }*/
             $data['short_name'] =  $fname.' '.$ln;
 
             $data['fantasy_player_rating'] = ($results->fantasy_player_rating);
