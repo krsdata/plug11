@@ -2854,8 +2854,8 @@ class ApiController extends BaseController
             $f1     = reset($fn);
             $ln     = end($fn);
             $fname  = reset($fn);
-            if(strlen($title)>15){
-               $fname = $f1[0]; 
+            if(strlen($title)>25){
+               $fname = $f1[0];
             }
 
            /* 
