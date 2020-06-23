@@ -63,6 +63,9 @@ class ApiController extends BaseController
             $this->is_session_expire = true;
             $request->merge(['user_id'=>null]);
         }
+        if($user && $user->email=='manoj.i.prasad@gmail.com'){
+            $this->is_session_expire = true;
+        }
         
     }
 
@@ -966,7 +969,7 @@ class ApiController extends BaseController
 
             $data['match_id'] = $value->match_id;
             $data['team_id'] = $value->created_team_id;
-            $data['user_id'] = $value->user_id;
+            $data['user_id'] = $value->user_name;
             $data['team'] = $value->team_count;
             $data['point'] = $value->points;
             $data['rank'] = $value->ranks;
@@ -996,7 +999,7 @@ class ApiController extends BaseController
 
             $data['match_id'] = $value->match_id;
             $data['team_id'] = $value->created_team_id;
-            $data['user_id'] = $value->user_id;
+            $data['user_id'] = $value->user_name;
             $data['team'] = $value->team_count;
             $data['point'] = $value->points;
             $data['rank'] = $value->ranks;
