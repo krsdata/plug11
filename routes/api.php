@@ -215,7 +215,7 @@ Route::group([
     Route::match(['post','get'],'getAnalytics', 'Api\ApiController@getAnalytics');
 
     Route::match(['post','get'],'getNotification', 'Api\ApiController@getNotification');
-    Route::post('paytmCallBack', 'Api\ApiController@paytmCallBack');
+    Route::match(['post','get'],'paytmCallBack', 'Api\ApiController@paytmCallBack');
     
     }
 );
