@@ -5363,7 +5363,7 @@ class ApiController extends BaseController
                     "status"=>true,
                     "code"=>200,
                     "message" => "You have notification",
-                    "data" => $data
+                    "notification_list" => $data
                 ]
             );
 
