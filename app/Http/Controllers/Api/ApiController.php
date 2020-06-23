@@ -544,7 +544,7 @@ class ApiController extends BaseController
                     'pid'       => $result->pid,
                     'team_id'   => $player_team_id[$result->pid]??null,
                     'name'      => $result->short_name,
-                    'short_name'=> $result->name,
+                    'short_name'=> $result->short_name,
                     'points'    => (float)$point,
                     'fantasy_player_rating'    => (float)$result->rating,
                     'role'      => ($result->role=='wkbat')?'wk':$result->role,
