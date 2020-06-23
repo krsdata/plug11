@@ -369,7 +369,6 @@ class ApiController extends BaseController
     public function getPoints(request $request){
 
         $team_id = CreateTeam::find($request->team_id);
-
         $validator = Validator::make($request->all(), [
             'team_id' => 'required'
         ]);
@@ -544,7 +543,7 @@ class ApiController extends BaseController
                 $data[] = [
                     'pid'       => $result->pid,
                     'team_id'   => $player_team_id[$result->pid]??null,
-                    'name'      => $result->name,
+                    'name'      => $result->short_name,
                     'short_name'=> $result->name,
                     'points'    => (float)$point,
                     'fantasy_player_rating'    => (float)$result->rating,
@@ -3149,7 +3148,7 @@ class ApiController extends BaseController
                     'message' => 'unauthorise access!'
                 );
         }
-        
+
         $match_id           = $request->match_id;
         $user_id            = $request->user_id;
         $created_team_id    = $request->created_team_id;
