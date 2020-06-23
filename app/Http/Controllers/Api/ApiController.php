@@ -715,7 +715,7 @@ class ApiController extends BaseController
     }
     // update points by LIVE Match
     public function updatePoints(Request $request){
-        sleep(5);
+        sleep(1);
         if($request->match_id){
             if($request->status==3){
                 $matches = Matches::where('status',3)
@@ -823,7 +823,7 @@ class ApiController extends BaseController
             ->get();
         $data = [];
         foreach ($match_stat as $key => $stat) {
-            
+
             if(isset($stat->player->team_a)){
                 $team_name = $stat->player->team_a->short_name;
             }
@@ -3532,7 +3532,6 @@ class ApiController extends BaseController
         $match_id =  $request->match_id;
 
         $matchVald = Matches::where('match_id',$request->match_id)->count();
-
         
         $join_contests = JoinContest::where('user_id',$request->user_id)
             ->where('match_id',$match_id)->groupBy('contest_id')
@@ -3593,17 +3592,6 @@ class ApiController extends BaseController
 
     public function myJoinedTeam($match_id=null,$user_id=null,$contest_id=null)
     {
-        /*
-                $check_my_contest = \DB::table('join_contests')
-                        ->where('match_id',$match_id)
-                        ->where('user_id',$user_id);
-
-
-                $created_team_id = $check_my_contest->pluck('created_team_id')->toArray();
-                $contest_id      = $check_my_contest->pluck('contest_id')->toArray();
-                $myContest       =     $check_my_contest->first();*/
-
-
         $joinMyContest =  JoinContest::with('createTeam','contest')
             ->where('match_id',$match_id)
             ->where('user_id',$user_id)
@@ -3638,7 +3626,7 @@ class ApiController extends BaseController
 
             foreach ($joinMyContest as $key => $result) {
                 
-                $data2['team_name'] = ($userVald->user_name).'('.$result->team_count.')';
+                $data2['team_name'] = ($userVald->team_name??$userVald->name).'('.$result->team_count.')';
                 // $data2['team'] = $result->createTeam->team_count;
                 $data2['createdTeamId'] =    $result->created_team_id;
                 $data2['contestId'] =    $result->contest_id;
