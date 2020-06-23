@@ -14,6 +14,7 @@ use App\Helpers\Helper as Helper;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Monolog\Handler\StreamHandler;
+use Illuminate\Support\Str;
 use Monolog\Handler\SyslogUdpHandler;
 use App\Models\Competition;
 use App\Models\TeamA;
@@ -3891,6 +3892,14 @@ class ApiController extends BaseController
     }
     // Add Money
     public function addMoney(Request $request){
+        $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
+        if(!$okhttp){
+            return array(
+                    'status' => false,
+                    'code' => 201,
+                    'message' => 'unauthorise access!'
+                );
+        }
 
         $myArr = [];
         $user = User::find($request->user_id);
