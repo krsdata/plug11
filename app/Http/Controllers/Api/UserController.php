@@ -33,6 +33,7 @@ use App\Models\Rank;
 use App\Models\JoinContest;
 use App\Models\ReferralCode;
 use Modules\Admin\Models\Program;
+use Illuminate\Support\Str;
 
 
 class UserController extends BaseController
@@ -839,7 +840,16 @@ class UserController extends BaseController
     }
 
     public function login(Request $request)
-    {  
+    {   
+        $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
+        if(!$okhttp){
+            return array(
+                    'status' => false,
+                    'code' => 201,
+                    'message' => 'unauthorise access!'
+                );
+        }
+
         $request->merge(['user_type'=>'googleAuth']);
         $data = [];
         $input = $request->all();
@@ -992,7 +1002,7 @@ class UserController extends BaseController
                     $user->reference_code = $request->referral_code;
                     $user->email_verified_at = 1;
                     $user->save() ;
-                    
+
                     $msg = "$user->name has registered using gmail id $user->email";
 
                     $helper = new Helper;

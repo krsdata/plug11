@@ -445,7 +445,7 @@ class ApiController extends BaseController
                     'name'      => $result->short_name,
                     'short_name'=> $result->short_name,
                     'points'    => 0,
-                    'rating'    => 0,
+                    'fantasy_player_rating'    => 0,
                     'role'      => $result->playing_role,
                     'captain'   =>  ($captain==$result->pid)?true:false,
                     'vice_captain'   => ($vice_captain==$result->pid)?true:false,
@@ -546,7 +546,7 @@ class ApiController extends BaseController
                     'name'      => $result->name,
                     'short_name'=> $result->name,
                     'points'    => (float)$point,
-                    'rating'    => (float)$result->rating,
+                    'fantasy_player_rating'    => (float)$result->rating,
                     'role'      => ($result->role=='wkbat')?'wk':$result->role,
                     'captain'   =>  ($captain==$result->pid)?true:false,
                     'vice_captain'   => ($vice_captain==$result->pid)?true:false,
@@ -823,7 +823,7 @@ class ApiController extends BaseController
             ->get();
         $data = [];
         foreach ($match_stat as $key => $stat) {
-
+            
             if(isset($stat->player->team_a)){
                 $team_name = $stat->player->team_a->short_name;
             }
@@ -834,7 +834,7 @@ class ApiController extends BaseController
             $data[] = [
                 'match_id' => $stat->match_id,
                 'pid' => $stat->pid,
-                'rating' => $stat->rating,
+                'fantasy_player_rating' => $stat->rating,
                 'point' => $stat->point,
                 'role' => strtoupper($stat->role),
                 'team_id' => $stat->player->team_id,
