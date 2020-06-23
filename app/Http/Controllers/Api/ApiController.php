@@ -1199,7 +1199,14 @@ class ApiController extends BaseController
      @method : createTeam
     */
     public function createTeam(Request $request){
-        
+        $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
+        if(!$okhttp){
+            return array(
+                    'status' => false,
+                    'code' => 201,
+                    'message' => 'unauthorise access!'
+                );
+        }
         $this->matchInfo($request,'createTeam');
         $match_id = $request->match_id;
         $userVald = User::find($request->user_id);
@@ -3134,7 +3141,15 @@ class ApiController extends BaseController
 
     public function  joinContest(Request  $request)
     {
-
+        $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
+        if(!$okhttp){
+            return array(
+                    'status' => false,
+                    'code' => 201,
+                    'message' => 'unauthorise access!'
+                );
+        }
+        
         $match_id           = $request->match_id;
         $user_id            = $request->user_id;
         $created_team_id    = $request->created_team_id;
