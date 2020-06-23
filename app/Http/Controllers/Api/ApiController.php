@@ -57,11 +57,13 @@ class ApiController extends BaseController
         $user_name = $request->user_id;
         $user = User::where('user_name',$user_name)->first();
         if($user && $request->user_id){
+            $this->is_session_expire = false;
             $request->merge(['user_id'=>$user->id]);    
         }else{
+            $this->is_session_expire = true;
             $request->merge(['user_id'=>null]);
         }
-        $this->is_session_expire = false;
+        
     }
 
     public function contestFillNotify(Request $request)
