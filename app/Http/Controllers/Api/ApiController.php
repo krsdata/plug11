@@ -540,13 +540,13 @@ class ApiController extends BaseController
                     $result->role = "wk";
                 }
                 $fn = explode(" ",$result->name);
-                
+
                 //$short_name??$result->name
                 $data[] = [
                     'pid'       => $result->pid,
                     'team_id'   => $player_team_id[$result->pid]??null,
                     'name'      => reset($fn).end($fn),
-                    'short_name'=> reset($fn).end($fn),
+                    'short_name'=> reset($fn[0]).' '.end($fn),
                     'points'    => (float)$point,
                     'fantasy_player_rating'    => (float)$result->rating,
                     'role'      => ($result->role=='wkbat')?'wk':$result->role,
