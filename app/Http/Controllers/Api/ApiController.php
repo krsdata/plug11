@@ -63,9 +63,9 @@ class ApiController extends BaseController
             $this->is_session_expire = true;
             $request->merge(['user_id'=>null]);
         }
-        if($user && $user->email=='manoj.i.prasad@gmail.com'){
+       /* if($user && $user->email=='manoj.i.prasad@gmail.com'){
             $this->is_session_expire = true;
-        }
+        }*/
         
     }
 
