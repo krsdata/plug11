@@ -903,7 +903,9 @@ class UserController extends BaseController
                    elseif($usermodel->mobile_number){
                         $usermodel->mobile_number = $usermodel->mobile_number;
                    }
-                   $usermodel->profile_image = $user->profile_image??$request->profile_image;
+                   if(!$user->profile_image){
+                        $usermodel->profile_image = $request->profile_image;
+                   }
                    
                     if(empty($user->mobile_number)){
                         
