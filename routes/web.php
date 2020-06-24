@@ -12,11 +12,15 @@
 */
 
 Route::get('apkDownload',function(){
-   return redirect(url('public/upload/apk/sportsfight.apk'));
+   //return redirect(url('public/upload/apk/sportsfight.apk'));
+   $url = url('public/upload/apk/sportsfight.apk');
+   return Response::download($url);
 });
 Route::get('apk',function(){
    //return \Response::download('public/upload/apk/sportsfight.apk'); 
-    return redirect(url('public/upload/apk/sportsfight.apk'));
+  //  return redirect();
+    $url = url('public/upload/apk/sportsfight.apk');
+    return Response::download($url);
 });
 
 
