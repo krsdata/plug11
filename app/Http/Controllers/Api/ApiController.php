@@ -1179,7 +1179,8 @@ class ApiController extends BaseController
             $k['vc_img']        = "";
             $k['t_img']         = "";
             // username
-            $k['team_name'] =  $user_name->team_name??$user_name->name. '('.$result->team_count.')';
+            $tname = $user_name->team_name??$user_name->name;
+            $k['team_name'] =  $tname. '('.$result->team_count.')';
             $k['points']        = $points;
             $k['rank']          = $rank;
             $data[] = $k;
