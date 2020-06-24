@@ -1184,7 +1184,6 @@ class ApiController extends BaseController
             $k['rank']          = $rank;
             $data[] = $k;
             $t = [];
-
         }
 
         $match_info = $this->setMatchStatusTime($match_id);
