@@ -140,13 +140,14 @@
           <a class="dropdown-item btn btn-warning" href="#">Generate Prize - NA</a>
           @endif  
         <div class="dropdown-divider"></div>
+        <a class="dropdown-item btn btn-danger" data-toggle="modal" data-target="#playing11_{{$result->id}}" href="#">Playing 11 Squad</a>
+
         <a class="dropdown-item btn btn-info" href="{{route('triggerEmail','match_id='.$result->match_id)}}">Prize Email Trigger</a>
            
           <a class="dropdown-item btn btn-danger" data-toggle="modal" data-target="#cancelContest_{{$result->id}}" href="#">Cancel Match Contest</a>
 
-          <a class="dropdown-item btn btn-danger" data-toggle="modal" data-target="#playing11_{{$result->id}}" href="#">Playing 11 Squad</a>
 
-         <a class="dropdown-item btn btn-primary" href="{{route('cancelMatch','match_id='.$result->match_id)}}">Cancel This Match</a>
+         <!-- <a class="dropdown-item btn btn-primary" href="{{route('cancelMatch','match_id='.$result->match_id)}}">Cancel This Match</a> -->
 
 
          <a class="dropdown-item btn btn-primary" href="{{route('matchContest','search='.$result->match_id)}}">View All Contests</a>
