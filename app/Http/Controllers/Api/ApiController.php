@@ -115,7 +115,6 @@ class ApiController extends BaseController
                     'message'       =>  $apk_update_status->message?$apk_update_status->message:'Update is available',
                     'url'           =>  'https://sportsfight.in/public/upload/apk/sportsfight.apk',
                     'title'         =>  $apk_update_status->title,
-                    'url'           =>  $apk_update_status->url,
                     'release_note'  =>  $apk_update_status->release_notes??'new updates'
                 ];
             }else{
