@@ -5444,7 +5444,7 @@ class ApiController extends BaseController
                 }elseif($match->status==3){
                     $msg = "You are winning INR $item->winning_amount";
                 }else{
-                    $msg = "You have joined Upcoming match contest. Match will start at ".date('h:i:s A on d-m-Y',$match->timestamp_start);
+                    $msg = "You have joined Upcoming match contest. Match will start at ".date('h:i:s A, d-m-Y',$match->timestamp_start);
                 }
 
                 $data = [
