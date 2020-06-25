@@ -32,7 +32,6 @@ use App\Models\ReferralCode;
 use Modules\Admin\Models\Program;
 
 
-
 class UserController extends BaseController
 {
     public $download_link;
@@ -611,7 +610,7 @@ class UserController extends BaseController
 
    // $new_password  = $request->new_password;
    // $password      = $request->password;
-    $user = User::find($request->user_id);
+        $user = User::find($request->user_id);
      
     /*if($new_password && $password){
 
@@ -637,7 +636,7 @@ class UserController extends BaseController
 
    // $user = User::find($request->user_id);
     
-    if($user){
+        if($user){
             $user->city = $request->city;
             $user->dateOfBirth = $request->dateOfBirth;
             $user->gender = $request->gender;
@@ -1369,32 +1368,12 @@ class UserController extends BaseController
                 break;
 
             default:
-                $credentials = [
-                    'email'     =>$request->get('email'),
-                    'password'  =>$request->get('password'),
-                    'status'    => 1
-                ];
-
-                $auth = Auth::attempt($credentials);
-
-                if ($auth ){
-                    $usermodel = Auth::user();
-                    $request->merge(['user_id'=>$usermodel->id]);
-                    if($usermodel->is_account_verified==0){
-                        $this->generateOtp($request);
-                    }
-
-                    $token = $usermodel->createToken('SportsFight')->accessToken;
-
-                    $status = true;
-                    $code = 200;
-                    $message = "login successfully";
-                }else{
-                    $usermodel = null;
-                    $status = false;
-                    $code = 201;
-                    $message = "login failed";
-                }
+                 
+                $usermodel = null;
+                $status = false;
+                $code = 201;
+                $message = "login failed";
+            
                 break;
         }
         $data = [];
