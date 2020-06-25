@@ -5425,7 +5425,10 @@ class ApiController extends BaseController
     public function getNotification(Request $request)
     {
         $user_id = $request->user_id;
-        $data = null;
+        $data[] = [
+                    'title' => "Join Contest",
+                    'messages' => "Join content with maximum and win the cash."
+                ];
         $jc = JoinContest::where('user_id',$user_id)->where('winning_amount','>',0)->limit(15)
             ->whereDate('created_at',\Carbon\Carbon::today())
             ->orderBy('id','desc')->get(['match_id','winning_amount'])
