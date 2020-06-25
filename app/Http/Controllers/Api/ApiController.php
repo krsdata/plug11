@@ -5424,7 +5424,7 @@ class ApiController extends BaseController
 
     public function getNotification(Request $request)
     {
-        $user_id = 285; //$request->user_id;
+        $user_id = $request->user_id;
         $data = [];
         $jc = JoinContest::where('user_id',$user_id)->where('winning_amount','>',0)->limit(8)->orderBy('id','desc')->get(['match_id','winning_amount'])
             ->transform(function($item,$key){
