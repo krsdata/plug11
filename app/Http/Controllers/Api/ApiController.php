@@ -5434,15 +5434,25 @@ class ApiController extends BaseController
                     'title' => "Join Contest $msg",
                     'messages' => "Join content with maximum and win the cash."
                 ];
-        $jc = JoinContest::where('user_id',$user_id)->where('winning_amount','>',0)->limit(15)
+        $jc = JoinContest::where('user_id',$user_id)
             ->whereDate('created_at',\Carbon\Carbon::today())
             ->orderBy('id','desc')->get(['match_id','winning_amount'])
             ->transform(function($item,$key){
 
                 $match = Matches::where('match_id',$item->match_id)->first();
+                if($match->status==2){
+                    $msg = "You won INR $item->winning_amount";
+                }elseif($match->status==4){
+                    $msg = "Match is cancelled";
+                }elseif($match->status==3){
+                    $msg = "You are winning INR $item->winning_amount";
+                }else{
+                    $msg = "You have joined Upcoming";
+                }
+
                 $data = [
                     'title' => "$match->short_title",
-                    'messages' => "You won INR $item->winning_amount"
+                    'messages' => $msg
                 ];
 
                 $item->data = $data;
