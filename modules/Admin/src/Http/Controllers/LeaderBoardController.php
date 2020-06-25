@@ -15,17 +15,15 @@ use Illuminate\Http\Dispatcher;
 use App\Helpers\Helper;
 use Modules\Admin\Models\Roles;
 use Modules\Admin\Models\Menu;
-use Modules\Admin\Models\EditorPortfolio;
-use Modules\Admin\Models\PrizeDistribution;
+use Modules\Admin\Models\JoinContest;
 
 /**
  * Class MenuController
  */
-class PrizeDistributionController extends Controller {
+class LeaderBoardController extends Controller {
     /**
      * @var  Repository
      */
-
     /**
      * Displays all admin.
      *
@@ -33,11 +31,11 @@ class PrizeDistributionController extends Controller {
      */
     public function __construct() {
         $this->middleware('admin');
-        View::share('viewPage', 'prizeDistribution');
-        View::share('sub_page_title', 'prizeDistribution');
+        View::share('viewPage', 'leaderBoard');
+        View::share('sub_page_title', 'leaderBoard');
         View::share('helper',new Helper);
-        View::share('heading','prize Distribution');
-        View::share('route_url',route('prizeDistribution'));
+        View::share('heading','leaderBoard');
+        View::share('route_url',route('leaderBoard'));
 
         $this->record_per_page = Config::get('app.record_per_page');
     }
@@ -47,18 +45,18 @@ class PrizeDistributionController extends Controller {
      * Dashboard
      * */
 
-    public function index(PrizeDistribution $prizeDistribution, Request $request)
+    public function index(LeaderBoard $leaderBoard, Request $request)
     {
-        $page_title = 'prize Distribution';
-        $sub_page_title = 'prize Distribution';
-        $page_action = 'View prize Distribution';
+        $page_title = 'prize leaderBoard';
+        $sub_page_title = 'prize leaderBoard';
+        $page_action = 'View  leaderBoard';
 
 
         if ($request->ajax()) {
             $id = $request->get('id');
-            $prizeDistribution = PrizeDistribution::find($id);
-            $prizeDistribution->status = $s;
-            $prizeDistribution->save();
+            $leaderBoard = LeaderBoard::find($id);
+            $leaderBoard->status = $s;
+            $leaderBoard->save();
             echo $s;
             exit();
         }
@@ -70,7 +68,7 @@ class PrizeDistributionController extends Controller {
 
             $search = isset($search) ? Input::get('search') : '';
 
-            $prizeDistribution = PrizeDistribution::where(function($query) use($search,$status) {
+            $leaderBoard = LeaderBoard::where(function($query) use($search,$status) {
                         if (!empty($search)) {
                              $query->Where('match_id', 'LIKE', $search);
                              $query->orWhere('email', 'LIKE', "%$search%");
@@ -79,7 +77,7 @@ class PrizeDistributionController extends Controller {
                         }
 
                     })->Paginate($this->record_per_page);
-                 $prizeDistribution->transform(function($item,$key){
+                 $leaderBoard->transform(function($item,$key){
                 
                 
                 $palyer_id[]  = $item->captain;
@@ -112,9 +110,8 @@ class PrizeDistributionController extends Controller {
                 return $item; 
             });
         } else {
-            $prizeDistribution = PrizeDistribution::
-                                        orderBy('rank','asc')->Paginate($this->record_per_page);
-            $prizeDistribution->transform(function($item,$key){
+            $leaderBoard = LeaderBoard::orderBy('rank','asc')->Paginate($this->record_per_page);
+            $leaderBoard->transform(function($item,$key){
                 
                 
                 $palyer_id[]  = $item->captain;
@@ -147,8 +144,8 @@ class PrizeDistributionController extends Controller {
                 return $item; 
             });
         } 
-        $table_cname = \Schema::getColumnListing('prize_distributions');
-        $except = ['user_teams','id','created_at','updated_at','device_id','contest_type_id','default_contest_id','user_id','contest_id','created_team_id','match_team_id','email_trigger','user_name','email','team_name','entry_fees','total_spots','filled_spot','first_prize'];
+        $table_cname = \Schema::getColumnListing('join_contests');
+        $except = ['user_teams','id','created_at','updated_at','device_id','contest_type_id','default_contest_id','user_id','contest_id','created_team_id','match_team_id'];
         $data = [];
         foreach ($table_cname as $key => $value) {
 
@@ -158,19 +155,19 @@ class PrizeDistributionController extends Controller {
              $tables[] = $value;
         }
 
-        return view('packages::prizeDistribution.index', compact('prizeDistribution', 'page_title', 'page_action','sub_page_title','tables'));
+        return view('packages::leaderBoard.index', compact('leaderBoard', 'page_title', 'page_action','sub_page_title','tables'));
     }
 
     /*
      * create Group method
      * */
 
-    public function create(PrizeDistribution $prizeDistribution)
+    public function create(LeaderBoard $leaderBoard)
     {
 
-        $page_title     = 'prize Distribution';
-        $page_action    = 'Create prize Distribution';
-        $table_cname = \Schema::getColumnListing('prize_distributions');
+        $page_title     = 'prize leaderBoard';
+        $page_action    = 'Create prize leaderBoard';
+        $table_cname = \Schema::getColumnListing('join_contests');
         $except = ['id','created_at','updated_at'];
         $data = [];
         foreach ($table_cname as $key => $value) {
@@ -181,17 +178,17 @@ class PrizeDistributionController extends Controller {
              $tables[] = $value;
         }
 
-        return view('packages::prizeDistribution.create', compact('prizeDistribution', 'page_title', 'page_action','tables'));
+        return view('packages::leaderBoard.create', compact('leaderBoard', 'page_title', 'page_action','tables'));
     }
 
     /*
      * Save Group method
      * */
 
-    public function store(Request $request, PrizeDistribution $prizeDistribution)
+    public function store(Request $request, LeaderBoard $leaderBoard)
     {
         $data = [];
-        $table_cname = \Schema::getColumnListing('prize_distributions');
+        $table_cname = \Schema::getColumnListing('join_contests');
         $except = ['id','created_at','updated_at','_token','_method'];
         $data = [];
         foreach ($table_cname as $key => $value) {
@@ -200,11 +197,11 @@ class PrizeDistributionController extends Controller {
                 continue;
            }
             if($request->$value!=null){
-                $prizeDistribution->$value = $request->$value;
+                $leaderBoard->$value = $request->$value;
            }
         }
-        $prizeDistribution->save();
-        return Redirect::to(route('prizeDistribution'))
+        $leaderBoard->save();
+        return Redirect::to(route('leaderBoard'))
                             ->with('flash_alert_notice', 'Player points successfully created !');
         }
 
@@ -215,11 +212,11 @@ class PrizeDistributionController extends Controller {
      * */
 
     public function edit($id) {
-        $prizeDistribution = PrizeDistribution::find($id);
-        $page_title = 'prize Distribution';
-        $page_action = 'prize Distribution';
+        $leaderBoard = LeaderBoard::find($id);
+        $page_title = 'leaderBoard';
+        $page_action = 'leaderBoard';
 
-        $table_cname = \Schema::getColumnListing('prize_distributions');
+        $table_cname = \Schema::getColumnListing('join_contests');
         $except = ['id','created_at','updated_at'];
         $data = [];
         foreach ($table_cname as $key => $value) {
@@ -231,14 +228,14 @@ class PrizeDistributionController extends Controller {
         }
 
 
-        return view('packages::prizeDistribution.edit', compact( 'prizeDistribution', 'page_title','page_action', 'tables'));
+        return view('packages::leaderBoard.edit', compact( 'leaderBoard', 'page_title','page_action', 'tables'));
     }
 
     public function update(Request $request, $id) {
 
-        $prizeDistribution = PrizeDistribution::find($id);
+        $leaderBoard = LeaderBoard::find($id);
         $data = [];
-        $table_cname = \Schema::getColumnListing('prize_distributions');
+        $table_cname = \Schema::getColumnListing('join_contests');
         $except = ['id','created_at','updated_at','_token','_method','match_id','pid'];
         $data = [];
         foreach ($table_cname as $key => $value) {
@@ -247,12 +244,12 @@ class PrizeDistributionController extends Controller {
                 continue;
            }
             if($request->$value){
-                $prizeDistribution->$value = $request->$value;
+                $leaderBoard->$value = $request->$value;
            }
         }
-        $prizeDistribution->save();
+        $leaderBoard->save();
 
-        return Redirect::to(route('prizeDistribution'))
+        return Redirect::to(route('leaderBoard'))
                         ->with('flash_alert_notice', ' Points  successfully updated.');
     }
     /*
@@ -261,9 +258,9 @@ class PrizeDistributionController extends Controller {
      *
      */
     public function destroy($id) {
-        PrizeDistribution::where('id',$id)->delete();
-        return Redirect::to(route('prizeDistribution'))
-                        ->with('flash_alert_notice', ' prizeDistribution  successfully deleted.');
+        LeaderBoard::where('id',$id)->delete();
+        return Redirect::to(route('leaderBoard'))
+                        ->with('flash_alert_notice', ' leaderBoard  successfully deleted.');
 
     }
 

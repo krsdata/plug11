@@ -50,7 +50,7 @@ class MatchContestController extends Controller {
     }
 
     public function matchTeams(MatchTeams $matchTeams, Request $request)
-    { 
+    {   
         $page_title = 'Users Team';
         $sub_page_title = 'User Teams';
         $page_action = 'View user Teams'; 
@@ -62,15 +62,13 @@ class MatchContestController extends Controller {
                             ->orWhere('first_name','LIKE',"%$search%")
                             ->orWhere('phone','LIKE',"%$search%")
                             ->get('id')->pluck('id');
-        $contest_id = $request->contest_id;   
+        $contest_id = $request->contest_id; 
 
-        $created_team_id = JoinContest::where('match_id',$search)->where('contest_id',$contest_id)->pluck('created_team_id')->toArray();
+        $created_team_id = JoinContest::where('match_id',$search)->where('contest_id',$contest_id)->orderBy('ranks','asc')
+            ->pluck('created_team_id')->toArray();
         
-
         if ((isset($search) && !empty($search))) { 
-
             $matchTeams = MatchTeams::where(function($query) use($search,$status,$user,$contest_id,$created_team_id) {
-
                         if (!empty($search)) {
                             $query->where('match_id', $search);
                          }
@@ -80,29 +78,49 @@ class MatchContestController extends Controller {
                          if($created_team_id){
                             $query->whereIn('id', $created_team_id);
                          }
-                    })->orderBy('created_at','desc')->Paginate($this->record_per_page);
+                    })->pluck('id');
             
-            $matchTeams->transform(function($item,$key){ 
-                    $match = Match::where('match_id',$item->match_id)->select('short_title','status_str')->first();
-                    $item->status = $match->status_str??null;
-                    $item->match_name = $match->short_title??null;
+            $matchTeams = JoinContest::where('match_id',$search)
+            ->where(function($q)use($contest_id){
+                if($contest_id){
+                    $q->where('contest_id',$contest_id);    
+                }
+            })
+            ->orderBy('ranks','asc')->Paginate(15);
+            
+            $matchTeams->transform(function($item,$key)use($contest_id){ 
+                $joinContest = $item;
 
-                    $teams = json_decode($item->teams);
+                if($joinContest){
+                    $item->point = $joinContest->points;
+                    $item->rank  = $joinContest->ranks;
+                    $item->prize_amount = $joinContest->winning_amount;
+                }else{
+                    $item->point = 0;
+                    $item->rank  = 0;
+                    $item->prize_amount = 0;   
+                }
 
-                    $teams = Player::where('match_id',$item->match_id)->whereIn('pid',$teams)
+                $match = Match::where('match_id',$item->match_id)->select('short_title','status_str')->first();
+                $item->status = $match->status_str??null;
+                $item->match_name = $match->short_title??null;
+
+                $cc = MatchTeams::where('match_id',$item->match_id)
+                    ->where('id',$item->created_team_id)->first();
+
+                $teams = json_decode($cc->teams);
+                $teams = Player::where('match_id',$item->match_id)
+                        ->whereIn('pid',$teams)
                         ->get(['pid','team_id','match_id','title','short_name','playing_role','fantasy_player_rating']);
 
-                    $user = User::find($item->user_id);
-                    
-                    $item->user_name = $user->name??null;    
-
-                    $item->teams = $teams;    
-                    $item->join_status =  ($item->team_join_status==1)?'<span class="btn btn-success btn-xs">Joined</span>':'<span class="btn btn-danger btn-xs">Not Joined</span>';
-                                        
-                    return $item; 
+                $user = User::find($item->user_id);
+                $item->user_name = $user->name??null;
+                $item->teams = $teams;
+                $item->join_status =  ($cc->team_join_status==1)?'<span class="btn btn-success btn-xs">Joined</span>':'<span class="btn btn-danger btn-xs">Not Joined</span>';
+                return $item; 
             });
         } else {
-            $matchTeams = MatchTeams::orderBy('created_at','desc')->orderBy('created_at','desc')->Paginate($this->record_per_page);
+            $matchTeams = MatchTeams::orderBy('created_at','desc')->orderBy('id','desc')->Paginate($this->record_per_page);
                                                   
             $matchTeams->transform(function($item,$key){ 
                     $match = Match::where('match_id',$item->match_id)->select('short_title','status_str')->first();
@@ -116,8 +134,23 @@ class MatchContestController extends Controller {
                     $item->teams = $teams; 
 
                     $user = User::find($item->user_id);
-                    $item->user_name = $user->name??null;    
+                    $item->user_name = $user->name??null; 
+                    
+            $joinContest = JoinContest::where('match_id',$item->match_id)
+                ->where('team_count',$item->team_count)
+                ->where('user_id',$item->user_id)
+                ->where('created_team_id',$item->id)
+                ->first();
 
+                if($joinContest){
+                    $item->point = $joinContest->points;
+                    $item->rank  = $joinContest->ranks;
+                    $item->prize_amount = $joinContest->winning_amount;
+                }else{
+                    $item->point = 0;
+                    $item->rank  = 0;
+                    $item->prize_amount = 0;   
+                }
                     $item->join_status =  ($item->team_join_status==1)?'<span class="btn btn-success btn-xs">Joined</span>':'<span class="btn btn-danger btn-xs">Not Joined</span>';
                     
                     return $item; 
@@ -132,6 +165,10 @@ class MatchContestController extends Controller {
         $tables[] = 'match_name';
         $tables[] = 'status';
         $tables[] = 'user_name';
+        $tables[] = 'rank';
+        $tables[] = 'point';
+        $tables[] = 'prize_amount';
+
         $tables[] = 'join_status';
 
         foreach ($table_cname as $key => $value) {
@@ -143,7 +180,9 @@ class MatchContestController extends Controller {
             $tables[] = $value;
         }
 
-        return view('packages::matchContest.matchTeams', compact('matchTeams', 'page_title', 'page_action','sub_page_title','tables'));
+        $contest_id = $request->contest_id;
+
+        return view('packages::matchContest.matchTeams', compact('matchTeams', 'page_title', 'page_action','sub_page_title','tables','contest_id'));
     }
 
     /*
@@ -174,11 +213,25 @@ class MatchContestController extends Controller {
                     })->orderBy('created_at','desc')->Paginate($this->record_per_page);
             
             $matchContest->transform(function($item,$key){ 
-                    $contest_name = \DB::table('contest_types')->where('id',$item->contest_type)->first();
-                    $item->contest_name = $contest_name->contest_type??null;
+               
+                $contest_name = \DB::table('contest_types')->where('id',$item->contest_type)->first();
+                $item->contest_name = $contest_name->contest_type??null;
 
-                    return $item; 
+                $joinContest = JoinContest::where('match_id',$item->match_id)
+                    ->where('contest_id',$item->id)
+                    ->orderBy('winning_amount','desc')->limit(1)->first();
+                 $item->cancel_status = 'No';    
+                if($joinContest){
+                    $user = User::find($joinContest->user_id);
+                    $first_ranker = $joinContest->winning_amount??0;
+                    $item->first_ranker = $user->name.' won <br><b>'.$first_ranker.' INR </b><br>';
+                    $status = $joinContest->cancel_contest;
+                    $item->cancel_status = $status?'Yes':'No';
+                }
+                return $item; 
             });
+
+            $is_match =true;
         } else {
             $matchContest = MatchContest::orderBy('created_at','desc')->Paginate(15);
                                                     
@@ -186,8 +239,7 @@ class MatchContestController extends Controller {
                     $contest_name = \DB::table('contest_types')->where('id',$item->contest_type)->first();
                     $item->contest_name = $contest_name->contest_type??null;
                     $match = Match::where('match_id',$item->match_id)->select('short_title','status_str')->first();
-                    $item->status = $match->status_str??'Cancel';
-                    
+                    $item->status = $match->status_str??'Cancel'; 
                     return $item; 
             });
 
@@ -195,11 +247,14 @@ class MatchContestController extends Controller {
         
         $table_cname = \Schema::getColumnListing('create_contests');
         
-        $except = ['created_at','updated_at','winner_percentage','prize_percentage','is_cancelled','contest_type','default_contest_id','cancellation','is_free','is_cloned','is_full'];
+        $except = ['created_at','updated_at','winner_percentage','prize_percentage','is_cancelled','contest_type','default_contest_id','cancellation','is_free','is_cloned','is_full','sort_by','deleted_at','is_cancelable','id'];
         $data = [];
 
         $tables[] = 'contest_name';
-        $tables[] = 'status';
+        if(isset($is_match)){
+            $tables[] = 'first_ranker';
+            $tables[] = 'cancel_status';    
+        }
         
         foreach ($table_cname as $key => $value) {
 
