@@ -59,14 +59,14 @@ class ApkUpdateController extends Controller {
         if ((isset($search) && !empty($search))) {
 
             $search = isset($search) ? Input::get('search') : '';
-            $apkUpdate = ApkUpdate::where(function($query) use($search) {
+            $apkUpdate = ApkUpdate::orderBy('id','desc')->where(function($query) use($search) {
                         if (!empty($search)) {
                             $query->Where('title', 'LIKE', "%$search%");
                         }
                         
                     })->Paginate($this->record_per_page);
         } else {
-            $apkUpdate = ApkUpdate::Paginate($this->record_per_page);
+            $apkUpdate = ApkUpdate::orderBy('id','desc')->Paginate($this->record_per_page);
         } 
         return view('packages::apkUpdate.index', compact('apkUpdate', 'page_title', 'page_action','sub_page_title'));
     }
