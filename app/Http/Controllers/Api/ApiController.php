@@ -5430,10 +5430,7 @@ class ApiController extends BaseController
             $msg = " | $match->short_title";
         }   
         $user_id = $request->user_id;
-        $data[] = [
-                    'title' => "Join Contest $msg",
-                    'messages' => "Join content with maximum and win the cash."
-                ];
+        
         $jc = JoinContest::where('user_id',$user_id)
             ->whereDate('created_at',\Carbon\Carbon::today())
             ->orderBy('id','desc')->get(['match_id','winning_amount'])
@@ -5462,7 +5459,13 @@ class ApiController extends BaseController
 
         foreach ($jc as $key => $value) {
                $data[] = $value->data;
-            }    
+            }
+        if(!isset($data)){
+           $data[] = [
+                    'title' => "Join Contest $msg",
+                    'messages' => "Join content with maximum and win the cash."
+                ];     
+        }        
 
         return response()->json(
                 [
