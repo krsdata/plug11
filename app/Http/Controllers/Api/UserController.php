@@ -1111,7 +1111,7 @@ class UserController extends BaseController
             $token 	= $usermodel->createToken('token')->accessToken;
         }
         $apk_updates = \DB::table('apk_updates')->orderBy('id','desc')->first();
-        $data['apk_url'] =  'https://sportsfight.in/apk';
+        $data['apk_url'] =  "https://sportsfight.in/apk";
         if($data){
             $server = [
                 'USER_DEVICE_IP' => $_SERVER['HTTP_X_FORWARDED_FOR']??null,
