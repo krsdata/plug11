@@ -3673,8 +3673,13 @@ class ApiController extends BaseController
             $matchcontests = [];
 
             foreach ($joinMyContest as $key => $result) {
-                
-                $data2['team_name'] = ($userVald->team_name??$userVald->name).'('.$result->team_count.')';
+                if(isset($userVald)){
+                     $uname = $userVald->team_name??$userVald->name;     
+                }else{
+                    $uname = "";
+                }
+
+                $data2['team_name'] = ($uname).'('.$result->team_count.')';
                 // $data2['team'] = $result->createTeam->team_count;
                 $data2['createdTeamId'] =    $result->created_team_id;
                 $data2['contestId'] =    $result->contest_id;
