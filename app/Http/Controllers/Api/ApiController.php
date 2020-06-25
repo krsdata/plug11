@@ -5424,15 +5424,25 @@ class ApiController extends BaseController
 
     public function getNotification(Request $request)
     {
-        $data[] = [
-                'title' => 'title',
-                'messages' => 'messages'
-        ];
-        $data[] = [
-                'title' => 'title2',
-                'messages' => 'messages2'
-        ];
+        $user_id = 285; //$request->user_id;
+        $data = [];
+        $jc = JoinContest::where('user_id',$user_id)->where('winning_amount','>',0)->limit(8)->orderBy('id','desc')->get(['match_id','winning_amount'])
+            ->transform(function($item,$key){
 
+                $match = Matches::where('match_id',$item->match_id)->first();
+                $data = [
+                    'title' => "$match->short_title",
+                    'messages' => "You won INR $item->winning_amount"
+                ];
+
+                $item->data = $data;
+                return $item;
+        
+            });
+
+        foreach ($jc as $key => $value) {
+               $data[] = $value->data;
+            }    
 
         return response()->json(
                 [
