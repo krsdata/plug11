@@ -209,8 +209,9 @@ class MatchContestController extends Controller {
             $matchContest = MatchContest::where(function($query) use($search,$status,$user) {
                         if (!empty($search)) {
                              $query->where('match_id', $search);
+                             $query->where('filled_spot','>',0);
                          }
-                    })->orderBy('created_at','desc')->Paginate($this->record_per_page);
+                    })->orderBy('id','desc')->Paginate($this->record_per_page);
             
             $matchContest->transform(function($item,$key){ 
                
@@ -233,7 +234,7 @@ class MatchContestController extends Controller {
 
             $is_match =true;
         } else {
-            $matchContest = MatchContest::orderBy('created_at','desc')->Paginate(15);
+            $matchContest = MatchContest::orderBy('id','desc')->Paginate(15);
                                                     
             $matchContest->transform(function($item,$key){ 
                     $contest_name = \DB::table('contest_types')->where('id',$item->contest_type)->first();
@@ -242,11 +243,9 @@ class MatchContestController extends Controller {
                     $item->status = $match->status_str??'Cancel'; 
                     return $item; 
             });
-
         } 
         
         $table_cname = \Schema::getColumnListing('create_contests');
-        
         $except = ['created_at','updated_at','winner_percentage','prize_percentage','is_cancelled','contest_type','default_contest_id','cancellation','is_free','is_cloned','is_full','sort_by','deleted_at','is_cancelable','id'];
         $data = [];
 
