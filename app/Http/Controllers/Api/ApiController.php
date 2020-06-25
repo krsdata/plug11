@@ -1489,11 +1489,27 @@ class ApiController extends BaseController
 
             ];
         }
+        $ct = \DB::table('contest_types')
+                ->orderBy('sort_by','asc')
+                ->pluck('id')
+                ->toArray();
+                
+        /*$ct = \DB::table('contest_types')->order('sort_by','asc')->pluck('id')->toArray();
+
+        $contest = CreateContest::with('contestType')
+            ->where('match_id',$match_id)
+            ->whereIn('id',$join_contests)
+           // ->orderBy('entry_fees','desc')
+           // ->orderBy('sort_by','ASC')
+            ->whereIn('contest_type',$ct)
+            ->get();*/
         $contest = CreateContest::with('contestType')
             ->where('match_id',$match_id)
             ->where('is_cancelled',0)
             ->orderBy('sort_by','asc')
            // ->orderBy('id','DESC')
+            ->whereIn('contest_type',$ct)
+           // ->orderBy('entry_fees','DESC')
             ->orderBy('total_winning_prize','DESC')
             ->get();
            // return $contest;
