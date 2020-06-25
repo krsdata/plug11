@@ -5424,7 +5424,7 @@ class ApiController extends BaseController
 
     public function getNotification(Request $request)
     {
-        $match = Matches::whereDate('created_at',\Carbon\Carbon::today())->first(); 
+        $match = Matches::whereDate('date_start',\Carbon\Carbon::today())->first(); 
         $msg = "";
         if($match){
             $msg = " | $match->short_title";
