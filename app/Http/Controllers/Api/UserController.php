@@ -533,14 +533,15 @@ class UserController extends BaseController
                 'device_details' => $deviceDetails
             ]);
         }
-        $apk_updates = \DB::table('apk_updates')->orderBy('id','desc')->first();
+        $apk_updates    = \DB::table('apk_updates')
+                            ->orderBy('id','desc')
+                            ->first();
+
         $data['apk_url'] =  $apk_updates->url??null;
         //reference_code
-
         $refer_by = User::where('referal_code',$request->referral_code)
             ->orWhere('user_name',$request->referral_code)
             ->first();
-
 
         if($refer_by && $user)
         {
@@ -1003,6 +1004,18 @@ class UserController extends BaseController
                     $user->referal_code = $this->generateReferralCode();
                     $user->reference_code = $request->referral_code;
                     $user->email_verified_at = 1;
+
+                    if($request->referral_code){
+                        $referral_code_count = User::where('referal_code',$request->referral_code)->count();
+                        if($request->referral_code && $referral_code_count==0){
+                            return array(
+                                    'status'    => false,
+                                    'code'      => 201,
+                                    'message'   => 'Referral code is invalid'
+                            );
+                        }   
+                    }
+
                     $user->save() ;
 
                     $msg = "$user->name has registered using gmail id $user->email";
@@ -1015,9 +1028,8 @@ class UserController extends BaseController
                     //$this->generateOtp($request);
 
                     if($user->id){
-                        if($request->referral_code){
-                            $this->saveReferral($request,$user);    
-                        }
+                        $this->saveReferral($request,$user);
+                        
 
                         $wallet = new Wallet;
                         $wallet->user_id = $user->id;
