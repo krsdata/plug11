@@ -1133,7 +1133,7 @@ class ApiController extends BaseController
             $rank       = $result->rank;
 
             $k['created_team'] = ['team_id' => $result->id];
-            
+
             $player = Player::WhereIn('team_id',$team_id)
                 ->whereIn('pid',$teams)
                 ->where('match_id',$result->match_id)
@@ -1169,10 +1169,12 @@ class ApiController extends BaseController
             $k['vc'] = ['pid'=>(int)$vice_captain,'name' => $c[$vice_captain]];
             $k['t'] = ['pid'=>(int)$trump,'name' => $c[$trump]];
 
+            $teams = array_unique($teams);
 
             $t_a = TeamA::WhereIn('team_id',$team_id)
                 ->where('match_id',$result->match_id)
                 ->first();
+            
             $t_b = TeamB::WhereIn('team_id',$team_id)
                 ->where('match_id',$result->match_id)
                 ->first();
@@ -1181,6 +1183,7 @@ class ApiController extends BaseController
                 ->whereIn('pid',$teams)
                 ->where('match_id',$result->match_id)
                 ->get();
+            
             $tbc = Player::Where('team_id',$t_b->team_id)
                 ->whereIn('pid',$teams)
                 ->where('match_id',$result->match_id)
