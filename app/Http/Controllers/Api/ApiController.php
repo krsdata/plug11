@@ -1081,7 +1081,7 @@ class ApiController extends BaseController
         $match_id =  $request->match_id;
         $user_id  =  $request->user_id; 
          
-        $userVald = User::find($user_id);
+        $userVald = User::find($request->user_id);
         $matchVald = Matches::where('match_id',$request->match_id)->count();
 
         if(!$userVald || !$matchVald){
@@ -1138,7 +1138,7 @@ class ApiController extends BaseController
                 ->whereIn('pid',$teams)
                 ->where('match_id',$result->match_id)
                 ->get();
-
+                
             foreach ($player as $key => $value) {
 
                 if($value->playing_role=="wkbat"){
@@ -1146,9 +1146,12 @@ class ApiController extends BaseController
                 }else{
                     $team_role[$value->playing_role][] = $value->pid;
                 }
+
             }
+            //dd($team_role);
             foreach ($team_role as $key => $value) {
-                $k[$key] = array_unique($value);
+
+                $k[$key] = $value;
             }
             $team_role = [];
             $c = Player::WhereIn('team_id',$team_id)
@@ -1194,6 +1197,7 @@ class ApiController extends BaseController
             $data[] = $k;
             $t = [];
         }
+        dd($data);
 
         $match_info = $this->setMatchStatusTime($match_id);
           //  dd($match_info);
