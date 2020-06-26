@@ -2579,8 +2579,9 @@ class ApiController extends BaseController
 
     // get Match by status and all
     public function getMatch(Request $request){
-
+        $user = $request->merge(['user_id'=>285]);
         $user = $request->user_id;
+
         $banner = \DB::table('banners')->select('title','url','actiontype')->get();
         $join_cont =  \DB::table('join_contests')->where('user_id',$user);
         $join_contests = $join_cont->get('match_id');
@@ -2640,14 +2641,18 @@ class ApiController extends BaseController
                     ->selectRaw('distinct contest_id')
                     ->get();
 
-                if((($join_match->timestamp_end < time())  && $join_match->timestamp_end > strtotime("-1440 minutes") &&  $join_match->current_status!=1) ||
-                    ($join_match->status==2 && $join_match->current_status==0) 
-                      //  $join_match->status_str = "In Review";
-                    ){
+                if($join_match->timestamp_end < time()){
                     if($join_match->status==4){
                        $join_match->status_str = 'Abandoned'; 
-                    } 
-
+                    }
+                    $t11 = $jmatches->timestamp_end;
+                    $t21 = time();
+                    $td11 = round((($t11 - $t21)/60),2);
+                       
+                    if($td11<0 && $join_match->status==3){
+                        $this->updatePoints($request);   
+                    }
+ 
 
                 }elseif($join_match->current_status==1){
                     $join_match->status_str = "Completed";
@@ -2665,6 +2670,7 @@ class ApiController extends BaseController
                         $t11 = $jmatches->timestamp_end;
                         $t21 = time();
                         $td11 = round((($t11 - $t21)/60),2);
+                        
                         $request->merge(['match_id'=>$jmatches->match_id]);
                         $request->merge(['status'=>3]);
                         if($td11<0){
