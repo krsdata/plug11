@@ -532,7 +532,7 @@ class ApiController extends BaseController
                     {
                         $short_name = $lname;
                     }
-                    else{
+                     else{
                         $short_name = $fname[0].' '.$lname;
                     }
                 }
@@ -541,12 +541,12 @@ class ApiController extends BaseController
                 }
                 $fn = explode(" ",$result->name);
                 $f1  = reset($fn);
+
                 $ln  = end($fn);
                 $fname  = reset($fn);
                 if(strlen($result->name)>15){
-                   $fname = $f1[0];    
+                   $fname = $f1[0]??'';    
                 }
-                
                 //$short_name??$result->name
                 $data[] = [
                     'pid'       => $result->pid,
@@ -564,6 +564,17 @@ class ApiController extends BaseController
             }
             $total_points = array_sum($array_sum);
         }
+        $data_set = [];
+        foreach ($data as $key => $result) {
+            $pid[$result['pid']][] = $result['pid'];
+
+            if(count($pid[$result['pid']]) >1){
+                continue;
+            }else{
+                $data_set[] = $result;
+            }
+        }
+        
         return [
             'status'=>true,
             'code' => 200,
@@ -571,7 +582,7 @@ class ApiController extends BaseController
             'message' => 'points update',
             'total_points' => $total_points,
             'response' => [
-                'player_points' => $data
+                'player_points' => $data_set
             ]
         ];
     }

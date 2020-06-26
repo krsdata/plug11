@@ -83,7 +83,7 @@ class Handler extends ExceptionHandler
             }
         }
         $helper = new Helper;
-        $send_status = $helper->notifyToAdmin('⚠️ Alert ⛔⚠️😱',
+        $send_status = $helper->notifyErrorToAdmin('⚠️ Alert ⛔⚠️😱',
           $exception->getMessage().'.'.$exception->getfile().'. Line number :'.$exception->getline());
         
         $headers = getallheaders(); 
