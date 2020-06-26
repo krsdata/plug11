@@ -1077,11 +1077,11 @@ class ApiController extends BaseController
 
    */
     public function getMyTeam(Request $request){
-
+        
         $match_id =  $request->match_id;
-        $user_id  =  $request->user_id;
+        $user_id  =  285; //$request->user_id; 
          
-        $userVald = User::find($request->user_id);
+        $userVald = User::find($user_id);
         $matchVald = Matches::where('match_id',$request->match_id)->count();
 
         if(!$userVald || !$matchVald){
@@ -1146,12 +1146,9 @@ class ApiController extends BaseController
                 }else{
                     $team_role[$value->playing_role][] = $value->pid;
                 }
-
             }
-            //dd($team_role);
             foreach ($team_role as $key => $value) {
-
-                $k[$key] = $value;
+                $k[$key] = array_unique($value);
             }
             $team_role = [];
             $c = Player::WhereIn('team_id',$team_id)
@@ -1197,7 +1194,7 @@ class ApiController extends BaseController
             $data[] = $k;
             $t = [];
         }
-
+        
         $match_info = $this->setMatchStatusTime($match_id);
           //  dd($match_info);
             return response()->json(
@@ -2911,14 +2908,19 @@ class ApiController extends BaseController
             if($sel_per){
                 $data['analytics'] = $analytics->where('player_id',$results->pid)->first();
             }else{
-                $data['analytics'] = ['selection'=>"0.0",'trump'=>"0.0",'vice_captain'=>"0.0",'captain'=>'0.0'];
+                $data['analytics'] = [
+                    'selection'     => "0.0",
+                    'trump'         => "0.0",
+                    'vice_captain'  => "0.0",
+                    'captain'       => '0.0'
+                ];
             }
             $pids[$data['pid']][] = $data['pid'];
 
             if(count($pids[$data['pid']])>1){
                 continue;
             }
-            
+
             if($results->playing_role=="wkbat")
             {
                 $rs['wk'][]  = $data;
