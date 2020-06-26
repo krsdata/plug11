@@ -1150,8 +1150,7 @@ class ApiController extends BaseController
             }
             //dd($team_role);
             foreach ($team_role as $key => $value) {
-
-                $k[$key] = $value;
+                $k[$key] = array_unique($value);
             }
             $team_role = [];
             $c = Player::WhereIn('team_id',$team_id)
