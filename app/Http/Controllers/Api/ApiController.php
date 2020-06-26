@@ -1077,9 +1077,9 @@ class ApiController extends BaseController
 
    */
     public function getMyTeam(Request $request){
-        
+
         $match_id =  $request->match_id;
-        $user_id  =  $request->user_id; 
+        $user_id  =  $request->user_id;
          
         $userVald = User::find($request->user_id);
         $matchVald = Matches::where('match_id',$request->match_id)->count();
@@ -1138,7 +1138,7 @@ class ApiController extends BaseController
                 ->whereIn('pid',$teams)
                 ->where('match_id',$result->match_id)
                 ->get();
-                
+
             foreach ($player as $key => $value) {
 
                 if($value->playing_role=="wkbat"){
@@ -1197,7 +1197,6 @@ class ApiController extends BaseController
             $data[] = $k;
             $t = [];
         }
-        dd($data);
 
         $match_info = $this->setMatchStatusTime($match_id);
           //  dd($match_info);
