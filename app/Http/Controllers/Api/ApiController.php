@@ -1079,9 +1079,9 @@ class ApiController extends BaseController
     public function getMyTeam(Request $request){
 
         $match_id =  $request->match_id;
-        $user_id  =  $request->user_id;
+        $user_id  = 285;// $request->user_id;
          
-        $userVald = User::find($request->user_id);
+        $userVald = User::find($user_id);
         $matchVald = Matches::where('match_id',$request->match_id)->count();
 
         if(!$userVald || !$matchVald){
@@ -1140,17 +1140,23 @@ class ApiController extends BaseController
                 ->get();
 
             foreach ($player as $key => $value) {
-
+                
+                
                 if($value->playing_role=="wkbat"){
                     $team_role["wk"][] = $value->pid;
                 }else{
+                    $pids[$value->pid][] = $value->pid;
+                    
+                    if(count($pids[$value->pid])>1){
+                        continue;
+                    }
                     $team_role[$value->playing_role][] = $value->pid;
                 }
 
             }
             //dd($team_role);
             foreach ($team_role as $key => $value) {
-                
+
                 $k[$key] = $value;
             }
             $team_role = [];
