@@ -1079,7 +1079,7 @@ class ApiController extends BaseController
     public function getMyTeam(Request $request){
         
         $match_id =  $request->match_id;
-        $user_id  =  285; //$request->user_id; 
+        $user_id  =  $request->user_id; 
          
         $userVald = User::find($user_id);
         $matchVald = Matches::where('match_id',$request->match_id)->count();
@@ -1194,7 +1194,7 @@ class ApiController extends BaseController
             $data[] = $k;
             $t = [];
         }
-        
+
         $match_info = $this->setMatchStatusTime($match_id);
           //  dd($match_info);
             return response()->json(
