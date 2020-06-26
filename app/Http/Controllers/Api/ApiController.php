@@ -1133,23 +1133,23 @@ class ApiController extends BaseController
             $rank       = $result->rank;
 
             $k['created_team'] = ['team_id' => $result->id];
-
+            
             $player = Player::WhereIn('team_id',$team_id)
                 ->whereIn('pid',$teams)
                 ->where('match_id',$result->match_id)
                 ->get();
 
             foreach ($player as $key => $value) {
-                
-                
-                if($value->playing_role=="wkbat"){
-                    $team_role["wk"][] = $value->pid;
-                }else{
-                    $pids[$value->pid][] = $value->pid;
+                $pids[$value->pid][] = $value->pid;
 
                     if(count($pids[$value->pid])>1){
                         continue;
                     }
+                
+                if($value->playing_role=="wkbat"){
+                    $team_role["wk"][] = $value->pid;
+                }else{
+                    
                     $team_role[$value->playing_role][] = $value->pid;
                 }
 
