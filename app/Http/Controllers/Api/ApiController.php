@@ -2700,7 +2700,7 @@ class ApiController extends BaseController
             ];
         }
         //dd(\Carbon\Carbon::now()->endOfWeek());
-        $match = Matches::with('teama','teamb')
+        $match = Matches::whereHas('player')->with('teama','teamb')
             ->whereIn('status',[1,3])
             ->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','date_start','date_end','game_state','game_state_str','is_free','competition_id')
             ->orderBy('is_free','DESC')
@@ -2842,9 +2842,9 @@ class ApiController extends BaseController
             ->get();
 
         if(!$players->count()){
-            return ['status'=>true,'code'=>404,'message'=>'record not found',
+            return ['status'=>false,'code'=>404,'message'=>'Player not found',
                 'response'=>[
-                    'players'=>[]
+                    'players'=>null
                 ]
             ];
         }
