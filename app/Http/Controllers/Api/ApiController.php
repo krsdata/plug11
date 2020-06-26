@@ -1110,12 +1110,10 @@ class ApiController extends BaseController
             ->get();
         }
 
-        
-
         $user_name = User::find($user_id);
         $data = [];
         foreach ($myTeam as $key => $result) {
-
+            $player_ids = [];
             $team_id =  json_decode($result->team_id,true);
             $teams = json_decode($result->teams,true);
             if($team_id==null or $teams==null){
@@ -1137,26 +1135,24 @@ class ApiController extends BaseController
             $player = Player::WhereIn('team_id',$team_id)
                 ->whereIn('pid',$teams)
                 ->where('match_id',$result->match_id)
-                ->get();
+                ->groupBy('pid','id')
+                ->pluck('id','pid')->toArray();  
+            
+            foreach ($player as $key => $rs) {
+                $player_ids[] = $rs;
+            }   
+            $player = Player::whereIn('id',$player_ids)->get();
 
             foreach ($player as $key => $value) {
-                $pids[$value->pid][] = $value->pid;
-
-                    if(count($pids[$value->pid])>1){
-                        continue;
-                    }
-                
+                                
                 if($value->playing_role=="wkbat"){
                     $team_role["wk"][] = $value->pid;
-                }else{
-                    
+                }else{   
                     $team_role[$value->playing_role][] = $value->pid;
                 }
-
             }
             //dd($team_role);
             foreach ($team_role as $key => $value) {
-
                 $k[$key] = $value;
             }
             $team_role = [];
@@ -1169,12 +1165,10 @@ class ApiController extends BaseController
             $k['vc'] = ['pid'=>(int)$vice_captain,'name' => $c[$vice_captain]];
             $k['t'] = ['pid'=>(int)$trump,'name' => $c[$trump]];
 
-            $teams = array_unique($teams);
 
             $t_a = TeamA::WhereIn('team_id',$team_id)
                 ->where('match_id',$result->match_id)
                 ->first();
-            
             $t_b = TeamB::WhereIn('team_id',$team_id)
                 ->where('match_id',$result->match_id)
                 ->first();
@@ -1182,29 +1176,30 @@ class ApiController extends BaseController
             $tac = Player::Where('team_id',$t_a->team_id)
                 ->whereIn('pid',$teams)
                 ->where('match_id',$result->match_id)
+                ->whereIn('id',$player_ids)
                 ->get();
-            
             $tbc = Player::Where('team_id',$t_b->team_id)
                 ->whereIn('pid',$teams)
                 ->where('match_id',$result->match_id)
+                ->whereIn('id',$player_ids)
                 ->get();
             // team count with name
             $t[]   = ['name' => $t_a->short_name, 'count' => $tac->count()];
             $t[]   = ['name' => $t_b->short_name, 'count' => $tbc->count()];
 
 
-            $k['match']         = [$t_a->short_name.'-'.$t_b->short_name];
-            $k['team']          = $t;
-            $k['c_img']         = "";
-            $k['vc_img']        = "";
-            $k['t_img']         = "";
+            $k['match']   = [$t_a->short_name.'-'.$t_b->short_name];
+            $k['team']    = $t;
+            $k['c_img']   = "";
+            $k['vc_img']  = "";
+            $k['t_img']   = "";
             // username
             $tname = $user_name->team_name??$user_name->name;
             $k['team_name'] =  $tname. '('.$result->team_count.')';
-            $k['points']        = $points;
-            $k['rank']          = $rank;
+            $k['points']    = $points;
+            $k['rank']      = $rank;
             $data[] = $k;
-            $t = [];
+            $t      = [];
         }
 
         $match_info = $this->setMatchStatusTime($match_id);
