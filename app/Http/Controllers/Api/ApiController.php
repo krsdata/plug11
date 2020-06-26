@@ -2579,7 +2579,6 @@ class ApiController extends BaseController
 
     // get Match by status and all
     public function getMatch(Request $request){
-        $user = $request->merge(['user_id'=>285]);
         $user = $request->user_id;
 
         $banner = \DB::table('banners')->select('title','url','actiontype')->get();
