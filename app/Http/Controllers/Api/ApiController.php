@@ -574,7 +574,7 @@ class ApiController extends BaseController
                 $data_set[] = $result;
             }
         }
-        
+
         return [
             'status'=>true,
             'code' => 200,
@@ -2913,7 +2913,12 @@ class ApiController extends BaseController
             }else{
                 $data['analytics'] = ['selection'=>"0.0",'trump'=>"0.0",'vice_captain'=>"0.0",'captain'=>'0.0'];
             }
+            $pids[$data['pid']][] = $data['pid'];
 
+            if(count($pids[$data['pid']])>1){
+                continue;
+            }
+            
             if($results->playing_role=="wkbat")
             {
                 $rs['wk'][]  = $data;
@@ -2922,7 +2927,8 @@ class ApiController extends BaseController
             }
 
             $data = [];
-        } 
+        }
+
         return  [
             'system_time'=>time(),
             'status'=>true,
