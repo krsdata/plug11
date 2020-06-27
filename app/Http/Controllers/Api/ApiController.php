@@ -1528,7 +1528,7 @@ class ApiController extends BaseController
             $matchcontests = [];
             foreach ($contest as $key => $result) {
                 if($result->total_spots <= $result->filled_spot && $result->total_spots!=0){
-                    continue;
+                   // continue;
                 }
                 //notification per
 
