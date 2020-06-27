@@ -944,7 +944,7 @@ class ApiController extends BaseController
                 
             });
 
-        $point = (int)($leader_board1[0]->points??null);
+        $point = ($leader_board1[0]->points??null);
 
         $leader_board2 = JoinContest::whereHas('user')
             ->where('match_id',$request->match_id)
@@ -998,7 +998,6 @@ class ApiController extends BaseController
             $user_data =  $value->user->name;
             $fn = explode(" ",$user_data);
 
-
             $data['user'] = [
                 'first_name'    => $value->user->first_name,
                 'last_name'     => $value->user->last_name,
@@ -1042,11 +1041,8 @@ class ApiController extends BaseController
         }
         $lb = $lb??null;
 
-
         $match_info = $this->setMatchStatusTime($match_id);
           //  dd($match_info);
-            
-        
         if($lb){
             return [
                 'system_time'=>time(),
@@ -1532,7 +1528,7 @@ class ApiController extends BaseController
             $matchcontests = [];
             foreach ($contest as $key => $result) {
                 if($result->total_spots <= $result->filled_spot && $result->total_spots!=0){
-                    continue;
+                   // continue;
                 }
                 //notification per
 

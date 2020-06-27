@@ -591,7 +591,7 @@ class UserController extends BaseController
             $user->save();
         }
         $request->merge(['user_id'=>$user->id]);
-        $this->generateOtp($request);
+       // $this->generateOtp($request);
 
         return response()->json(
             [
@@ -818,7 +818,7 @@ class UserController extends BaseController
             $user = User::find($request->user_id);
 
             if($user){
-                $this->generateOtp($request);
+               // $this->generateOtp($request);
                 $user->mobile_number = $request->mobile_number;
                 $user->is_account_verified=0;
                 $user->save();
@@ -966,7 +966,7 @@ class UserController extends BaseController
                     $status = true;
                     $code = 200;
                     $message = "login successfully";
-                    $this->generateOtp($request);
+                  //  $this->generateOtp($request);
                         
                 }else{
                     $validator = Validator::make($request->all(), [
@@ -1062,7 +1062,7 @@ class UserController extends BaseController
                     //$token = $user->createToken('token')->accessToken;
                     $user->validate_user = Hash::make($user->id);
                     $user->save();
-                    $this->generateOtp($request);
+                  //  $this->generateOtp($request);
                     $usermodel =  $user;
                     $status 	= true;
                     $code 		= 200;
