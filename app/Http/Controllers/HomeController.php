@@ -41,7 +41,17 @@ class HomeController extends BaseController
          return view('404');
     }
     public function home(Request $request){
-         return view('home');
+
+        $match = file_get_contents(url('api/v2/getMatch'));
+        $match =  json_decode($match);
+        $matches = $match->response->matchdata??null;
+        $match_data = null;
+        foreach ($matches as $key => $result) {
+            if($result->viewType==3){
+                $match_data = $result->upcomingmatches;
+            }
+        }
+         return view('home', compact('match_data'));
     }
 
     public function liveChat(Request $request){

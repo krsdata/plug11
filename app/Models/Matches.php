@@ -5,9 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 
 class Matches extends Eloquent
-{
-
-   
+{  
     /**
      * The database table used by the model.
      *
@@ -35,6 +33,11 @@ class Matches extends Eloquent
 
     protected $guarded = ['created_at' , 'updated_at' , 'id' ];
 
+    
+    public function player()
+    {
+        return $this->hasOne('App\Models\Player', 'match_id', 'match_id') ;
+    }
 
     public function teama()
     {
