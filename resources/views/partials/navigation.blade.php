@@ -1,3 +1,10 @@
+   <style type="text/css">
+     .btn-success{
+      background: #063350 !important;
+      height: 45px;
+
+     }
+   </style>
    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark
    ftco-navbar-light site-navbar-target" id="ftco-navbar" style="padding:
    0px"> <div class="container"> <a class="navbar-brand" href="{{URL::asset('/')}}"
@@ -13,15 +20,14 @@
             <ul class="navbar-nav nav ml-auto">
               <li class="nav-item"><a href="{{URL::asset('/')}}#home-section" class="nav-link"><span>Home</span></a></li>
               
-              <li class="nav-item"><a href="{{URL::asset('aboutus')}}" class="nav-link"><span>About us</span></a></li> 
-
-              <li class="nav-item"><a href="{{URL::asset('/')}}#services-section" class="nav-link"><span>Our Features</span></a></li>
-
               
 
-              <li class="nav-item"><a href="{{URL::asset('contactus')}}" class="nav-link"><span>Contact us</span></a></li>
+              <li class="nav-item"><a href="{{URL::asset('apk')}}" class="nav-link"><button class="btn btn-success"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-down-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 5a.5.5 0 0 0-1 0v4.793L5.354 7.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 9.793V5z"/>
+</svg> Download  App</button></a></li>
             </ul>
           </div>
         </div>
 
       </nav>
+
