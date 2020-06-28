@@ -10,7 +10,7 @@
             <form action="#" class="search-location">
                     <div class="row">
                         <div class="col-lg align-items-end">
-                             <a href="https://sportsfight.in/public/upload/apk/sportsfight.apk" target="_blank">
+                             <a href="https://sportsfight.in/apk">
                             <img  src="{{ URL::asset('webmedia/images/download-android-new.png')}}" alt="android-new" style="width: 200px;">
 
                             
