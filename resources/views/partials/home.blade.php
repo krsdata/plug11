@@ -55,7 +55,7 @@
                 <div class="row"  >
                     <!-- slider Heading -->
                   @foreach($match_data as $key=> $result)
-                  @if($key==8)
+                  @if($key>=8)
                     <?php continue; ?>
                   @endif
                     <div class="col-md-6 match" style="float: left;">
