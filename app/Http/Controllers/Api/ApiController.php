@@ -985,7 +985,7 @@ class ApiController extends BaseController
             if(!isset($value->user->user_name)){
                 continue;
             }
-            $user = 
+          //  $user = 
             $data['match_id'] = $value->match_id;
             $data['team_id'] = $value->created_team_id;
             $data['user_id'] = $value->user->user_name;
