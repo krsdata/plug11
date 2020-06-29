@@ -2685,13 +2685,13 @@ class ApiController extends BaseController
                   //  $join_match->status_str = "lined up";
                 }     
 
-                $join_match_count   =   \DB::table('create_contests')
+                $join_match_count   =   \DB::table('create_teams')
                     ->where('user_id',$user)
                     ->where('match_id',$match_id)
                     ->get();
 
-                $join_match->total_joined_team   = 1; $join_match_count->count();
-                $join_match->total_join_contests = 2; $join_contests_count->count();
+                $join_match->total_joined_team   =  $join_match_count->count();
+                $join_match->total_join_contests =  $join_contests_count->count();
                 $jm[$match_id] = $join_match;
             }
 
