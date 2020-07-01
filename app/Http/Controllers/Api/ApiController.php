@@ -2683,7 +2683,7 @@ class ApiController extends BaseController
 
                 if($lineup && $join_match->status==1){
                   //  $join_match->status_str = "lined up";
-                }     
+                }
 
                 $join_match_count   =   \DB::table('create_teams')
                     ->where('user_id',$user)
@@ -5167,7 +5167,7 @@ class ApiController extends BaseController
     public function matchAutoCancel(){
         sleep(5);
         $cancel_match = Matches::where('status',3)
-                       ->whereDate('date_start',\Carbon\Carbon::today())
+                      // ->whereDate('date_start',\Carbon\Carbon::today())
                        ->get()
                         ->transform(function($item,$key){
 
@@ -5178,6 +5178,7 @@ class ApiController extends BaseController
                         if($td<=0){
                             $contests = CreateContest::where('match_id',$item->match_id)
                                         ->where('total_spots','>',0)
+                                       ->whereColumn('total_spots','!=','filled_spot')
                                         ->where('is_cancelled',0)
                                         ->get()
                                         ->transform(function($item,$key){
@@ -5199,11 +5200,10 @@ class ApiController extends BaseController
                     });
         $c = $cancel_match->first();
         if($c){
-            return [$c->total_cancel??0 .' Contest is Cancelled successfully']; 
+            return [$c->total_cancel.' Contest is Cancelled successfully']; 
         }else{
             return ['No Contest Cancelled successfully']; 
         }
-       
     }
 
     public function cancelContest($match_id=null,$contest_id=null){
