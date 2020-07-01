@@ -85,7 +85,7 @@ class UserController extends BaseController
             });
         $signup_bonus = $program->where('bonus',true)->first();
         $referral_bonus = $program->where('referral',true)->first();
-        
+
         $this->referral_bonus = $referral_bonus->amount??5;
         $this->signup_bonus = $signup_bonus->amount??100;
         
@@ -741,15 +741,16 @@ class UserController extends BaseController
     public function saveReferral($request,$user=null){
 
         $refer_by = User::where('referal_code',$request->referral_code)
-            ->orWhere('user_name',$request->referral_code)
+            ->orWhere('referal_code',$request->referral_code)
             ->first();
-
+           
         if($refer_by && $user)
         {
             $referralCode = new ReferralCode;
             $referralCode->referral_code    =   $request->referral_code;
             $referralCode->user_id          =   $user->id;
             $referralCode->refer_by         =   $refer_by->id;
+            $referralCode->referral_amount  =   $this->referral_bonus;
             $referralCode->save();
 
             $wallet_trns['user_id']         =  $refer_by->id??null;
