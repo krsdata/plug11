@@ -934,12 +934,12 @@ class UserController extends BaseController
                             ]
                         );
 
-                        return array(
+                      /*  return array(
                             'status' => true,
                             'code' => 200,
                             'message' => 'Something went wrong',
                             'data' => $data
-                        );    
+                        ); */   
                     }
                    // $usermodel->is_account_verified = 1;
                     $usermodel->email_verified_at = date('Y-m-d h:i:s');
