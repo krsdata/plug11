@@ -427,12 +427,9 @@ class MatchController extends Controller {
                                 $query->orWhere('match_id',$search);
                                 $query->orWhere('status',$status);
                                 $query->orWhere('title', 'LIKE', "$search%");
-                                $query->orWhere('short_title', 'LIKE', "$search%"); 
-                                
+                                $query->orWhere('short_title', 'LIKE', "$search%");
                             }    
                         }
-                         
-                        
                     })
                      ->whereDate('date_start','<=',\Carbon\Carbon::today())
                    // ->WhereMonth('date_start',date('m'))

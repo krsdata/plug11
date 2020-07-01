@@ -91,6 +91,12 @@ class MatchContestController extends Controller {
             $matchTeams->transform(function($item,$key)use($contest_id){ 
                 $joinContest = $item;
 
+                $matchTeams = CreateTeam::find($item->created_team_id);
+                
+                $item->captain      = $matchTeams->captain;
+                $item->vice_captain = $matchTeams->vice_captain;
+                $item->trump        = $matchTeams->trump;
+
                 if($joinContest){
                     $item->point = $joinContest->points;
                     $item->rank  = $joinContest->ranks;
@@ -123,6 +129,7 @@ class MatchContestController extends Controller {
             $matchTeams = MatchTeams::orderBy('created_at','desc')->orderBy('id','desc')->Paginate($this->record_per_page);
                                                   
             $matchTeams->transform(function($item,$key){ 
+
                     $match = Match::where('match_id',$item->match_id)->select('short_title','status_str')->first();
                     $item->status = $match->status_str??null;
                     $item->match_name = $match->short_title??null;
@@ -159,7 +166,7 @@ class MatchContestController extends Controller {
         } 
         $table_cname = \Schema::getColumnListing('create_teams');
         
-        $except = ['id','created_at','updated_at','contest_id','user_id','isWinning','edit_team_count','team_id','teams','captain','vice_captain','trump','team_join_status','points','rank','prize_amount'];
+        $except = ['id','created_at','updated_at','contest_id','user_id','isWinning','edit_team_count','team_id','captain','vice_captain','trump','teams','team_join_status','points','rank','prize_amount'];
         $data = [];
 
         $tables[] = 'match_name';
