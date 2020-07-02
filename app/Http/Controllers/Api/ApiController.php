@@ -5553,6 +5553,7 @@ class ApiController extends BaseController
         $data['user_id'] = $user_info->user_id??null;
         $data['email'] = $user_info->email??null;
         $data['mobile_number'] = $user_info->mobile_number??null;
+        $data['event_name'] = $request->event_name??null;
 
         try{
             \DB::table('eventLogs')->insert($data); 
