@@ -2364,7 +2364,7 @@ class ApiController extends BaseController
 
 
         $completedMatches = Matches::with('teama','teamb')
-            ->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','date_start','date_end','game_state','game_state_str','competition_id')
+            ->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','date_start','date_end','game_state','game_state_str','competition_id','current_status')
             ->whereIn('match_id',
                 \DB::table('join_contests')->where('user_id',$user_id)
                     ->groupBy('match_id')
@@ -2419,14 +2419,14 @@ class ApiController extends BaseController
                         ->sum('prize_amount');
 
                 $items->prize_amount = $prize;
-                if($items->current_status==0){
+                if($items->status==2 && $items->current_status==0){
                     $items->status_str = "In Review" ;
                 } 
 
                 if($items->status==4){
                     $items->status_str = "Abandoned"; 
                 }
-                elseif($items->current_status==1){
+                elseif($items->status==2 && $items->current_status==1){
                     $items->status_str = "Completed" ;
                 }
                 elseif($items->status==1){
