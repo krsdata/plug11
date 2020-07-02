@@ -3908,7 +3908,6 @@ class ApiController extends BaseController
         return \DB::table('referral_codes')
             ->where('refer_by',$request->user_id)
             ->count();
-
     }
 
     private function isAccountVerified(Request $request){
@@ -4500,7 +4499,7 @@ class ApiController extends BaseController
 
                     file_put_contents($path, $image); 
 
-                    return url::to(asset('storage/'."/image/bank_docs/". date("Y-m-d")."/".$userId."/". $documentsType."/". $image_name));
+                    return url::to(asset('storage'."/image/bank_docs/". date("Y-m-d")."/".$userId."/". $documentsType."/". $image_name));
                 }
                 
             }else{
