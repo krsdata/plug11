@@ -75,7 +75,7 @@ th, td {
                                                 <th> Doc Type </th> 
                                                 <th> Doc Numebr</th> 
                                                 <th> Doc Proof </th> 
-                                                
+                                                <th> Balance </th>
                                                 <th>Status</th>
                                                 <th>Action</th>
                                                 <th>date</th> 
@@ -239,7 +239,9 @@ th, td {
                                                 @endif
 
                                                 </td>
-                                           
+                                              <td>
+                                                {!! '₹'.round($result->wallet_balance,2)!!}
+                                              </td>
                                                 <td> 
                                                   @if($result->status==2) 
                                                   <span class="btn btn-success">Approved</span>
