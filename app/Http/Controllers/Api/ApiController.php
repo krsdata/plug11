@@ -4012,7 +4012,13 @@ class ApiController extends BaseController
             $check_user = Hash::check($user->id,$user->validate_user);
 
             if($check_user){
-                $wallet     = Wallet::where('user_id',$user->id)->where('payment_type',3)->first();
+                
+                $wallet     =   Wallet::firstOrNew([
+                                'user_id' => $user->id,
+                                'payment_type' => 3
+                            ]);
+
+                /*$wallet     = Wallet::where('user_id',$user->id)->where('payment_type',3)->first();*/
                 
                 $message    = "Amount not added successfully";
                 $status     = false;
@@ -4637,7 +4643,6 @@ class ApiController extends BaseController
 
         $myArr = [];
         $user = User::find($request->user_id);
-
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
             'documentType' => 'required'
@@ -4649,7 +4654,6 @@ class ApiController extends BaseController
             foreach ( $validator->messages()->all() as $key => $value) {
                 array_push($error_msg, $value);
             }
-
             return Response::json(array(
                     'code' => 201,
                     'status' => false,
