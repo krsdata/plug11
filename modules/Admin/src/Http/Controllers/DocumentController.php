@@ -53,8 +53,7 @@ class DocumentController extends Controller
 
         $page_title     = 'Document';
         $sub_page_title = 'Document';
-        $page_action    = 'View Bank Accounts'; 
-
+        $page_action    = 'View Bank Accounts';
         
         // Search by name ,email and  
         $search = Input::get('search'); 
@@ -86,7 +85,7 @@ class DocumentController extends Controller
     }
 
     public function index(Document $documents, Request $request)
-    {
+    {   
         $page_title     = 'Document';
         $sub_page_title = 'Document';
         $page_action    = 'View Document'; 
@@ -109,6 +108,12 @@ class DocumentController extends Controller
             $documents->transform(function($item,$key){
                 $bankAccount = \DB::table('bank_accounts')->where('user_id',$item->user_id)->first();
                 $item->bankAccount = $bankAccount;
+
+                $wallet = \DB::table('wallets')->where('user_id',$item->user_id)
+                    ->where('payment_type','!=',1)
+                    ->sum('amount');
+                $item->wallet_balance =   $wallet;
+
                 return $item;
             });
         } else {
@@ -117,6 +122,13 @@ class DocumentController extends Controller
                         ->Paginate($this->record_per_page);
             $documents->transform(function($item,$key){
                 $bankAccount = \DB::table('bank_accounts')->where('user_id',$item->user_id)->first();
+                
+                $wallet = \DB::table('wallets')->where('user_id',$item->user_id)
+                    ->where('payment_type','!=',1)
+                    ->sum('amount');
+                $item->wallet_balance =   $wallet;
+                
+
                 $item->bankAccount = $bankAccount;
                 return $item;
             });
