@@ -1126,8 +1126,8 @@ class UserController extends BaseController
         $apk_updates = \DB::table('apk_updates')->orderBy('id','desc')->first();
         $data['apk_url'] =  $apk_updates->url??null;
 
-        $data['paytm_mid']    =  'tpJmKe81092739039978';
-        $data['callback_url']   =  'https://securegw.paytm.in/theia/paytmCallback?ORDER_ID=';
+        $data['pmid']    =  env('paytm_mid','tpJmKe81092739039978');
+        $data['call_url']   =  'https://securegw.paytm.in/theia/paytmCallback?ORDER_ID=';
 
         if($data){
             $server = [
