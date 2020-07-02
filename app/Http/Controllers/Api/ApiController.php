@@ -2419,6 +2419,9 @@ class ApiController extends BaseController
                         ->sum('prize_amount');
 
                 $items->prize_amount = $prize;
+                if($items->status==2 && $items->current_status==0){
+                    $items->status_str = "In Review" ;
+                } 
 
                 if($items->status==4){
                     $items->status_str = "Abandoned"; 
@@ -2433,9 +2436,7 @@ class ApiController extends BaseController
                 }else{
                    $items->status_str = $items->status_str; 
                 }  
-                if($items->status==2 && $items->current_status==0){
-                    $items->status_str = "In Review" ;
-                }      
+                     
 
                 return $items;
             });
