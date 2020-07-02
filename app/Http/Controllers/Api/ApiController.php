@@ -4045,10 +4045,10 @@ class ApiController extends BaseController
                     $wallet->payment_type   =  3;
                     $wallet->user_id        =  $user->id;
                     $wallet->validate_user  =  Hash::make($user->id);
-                    $wallet->deposit_amount = $wallet->amount;
+                    $wallet->deposit_amount =  $wallet->amount;
                     $wallet->payment_type_string =  'Deposit';
                     
-                    $wallet->save();
+                    $wallet->save(); 
 
                     $myBlance = Wallet::where('user_id',$wallet->user_id)
                                 ->whereIn('payment_type',[2,3,4])->sum('amount');
@@ -4066,6 +4066,38 @@ class ApiController extends BaseController
                     $transaction->payment_type =  3;
                     $transaction->payment_type_string =  'Deposit';
                     $transaction->save();
+                    // Cash back
+                    
+                    $check_cash_back = WalletTransaction::where('user_id',$request->user_id)
+                        ->where('payment_type',3)
+                        ->count();
+                    if($check_cash_back==1){
+                        $txt = new WalletTransaction;
+                        $txt->user_id        =  $request->user_id;
+                        $txt->amount         =  $request->deposit_amount;
+                        $txt->transaction_id =  $request->transaction_id??time();
+                        $txt->payment_mode   =  $request->payment_mode??'online';
+                        $txt->payment_status =  $request->payment_status??'pending';
+                        $txt->payment_details =  json_encode($request->all());
+                        $txt->payment_type =  8;
+                        $txt->payment_type_string =  'Deposit Bonus'; 
+                        //dd($transaction); 
+                        $txt->save();
+
+                        $myBlanceBonus = Wallet::where('user_id',$wallet->user_id)->where('payment_type',1)->first();
+                        $blance_Bonus = $myBlanceBonus->amount+$txt->amount;
+                        $myBlanceBonus->amount = $blance_Bonus;
+                        $myBlanceBonus->save();
+                        
+                        $device_id = $user->device_id??null;
+                        $data = [
+                                    'action' => 'notify' ,
+                                    'title' => "First Deposit Bonus",
+                                    'message' => "100% cashback bonus amount added of INR $txt->amount in your wallet."
+                                ];
+                               
+                        $this->sendNotification($device_id, $data);
+                    }
 
                     $message    = "Amount added successfully";
                     $status     = true;
