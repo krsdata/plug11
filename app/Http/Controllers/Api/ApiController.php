@@ -5545,7 +5545,6 @@ class ApiController extends BaseController
         \DB::table('paytm')->insert($data);
     }
 
-
     public function eventLog(Request $request){
         $user_info = (object)$request->user_info;
         $signature = (object)$request->deviceDetails;
