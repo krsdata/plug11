@@ -5547,11 +5547,19 @@ class ApiController extends BaseController
 
 
     public function eventLog(Request $request){
+        $user_info = (object)$request->user_info;
         
         $data['eventLog'] = json_encode($request->all());
-        $data['user_id'] = $request->user_id;
+        $data['user_id'] = $user_info->user_id??null;
+        $data['email'] = $user_info->email??null;
+        $data['mobile_number'] = $user_info->mobile_number??null;
 
-        \DB::table('eventLogs')->insert($data); 
+        try{
+            \DB::table('eventLogs')->insert($data); 
+
+        }catch(\Exception $e){
+
+        }
 
         return response()->json(
                 [
