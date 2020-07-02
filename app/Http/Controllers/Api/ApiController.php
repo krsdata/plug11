@@ -2426,7 +2426,7 @@ class ApiController extends BaseController
                 if($items->status==4){
                     $items->status_str = "Abandoned"; 
                 }
-                elseif($items->status==2 && $items->current_status==1){
+                elseif($items->current_status==1){
                     $items->status_str = "Completed" ;
                 }
                 elseif($items->status==1){
