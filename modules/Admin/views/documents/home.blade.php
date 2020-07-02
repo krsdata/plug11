@@ -135,6 +135,15 @@ th, td {
                                                     $result->bankAccount->account_type
                                                   }}
                                                 </td>
+                                                
+                                              </tr>
+                                              <tr>
+                                                <td>User Id</td>
+                                                <td>
+                                                  {{
+                                                    $result->bankAccount->user_id
+                                                  }}
+                                                </td>
                                               </tr>
                                             </table>
                                             @endif  
@@ -152,10 +161,9 @@ th, td {
                                                 <td>  {{$result->doc_type}} </td> 
                                                  <td>  {{$result->doc_number}} </td> 
                                                 <td>
-                                                  @if($result->doc_type=='adharcard')
-                                                
-                                                <img src="{{ $result->doc_url_front }}" width="100px" height="50px;"  data-toggle="modal" data-target="#doc_url_front_{{$result->id}}">  
+@if($result->doc_type=='adharcard')
 
+<img src="{{ $result->doc_url_front }}" width="100px" height="50px;"  data-toggle="modal" data-target="#doc_url_front_{{$result->id}}">  
 
                                                  <!-- Modal -->
   <div class="modal fade" id="doc_url_front_{{$result->id}}" role="dialog">
@@ -168,7 +176,7 @@ th, td {
           <h4 class="modal-title">{{$result->doc_type}}</h4>
         </div>
         <div class="modal-body">
-          <img src="{{ $result->doc_url_back }}" width="100%" height="500px" >
+          <img src="{{ $result->doc_url_front }}" width="100%" height="500px" >
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
