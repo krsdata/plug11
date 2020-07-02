@@ -1125,6 +1125,10 @@ class UserController extends BaseController
         }
         $apk_updates = \DB::table('apk_updates')->orderBy('id','desc')->first();
         $data['apk_url'] =  $apk_updates->url??null;
+
+        $data['paytm_mid']    =  'tpJmKe81092739039978';
+        $data['paytm_mid_key']   =  '1PRscwi&opK94P!5';
+
         if($data){
             $server = [
                 'USER_DEVICE_IP' => $_SERVER['HTTP_X_FORWARDED_FOR']??null,
