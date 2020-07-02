@@ -2419,7 +2419,7 @@ class ApiController extends BaseController
                         ->sum('prize_amount');
 
                 $items->prize_amount = $prize;
-                if($items->status==2 && $items->current_status==0){
+                if($items->current_status==0){
                     $items->status_str = "In Review" ;
                 } 
 

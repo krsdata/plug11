@@ -1127,7 +1127,7 @@ class UserController extends BaseController
         $data['apk_url'] =  $apk_updates->url??null;
 
         $data['paytm_mid']    =  'tpJmKe81092739039978';
-        $data['paytm_mid_key']   =  '1PRscwi&opK94P!5';
+        $data['callback_url']   =  'https://securegw.paytm.in/theia/paytmCallback?ORDER_ID=';
 
         if($data){
             $server = [
