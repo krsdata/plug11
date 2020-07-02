@@ -3990,7 +3990,6 @@ class ApiController extends BaseController
             'payment_status' => 'required'
         ]);
 
-
         // Return Error Message
         if ($validator->fails()) {
             $error_msg  =   [];
@@ -5544,5 +5543,22 @@ class ApiController extends BaseController
     {
         $data['paytm'] = json_encode($request->all());
         \DB::table('paytm')->insert($data);
+    }
+
+
+    public function eventLog(Request $request){
+        
+        $data['eventLog'] = json_encode($request->all());
+        $data['user_id'] = $request->user_id;
+
+        \DB::table('eventLogs')->insert($data); 
+
+        return response()->json(
+                [
+                    "status"=>true,
+                    "code"=>200,
+                    "message" => "success"
+                ]
+            );
     }
 }
