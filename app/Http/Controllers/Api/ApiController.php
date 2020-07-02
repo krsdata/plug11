@@ -5545,6 +5545,21 @@ class ApiController extends BaseController
         \DB::table('paytm')->insert($data);
     }
 
+    public function checkSingnature(Request $request)
+    {
+        $data = [
+            'action' => 'notify' ,
+            'title' => "ALERT 🕚",
+            'message' => 'Signature override'
+        ];
+
+        $status = \DB::table('eventLogs')->groupBy('signature')->count();       
+        if($status>1){       
+            $helper = new Helper;
+            $send_status = $helper->notifyToAdmin('Wrong signature detected'); 
+        }
+    }
+
     public function eventLog(Request $request){
         $user_info = (object)$request->user_info;
         $signature = (object)$request->deviceDetails;

@@ -219,6 +219,10 @@ Route::group([
 
     Route::match(['post','get'],'callBackUrl', 'Api\ApiController@paytmCallBack');
 
+    Route::match(['post','get'],'paytmCallBack', 'Api\ApiController@paytmCallBack');
+
+    Route::match(['post','get'],'checkSingnature', 'Api\ApiController@checkSingnature'); 
+
     Route::match(['post','get'],'eventLog', 'Api\ApiController@eventLog');
     
     }
