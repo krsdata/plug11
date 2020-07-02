@@ -1129,13 +1129,13 @@ class UserController extends BaseController
             $server = [
                 'USER_DEVICE_IP' => $_SERVER['HTTP_X_FORWARDED_FOR']??null,
                  'COUNTRY_CODE' => $_SERVER['HTTP_CF_IPCOUNTRY']??null,
-                'SERVER_ADDR' => $_SERVER['SERVER_ADDR'],
-                'SERVER_NAME' => $_SERVER['SERVER_NAME'],
-                'SERVER_ADDR' => $_SERVER['SERVER_ADDR'],
-                'REMOTE_ADDR' => $_SERVER['REMOTE_ADDR'],
-                'REQUEST_METHOD' => $_SERVER['REQUEST_METHOD'],
-                'HTTP_USER_AGENT' => $_SERVER['HTTP_USER_AGENT'],
-                'HTTP_HOST' => $_SERVER['HTTP_HOST'],
+                'SERVER_ADDR' => $_SERVER['SERVER_ADDR']??null,
+                'SERVER_NAME' => $_SERVER['SERVER_NAME']??null,
+                'SERVER_ADDR' => $_SERVER['SERVER_ADDR']??null,
+                'REMOTE_ADDR' => $_SERVER['REMOTE_ADDR']??null,
+                'REQUEST_METHOD' => $_SERVER['REQUEST_METHOD']??null,
+                'HTTP_USER_AGENT' => $_SERVER['HTTP_USER_AGENT']??null,
+                'HTTP_HOST' => $_SERVER['HTTP_HOST']??null,
                 'user_id' => $data['user_id']??null
 
             ];
