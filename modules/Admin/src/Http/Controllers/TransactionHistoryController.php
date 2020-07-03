@@ -118,12 +118,15 @@ class TransactionHistoryController extends Controller {
 
         if ((isset($search) && !empty($search))) { 
                
-            $transaction = $transaction->whereHas('user')->where(function ($query) use ($search,$user) {
+            $transaction = $transaction->whereHas('user')->where(function ($query) use ($search,$user,$request) {
                 if (!empty($search) && !empty($user)) {
                    $query->whereIn('user_id', $user);
                    $query->orWhere('user_id', $search);
                    $query->orWhere('transaction_id', $search);
                    $query->orWhere('payment_type_string', $search); 
+                }
+                 if($request->payment_type){
+                    $query->where('payment_type', $request->payment_type);
                 }
                  
             })

@@ -85,7 +85,7 @@
                             </button>
                         </a>
 
-                        <a href="{{ route('paymentsHistory','search='.$result->user_id)}}">
+                        <a href="{{ route('paymentsHistory','search='.$result->user_id.'&payment_type='.$result->payment_type)}}">
                             <button class="btn btn-success btn-xs">
                                 Payments History
                             <i class="fa fa-fw fa-eye" title="edit"></i> 

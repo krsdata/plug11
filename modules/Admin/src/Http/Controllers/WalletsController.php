@@ -126,7 +126,7 @@ class WalletsController extends Controller {
               
             $tables[] = $value;
         }
-
+        
         return view('packages::wallets.index', compact('wallets', 'page_title', 'page_action','sub_page_title','tables'));
     }
 
