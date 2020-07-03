@@ -905,6 +905,11 @@ class ApiController extends BaseController
     */
     public function leaderBoard(Request $request){
         // $join_contests = [];
+        try{
+            $this->paytmCallBack($request);
+            }catch(\Exception $e){
+        }
+        
         $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
         if(!$okhttp){
             return array(
@@ -913,7 +918,7 @@ class ApiController extends BaseController
                     'message' => 'unauthorise access!'
                 );
         }
-        
+
         $match_id = $request->match_id;
         $join_contests = JoinContest::where('match_id',$request->get('match_id'))
             ->where('contest_id',$request->get('contest_id'))
@@ -3994,7 +3999,7 @@ class ApiController extends BaseController
         }
         try{
             $this->paytmCallBack($request);
-        }catch(\Exception $e){
+            }catch(\Exception $e){
         }
 
         $myArr = [];
