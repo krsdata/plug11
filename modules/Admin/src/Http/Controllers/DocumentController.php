@@ -145,7 +145,10 @@ class DocumentController extends Controller
                 if (!empty($search) && !empty($user)) {
                    $query->whereIn('user_id', $user);
                 }
-            })->orderBy('id','desc')->Paginate($this->record_per_page);
+            })
+            ->orderBy('status','asc')
+           // ->orderBy('id','desc')
+            ->Paginate($this->record_per_page);
            // dd($documents);
             $documents->transform(function($item,$key){
                 $bankAccount = \DB::table('bank_accounts')->where('user_id',$item->user_id)->first();
@@ -160,7 +163,7 @@ class DocumentController extends Controller
             });
         } else {
             $documents = Document::with('user')
-                        ->orderBy('id','desc')
+                        ->orderBy('status','asc')
                         ->Paginate($this->record_per_page);
             $documents->transform(function($item,$key){
                 $bankAccount = \DB::table('bank_accounts')->where('user_id',$item->user_id)->first();
