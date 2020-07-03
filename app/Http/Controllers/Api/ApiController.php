@@ -2719,15 +2719,9 @@ class ApiController extends BaseController
                         $item->has_free_contest= true;
                     }
 
-                    $lineup = \DB::table('team_a_squads')->where('match_id',$item->match_id)
-                                ->where('playing11',"true")->count();
-
-                    if($lineup){
-                       // $item->status = "lined up";
-                        $item->is_lineup = true;
-                    }else{
-                        $item->is_lineup = false;
-                    }   
+                    $lineup = \DB::table('team_a_squads')
+                                ->where('match_id',$item->match_id)
+                                ->where('playing11',"true")->count(); 
 
                     $t1 = $item->timestamp_start;
 
@@ -2746,12 +2740,19 @@ class ApiController extends BaseController
                     if($td>1 and $td<=30){
                         $item->status=1;
                         $item->status_str='Upcoming';
-                        $item->is_lineup = true; 
+                       // $item->is_lineup = true; 
                         //exec('curl https://sportsfight.in/api/v2/updateMatchDataByStatus/3');
         
                     }else{
                        //$item->is_lineup = 'true';
                     } 
+
+                    if($lineup>1){
+                       // $item->status = "lined up";
+                        $item->is_lineup = true;
+                    }else{
+                        $item->is_lineup = false;
+                    }
 
                     $item->league_title = $league_title;
                     return $item;
