@@ -68,6 +68,7 @@ class ClientUsersController extends Controller {
             $search = isset($search) ? Input::get('search') : '';
             $mobile_number = $request->mobile_number;   
             $users = User::where(function($query) use($mobile_number,$search,$status,$role_type) {
+                
                         if (!empty($search)) {
                             $query->Where('first_name', 'LIKE', "%$search%") 
                                     ->OrWhere('email', 'LIKE', "%$search%");

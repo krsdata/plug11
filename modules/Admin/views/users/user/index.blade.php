@@ -57,7 +57,7 @@
                                             </div>
 
                                             <div class="col-md-2">
-                                                <input value="{{ (isset($_REQUEST['mobile_number']))?$_REQUEST['search']:''}}" placeholder="search by mobile number" type="text" name="mobile_number" id="search" class="form-control" >
+                                                <input value="{{ (isset($_REQUEST['mobile_number']))?$_REQUEST['mobile_number']:''}}" placeholder="search by mobile number" type="text" name="mobile_number" id="search" class="form-control" >
                                             </div>
                                             <div class="col-md-2">
                                                 <input type="submit" value="Search" class="btn btn-primary form-control">
@@ -113,7 +113,7 @@
                                                 <td> {{$result->name}} </td>
                                                 <td> {{$result->email}} </td>
                                                  <td> {{round($result->balance,2)}} INR </td>
-                                                <td> {{$result->phone}} </td>
+                                                <td> {{$result->mobile_number}} </td>
                                                 <td class="center"> 
                                                
                                                     @if($result->role_type==3)
