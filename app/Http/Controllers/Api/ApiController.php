@@ -4370,6 +4370,7 @@ class ApiController extends BaseController
             }
             $amt[] = $sum_amt;
         } 
+        $repeat_rank = $repeat_rank??1;
         
         $prize_amount = array_sum($amt)/$repeat_rank;
         
