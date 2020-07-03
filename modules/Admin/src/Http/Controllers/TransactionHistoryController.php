@@ -140,7 +140,10 @@ class TransactionHistoryController extends Controller {
 
         } else {  
             $transaction = $transaction->whereHas('user')
-                        ->orderBy('id','desc')->Paginate($this->record_per_page); 
+                        ->orderBy('id','desc')
+                        ->where('payment_type',3)
+                        ->whereDate('created_at',\Carbon\Carbon::today())
+                        ->Paginate(50);
                         
             $transaction->transform(function($item, $Key){
                             $user = User::find($item->user_id); 
