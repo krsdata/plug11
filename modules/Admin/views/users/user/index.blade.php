@@ -55,14 +55,16 @@
                                             <div class="col-md-2">
                                                 <input value="{{ (isset($_REQUEST['search']))?$_REQUEST['search']:''}}" placeholder="search by Name/Email" type="text" name="search" id="search" class="form-control" >
                                             </div>
+
+                                            <div class="col-md-2">
+                                                <input value="{{ (isset($_REQUEST['mobile_number']))?$_REQUEST['search']:''}}" placeholder="search by mobile number" type="text" name="mobile_number" id="search" class="form-control" >
+                                            </div>
                                             <div class="col-md-2">
                                                 <input type="submit" value="Search" class="btn btn-primary form-control">
                                             </div>
                                            
                                         </form>
-                                         <div class="col-md-2">
-                                             <a href="{{ route('clientuser') }}">   <input type="submit" value="Reset" class="btn btn-default form-control"> </a>
-                                        </div>
+                                         
                                        <div class="col-md-2 pull-right">
                                             <div style="width: 150px;" class="input-group"> 
                                                 <a href="{{ route('user.create')}}">
