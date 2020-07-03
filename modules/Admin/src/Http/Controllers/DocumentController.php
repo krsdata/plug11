@@ -192,8 +192,7 @@ class DocumentController extends Controller
      * Save   method
      * */
     public function store(Request $request, Document $documents)
-    { 
-        
+    {   
         if($request->doc_id){
            // dd(1);
             $documents1 =  Document::where('id',$request->doc_id)->first();
@@ -230,9 +229,15 @@ class DocumentController extends Controller
             }
             $msg = "User has not uploaded bank account details";
         }
-        $uid = $documents1->user_id??$documents2->user_id;
+        $uid    = $documents1->user_id??$documents2->user_id;
 
-        $user  = User::find($uid); 
+        $user   = User::find($uid); 
+
+        if($request->document_status==4){
+            $documents1 = Document::where('user_id',$user->id)->delete();
+            $documents2 = BankAccounts::where('user_id',$user->id)->delete();
+        }
+
         if($user){
                 $token = $user->device_id;
                 $msg = $request->notes??'Under Review';
