@@ -88,7 +88,8 @@
                                                 </td>
                                                 <td>{{$result->transaction_id}} </td>
                                                 <td> 
-
+                                                   ID: {{$result->user_id}},<br>
+                                                   
                                                    Name: {{$result->name}},<br>
                                                    Email : {{$result->email}}
                                                    <br>
