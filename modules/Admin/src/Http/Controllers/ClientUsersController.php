@@ -66,8 +66,8 @@ class ClientUsersController extends Controller {
         if ((isset($search) && !empty($search)) OR  (isset($status) && !empty($status)) or !empty($role_type)) {
 
             $search = isset($search) ? Input::get('search') : '';
-               
-            $users = User::where(function($query) use($search,$status,$role_type) {
+            $mobile_number = $request->mobile_number;   
+            $users = User::where(function($query) use($mobile_number,$search,$status,$role_type) {
                         if (!empty($search)) {
                             $query->Where('first_name', 'LIKE', "%$search%") 
                                     ->OrWhere('email', 'LIKE', "%$search%");
@@ -75,6 +75,9 @@ class ClientUsersController extends Controller {
                         if (!empty($status)) {
                             $status =  ($status=='active')?1:0;
                             $query->Where('status',$status);
+                        }
+                        if (!empty($mobile_number)) {
+                            $query->where('mobile_number', 'LIKE', "%$mobile_number%");
                         }
                         if (!empty($role_type)) { 
                             $query->Where('role_type',$role_type);
