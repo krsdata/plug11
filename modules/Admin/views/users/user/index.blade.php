@@ -88,6 +88,8 @@
                                         <thead>
                                             <tr>
                                                  <th> Sno. </th>
+                                                 <th>User Id</th>
+                                                 <th>User Name</th>
                                                 <th> Full Name </th>
                                                 <th> Email </th>
                                                  <th> Account Balance </th>
@@ -104,6 +106,8 @@
                                         @foreach($users as $key => $result)
                                             <tr>
                                                  <td> {{ (($users->currentpage()-1)*15)+(++$key) }}</td>
+                                                 <td> {{$result->id}} </td>
+                                                 <td> {{$result->user_name}} </td>
                                                 <td> {{$result->name}} </td>
                                                 <td> {{$result->email}} </td>
                                                  <td> {{round($result->balance,2)}} INR </td>
