@@ -886,6 +886,14 @@ class UserController extends BaseController
                 $user = User::where('email',$request->email)->first();
                 if($user){
 
+                    if($user->status==0){
+                        return array(
+                            'status' => false,
+                            'code' => 201,
+                            'message' => 'Your Account is disabled.To activate write an email at info@sportsfight.in'
+                            );
+                    }
+
                     $data['name'] 		= $user->name??$request->name;
                     $data['email'] 		= $user->email??$request->email;
                     $data['user_id'] 	= $user->user_name;
