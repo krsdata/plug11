@@ -909,7 +909,7 @@ class ApiController extends BaseController
             $this->paytmCallBack($request);
             }catch(\Exception $e){
         }
-        
+
         $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
         if(!$okhttp){
             return array(
@@ -5053,8 +5053,8 @@ class ApiController extends BaseController
            // ->where('total_spots','>',50)
             ->where('is_cloned','!=',1)
             ->where('entry_fees','>',0)
-            ->where('total_spots','!=',30)
-            ->where('total_spots','!=',20)
+        //    ->where('total_spots','!=',30)
+        //    ->where('total_spots','!=',20)
            /* ->where('total_spots','>',20)
             ->where('total_spots','!=',3)
             
