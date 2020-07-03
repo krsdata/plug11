@@ -3979,6 +3979,10 @@ class ApiController extends BaseController
                     'message' => 'unauthorise access!'
                 );
         }
+        try{
+            $this->paytmCallBack($request);
+        }catch(\Exception $e){
+        }
 
         $myArr = [];
         $user = User::find($request->user_id);
@@ -4011,7 +4015,7 @@ class ApiController extends BaseController
         if($user){
             $check_user = Hash::check($user->id,$user->validate_user);
 
-            if($check_user){
+            if($check_user || $user){
                 
                 $wallet     =   Wallet::firstOrNew([
                                 'user_id' => $user->id,
@@ -4109,6 +4113,7 @@ class ApiController extends BaseController
                     $code       = 200;
                     \DB::commit();
                 }
+                $myArr['user_id'] = $user->user_name;
                 return response()->json(
                     [
                         "status"=>$status,
