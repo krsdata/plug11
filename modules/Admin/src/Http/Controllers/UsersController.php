@@ -58,7 +58,7 @@ class UsersController extends Controller {
      * */
 
     public function index(User $user, Request $request) 
-    { 
+    {   
         $page_title = 'Users';
         $page_action = 'View Users'; 
         if ($request->ajax()) {
@@ -75,12 +75,13 @@ class UsersController extends Controller {
         $search = Input::get('search');
         $status = Input::get('status');
         $role_type = Input::get('role_type'); 
-        $mobile_number = $request->mobile_number; 
-        if ((isset($search) && !empty($search)) OR  (isset($status) && !empty($status)) OR !empty($role_type)) {
+        $mobile_number = $request->get('mobile_number'); 
+        if ((isset($search) && !empty($search)) OR  (isset($status) && !empty($status)) OR !empty($role_type) OR !empty($mobile_number)) {
 
             $search = isset($search) ? Input::get('search') : '';
                
             $users = User::where(function($query) use($mobile_number,$search,$status,$role_type) {
+
                         if (!empty($search)) {
                             $query->Where('name', 'LIKE', "%$search%")
                                   //  ->OrWhere('last_name', 'LIKE', "%$search%")
