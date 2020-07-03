@@ -131,11 +131,10 @@ class TransactionHistoryController extends Controller {
             
              $transaction->transform(function($item, $Key){
                             $user = User::find($item->user_id); 
-                            $item->name = $user->first_name??null;
+                            $item->name = $user->name??null;
                             $item->email = $user->email??null;
                             $item->phone = $user->mobile_number??null;
                             return $item;
-                                 
                         });
 
         } else {  
@@ -147,7 +146,7 @@ class TransactionHistoryController extends Controller {
                         
             $transaction->transform(function($item, $Key){
                             $user = User::find($item->user_id); 
-                             $item->name = $user->first_name??null;
+                             $item->name = $user->name??null;
                             $item->email = $user->email??null;
                             $item->phone = $user->mobile_number??null;
                             return $item;  
