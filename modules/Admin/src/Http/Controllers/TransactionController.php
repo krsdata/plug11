@@ -90,6 +90,7 @@ class TransactionController extends Controller {
                 $Wallet->save();
             $wt->debit_credit_status = '+';  
            }
+            
            if($user){
                 $token = $user->device_id;
                 $data = [
@@ -222,7 +223,7 @@ class TransactionController extends Controller {
         $wt = WalletTransaction::find($request->payment_id);   
         
         if($wt){
-            $user     = User::find($wt->user_id??0);
+            $user     = User::find($wt->user_id??285);
             $adminUser  = User::find(env('DEFAULT_USER_ID'));
             
             $registatoin_ids=array();
@@ -231,7 +232,7 @@ class TransactionController extends Controller {
 
             $data = [
                         'action' => 'notify' ,
-                        'title' => "₹ Amount Withdrawal Released ",
+                        'title' => "Amount Withdrawal Released ",
                         'message' => "Hi $user->name, Your withdraw amount ₹ $wt->amount successfully sent"
                     ];
 
