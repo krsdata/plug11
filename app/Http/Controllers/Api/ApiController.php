@@ -905,6 +905,15 @@ class ApiController extends BaseController
     */
     public function leaderBoard(Request $request){
         // $join_contests = [];
+        $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
+        if(!$okhttp){
+            return array(
+                    'status' => false,
+                    'code' => 201,
+                    'message' => 'unauthorise access!'
+                );
+        }
+        
         $match_id = $request->match_id;
         $join_contests = JoinContest::where('match_id',$request->get('match_id'))
             ->where('contest_id',$request->get('contest_id'))
