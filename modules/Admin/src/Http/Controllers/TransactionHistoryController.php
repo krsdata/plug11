@@ -130,7 +130,8 @@ class TransactionHistoryController extends Controller {
             ->orderBy('id','desc')->Paginate($this->record_per_page);
             
              $transaction->transform(function($item, $Key){
-                            $user = User::find($item->user_id); 
+                            $user = User::find($item->user_id);
+                            $item->user_id = $user->id??null; 
                             $item->name = $user->name??null;
                             $item->email = $user->email??null;
                             $item->phone = $user->mobile_number??null;
@@ -146,7 +147,8 @@ class TransactionHistoryController extends Controller {
                         
             $transaction->transform(function($item, $Key){
                             $user = User::find($item->user_id); 
-                             $item->name = $user->name??null;
+                            $item->user_id = $user->id??null;
+                            $item->name = $user->name??null;
                             $item->email = $user->email??null;
                             $item->phone = $user->mobile_number??null;
                             return $item;  
