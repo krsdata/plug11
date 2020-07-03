@@ -45,6 +45,48 @@ class DocumentController extends Controller
         $this->record_per_page = Config::get('app.record_per_page');
     }
 
+    public function sendNotification($token, $data){
+     
+        $serverLKey = 'AIzaSyAFIO8uE_q7vdcmymsxwmXf-olotQmOCgE';
+        $fcmUrl = 'https://fcm.googleapis.com/fcm/send';
+
+       $extraNotificationData = $data;
+
+       if(is_array($token)){
+            $fcmNotification = [
+               'registration_ids' => $token, //multple token array
+              // 'to' => $token, //single token
+               //'notification' => $notification,
+               'data' => $extraNotificationData
+            ];
+       }else{
+            $fcmNotification = [
+           //'registration_ids' => $tokenList, //multple token array
+           'to' => $token, //single token
+           //'notification' => $notification,
+           'data' => $extraNotificationData
+        ];
+        }
+       
+       $headers = [
+           'Authorization: key='.$serverLKey,
+           'Content-Type: application/json'
+       ];
+
+       $ch = curl_init();
+       curl_setopt($ch, CURLOPT_URL, $fcmUrl);
+       curl_setopt($ch, CURLOPT_POST, true);
+       curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+       curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+       curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fcmNotification));
+       $result = curl_exec($ch);
+       //echo "result".$result;
+       //die;
+       curl_close($ch);
+       return true;
+    }
+
     /*
      * Dashboard
      * */
@@ -188,6 +230,21 @@ class DocumentController extends Controller
             }
             $msg = "User has not uploaded bank account details";
         }
+        $uid = $documents1->user_id??$documents2->user_id;
+
+        $user  = User::find($uid); 
+        if($user){
+                $token = $user->device_id;
+                $msg = $request->notes??'Under Review';
+                $data = [
+                        'action' => 'notify' ,
+                        'title' => "Document Verification Status",
+                        'message' => $msg
+                    ];
+                $this->sendNotification($token, $data);
+                
+           }
+
         return Redirect::to('admin/documents')
                             ->with('flash_alert_notice', $msg);
     }
