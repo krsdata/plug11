@@ -3317,7 +3317,7 @@ class ApiController extends BaseController
             ->whereIn('id',$created_team_id)->count();
 
         if($ct)
-        {
+        {   sleep(1);
             foreach ($created_team_id as $key => $ct_id) {
                 \DB::beginTransaction();
                 
