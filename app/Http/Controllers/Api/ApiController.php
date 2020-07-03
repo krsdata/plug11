@@ -905,10 +905,6 @@ class ApiController extends BaseController
     */
     public function leaderBoard(Request $request){
         // $join_contests = [];
-        try{
-            $this->paytmCallBack($request);
-            }catch(\Exception $e){
-        }
 
         $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
         if(!$okhttp){
@@ -4371,7 +4367,7 @@ class ApiController extends BaseController
             $amt[] = $sum_amt;
         } 
         $repeat_rank = $repeat_rank??1;
-        
+
         $prize_amount = array_sum($amt)/$repeat_rank;
         
         return $prize_amount;
@@ -5224,7 +5220,7 @@ class ApiController extends BaseController
     }
     /*Match auto cancel if not filled*/
     public function matchAutoCancel(){
-        sleep(5);
+        sleep(1);
         $cancel_match = Matches::where('status',3)
                       // ->whereDate('date_start',\Carbon\Carbon::today())
                        ->get()
@@ -5239,6 +5235,7 @@ class ApiController extends BaseController
                                         ->where('total_spots','>',0)
                                        ->whereColumn('total_spots','!=','filled_spot')
                                         ->where('is_cancelled',0)
+                                        ->where('entry_fees','!=',5)
                                         ->get()
                                         ->transform(function($item,$key){
                                            
