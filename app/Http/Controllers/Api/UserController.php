@@ -889,7 +889,7 @@ class UserController extends BaseController
                     if($user->status==0){
                         return array(
                             'status' => false,
-                            'code' => 201,
+                            'code' => 420,
                             'message' => 'Your Account is disabled.To activate write an email at info@sportsfight.in'
                             );
                     }
