@@ -164,7 +164,7 @@ class DocumentController extends Controller
         } else {
             $documents = Document::with('user')
                         ->orderBy('status','asc')
-                        ->groupBy('user_id')
+                       // ->groupBy('user_id')
                         ->Paginate($this->record_per_page);
 
             $documents->transform(function($item,$key){
