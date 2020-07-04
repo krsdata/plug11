@@ -777,7 +777,7 @@ class UserController extends BaseController
             $wallet->payment_type_string = "Referral";
             $wallet->referal_amount = ($wallet->amount)+$this->referral_bonus;
             $wallet->amount = ($wallet->amount)+$this->referral_bonus;
-
+            
             $wallet->save();
 
         }
