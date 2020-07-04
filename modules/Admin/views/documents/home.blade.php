@@ -29,12 +29,13 @@ th, td {
                                         <i class="icon-settings font-red"></i>
                                         <span class="caption-subject font-red sbold uppercase">{{ $heading }}s</span>
                                     </div>
-                                    <div class="col-md-2 pull-right">
-                                            <div style="width: 150px;" class="input-group"> 
-                                                <a href="{{ route('bankAccount')}}">
-                                                    <button  class="btn btn-success"><i class="fa fa-plus-circle"></i> Verify bank details </button> 
-                                                </a>
-                                            </div>
+                                    <div class="col-md-3 pull-right">
+                                            
+                                                <a href="{{ route('documents','status=2')}}">
+                                                    <button  class="btn btn-info">  Approved : {{$approved??0}} </button>
+                                                    </a>
+                                                     <button  class="btn btn-success">  Pending : {{$pending??0}} </button> 
+                                                
                                         </div> 
                                      
                                 </div>
@@ -162,7 +163,7 @@ th, td {
                                                  <td>  {{$result->doc_number}} </td> 
                                                 <td>
 @if($result->doc_type=='adharcard')
-
+Front Adhar<br>
 <img src="{{ $result->doc_url_front }}" width="100px" height="50px;"  data-toggle="modal" data-target="#doc_url_front_{{$result->id}}">  
 
                                                  <!-- Modal -->
@@ -186,6 +187,7 @@ th, td {
     </div>
   </div>
 
+<br>Back Adhar<br>
 
                                                    
                                                   <img src="{{ $result->doc_url_back }}" width="100px" height="50px;" data-toggle="modal" data-target="#doc_url_back_{{$result->id}}">  
