@@ -3512,7 +3512,7 @@ class ApiController extends BaseController
 
         $match_id =  $request->match_id;
         $matchVald = Matches::where('match_id',$request->match_id)->count();
-        $request->merge(['user_id'=>285]);
+       // $request->merge(['user_id'=>285]);
 
         if(!$matchVald){
             return [
