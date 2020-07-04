@@ -66,6 +66,7 @@ class ApiController extends BaseController
         }
         if($user && $user->status=='0'){
             $this->is_session_expire = true;
+            $request->merge(['user_id'=>null]);
         }
         
     }
