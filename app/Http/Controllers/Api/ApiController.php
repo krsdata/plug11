@@ -1402,12 +1402,11 @@ class ApiController extends BaseController
             $createContest->total_spots         =   $result->total_spots;
             $createContest->first_prize         =   $result->first_prize;
             $createContest->winner_percentage   =   $result->winner_percentage;
-            $createContest->cancellation        =   $result->cancellation;
+            $createContest->cancellation        =   $result->cancellation?true:false;
             $createContest->default_contest_id  =   $result->id;
             $createContest->save();
             return true;
         }
-
     }
     // crrate contest dyanamic
     public function createContest($match_id=null){
@@ -1443,7 +1442,7 @@ class ApiController extends BaseController
             $createContest->total_spots         =   $result->total_spots;
             $createContest->first_prize         =   $result->first_prize;
             $createContest->winner_percentage   =   $result->winner_percentage;
-            $createContest->cancellation        =   $result->cancellation;
+            $createContest->cancellation        =   $result->cancellation?true:false;
             $createContest->default_contest_id  =   $result->id;
             $createContest->save();
 
@@ -1585,7 +1584,7 @@ class ApiController extends BaseController
                 $data2['maxAllowedTeam'] =   $result->contestType->max_entries;
                // $data2['sort_by'] =   $result->sort_by;
                 
-                $data2['cancellation'] = $result->cancellation;
+                $data2['cancellation'] = $result->cancellation?true:false;
                 $matchcontests[$result->contest_type][] = [
                     'sort_by' => $result->sort_by,
                     'contestTitle'=>$result->contestType->contest_type,
@@ -3512,8 +3511,8 @@ class ApiController extends BaseController
     public function getMyContest(Request $request){
 
         $match_id =  $request->match_id;
-
         $matchVald = Matches::where('match_id',$request->match_id)->count();
+        $request->merge(['user_id'=>285]);
 
         if(!$matchVald){
             return [
@@ -3560,7 +3559,6 @@ class ApiController extends BaseController
             foreach ($contest as $key => $result) {
                 $myjoinedContest = $this->myJoinedTeam($request->match_id,$request->user_id,$result->id);
 
-                // dd($result);
                 $data2['isCancelled'] =   $result->is_cancelled?true:false;
                 $data2['totalSpots'] =   $result->total_spots;
                 $data2['firstPrice'] =   $result->first_prize;
@@ -3587,18 +3585,15 @@ class ApiController extends BaseController
                 $data2['filledSpots']       =  $result->filled_spot;
                 $data2['winnerPercentage']  =  $result->winner_percentage;
                 $data2['maxAllowedTeam']    =  $result->contestType->max_entries;
-                $data2['cancellation']      =  $result->cancellable;
+                $data2['cancellation']      =  $result->cancellation?true:false;
                 $data2['maxEntries']        =  $result->contestType->max_entries;
                 $data2['joinedTeams']       =  $myjoinedContest;
-
-
                 $matchcontests[] = $data2;
             }
             $data = $matchcontests;
 
             $match_info = $this->setMatchStatusTime($match_id);
-          //  dd($match_info);
-             return response()->json(
+            return response()->json(
                 [
                     'system_time'=>time(),
                     'match_status' => $match_info['match_status']??null,
@@ -3668,10 +3663,9 @@ class ApiController extends BaseController
                 //  $data2['firstPrice'] =   $result->first_prize;
                 $data2['winnerPercentage'] = $result->winner_percentage;
                 $data2['maxAllowedTeam'] =   $result->contestType->max_entries;
-                $data2['cancellation'] = $result->cancellable;
+                $data2['cancellation'] = $result->cancellation?true:false;
                 $data2['maxEntries'] =  $result->contestType->max_entries;
                 $data2['joinedTeams'] = $myjoinedContest;
-
 
                 $matchcontests[] = $data2;
             }
@@ -3768,7 +3762,7 @@ class ApiController extends BaseController
                 $data2['filledSpots'] =  $result->contest->filled_spot;
                 $data2['firstPrice'] =   $result->contest->first_prize;
                 $data2['winnerPercentage'] = $result->contest->winner_percentage;
-                $data2['cancellation'] = $result->contest->cancellable;
+                $data2['cancellation'] = $result->contest->cancellation?true:false;
                 $contest_type_id = $result->contest->contest_type;
 
                 $contestType = \DB::table('contest_types')
