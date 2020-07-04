@@ -114,6 +114,7 @@ class DefaultContestController extends Controller {
     public function store(DefaultContestRequest $request, DefaultContest $defaultContest) 
     {   
         $defaultContest->fill(Input::all()); 
+        $defaultContest->cancellation = $request->cancellation?true:false;
         $defaultContest->save(); 
 
         $default_contest_id = $defaultContest->id;
@@ -148,6 +149,7 @@ class DefaultContestController extends Controller {
 
     public function edit(Request $request, $id) {
         $defaultContest = DefaultContest::find($id);
+        //dd($defaultContest);
         $page_title     = 'Default Contest';
         $page_action    = 'Edit Default Contest'; 
         $contest_type   = ContestType::pluck('contest_type','id');
@@ -235,6 +237,7 @@ class DefaultContestController extends Controller {
 
         $defaultContest = DefaultContest::find($id);
         $defaultContest->fill(Input::all()); 
+        $defaultContest->cancellation = $request->cancellation?true:false;
         $defaultContest->save(); 
         $default_contest_id = $id;
 

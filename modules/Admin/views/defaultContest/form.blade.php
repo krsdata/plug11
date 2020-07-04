@@ -92,11 +92,16 @@
 
        <div class="form-group {{ $errors->first('cancellation', ' has-error') }}">
             <label class="control-label col-md-3">Cancellation</label>
+
             <div class="col-md-4"> 
-                {!! Form::text('cancellation',null, ['class' => 'form-control'])  !!} 
+                <select name="cancellation" class="form-control">
+                    <option value="0" >False</option>
+                    <option value="1" {{$defaultContest->cancellation?'selected':''}}>True</option>
+                </select>
                 
                 <span class="help-block">{{ $errors->first('cancellation', ':message') }}</span>
             </div>
+
         </div>
 
         <div class="form-group {{ $errors->first('total_winning_prize', ' has-error') }}">

@@ -164,7 +164,9 @@ class DocumentController extends Controller
         } else {
             $documents = Document::with('user')
                         ->orderBy('status','asc')
+                        ->groupBy('user_id')
                         ->Paginate($this->record_per_page);
+
             $documents->transform(function($item,$key){
                 $bankAccount = \DB::table('bank_accounts')->where('user_id',$item->user_id)->first();
                 
@@ -172,7 +174,6 @@ class DocumentController extends Controller
                     ->where('payment_type','!=',1)
                     ->sum('amount');
                 $item->wallet_balance =   $wallet;
-                
 
                 $item->bankAccount = $bankAccount;
                 return $item;
