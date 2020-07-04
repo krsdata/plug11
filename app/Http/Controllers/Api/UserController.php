@@ -741,7 +741,6 @@ class UserController extends BaseController
     public function saveReferral($request,$user=null){
 
         $refer_by = User::where('referal_code',$request->referral_code)
-            ->orWhere('referal_code',$request->referral_code)
             ->first();
            
         if($refer_by && $user)
@@ -766,20 +765,18 @@ class UserController extends BaseController
                 $wallet_trns
             );
 
-
             $wallet = Wallet::firstOrNew(
                 [
                     'payment_type' => 2,
                     'user_id' => $refer_by->id
                 ]
             );
-
             $wallet->user_id        = $refer_by->id;
             $wallet->validate_user  = Hash::make($refer_by->id);
             $wallet->payment_type   = 2 ;
             $wallet->payment_type_string = "Referral";
-            $wallet->referal_amount = ($wallet->referal_amount)+$this->referral_bonus;
-            $wallet->amount = ($wallet->referal_amount)+$this->referral_bonus;
+            $wallet->referal_amount = ($wallet->amount)+$this->referral_bonus;
+            $wallet->amount = ($wallet->amount)+$this->referral_bonus;
 
             $wallet->save();
 
@@ -844,7 +841,7 @@ class UserController extends BaseController
     public function login(Request $request)
     {   
         $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
-        if(!$okhttp){
+        if($okhttp){
             return array(
                     'status' => false,
                     'code' => 201,
