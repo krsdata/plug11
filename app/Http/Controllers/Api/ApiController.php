@@ -3314,9 +3314,9 @@ class ApiController extends BaseController
             ->whereIn('id',$created_team_id)->count();
 
         if($ct)
-        {   sleep(1);
+        {   //sleep(1);
             foreach ($created_team_id as $key => $ct_id) {
-                \DB::beginTransaction();
+             //   \DB::beginTransaction();
                 
                 $is_full = CreateContest::find($contest_id);
                 if($is_full==null){
@@ -3362,9 +3362,7 @@ class ApiController extends BaseController
                         'code' => 201,
                         'message' => "Only $contestTyp->max_entries teams are allowed"
                     ];
-                }
-
-                
+                }                
 
                 $check_join_contest = \DB::table('join_contests')
                     ->where('created_team_id',$ct_id)
@@ -3483,7 +3481,7 @@ class ApiController extends BaseController
                 $is_full->filled_spot =  $c_count;
                 $is_full->save();
 
-            \DB::commit();
+          //  \DB::commit();
 
             }
             $message = "Team created successfully!";
