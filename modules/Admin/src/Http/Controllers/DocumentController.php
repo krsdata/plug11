@@ -138,7 +138,10 @@ class DocumentController extends Controller
                             ->orWhere('name','LIKE',"%$search%")
                             ->orWhere('team_name','LIKE',"%$search%")
                             ->get('id')->pluck('id');
-         
+        $approved = Document::where('status',2)->count();
+        $pending  =  Document::where('status','!=',2)->count();
+
+
         if ((isset($search) && !empty($search))) {
 
             $documents = Document::with('user')->where(function ($query) use ($search,$user) {
@@ -180,7 +183,7 @@ class DocumentController extends Controller
             });
         }
         //return ($documents);
-        return view('packages::documents.index', compact('documents', 'page_title', 'page_action', 'sub_page_title'));
+        return view('packages::documents.index', compact('documents', 'page_title', 'page_action', 'approved','pending'));
     }
 
     /*
