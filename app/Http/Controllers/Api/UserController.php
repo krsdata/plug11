@@ -968,7 +968,7 @@ class UserController extends BaseController
                         }
                     }
                     $usermodel->provider_id = $request->provider_id; 
-                    $usermodel->save();
+                    //$usermodel->save();
                     $status = true;
                     $code = 200;
                     $message = "login successfully";
@@ -1010,7 +1010,7 @@ class UserController extends BaseController
                     $user->referal_code = $this->generateReferralCode();
                     $user->reference_code = $request->referral_code;
                     $user->email_verified_at = 1;
-
+                    
                     if($request->referral_code){
                         $referral_code_count = User::where('referal_code',$request->referral_code)->count();
                         if($request->referral_code && $referral_code_count==0){
