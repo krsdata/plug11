@@ -777,7 +777,7 @@ class UserController extends BaseController
             $wallet->payment_type_string = "Referral";
             $wallet->referal_amount = ($wallet->amount)+$this->referral_bonus;
             $wallet->amount = ($wallet->amount)+$this->referral_bonus;
-            
+
             $wallet->save();
 
         }
@@ -841,7 +841,7 @@ class UserController extends BaseController
     public function login(Request $request)
     {   
         $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
-        if($okhttp){
+        if(!$okhttp){
             return array(
                     'status' => false,
                     'code' => 201,
