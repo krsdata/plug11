@@ -3316,7 +3316,7 @@ class ApiController extends BaseController
             ->whereIn('id',$created_team_id)->count();
 
         if($ct)
-        {   //sleep(1);
+        {   //sleep(1;);
             foreach ($created_team_id as $key => $ct_id) {
              //   \DB::beginTransaction();
                 
@@ -3423,9 +3423,9 @@ class ApiController extends BaseController
                   //  dd($bonus_amount->amount);
                   //  dd($bonus_amount->amount,$contestT->bonus_contest,$final_paid_amount,$deduct_from_bonus);
                     if($contestT->bonus_contest && $bonus_amount && $bonus_amount->amount>=$final_paid_amount){
-                       if($bonus_amount->amount>0){
+                       if($bonus_amount->amount>$final_paid_amount){
                           $bonus_amount->amount = $bonus_amount->amount-$deduct_from_bonus;
-                        $bonus_amount->save();  
+                            $bonus_amount->save();  
                        }else{
                             return [
                                 'session_expired'=>$this->is_session_expire,
@@ -3608,14 +3608,12 @@ class ApiController extends BaseController
 
         if($contest){
             $matchcontests = [];
-
             foreach ($contest as $key => $result) {
                 $myjoinedContest = $this->myJoinedTeam($request->match_id,$request->user_id,$result->id);
-
                 $data2['isCancelled'] =   $result->is_cancelled?true:false;
                 $data2['maxAllowedTeam'] =   $result->contestType->max_entries??1;
                 $data2['usable_bonus'] =   $result->usable_bonus;
-                $data2['bonus_contest'] =   $result->bonus_contest?true:false; 
+                $data2['bonus_contest'] =   $result->bonus_contest?true:false;
                 $data2['totalSpots'] =   $result->total_spots;
                 $data2['firstPrice'] =   $result->first_prize;
                 $data2['totalWinningPrize'] =    $result->total_winning_prize;
