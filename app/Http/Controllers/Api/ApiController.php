@@ -3873,7 +3873,7 @@ class ApiController extends BaseController
             $myArr['bonus_amount']    = $wallet->bonus_amount;
             $myArr['is_account_verified']    = $this->isAccountVerified($request);
             $myArr['refferal_friends_count']    = $this->getRefferalsCounts($request);
-            $myArr['user_id']         =  $wallet->user_id;
+            $myArr['user_id']         =  $wallet->user_name;
             $myArr['withdrawal_amount']    = 0;
         }else{
             $myArr['wallet_amount']   = 0;
@@ -3881,7 +3881,7 @@ class ApiController extends BaseController
             $myArr['withdrawal_amount']    = 0;
             $myArr['is_account_verified']    = $this->isAccountVerified($request);
             $myArr['refferal_friends_count']    = $this->getRefferalsCounts($request);
-            $myArr['user_id']         = (int)$request->user_id;
+            $myArr['user_id']   = $request->user_name;
         }
 
         $wallet = Wallet::where('user_id',$request->user_id)
@@ -3968,7 +3968,7 @@ class ApiController extends BaseController
                         $item->withdrawal_amount = $withdrawal_amount;
                         return $item;
                     });
-
+        
         return response()->json(
             [
                 "status"=>true,
