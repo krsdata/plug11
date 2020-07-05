@@ -4724,7 +4724,6 @@ class ApiController extends BaseController
         $myArr = [];
         $user = User::find($request->user_id);
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
             'documentType' => 'required'
         ]);
 
