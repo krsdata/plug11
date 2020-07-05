@@ -4997,11 +4997,16 @@ class ApiController extends BaseController
                         ->groupBy('match_id')    
                         ->pluck('match_id')->count();
 
+            $total_winning_amount = $prize = JoinContest::where('user_id',$item->user_id)
+                        ->where('winning_amount','>', 0)
+                        ->sum('winning_amount');
+
             $item->total_team_joined    = $total_team;   
             $item->total_match_played   = $total_match_played;
             $item->total_contest_joined = $total_contest_joined;
             $item->total_unique_contest = $total_unique_contest;
             $item->total_match_win = $total_match_win;
+            $item->total_winning_amount = $total_winning_amount??0;
             return $item;  
         });  
         if(isset($user) && isset($user[0])){
