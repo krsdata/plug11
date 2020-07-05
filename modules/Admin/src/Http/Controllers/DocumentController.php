@@ -141,7 +141,6 @@ class DocumentController extends Controller
         $approved = Document::where('status',2)->count();
         $pending  =  Document::where('status','!=',2)->count();
 
-
         if ((isset($search) && !empty($search))) {
 
             $documents = Document::with('user')->where(function ($query) use ($search,$user) {
