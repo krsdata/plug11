@@ -979,7 +979,7 @@ class UserController extends BaseController
                         'email'          => 'required|email|unique:users',
                         'mobile_number'  => 'required|unique:users|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
                         'name' => 'required|min:3'
-                    ]);
+                    ]); 
                     
                     if ($validator->fails()) {
                         $error_msg = [];
@@ -1034,9 +1034,11 @@ class UserController extends BaseController
                     //$this->generateOtp($request);
 
                     if($user->id){
-                        $this->saveReferral($request,$user);
+                        $devid = User::where('device_id',$request->device_id)->count();
+                        if($devid<2){
+                            $this->saveReferral($request,$user);
+                        }
                         
-
                         $wallet = new Wallet;
                         $wallet->user_id = $user->id;
                         $wallet->validate_user = Hash::make($user->id);

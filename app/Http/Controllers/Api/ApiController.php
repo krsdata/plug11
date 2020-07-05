@@ -1543,6 +1543,8 @@ class ApiController extends BaseController
                 //notification per
 
                 $data2['isCancelled'] =   $result->is_cancelled?true:false;
+                $data2['usable_bonus'] =   $result->usable_bonus;
+                $data2['bonus_contest'] =   $result->bonus_contest?true:false;
                 $data2['totalSpots'] =   $result->total_spots;
                 $data2['firstPrice'] =   $result->first_prize;
                 $data2['sort_by'] =   $result->sort_by;
@@ -2287,9 +2289,7 @@ class ApiController extends BaseController
     public function getMatchHistory(Request $request){
         //$status =  $request->status;
         $user_id = $request->user_id;
-
-        $is_user = Auth::loginUsingId($user_id);
-        if($is_user === false){
+        if($user_id){
             return  [
                 'system_time'=>time(),
                 'status'=>false,
@@ -3214,7 +3214,7 @@ class ApiController extends BaseController
     }
 
     public function  joinContest(Request  $request)
-    {
+    {   
         $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
         if(!$okhttp){
             return array(
@@ -3257,7 +3257,7 @@ class ApiController extends BaseController
             );
         }
 
-        Log::channel('before_join_contest')->info($request->all());
+        //Log::channel('before_join_contest')->info($request->all());
 
         $check_join_contest = \DB::table('join_contests')
             ->whereIn('created_team_id',$created_team_id)
@@ -3343,7 +3343,8 @@ class ApiController extends BaseController
 
                 $contestT = CreateContest::find($contest_id);
                 $contestTyp = \DB::table('contest_types')->where('id',$contestT->contest_type)->first();
-
+                
+                //return ($contestT);
                  /*if(
                     isset($check_max_contest) 
                     && $check_max_contest>=2 
@@ -3371,7 +3372,6 @@ class ApiController extends BaseController
                     ->first();
 
                 if($check_join_contest){
-
                     continue;
                 }
                 $data['match_id'] = $match_id;
@@ -3382,40 +3382,61 @@ class ApiController extends BaseController
                 $ctid  = CreateTeam::find($ct_id);
                 $data['team_count'] = $ctid->team_count??null;
 
-                
-                   // $cc->save();
-                    // payment deduct
-                   // $total_team_count   =  count($request->created_team_id);
+
+
                     $total_fee          =  $cc->entry_fees;
-                   // $payable_amount     =  $total_fee*$total_team_count;
-                    $payable_amount     =  $total_fee;    
-                    $deduct_from_bonus  =  $payable_amount*(0.1);
-                    
-                    $final_paid_amount  =  $payable_amount-$deduct_from_bonus;
+                    $payable_amount     =  $total_fee; 
+
+                    if($contestT->bonus_contest){
+                        $deduct_from_bonus  =  $payable_amount*($contestT->usable_bonus/100);
+                    }else{
+                        $per = $contestT->usable_bonus;
+                        $deduct_from_bonus  =  $payable_amount*($per/100);
+                    }
+                    //dd($payable_amount);
+
+                    $final_paid_amount  =  $payable_amount;
 
                     $item = Wallet::where('user_id',$user_id)->get();
-                    
                     $bonus_amount = $item->where('payment_type',1)->first();
 
                     $refer_amount = $item->where('payment_type',2)->first();
                     $depos_amount = $item->where('payment_type',3)->first();
                     $prize_amount = $item->where('payment_type',4)->first();
-                   
+
+                  //  $ref_prize_depos = $item->whereIn('payment_type',[2,3,4])->get();
+                       
                     $transaction_amt = 0;
-                    if($bonus_amount && $bonus_amount->amount>$deduct_from_bonus){
+                    if($bonus_amount && $bonus_amount->amount>$deduct_from_bonus && !$contestT->bonus_contest){
+                        $final_paid_amount = $final_paid_amount-$deduct_from_bonus;
+
                         $bonus_amount->amount = $bonus_amount->amount-$deduct_from_bonus;
                         $bonus_amount->save();
-                         
                     }else{
+                        $final_paid_amount = $final_paid_amount;
+                        //-$deduct_from_bonus;
 
-                        $final_paid_amount = $final_paid_amount+($deduct_from_bonus);
-                    } 
-                                                                     
-                    if($depos_amount && $depos_amount->amount > $final_paid_amount){
+                    }
+                  //  dd($bonus_amount->amount);
+                  //  dd($bonus_amount->amount,$contestT->bonus_contest,$final_paid_amount,$deduct_from_bonus);
+                    if($contestT->bonus_contest && $bonus_amount && $bonus_amount->amount>=$final_paid_amount){
+                       if($bonus_amount->amount>0){
+                          $bonus_amount->amount = $bonus_amount->amount-$deduct_from_bonus;
+                        $bonus_amount->save();  
+                       }else{
+                            return [
+                                'session_expired'=>$this->is_session_expire,
+                                'status'=>false,
+                                'code' => 201,
+                                'message' => "You don't have sufficient bonus balance!"
+                            ];
+                       }
+                    }elseif($depos_amount && $depos_amount->amount >= $final_paid_amount){
                         $depos_amount->amount = $depos_amount->amount-$final_paid_amount;
                         $depos_amount->save();
                        
-                    }elseif($prize_amount && $prize_amount->amount > $final_paid_amount){
+                    }elseif($prize_amount && $prize_amount->amount >= $final_paid_amount){
+
                         $prize_amount->amount = $prize_amount->amount-$final_paid_amount;
                         $prize_amount->save();
                         
@@ -3425,16 +3446,45 @@ class ApiController extends BaseController
                         $refer_amount->save();
                          
                     }else{
+                        //dd($final_paid_amount);
+                       /* $prize_ref_depo = \DB::table('wallets')
+                            ->whereIn('payment_type',[2,3,4])
+                            ->where('user_id',$request->user_id)
+                            ->get();
+                        if($prize_ref_depo->count() && $prize_ref_depo->sum('amount') > $final_paid_amount){
+                            $fm=0;
+                            foreach ($prize_ref_depo as $key => $rs) {
+                                if($rs->amount){
+                                    $w = Wallet::find($rs->id);
+                                    $pay = $rs->amount;
+                                
+                                    if($pay >0 && $final_paid_amount>=$pay){
+                                        $w->amount = $rs->amount-$pay;
+                                    }else{
+                                       // $final_paid_amount = $fm-$final_paid_amount;
+                                       // dd($final_paid_amount);
+                                        $w->amount = $rs->amount-$final_paid_amount;
+                                    }
+                                    $w->save();
+                                    $fm = $fm+$pay;
+                                    if($final_paid_amount>=0){
+                                        $fpaid_amount = $final_paid_amount-$pay;
+                                    }
+                                    
+                                }
+                            }
+                        }*/
+                        //else{
 
-                        if(isset($is_full) && $is_full->entry_fees>0){
-                             return [
-                                'session_expired'=>$this->is_session_expire,
-                                'status'=>false,
-                                'code' => 201,
-                                'message' => "You don't have sufficient balance!"
-                            ]; 
-                        }
-                       
+                            if(isset($is_full) && $is_full->entry_fees>0){
+                                return [
+                                    'session_expired'=>$this->is_session_expire,
+                                    'status'=>false,
+                                    'code' => 201,
+                                    'message' => "You don't have sufficient balance!"
+                                ];
+                            }
+                     //   }
                     } 
 
                  //   $cc->save(); 
@@ -3560,6 +3610,8 @@ class ApiController extends BaseController
                 $myjoinedContest = $this->myJoinedTeam($request->match_id,$request->user_id,$result->id);
 
                 $data2['isCancelled'] =   $result->is_cancelled?true:false;
+                $data2['usable_bonus'] =   $result->usable_bonus;
+                $data2['bonus_contest'] =   $result->bonus_contest?true:false; 
                 $data2['totalSpots'] =   $result->total_spots;
                 $data2['firstPrice'] =   $result->first_prize;
                 $data2['totalWinningPrize'] =    $result->total_winning_prize;
@@ -3636,6 +3688,8 @@ class ApiController extends BaseController
 
                 // dd($result);
                 $data2['isCancelled'] =   $result->is_cancelled?true:false;
+                $data2['usable_bonus'] =   $result->usable_bonus;
+                $data2['bonus_contest'] =   $result->bonus_contest?true:false;
                 $data2['totalSpots'] =   $result->total_spots;
                 $data2['firstPrice'] =   $result->first_prize;
                 $data2['totalWinningPrize'] =    $result->total_winning_prize;
