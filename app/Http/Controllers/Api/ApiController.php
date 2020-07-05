@@ -3219,7 +3219,6 @@ class ApiController extends BaseController
     public function  joinContest(Request  $request)
     {   
         $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
-
        // $version_code = 
 
         if($okhttp){
@@ -3567,8 +3566,11 @@ class ApiController extends BaseController
     // get contest details by match id
     public function getMyContest(Request $request){
 
-        $match_id =  $request->match_id;
+        $match_id  =  $request->match_id;
         $matchVald = Matches::where('match_id',$request->match_id)->count();
+
+        $version_code = (object)$request->deviceDetails;
+        $version_code = $version_code->versionCode??null;
        // $request->merge(['user_id'=>285]);
 
         if(!$matchVald){
@@ -3613,6 +3615,9 @@ class ApiController extends BaseController
         if($contest){
             $matchcontests = [];
             foreach ($contest as $key => $result) {
+                if($version_code ==null && $result->bonus_contest){
+                    continue;
+                }
                 $myjoinedContest = $this->myJoinedTeam($request->match_id,$request->user_id,$result->id);
                 $data2['isCancelled'] =   $result->is_cancelled?true:false;
                 $data2['maxAllowedTeam'] =   $result->contestType->max_entries??1;
@@ -3690,6 +3695,7 @@ class ApiController extends BaseController
             $matchcontests = [];
 
             foreach ($contest as $key => $result) {
+                
                 $myjoinedContest = $this->myJoinedTeam($request->match_id,$request->user_id,$result->id);
 
                 // dd($result);
