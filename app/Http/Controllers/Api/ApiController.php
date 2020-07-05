@@ -1543,6 +1543,9 @@ class ApiController extends BaseController
                 //notification per
 
                 $data2['isCancelled'] =   $result->is_cancelled?true:false;
+
+                $data2['maxAllowedTeam'] =   $result->contestType->max_entries??1;
+
                 $data2['usable_bonus'] =   $result->usable_bonus;
                 $data2['bonus_contest'] =   $result->bonus_contest?true:false;
                 $data2['totalSpots'] =   $result->total_spots;
@@ -3610,6 +3613,7 @@ class ApiController extends BaseController
                 $myjoinedContest = $this->myJoinedTeam($request->match_id,$request->user_id,$result->id);
 
                 $data2['isCancelled'] =   $result->is_cancelled?true:false;
+                $data2['maxAllowedTeam'] =   $result->contestType->max_entries??1;
                 $data2['usable_bonus'] =   $result->usable_bonus;
                 $data2['bonus_contest'] =   $result->bonus_contest?true:false; 
                 $data2['totalSpots'] =   $result->total_spots;
@@ -3688,6 +3692,7 @@ class ApiController extends BaseController
 
                 // dd($result);
                 $data2['isCancelled'] =   $result->is_cancelled?true:false;
+                $data2['maxAllowedTeam'] =   $result->contestType->max_entries??1;
                 $data2['usable_bonus'] =   $result->usable_bonus;
                 $data2['bonus_contest'] =   $result->bonus_contest?true:false;
                 $data2['totalSpots'] =   $result->total_spots;
@@ -4078,10 +4083,10 @@ class ApiController extends BaseController
 
             if($check_user || $user){
                 
-                $wallet     =   Wallet::firstOrNew([
-                                'user_id' => $user->id,
-                                'payment_type' => 3
-                            ]);
+                    $wallet     =   Wallet::firstOrNew([
+                                    'user_id' => $user->id,
+                                    'payment_type' => 3
+                                ]);
 
                 /*$wallet     = Wallet::where('user_id',$user->id)->where('payment_type',3)->first();*/
                 
