@@ -3219,7 +3219,10 @@ class ApiController extends BaseController
     public function  joinContest(Request  $request)
     {   
         $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
-        if(!$okhttp){
+
+       // $version_code = 
+
+        if($okhttp){
             return array(
                     'status' => false,
                     'code' => 201,
@@ -3396,8 +3399,7 @@ class ApiController extends BaseController
                         $per = $contestT->usable_bonus;
                         $deduct_from_bonus  =  $payable_amount*($per/100);
                     }
-                    //dd($payable_amount);
-
+                    
                     $final_paid_amount  =  $payable_amount;
 
                     $item = Wallet::where('user_id',$user_id)->get();
@@ -3420,13 +3422,15 @@ class ApiController extends BaseController
                         //-$deduct_from_bonus;
 
                     }
+                   
                   //  dd($bonus_amount->amount);
                   //  dd($bonus_amount->amount,$contestT->bonus_contest,$final_paid_amount,$deduct_from_bonus);
-                    if($contestT->bonus_contest && $bonus_amount && $bonus_amount->amount>=$final_paid_amount){
+                    if($contestT->bonus_contest && $bonus_amount){
+                         
                        if($bonus_amount->amount>$final_paid_amount){
-                          $bonus_amount->amount = $bonus_amount->amount-$deduct_from_bonus;
+                          $bonus_amount->amount = $bonus_amount->amount-$final_paid_amount;
                             $bonus_amount->save();  
-                       }else{
+                       }else{ 
                             return [
                                 'session_expired'=>$this->is_session_expire,
                                 'status'=>false,
