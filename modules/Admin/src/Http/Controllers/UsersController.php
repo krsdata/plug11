@@ -84,8 +84,10 @@ class UsersController extends Controller {
 
                         if (!empty($search)) {
                             $query->Where('name', 'LIKE', "%$search%")
-                                  //  ->OrWhere('last_name', 'LIKE', "%$search%")
-                                    ->OrWhere('email', 'LIKE', "%$search%");
+                                    ->OrWhere('email', 'LIKE', "%$search%")
+                                    ->OrWhere('referal_code', 'LIKE', "%$search%")
+                                    ->OrWhere('reference_code', 'LIKE', "%$search%")
+                                    ->OrWhere('user_name', 'LIKE', "%$search%");
                         }
                         if (!empty($status)) {
                             $status =  ($status=='active')?1:0;
