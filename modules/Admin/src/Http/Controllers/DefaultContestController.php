@@ -115,6 +115,8 @@ class DefaultContestController extends Controller {
     {   
         $defaultContest->fill(Input::all()); 
         $defaultContest->cancellation = $request->cancellation?true:false;
+        $defaultContest->bonus_contest = $request->bonus_contest?true:false;
+        $defaultContest->usable_bonus = $request->usable_bonus;
         $defaultContest->save(); 
 
         $default_contest_id = $defaultContest->id;
@@ -237,6 +239,9 @@ class DefaultContestController extends Controller {
 
         $defaultContest = DefaultContest::find($id);
         $defaultContest->fill(Input::all()); 
+        
+        $defaultContest->bonus_contest = $request->bonus_contest?true:false;
+        $defaultContest->usable_bonus = $request->usable_bonus;
         $defaultContest->cancellation = $request->cancellation?true:false;
         $defaultContest->save(); 
         $default_contest_id = $id;

@@ -111,6 +111,29 @@
                 <span class="help-block">{{ $errors->first('total_winning_prize', ':message') }}</span>
             </div>
         </div>
+
+
+        <div class="form-group {{ $errors->first('usable_bonus', ' has-error') }}">
+            <label class="control-label col-md-3">Usable Bonus %</label>
+            <div class="col-md-4"> 
+                {!! Form::text('usable_bonus',$defaultContest->usable_bonus??10, ['class' => 'form-control','placeholder'=>'10'])  !!} 
+                <span class="help-block">{{ $errors->first('usable_bonus', ':message') }}</span>
+            </div>
+        </div>
+
+        <div class="form-group {{ $errors->first('bonus_contest', ' has-error') }}">
+            <label class="control-label col-md-3">Bonus Contest</label>
+            <div class="col-md-4"> 
+                <select name="bonus_contest" class="form-control">
+                    <option value="0" >No</option>
+                    <option value="1" {{$defaultContest->bonus_contest?'selected':''}}>Yes</option>
+                </select>
+                
+                <span class="help-block">{{ $errors->first('bonus_contest', ':message') }}</span>
+            </div>
+
+        </div>
+
     </div>
     <div class="form-actions">
         <div class="row">
