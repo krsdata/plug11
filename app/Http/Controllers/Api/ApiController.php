@@ -4737,7 +4737,7 @@ class ApiController extends BaseController
             return Response::json(array(
                     'code' => 201,
                     'status' => false,
-                    'message' => $error_msg
+                    'message' => $error_msg[0]
                 )
             );
         }
