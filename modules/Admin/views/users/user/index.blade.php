@@ -121,7 +121,7 @@
                                 <td class="center"> 
                                
                                     @if($result->role_type==3)
-                                    <a href="#">
+                                    <a href="{{ route('user.edit',$result->id)}}?role_type={{$result->role_type}}">
                                         View Details
                                         <i class="glyphicon glyphicon-eye-open" title="edit"></i> 
 

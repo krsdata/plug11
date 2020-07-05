@@ -22,15 +22,9 @@ class UserRequest extends Request {
                 case 'POST': {
                         return [
                             
-                            'first_name'      => 'required|min:3', 
-                            'last_name'      => 'required|min:2',
-                            'email'     => "required|email|unique:users,email" ,   
-                            'password'  => 'required|min:6', 
-                            'role_type' => 'required',
-                             'phone' => 'required'
-                             //size:10
-                            //'role'  => 'required'
-                            /*'confirm_password' => 'required|same:password'*/ 
+                            'name'      => 'required|min:3', 
+                            'email'     => "required|email|unique:users,email" ,
+                             'mobile_number' => 'required|unique:users,mobile_number'
                         ];
                     }
                 case 'PUT':
@@ -38,12 +32,7 @@ class UserRequest extends Request {
                     if ( $user = $this->user ) {
 
                         return [
-                            'first_name' => 'required|min:3', 
-                            'last_name'  => 'required|min:2', 
-                            'email'      => "required|email" ,  
-                            'phone'      => 'required',
-                            'role_type'  => 'required'
-                           // 'role'  => 'required'
+                            
                         ];
                     }
                 }

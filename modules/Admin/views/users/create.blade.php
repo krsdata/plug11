@@ -60,21 +60,62 @@
                                    
                                     <!-- END STAT -->
                                     <div>
-                                        <h4 class="profile-desc-title">About {{$user->first_name}}</h4>
+                                        <h4 class="profile-desc-title">About {{$user->name}}</h4>
                                           <div class="row list-separated profile-stat">
-                                      <!--   <div class="col-md-4 col-sm-4 col-xs-6">
-                                            <div class="uppercase profile-stat-title"> 37 </div>
-                                            <div class="uppercase profile-stat-text"> Projects </div>
-                                        </div> -->
-                                        <!-- <div class="col-md-4 col-sm-4 col-xs-6">
+                                        <div class="col-md-4 col-sm-4 col-xs-6">
                                             <div class="uppercase profile-stat-title"> 0 </div>
-                                            <div class="uppercase profile-stat-text"> Tasks </div>
-                                        </div> -->
-                                      <!--   <div class="col-md-4 col-sm-4 col-xs-6">
+                                            <div class="uppercase profile-stat-text"> Referral </div>
+                                        </div> 
+                                         <div class="col-md-4 col-sm-4 col-xs-6">
+                                            <div class="uppercase profile-stat-title"> 0 </div>
+                                            <div class="uppercase profile-stat-text"> Deposit </div>
+                                        </div> 
+                                         <div class="col-md-4 col-sm-4 col-xs-6">
                                             <div class="uppercase profile-stat-title"> 61 </div>
                                             <div class="uppercase profile-stat-text"> Uploads </div>
+                                        </div> 
+
+                                    </div>
+
+                                        <span class="profile-desc-text">{{$user->about_me}}</span>
+                                        <div class="margin-top-20 profile-desc-link">
+                                            <i class="fa fa-phone"></i>
+                                            {{$user->phone}}
+                                        </div>
+                                       <!--  <div class="margin-top-20 profile-desc-link">
+                                            <i class="fa fa-twitter"></i>
+                                            <a href="http://www.twitter.com/keenthemes/">@keenthemes</a>
+                                        </div>
+                                        <div class="margin-top-20 profile-desc-link">
+                                            <i class="fa fa-facebook"></i>
+                                            <a href="http://www.facebook.com/keenthemes/">keenthemes</a>
                                         </div> -->
                                     </div>
+                                </div>
+
+
+                                <div class="portlet light bordered">
+                                    <!-- STAT -->
+                                   
+                                    <!-- END STAT -->
+                                    <div>
+                                        <h4 class="profile-desc-title">About Matches</h4>
+                                          <div class="row list-separated profile-stat">
+                                        <div class="col-md-4 col-sm-4 col-xs-6">
+                                            <div class="uppercase profile-stat-title"> 37 </div>
+                                            <div class="uppercase profile-stat-text"> Referral </div>
+                                        </div> 
+                                         <div class="col-md-4 col-sm-4 col-xs-6">
+                                            <div class="uppercase profile-stat-title"> 0 </div>
+                                            <div class="uppercase profile-stat-text"> Deposit </div>
+                                        </div> 
+                                         <div class="col-md-4 col-sm-4 col-xs-6">
+                                            <div class="uppercase profile-stat-title"> 61 </div>
+                                            <div class="uppercase profile-stat-text"> Uploads </div>
+                                        </div> 
+
+                                    </div>
+                                    
                                         <span class="profile-desc-text">{{$user->about_me}}</span>
                                         <div class="margin-top-20 profile-desc-link">
                                             <i class="fa fa-phone"></i>
