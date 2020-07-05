@@ -3883,7 +3883,6 @@ class ApiController extends BaseController
             $myArr['refferal_friends_count']    = $this->getRefferalsCounts($request);
             $myArr['user_id']   = $user_id->user_name;
         }
-
         $wallet = Wallet::where('user_id',$request->user_id)
                     ->select('user_id')
                     ->get()
@@ -3966,9 +3965,12 @@ class ApiController extends BaseController
                                             ->sum('amount');
 
                         $item->withdrawal_amount = $withdrawal_amount;
+
+                        $user = User::find($item->user_id);
+                        $item->user_id = $user->user_name;
                         return $item;
                     });
-        
+        //dd($wallet);
         return response()->json(
             [
                 "status"=>true,
@@ -4720,7 +4722,7 @@ class ApiController extends BaseController
     }
     // Add Money
     public function saveDocuments(Request $request){
-        
+
         $myArr = [];
         $user = User::find($request->user_id);
         $validator = Validator::make($request->all(), [
