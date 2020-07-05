@@ -126,7 +126,6 @@ class UsersController extends Controller {
 
     public function create(User $user) 
     {
-
         $page_title = 'Editor';
         $page_action = 'Create Editor';
         $roles = Roles::all();
@@ -143,7 +142,7 @@ class UsersController extends Controller {
     public function store(UserRequest $request, User $user) {
         $user->fill(Input::all());
         $user->password = Hash::make($request->get('password'));
-
+        
         $action = $request->get('submit');
 
 
@@ -173,8 +172,36 @@ class UsersController extends Controller {
         $page_action = 'Show Editor';
         $role_id = $user->role_type;
         $roles = Roles::all();
+
+        $match_id = \DB::table('join_contests')->where('user_id',$id)
+                    ->groupBy('match_id')->pluck('match_id')->count();
+
+        $contest_id = \DB::table('join_contests')
+                    ->where('user_id',$id)
+                    ->groupBy('contest_id')->pluck('contest_id')->count();
+        $win = \DB::table('join_contests')
+                    ->where('user_id',$id)
+                    ->where('winning_amount','>',0)->count();
+        $referral =  \DB::table('referral_codes')
+                    ->where('refer_by',$id)
+                    ->count();
+
+         $total_balance =  \DB::table('wallets')
+                    ->where('user_id',$id)
+                    ->sum('amount');
+
+        $deposit =  \DB::table('wallets')
+                    ->where('user_id',$id)
+                    ->where('payment_type',4)
+                    ->sum('amount');
+
+        $prize =  \DB::table('wallets')
+                    ->where('user_id',$id)
+                    ->where('payment_type',3)
+                    ->sum('amount');            
+
         $js_file = ['common.js','bootbox.js','formValidate.js'];
-        return view('packages::users.edit', compact('js_file','role_id','roles','user', 'page_title', 'page_action'));
+        return view('packages::users.edit', compact('js_file','role_id','roles','user', 'page_title', 'page_action','match_id','contest_id','win','referral','deposit','prize'));
     }
 
     public function update(Request $request, $id) {

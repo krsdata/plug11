@@ -55,7 +55,12 @@ class User extends Authenticatable {
                             'status',
                             'tagLine',
                             'address',
-                            'birthday'
+                            'birthday',
+                            'user_name',
+                            'mobile_number',
+                            'referal_code',
+                            'reference_code',
+                            'team_name'
                         ];  // All field of user table h
 
 

@@ -43,23 +43,20 @@
                                     <div class="profile-userbuttons">
                                         <button type="button" class="btn btn-circle green btn-sm">Email</button>
                                         <button type="button" class="btn btn-circle red btn-sm">Message</button>
-                                      @if($user->role_type==3)
-                                        <a href="{{url('admin/mytask/'.$user->id)}}">
-                                         <button type="button" class="btn btn-circle green btn-sm">Task</button>
-                                         </a>
-                                         @endif
+                                      
                                     </div>
                                     <!-- END SIDEBAR BUTTONS -->
                                     <!-- SIDEBAR MENU -->
                                     <div class="profile-usermenu">
                                         <ul class="nav">
-                                            <li>
-                                               <a href="{{url('admin/mytask/'.$user->id)}}">
-                                                    <i class="icon-home"></i> Overview </a>
+                                            
+                                            <li class="active">
+                                                <a href="#">
+                                                    {{$user->email}} </a>
                                             </li>
                                             <li class="active">
                                                 <a href="#">
-                                                    <i class="icon-settings"></i> Account Settings </a>
+                                                    {{$user->mobile_number}} </a>
                                             </li>
                                             <!-- <li>
                                                 <a href="#">
@@ -76,26 +73,94 @@
                                    
                                     <!-- END STAT -->
                                     <div>
-                                        <h4 class="profile-desc-title">About {{$user->first_name}}</h4>
+                                        <h4 class="profile-desc-title">About Match</h4>
                                           <div class="row list-separated profile-stat">
-                                      <!--   <div class="col-md-4 col-sm-4 col-xs-6">
-                                            <div class="uppercase profile-stat-title"> 37 </div>
-                                            <div class="uppercase profile-stat-text"> Projects </div>
-                                        </div> -->
-                                        <!-- <div class="col-md-4 col-sm-4 col-xs-6">
-                                            <div class="uppercase profile-stat-title"> 0 </div>
-                                            <div class="uppercase profile-stat-text"> Tasks </div>
-                                        </div> -->
-                                      <!--   <div class="col-md-4 col-sm-4 col-xs-6">
-                                            <div class="uppercase profile-stat-title"> 61 </div>
-                                            <div class="uppercase profile-stat-text"> Uploads </div>
-                                        </div> -->
+                                        <div class="col-md-4 col-sm-4 col-xs-6">
+                                            <div class="uppercase profile-stat-title"> {{$match_id??0}} </div>
+                                            <div class="uppercase profile-stat-text">  Match </div>
+                                        </div> 
+                                        <div class="col-md-4 col-sm-4 col-xs-6">
+                                            <div class="uppercase profile-stat-title"> {{$contest_id??0}} </div>
+                                            <div class="uppercase profile-stat-text"> contest </div>
+                                        </div>
+                                         <div class="col-md-4 col-sm-4 col-xs-6">
+                                            <div class="uppercase profile-stat-title"> {{$win??0}} </div>
+                                            <div class="uppercase profile-stat-text"> WIN </div>
+                                        </div>
+                                         
                                     </div>
                                         <span class="profile-desc-text">{{$user->about_me}}</span>
                                         <div class="margin-top-20 profile-desc-link">
                                             <i class="fa fa-phone"></i>
                                             {{$user->phone}}
                                         </div>
+                                       <!--  <div class="margin-top-20 profile-desc-link">
+                                            <i class="fa fa-twitter"></i>
+                                            <a href="http://www.twitter.com/keenthemes/">@keenthemes</a>
+                                        </div>
+                                        <div class="margin-top-20 profile-desc-link">
+                                            <i class="fa fa-facebook"></i>
+                                            <a href="http://www.facebook.com/keenthemes/">keenthemes</a>
+                                        </div> -->
+                                    </div>
+                                </div>
+
+
+                                <div class="portlet light bordered">
+                                    <!-- STAT -->
+                                   
+                                    <!-- END STAT -->
+                                    <div>
+                                        <h4 class="profile-desc-title">Referral : {{$user->referal_code}}</h4>
+                                          <div class="row list-separated profile-stat">
+                                        <div class="col-md-6 col-sm-4 col-xs-6">
+                                            <div class="uppercase profile-stat-title"> {{$referral??0}} </div>
+                                            <div class="uppercase profile-stat-text">  Total Referral </div>
+                                        </div> 
+                                        <div class="col-md-4 col-sm-4 col-xs-6">
+                                            <div class="uppercase profile-stat-title"> {{$referral*3??0}} </div>
+                                            <div class="uppercase profile-stat-text"> Earning </div>
+                                        </div>
+                                         
+                                         
+                                    </div>
+                                        <span class="profile-desc-text">{{$user->about_me}}</span>
+                                        <div class="margin-top-20 profile-desc-link">
+                                            <i class="fa fa-phone"></i>
+                                            {{$user->phone}}
+                                        </div>
+                                       <!--  <div class="margin-top-20 profile-desc-link">
+                                            <i class="fa fa-twitter"></i>
+                                            <a href="http://www.twitter.com/keenthemes/">@keenthemes</a>
+                                        </div>
+                                        <div class="margin-top-20 profile-desc-link">
+                                            <i class="fa fa-facebook"></i>
+                                            <a href="http://www.facebook.com/keenthemes/">keenthemes</a>
+                                        </div> -->
+                                    </div>
+                                </div>
+
+
+                                <div class="portlet light bordered">
+                                    <!-- STAT -->
+                                   
+                                    <!-- END STAT -->
+                                    <div>
+                                        <h4 class="profile-desc-title">Wallets : INR {{$prize+$deposit+$referral*3}}</h4>
+                                          <div class="row list-separated profile-stat">
+                                        <div class="col-md-6 col-sm-4 col-xs-6">
+                                            <div class="uppercase profile-stat-title"> INR {{$prize??0}} </div>
+                                            <div class="uppercase profile-stat-text"> Prize </div>
+                                        </div> 
+                                        <div class="col-md-4 col-sm-4 col-xs-6">
+                                            <div class="uppercase profile-stat-title"> INR {{$deposit??0}} </div>
+                                            <div class="uppercase profile-stat-text"> Deposit </div>
+                                        </div>
+                                         
+                                         
+                                    </div>
+                                         
+                                         
                                        <!--  <div class="margin-top-20 profile-desc-link">
                                             <i class="fa fa-twitter"></i>
                                             <a href="http://www.twitter.com/keenthemes/">@keenthemes</a>
