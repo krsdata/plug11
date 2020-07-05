@@ -3221,7 +3221,7 @@ class ApiController extends BaseController
         $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
        // $version_code = 
 
-        if($okhttp){
+        if(!$okhttp){
             return array(
                     'status' => false,
                     'code' => 201,
@@ -3695,7 +3695,7 @@ class ApiController extends BaseController
             $matchcontests = [];
 
             foreach ($contest as $key => $result) {
-                
+
                 $myjoinedContest = $this->myJoinedTeam($request->match_id,$request->user_id,$result->id);
 
                 // dd($result);
