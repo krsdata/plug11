@@ -1063,7 +1063,7 @@ class ApiController extends BaseController
                 'code' => 200,
                 'message' => 'leaderBoard',
                 'total_team' =>  count($lb),
-                'leaderBoard' =>mb_convert_encoding($lb,'UTF-8', 'UTF-8')
+                'leaderBoard' =>$lb
 
             ];
         }else{
