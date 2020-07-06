@@ -149,11 +149,11 @@
                                         <h4 class="profile-desc-title">Wallets : INR {{$prize+$deposit+$referral*3}}</h4>
                                           <div class="row list-separated profile-stat">
                                         <div class="col-md-6 col-sm-4 col-xs-6">
-                                            <div class="uppercase profile-stat-title"> INR {{$prize??0}} </div>
+                                            <div class="  profile-stat-title">   {{$prize??0}} </div>
                                             <div class="uppercase profile-stat-text"> Prize </div>
                                         </div> 
                                         <div class="col-md-4 col-sm-4 col-xs-6">
-                                            <div class="uppercase profile-stat-title"> INR {{$deposit??0}} </div>
+                                            <div class="  profile-stat-title">   {{$deposit??0}} </div>
                                             <div class="uppercase profile-stat-text"> Deposit </div>
                                         </div>
                                          
