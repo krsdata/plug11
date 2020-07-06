@@ -750,10 +750,8 @@ class ApiController extends BaseController
             
         }else{
            $matches = Matches::where('status',3)
-                ->whereDate('updated_at',\Carbon\Carbon::today())
-                ->get(); 
+                    ->get();
         }
-        dd($matches);
         $m = [];
         foreach ($matches as $key => $match) {   # code...
 
