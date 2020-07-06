@@ -749,7 +749,6 @@ class ApiController extends BaseController
         }
         $m = [];
         foreach ($matches as $key => $match) {   # code...
-
             $points = file_get_contents($this->cric_url.'matches/'.$match->match_id.'/point?token='.$this->token);
             $points_json = json_decode($points);
                         
