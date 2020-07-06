@@ -304,6 +304,7 @@ class ApiController extends BaseController
                     $this->updateMatchRankByMatchId($item->match_id,$item->id); 
                 });
             });
+
         $this->WinningPrizeDistribution($request);
         return [
             'status'=>true,
@@ -4213,9 +4214,9 @@ class ApiController extends BaseController
     {  
         $match_id = $request->match_id;  
         $get_join_contest = JoinContest::where('match_id',  $match_id)
-          ->where('winning_amount','>',0)  
+          ->where('cancel_contest',0)  
           ->get();
-
+          
         $get_join_contest->transform(function ($item, $key)   {
             
             $ct = CreateTeam::where('match_id',$item->match_id)
