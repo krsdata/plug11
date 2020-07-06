@@ -297,16 +297,11 @@ class ApiController extends BaseController
                 $contests = \DB::table('create_contests')
                     ->where('match_id',$item->match_id)
                     ->where('is_cancelled',0)
-                    ->get();
+                    ->get(); 
                     // get contest based on contest
-                $contests->transform(function($item,$key){
-                        $jc = \DB::table('match_stats')
-                            ->where('match_id',$item->match_id)
-                            ->where('contest_id',$item->id)
-                            ->get() // get team based on join contest
-                            ->transform(function($item,$key){
-                                $this->updateMatchRankByMatchId($item->match_id,$item->contest_id);      
-                            });
+                    $contests->transform(function($item,$key){
+                       
+                    $this->updateMatchRankByMatchId($item->match_id,$item->id); 
                 });
             });
         $this->WinningPrizeDistribution($request);
@@ -319,7 +314,7 @@ class ApiController extends BaseController
     }
     // update Ranking
     public function updateMatchRankByMatchId($match_id=null,$contest_id=null)
-    {
+    {   
         $servername =  env('DB_HOST','localhost');
         $username   =  env('DB_USERNAME','root');
         $password   =  env('DB_PASSWORD','');
