@@ -4004,7 +4004,7 @@ class ApiController extends BaseController
         $match_id = $request->match_id;  
         $get_join_contest = JoinContest::where('match_id',  $match_id)
           ->get();
-
+          
         $get_join_contest->transform(function ($item, $key)   {
             
             $ct = CreateTeam::where('match_id',$item->match_id)
@@ -4056,6 +4056,7 @@ class ApiController extends BaseController
     {  
         $match_id = $request->match_id;  
         $get_join_contest = JoinContest::where('match_id',  $match_id)
+          ->where('winning_amount','>',0)  
           ->get();
 
         $get_join_contest->transform(function ($item, $key)   {
@@ -4075,42 +4076,6 @@ class ApiController extends BaseController
             $points     =   $item->points;
             $contest_id =   $item->contest_id;
 
-            $contest    =  CreateContest::with('contestType','defaultContest')
-                              ->with(['prizeBreakup'=>function($q) use($rank,$points,$contest_id  )
-                                {
-                                  $q->where('rank_from','>=',$rank);
-                                  $q->orwhere('rank_upto','<=',$rank)
-                                  ->where('rank_from','>=',$rank); 
-                                }
-                              ]
-                            )
-                          ->where('match_id',$item->match_id)
-                          ->where('id',$item->contest_id) 
-                          ->where('is_cancelled',0) 
-                          ->get() 
-                          ->transform(function ($contestItem, $ckey) use($team_id,$match_id,$user_id,$rank,$team_name,$points, $contest_id,$item)  {
-                            // check wether rank is repeated
-                            
-                            $rank_repeat = $this->checkReaptedRank($rank, $match_id,$contest_id);
-                            //get average amount in case of repeated rank
-                            $rank_amount = $this->getAmountPerRank($rank,$match_id,$contestItem->default_contest_id,$rank_repeat);
-                              
-                             $contestItem->prize_amount = $rank?$rank_amount:0;
-                             $contestItem->team_id = $team_id;
-                             $contestItem->match_id = $match_id;
-                             $contestItem->user_id = $user_id;
-                             $contestItem->rank = $rank;
-                             $contestItem->team_name = $team_name;
-                            //Rank Amount
-                            
-                            $update_join_contest = JoinContest::find($item->id);
-                            $update_join_contest->winning_amount = $rank?$rank_amount:0;
-                            $update_join_contest->save();
-                            return $contestItem;
-
-                           });
-            
-            
            // $item->createdTeam = $ct;
             $item->user = $user;
             $item->team_id = $team_id;
@@ -4118,12 +4083,14 @@ class ApiController extends BaseController
             $item->user_id = $user_id;
             $item->rank = $rank;
             $item->team_name = $team_name;
-            $item->contest  = $contest[0]??null ;
-            $item->createdTeam = $ct;  
+            $item->createdTeam = $ct; 
+
+            $contest = CreateContest::find($item->contest_id);
+
             if($item->contest==null){
             }else{
-            //echo $rank.'-'.$match_id.'-'.$user_id.'-'.$team_id.'<br>';
-                $prize_dist =  PrizeDistribution::updateOrCreate(
+              //echo $rank.'-'.$match_id.'-'.$user_id.'-'.$team_id.'<br>';
+            $prize_dist =  PrizeDistribution::updateOrCreate(
                           [
                             'match_id'        => $match_id,
                             'user_id'         => $user_id,
@@ -4145,16 +4112,16 @@ class ApiController extends BaseController
                             'mobile'           => $item->user->phone,
                             'email'            => $item->user->email,
                             'device_id'        => $item->user->device_id,
-                            'contest_name'     => $item->contest->contestType->contest_type??null,
-                            'entry_fees'       => $item->contest->entry_fees??0,
-                            'total_spots'      => $item->contest->total_spots??0,
-                            'filled_spot'      => $item->contest->filled_spot??0,
+                            'contest_name'     => $item->contest->contest_type??null,
+                            'entry_fees'       => $item->contest->entry_fees,
+                            'total_spots'      => $item->contest->total_spots,
+                            'filled_spot'      => $item->contest->filled_spot,
 
-                            'first_prize'        => $item->contest->first_prize??0,
-                            'default_contest_id'=> $item->contest->default_contest_id??0,
+                            'first_prize'        => $item->contest->first_prize,
+                            'default_contest_id'=> $item->contest->default_contest_id,
  
-                            'prize_amount'      => $item->contest->prize_amount??0.0,
-                            'contest_type_id'   => $item->contest->prizeBreakup->contest_type_id??null,
+                            'prize_amount'      => $item->winning_amount,
+                            'contest_type_id'   => $item->contest->contest_type??null,
                             'captain'           => $item->createdTeam->captain,
                             'vice_captain'      => $item->createdTeam->vice_captain,
                             'trump'             => $item->createdTeam->trump,
@@ -4165,8 +4132,98 @@ class ApiController extends BaseController
                         ); 
             }
         });
+         
+        $prize_distributions = PrizeDistribution::where('match_id',$match_id)
+            ->get();
+
+        $match_id = $request->match_id;  
+        $dist_status = $cid = \DB::table('matches')->where('match_id',$match_id)->first();
         
-        return  ['winningAmount'=>'updated'];
+        if($dist_status && $dist_status->current_status==1){
+            return  Redirect::to(route('match','prize=true'));
+        }
+
+        $puser = PrizeDistribution::where('match_id',$match_id)->pluck('user_id')->toArray();
+        $device_id = User::whereIn('id',$puser)->pluck('device_id')->toArray();
+        if(count($device_id)){
+            $data = [
+                'action' => 'notify' ,
+                'title' => 'Prize is distributed for '.$cid->short_title,
+                'message' => 'Check your wallets!'
+            ];
+            $this->sendNotification($device_id,$data);
+            $data['entity_id'] = $match_id;
+            $data['message_type'] = 'notify';
+                
+            \DB::table('user_notifications')->insert($data);
+            
+        }    
+        $prize_distributions->transform(function($item,$key) use($match_id){
+              $cid = \DB::table('matches')
+                    ->where('match_id',$match_id)
+                    ->first();
+
+            //$subject = "You won prize for match - ".$cid->short_title??null;
+            if($item->prize_amount > 0){
+
+                $prize_amount = PrizeDistribution::where('match_id',$item->match_id)
+                           ->where('user_id',$item->user_id)
+                           ->where('contest_id',$item->contest_id)
+                           ->where('created_team_id',$item->created_team_id)
+                           ->where('team_name',$item->team_name)
+                           ->sum('prize_amount');
+
+                $wallet_amount_c =  Wallet::where(
+                            [
+                                'user_id'       => $item->user_id,
+                                'payment_type'  => 4
+                            ])->first();
+                if($wallet_amount_c){
+                  $prize_amount = $wallet_amount_c->amount+$prize_amount;
+                }
+                $wallets = Wallet::updateOrCreate(
+                            [
+                                'user_id'       => $item->user_id,
+                                'payment_type'  => 4
+                            ],
+                            [
+                                'user_id'       =>  $item->user_id,
+                                'validate_user' =>  Hash::make($item->user_id),
+                                'payment_type'  =>  4,
+                                'payment_type_string' => 'prize',
+                                'amount'        =>  $prize_amount,
+                                'prize_amount'  =>  $prize_amount,
+                                'prize_distributed_id' => $item->id
+                            ]
+                        );
+
+                $walletsTransaction = WalletTransaction::updateOrCreate(
+                            [
+                                'user_id'               => $item->user_id,
+                                'prize_distributed_id'  => $item->id
+                            ],
+                            [
+                                'user_id'           =>  $item->user_id, 
+                                'payment_type'      =>  4,
+                                'payment_type_string' => 'prize',
+                                'amount'            =>  $item->prize_amount,
+                                'prize_distributed_id' => $item->id,
+                                'payment_mode'      =>  'sportsfight',
+                                'payment_details'   =>  json_encode($item),
+                                'payment_status'    =>  'success',
+                                'transaction_id'    =>  time().date('ymdhis').$item->user_id
+                            ]
+                        );
+
+               
+                $item->user_id = $item->user_id;
+                $item->email = $item->email;
+            }   
+            return $item;
+        });
+         $match_id = $request->match_id; 
+        \DB::table('matches')->where('match_id',$match_id)->update(['current_status'=>1]);
+        return  Redirect::to(route('match','prize=true'));
     }
     public function checkReaptedRank($rank, $match_id,$contest_id){
         $rank = JoinContest::where('match_id',$match_id)
