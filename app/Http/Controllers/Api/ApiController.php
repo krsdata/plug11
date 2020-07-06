@@ -285,7 +285,7 @@ class ApiController extends BaseController
     }
 
     public function updateUserMatchPoints(Request $request){
-
+        $this->getPlayerPoints($request);
         if($request->match_id){
             $matches = Matches::where('match_id',$request->match_id)
                        // ->whereDate('date_start',\Carbon\Carbon::today())
@@ -295,13 +295,9 @@ class ApiController extends BaseController
             ->whereDate('date_start',\Carbon\Carbon::today())
             ->get();
         }
-        
         $matches->transform(function($item,$key)use($request){
-                
                 $request->merge(['match_id'=>$item->match_id]);  
-
-                $this->getPlayerPoints($request);
-
+                
                 $contests = \DB::table('create_contests')
                     ->where('match_id',$item->match_id)
                     ->where('is_cancelled',0)
@@ -334,28 +330,38 @@ class ApiController extends BaseController
         $dbname     =  env('DB_DATABASE','fantasy');
         // Create connection
         $conn = mysqli_connect($servername, $username, $password, $dbname);
-        $sql = 'SELECT *, FIND_IN_SET( points, (SELECT GROUP_CONCAT( points ORDER BY points DESC ) FROM match_stats  where match_id='.$match_id.' and contest_id='.$contest_id.')) AS rank FROM match_stats where match_id='.$match_id.' and contest_id='.$contest_id.' ORDER BY ranking ASC';
+        $sql = 'SELECT id,match_id,user_id,contest_id,created_team_id,ranks,points, FIND_IN_SET( points, (SELECT GROUP_CONCAT( points ORDER BY points DESC ) FROM join_contests  where match_id='.$match_id.' and contest_id='.$contest_id.')) AS ranks FROM join_contests where match_id='.$match_id.' and contest_id='.$contest_id.' ORDER BY ranks ASC';
+        
         $result = mysqli_query($conn, $sql);
 
         if ($result && mysqli_num_rows($result) > 0) {
             while($row = mysqli_fetch_object($result)) {
-
+               
                 if($row->points>0)
-                {
-                    MatchStat::updateOrCreate(
+                {   /*MatchStat::updateOrCreate(
                     [
                         'match_id'  => $row->match_id,
                         'user_id'   => $row->user_id,
-                        'team_id'   => $row->team_id,
+                        'team_id'   => $row->created_team_id,
                         'contest_id'=> $row->contest_id,
-                        'join_contest_id'=> $row->join_contest_id
+                        'join_contest_id'=> $row->id
                     ],
-                    ['ranking'=>$row->rank]);
+                    ['ranking'=>$row->ranks]);*/
 
-                    $jc = JoinContest::find($row->join_contest_id);
+                    /*$match_stat = MatchStat::where(
+                            'join_contest_id', $row->id
+                        )->first();
+                    $match_stat->ranking    = $row->ranks;
+                    $match_stat->match_id   = $row->match_id;
+                    $match_stat->user_id    = $row->user_id;
+                    $match_stat->team_id    = $row->created_team_id;
+                    $match_stat->contest_id = $row->contest_id;
+                    $match_stat->join_contest_id = $row->id;
+                    $match_stat->save();*/
+                    $jc = JoinContest::find($row->id);
                                         
                     if($jc){
-                        $jc->ranks = $row->rank;
+                        $jc->ranks = $row->ranks;
                         $jc->save();
                     }
                 }
@@ -633,8 +639,7 @@ class ApiController extends BaseController
                             $match_id = $item->match_id;
                             $join_contest_id = $item->id;
                             $user_id = $item->user_id;
-
-
+                            /*
                             $match_stat = MatchStat::firstOrNew(
                                 [
                                     'match_id'  =>  $match_id,
@@ -646,6 +651,7 @@ class ApiController extends BaseController
                             );
                             $match_stat->points = (float)$total_points;
                             $match_stat->save();
+                            */
                             $ct->points = $total_points;
                             $ct->save();
 
@@ -735,7 +741,8 @@ class ApiController extends BaseController
     }
     // update points by LIVE Match
     public function updatePoints(Request $request){
-        sleep(1);
+       // sleep(1);
+        echo date('h:i:s');
         if($request->match_id){
             if($request->status==3){
                 $matches = Matches::where('status',3)
@@ -751,6 +758,7 @@ class ApiController extends BaseController
                 ->whereDate('updated_at',\Carbon\Carbon::today())
                 ->get(); 
         }
+
         $m = [];
         foreach ($matches as $key => $match) {   # code...
 
@@ -822,9 +830,9 @@ class ApiController extends BaseController
             }  
             $team_b->save(); 
         }
+
         if($request->user_id==285 && $m){
             $this->updateUserMatchPoints($request);
-            //echo date('H:i:s A -');
             return $m;
         }else{
             return 'points updated';
