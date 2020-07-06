@@ -908,7 +908,7 @@ class ApiController extends BaseController
         // $join_contests = [];
 
         $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
-        if($okhttp){
+        if(!$okhttp){
             return array(
                     'status' => false,
                     'code' => 201,
@@ -2551,6 +2551,8 @@ class ApiController extends BaseController
         if(count($liveMatches)==0){
             $liveMatches = null;
         }
+
+
         $actiontype = $request->action_type;
 
         $my_match = null;
