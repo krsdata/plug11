@@ -134,9 +134,9 @@ class PaymentController extends BaseController
     {  
         $match_id = $request->match_id;  
         $get_join_contest = JoinContest::where('match_id',  $match_id)
-          ->where('ranks','>',0)  
+          ->where('winning_amount','>',0)  
           ->get();
-        
+
         $get_join_contest->transform(function ($item, $key)   {
             
             $ct = CreateTeam::where('match_id',$item->match_id)
@@ -154,35 +154,6 @@ class PaymentController extends BaseController
             $points     =   $item->points;
             $contest_id =   $item->contest_id;
 
-            $contest    =  CreateContest::with('contestType','defaultContest')
-                          ->with(['prizeBreakup'=>function($q) use($rank,$points,$contest_id  )
-                            {
-                              $q->where('rank_from','>=',$rank);
-                              $q->orwhere('rank_upto','<=',$rank)
-                              ->where('rank_from','>=',$rank); 
-                            }
-                          ]
-                        )
-                          ->where('match_id',$item->match_id)
-                          ->where('id',$item->contest_id) 
-                          ->where('is_cancelled',0) 
-                          ->get() 
-                          ->transform(function ($contestItem, $ckey) use($team_id,$match_id,$user_id,$rank,$team_name,$points, $contest_id)  {
-                            // check wether rank is repeated
-                            
-                            $rank_repeat = $this->checkReaptedRank($rank, $match_id,$contest_id);
-                            //get average amount in case of repeated rank
-                            $rank_amount = $this->getAmountPerRank($rank,$match_id,$contestItem->default_contest_id,$rank_repeat);
-                              
-                             $contestItem->prize_amount = $rank_amount;
-                             $contestItem->team_id = $team_id;
-                             $contestItem->match_id = $match_id;
-                             $contestItem->user_id = $user_id;
-                             $contestItem->rank = $rank;
-                             $contestItem->team_name = $team_name;
-                             return $contestItem;
-                           });
-
            // $item->createdTeam = $ct;
             $item->user = $user;
             $item->team_id = $team_id;
@@ -190,8 +161,9 @@ class PaymentController extends BaseController
             $item->user_id = $user_id;
             $item->rank = $rank;
             $item->team_name = $team_name;
-            $item->contest  = $contest[0]??null ;
             $item->createdTeam = $ct; 
+
+            $contest = CreateContest::find($item->contest_id);
 
             if($item->contest==null){
             }else{
@@ -218,7 +190,7 @@ class PaymentController extends BaseController
                             'mobile'           => $item->user->phone,
                             'email'            => $item->user->email,
                             'device_id'        => $item->user->device_id,
-                            'contest_name'     => $item->contest->contestType->contest_type??null,
+                            'contest_name'     => $item->contest->contest_type??null,
                             'entry_fees'       => $item->contest->entry_fees,
                             'total_spots'      => $item->contest->total_spots,
                             'filled_spot'      => $item->contest->filled_spot,
@@ -226,8 +198,8 @@ class PaymentController extends BaseController
                             'first_prize'        => $item->contest->first_prize,
                             'default_contest_id'=> $item->contest->default_contest_id,
  
-                            'prize_amount'      => $item->contest->prize_amount,
-                            'contest_type_id'   => $item->contest->prizeBreakup->contest_type_id??null,
+                            'prize_amount'      => $item->winning_amount,
+                            'contest_type_id'   => $item->contest->contest_type??null,
                             'captain'           => $item->createdTeam->captain,
                             'vice_captain'      => $item->createdTeam->vice_captain,
                             'trump'             => $item->createdTeam->trump,
@@ -250,13 +222,9 @@ class PaymentController extends BaseController
 
         $prize_distributions = PrizeDistribution::where('match_id',$match_id)
             ->get();
-        $cid = \DB::table('matches')
-                    ->where('match_id',$match_id)
-                    ->select('match_id','title')
-                    ->first();
 
         $match_id = $request->match_id;  
-        $dist_status = \DB::table('matches')->where('match_id',$match_id)->first();
+        $dist_status = $cid = \DB::table('matches')->where('match_id',$match_id)->first();
         
         if($dist_status && $dist_status->current_status==1){
             return  Redirect::to(route('match','prize=true'));
@@ -267,8 +235,8 @@ class PaymentController extends BaseController
         if(count($device_id)){
             $data = [
                 'action' => 'notify' ,
-                'title' => 'Prize is distributed for '.$cid->title,
-                'message' => 'Check your wallets.Prize is distributed for your team'
+                'title' => 'Prize is distributed for '.$cid->short_title,
+                'message' => 'Check your wallets!'
             ];
             $this->sendNotification($device_id,$data);
             $data['entity_id'] = $match_id;
@@ -282,8 +250,8 @@ class PaymentController extends BaseController
                     ->where('match_id',$match_id)
                     ->first();
 
-            $subject = "You won prize for match - ".$cid->title??null;
-            if((int)$item->prize_amount > 0){
+            //$subject = "You won prize for match - ".$cid->short_title??null;
+            if($item->prize_amount > 0){
 
                 $prize_amount = PrizeDistribution::where('match_id',$item->match_id)
                            ->where('user_id',$item->user_id)
@@ -292,7 +260,6 @@ class PaymentController extends BaseController
                            ->where('team_name',$item->team_name)
                            ->sum('prize_amount');
 
-                
                 $wallet_amount_c =  Wallet::where(
                             [
                                 'user_id'       => $item->user_id,
@@ -301,7 +268,6 @@ class PaymentController extends BaseController
                 if($wallet_amount_c){
                   $prize_amount = $wallet_amount_c->amount+$prize_amount;
                 }
-                //dd($prize_amount,$item->user_id);
                 $wallets = Wallet::updateOrCreate(
                             [
                                 'user_id'       => $item->user_id,
@@ -332,21 +298,11 @@ class PaymentController extends BaseController
                                 'payment_mode'      =>  'sportsfight',
                                 'payment_details'   =>  json_encode($item),
                                 'payment_status'    =>  'success',
-                                'transaction_id'    =>  time().'-'.$item->user_id
+                                'transaction_id'    =>  time().date('ymdhis').$item->user_id
                             ]
                         );
 
-                $device_id = $item->device_id;
-               /* $email_content = [ //$item->email
-                        'receipent_email'=> $item->email,
-                        'subject'=>$subject,
-                        'greeting'=> 'SportsFight',
-                        'first_name'=> ucfirst($item->name),
-                        'content' => 'You have won the prize of Rs.<b>'.$item->prize_amount.'</b> for the <b>'.$cid->title.'</b> match.',
-                        'rank' => $item->rank
-                        ];
-                $helper = new Helper;
-                $helper->sendNotificationMail($email_content,'prize');*/
+               
                 $item->user_id = $item->user_id;
                 $item->email = $item->email;
             }   
