@@ -3613,7 +3613,7 @@ class ApiController extends BaseController
             $matchcontests = [];
             foreach ($contest as $key => $result) {
                 if($version_code ==null && $result->bonus_contest){
-                    continue;
+                   // continue;
                 }
                 $myjoinedContest = $this->myJoinedTeam($request->match_id,$request->user_id,$result->id);
                 $data2['isCancelled'] =   $result->is_cancelled?true:false;
@@ -5110,7 +5110,7 @@ class ApiController extends BaseController
     public function automateCreateContest(){
         //return false;
         $contest = CreateContest::whereColumn('total_spots','filled_spot')
-           // ->where('total_spots','>',50)
+            ->where('total_spots','<=',3)
             ->where('is_cloned','!=',1)
             ->where('entry_fees','>',0)
         //    ->where('total_spots','!=',30)
