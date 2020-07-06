@@ -145,7 +145,7 @@ class TransactionHistoryController extends Controller {
             $transaction = $transaction->whereHas('user')
                         ->orderBy('id','desc')
                         ->where('payment_type',3)
-                        ->whereDate('created_at',\Carbon\Carbon::today())
+                       // ->whereDate('created_at',\Carbon\Carbon::today())
                         ->Paginate(50);
                         
             $transaction->transform(function($item, $Key){
