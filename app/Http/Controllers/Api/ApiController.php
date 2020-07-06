@@ -908,7 +908,7 @@ class ApiController extends BaseController
         // $join_contests = [];
 
         $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
-        if(!$okhttp){
+        if($okhttp){
             return array(
                     'status' => false,
                     'code' => 201,
@@ -1063,7 +1063,7 @@ class ApiController extends BaseController
                 'code' => 200,
                 'message' => 'leaderBoard',
                 'total_team' =>  count($lb),
-                'leaderBoard' =>$lb
+                'leaderBoard' =>mb_convert_encoding($lb,'UTF-8', 'UTF-8')
 
             ];
         }else{
