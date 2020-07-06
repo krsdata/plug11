@@ -257,14 +257,10 @@ class ApiController extends BaseController
                         }else{
                             $prize = $item->entry_fees;
                         }
-                        
                     }
-
                     \DB::table('prize_breakups')->where('id',$value->id)
                         ->update(['prize_amount'=>$prize]);
                 }
-
-
                 $rank[] = [
                     'range' => $rank_rang,
                     'price' => $prize
@@ -336,9 +332,9 @@ class ApiController extends BaseController
 
         if ($result && mysqli_num_rows($result) > 0) {
             while($row = mysqli_fetch_object($result)) {
-               
                 if($row->points>0)
-                {   /*MatchStat::updateOrCreate(
+                {           
+                    /*MatchStat::updateOrCreate(
                     [
                         'match_id'  => $row->match_id,
                         'user_id'   => $row->user_id,
@@ -346,8 +342,8 @@ class ApiController extends BaseController
                         'contest_id'=> $row->contest_id,
                         'join_contest_id'=> $row->id
                     ],
-                    ['ranking'=>$row->ranks]);*/
-
+                    ['ranking'=>$row->ranks]);
+                    */
                     /*$match_stat = MatchStat::where(
                             'join_contest_id', $row->id
                         )->first();
@@ -358,8 +354,8 @@ class ApiController extends BaseController
                     $match_stat->contest_id = $row->contest_id;
                     $match_stat->join_contest_id = $row->id;
                     $match_stat->save();*/
+
                     $jc = JoinContest::find($row->id);
-                                        
                     if($jc){
                         $jc->ranks = $row->ranks;
                         $jc->save();
@@ -742,7 +738,6 @@ class ApiController extends BaseController
     // update points by LIVE Match
     public function updatePoints(Request $request){
        // sleep(1);
-        echo date('h:i:s');
         if($request->match_id){
             if($request->status==3){
                 $matches = Matches::where('status',3)
@@ -827,7 +822,7 @@ class ApiController extends BaseController
                 foreach ($points_json->response->teamb as $key => $value) {
                     $team_b->$key = $value;
                 }
-            }  
+            }
             $team_b->save(); 
         }
 
@@ -4433,7 +4428,10 @@ class ApiController extends BaseController
             }
             $amt[] = $sum_amt;
         } 
-        $repeat_rank = $repeat_rank??1;
+        if($repeat_rank==0){
+           $repeat_rank  =1;  
+        }
+
         $prize_amount = array_sum($amt)/$repeat_rank;
         
         return $prize_amount;
