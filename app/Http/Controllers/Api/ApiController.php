@@ -872,6 +872,16 @@ class ApiController extends BaseController
     */
     public function leaderBoard(Request $request){
         // $join_contests = [];
+
+        $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
+        if(!$okhttp){
+            return array(
+                    'status' => false,
+                    'code' => 201,
+                    'message' => 'unauthorise access!'
+                );
+        }
+
         $match_id = $request->match_id;
         $join_contests = JoinContest::where('match_id',$request->get('match_id'))
             ->where('contest_id',$request->get('contest_id'))
@@ -911,7 +921,7 @@ class ApiController extends BaseController
                 
             });
 
-        $point = (int)($leader_board1[0]->points??null);
+        $point = ($leader_board1[0]->points??null);
 
         $leader_board2 = JoinContest::whereHas('user')
             ->where('match_id',$request->match_id)
@@ -952,10 +962,10 @@ class ApiController extends BaseController
             if(!isset($value->user)){
                 continue;
             }
-
+          //  $user = 
             $data['match_id'] = $value->match_id;
             $data['team_id'] = $value->created_team_id;
-            $data['user_id'] = $value->user_id;
+            $data['user_id'] = $value->user->user_name??$value->user->id;
             $data['team'] = $value->team_count;
             $data['point'] = $value->points;
             $data['rank'] = $value->ranks;
@@ -964,7 +974,6 @@ class ApiController extends BaseController
 
             $user_data =  $value->user->name;
             $fn = explode(" ",$user_data);
-
 
             $data['user'] = [
                 'first_name'    => $value->user->first_name,
@@ -985,16 +994,14 @@ class ApiController extends BaseController
 
             $data['match_id'] = $value->match_id;
             $data['team_id'] = $value->created_team_id;
-            $data['user_id'] = $value->user_id;
+            $data['user_id'] = $value->user->user_name??$value->user->id;
             $data['team'] = $value->team_count;
             $data['point'] = $value->points;
             $data['rank'] = $value->ranks;
             $data['prize_amount'] =  $value->prize_amount??$value->winning_amount;
             $data['winning_amount'] = $value->winning_amount;
             $user_data =  $value->user->name;
-            $fn = explode(" ",$user_data);
-
-            
+            $fn = explode(" ",$user_data);    
 
             $data['user'] = [
                 'first_name'    => reset($fn),
@@ -1009,11 +1016,8 @@ class ApiController extends BaseController
         }
         $lb = $lb??null;
 
-
         $match_info = $this->setMatchStatusTime($match_id);
-          //  dd($match_info);
-            
-        
+      //return($lb);
         if($lb){
             return [
                 'system_time'=>time(),
@@ -1023,7 +1027,7 @@ class ApiController extends BaseController
                 'code' => 200,
                 'message' => 'leaderBoard',
                 'total_team' =>  count($lb),
-                'leaderBoard' =>$lb
+                'leaderBoard' =>mb_convert_encoding($lb, 'UTF-8', 'UTF-8')
 
             ];
         }else{
