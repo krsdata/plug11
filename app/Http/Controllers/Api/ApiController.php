@@ -1035,9 +1035,7 @@ class ApiController extends BaseController
             $data['prize_amount'] =  $value->prize_amount??$value->winning_amount;
             $data['winning_amount'] = $value->winning_amount;
             $user_data =  $value->user->name;
-            $fn = explode(" ",$user_data);
-
-            
+            $fn = explode(" ",$user_data);    
 
             $data['user'] = [
                 'first_name'    => reset($fn),
@@ -1053,7 +1051,7 @@ class ApiController extends BaseController
         $lb = $lb??null;
 
         $match_info = $this->setMatchStatusTime($match_id);
-          //  dd($match_info);
+      //return($lb);
         if($lb){
             return [
                 'system_time'=>time(),
@@ -1063,7 +1061,7 @@ class ApiController extends BaseController
                 'code' => 200,
                 'message' => 'leaderBoard',
                 'total_team' =>  count($lb),
-                'leaderBoard' =>$lb
+                'leaderBoard' =>mb_convert_encoding($lb, 'UTF-8', 'UTF-8')
 
             ];
         }else{
