@@ -146,7 +146,7 @@ class TransactionHistoryController extends Controller {
                         ->orderBy('id','desc')
                         ->where('payment_type',3)
                        // ->whereDate('created_at',\Carbon\Carbon::today())
-                        ->Paginate(50);
+                        ->Paginate(30);
                         
             $transaction->transform(function($item, $Key){
                             $user = User::find($item->user_id); 
@@ -157,9 +157,27 @@ class TransactionHistoryController extends Controller {
                             return $item;  
                         }); 
         }
-         
-        return view('packages::payments.paymentHistory', compact('transaction', 'page_title', 'page_action','msg'));
-   
+
+        $deposit = \DB::table('wallet_transactions')
+                    ->where('payment_type',3)
+                    ->sum('amount');
+
+        $week = \DB::table('wallet_transactions')
+                ->whereBetween('created_at', [\Carbon\Carbon::now()->startOfWeek(), \Carbon\Carbon::now()->endOfWeek()])
+                ->where('payment_type',3)
+                ->sum('amount');
+
+        $month = \DB::table('wallet_transactions')
+                    ->whereMonth('created_at',date('m'))
+                    ->where('payment_type',3)
+                    ->sum('amount');
+        $today = \DB::table('wallet_transactions')
+                    ->whereDate('created_at',date('d'))
+                    ->where('payment_type',3)
+                    ->sum('amount');
+        
+        return view('packages::payments.paymentHistory', compact('transaction', 'page_title', 'page_action','msg','deposit','week','month','today'));
+        
     }
 
     /*

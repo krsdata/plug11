@@ -29,7 +29,20 @@
                                         <i class="icon-settings font-red"></i>
                                         <span class="caption-subject font-red sbold uppercase">Payments History</span>
                                     </div>
-                                      
+
+                                    <div class="col-md-2 pull-right">
+                                                <input type="submit" value="Today  : {{round($today,2)}}" class="btn btn-info form-control">
+                                            </div>
+                                          <div class="col-md-2 pull-right">
+                                                <input type="submit" value="Monthly  : {{round($month,2)}}" class="btn btn-info form-control">
+                                            </div>
+                                            <div class="col-md-2 pull-right">
+                                                <input type="submit" value="Weekly : {{round($week,2)}}" class="btn btn-info form-control">
+                                            </div>
+                                            <div class="col-md-3 pull-right">
+                                                <input type="submit" value="Total Deposit : {{round($deposit,2)}}" class="btn btn-info form-control">
+                                            </div>
+
                                      
                                 </div>
                                   
