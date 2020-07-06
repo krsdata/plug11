@@ -2292,7 +2292,7 @@ class ApiController extends BaseController
     public function getMatchHistory(Request $request){
         //$status =  $request->status;
         $user_id = $request->user_id;
-        if($user_id){
+        if(!$user_id){
             return  [
                 'system_time'=>time(),
                 'status'=>false,
@@ -2300,7 +2300,6 @@ class ApiController extends BaseController
                 'message'=>'User not found'
             ];
         }
-
         $status = '(
                         CASE
                         WHEN status_str = "Scheduled" THEN "Upcoming"
@@ -2552,8 +2551,6 @@ class ApiController extends BaseController
         if(count($liveMatches)==0){
             $liveMatches = null;
         }
-
-
         $actiontype = $request->action_type;
 
         $my_match = null;
