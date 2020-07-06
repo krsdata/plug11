@@ -465,7 +465,7 @@ class ApiController extends BaseController
             $trump          =   $team_id->trump;
 
             $player_id = json_decode($team_id->teams,true);
-           // dd($team_id->match_id);    
+            
             $mpObject = MatchPoint::where('match_id',$team_id->match_id)
                 ->whereIn('pid',$pids)
                 ->select('match_id','pid','name','role','rating','point','starting11')->get();
@@ -753,7 +753,7 @@ class ApiController extends BaseController
                 ->whereDate('updated_at',\Carbon\Carbon::today())
                 ->get(); 
         }
-
+        dd($matches);
         $m = [];
         foreach ($matches as $key => $match) {   # code...
 
@@ -3881,7 +3881,7 @@ class ApiController extends BaseController
             $myArr['withdrawal_amount']    = 0;
             $myArr['is_account_verified']    = $this->isAccountVerified($request);
             $myArr['refferal_friends_count']    = $this->getRefferalsCounts($request);
-            $myArr['user_id']   = $user_id->user_name?null;
+            $myArr['user_id']   = $user_id->user_name??null;
         }
         $wallet = Wallet::where('user_id',$request->user_id)
                     ->select('user_id')
@@ -3970,7 +3970,6 @@ class ApiController extends BaseController
                         $item->user_id = $user->user_name;
                         return $item;
                     });
-        //dd($wallet);
         return response()->json(
             [
                 "status"=>true,
@@ -4166,7 +4165,6 @@ class ApiController extends BaseController
                         $txt->payment_details =  json_encode($request->all());
                         $txt->payment_type =  8;
                         $txt->payment_type_string =  'Deposit Bonus'; 
-                        //dd($transaction); 
                         $txt->save();
 
                         $myBlanceBonus = Wallet::where('user_id',$wallet->user_id)->where('payment_type',1)->first();
@@ -4483,7 +4481,7 @@ class ApiController extends BaseController
             ->first();
             $match_id = $request->match_id;
             $match_info = $this->setMatchStatusTime($match_id);
-          //  dd($match_info);
+            
             return response()->json(
             [
                 'session_expired'=>$this->is_session_expire,
@@ -5247,7 +5245,6 @@ class ApiController extends BaseController
                             //time diff
                             $td = round((($t1 - $t2)/60),2);    
 
-                           // dd($item->match_id);
                             $lineup = \DB::table('team_a_squads')->where('match_id',$item->match_id)
                                 ->where('playing11',"true")->count();
                             
@@ -5309,7 +5306,7 @@ class ApiController extends BaseController
                                            
                                     $total_winning_prize = $item->total_winning_prize;
                                     $total_amount_recvd = $item->filled_spot*$item->entry_fees;
-                                   // dd($item->entry_fees);
+                                    
                                     if($item->entry_fees!=0 && $total_winning_prize > $total_amount_recvd && $item->total_winning_prize!=0
                                         ){
                                         //&& $item->entry_fees!=5
