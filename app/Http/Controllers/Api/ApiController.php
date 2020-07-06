@@ -1157,7 +1157,6 @@ class ApiController extends BaseController
                     $team_role[$value->playing_role][] = $value->pid;
                 }
             }
-            //dd($team_role);
             foreach ($team_role as $key => $value) {
                 $k[$key] = $value;
             }
@@ -1170,7 +1169,6 @@ class ApiController extends BaseController
             $k['c'] = ['pid'=> (int)$captain,'name' => $c[$captain]];
             $k['vc'] = ['pid'=>(int)$vice_captain,'name' => $c[$vice_captain]];
             $k['t'] = ['pid'=>(int)$trump,'name' => $c[$trump]];
-
 
             $t_a = TeamA::WhereIn('team_id',$team_id)
                 ->where('match_id',$result->match_id)
@@ -4221,6 +4219,7 @@ class ApiController extends BaseController
     {  
         $match_id = $request->match_id;  
         $get_join_contest = JoinContest::where('match_id',  $match_id)
+          ->where('winning_amount','>',0)  
           ->get();
 
         $get_join_contest->transform(function ($item, $key)   {
