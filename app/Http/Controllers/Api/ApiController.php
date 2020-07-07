@@ -3964,7 +3964,7 @@ class ApiController extends BaseController
                         
                         $item->document_verified = $doc_status;
                         $item->paytm_verified = $payment_status;
-                        $item->wallet_amount = sprintf('%0.2f', $wallet_amount);
+                        $item->wallet_amount =  round($wallet_amount,2);//sprintf('%0.2f', $wallet_amount);
                         $withdrawal_amount = \DB::table('wallet_transactions')
                                             ->where('payment_type',5)
                                             ->sum('amount');
@@ -4062,6 +4062,8 @@ class ApiController extends BaseController
         try{
             $this->paytmCallBack($request);
             }catch(\Exception $e){
+             $request->merge(['payment_status'=>'failed']);   
+             $this->paytmCallBack($request);   
         }
 
         $myArr = [];
@@ -5132,7 +5134,7 @@ class ApiController extends BaseController
         //->where('entry_fees','>',0)
         $match_id = $contest->pluck('match_id')->toArray();
         $match = Matches::whereIn('match_id',$match_id)->get(['match_id']);
-        
+
         $match->transform(function($item,$key)use($contest){
             $contest_copy = $contest->where('match_id',$item->match_id)->first();
 
@@ -5635,6 +5637,13 @@ class ApiController extends BaseController
     public function paytmCallBack(Request $request)
     {
         $data['paytm'] = json_encode($request->all());
+        $data['user_id'] =   $request->user_id;
+        $data['email'] =   $request->email;
+        $data['deposit_amount'] =   $request->deposit_amount;
+        $data['transaction_id'] =   $request->transaction_id;
+        $data['payment_mode']   =   $request->payment_mode;
+        $data['payment_status']   =   $request->payment_status;
+            
         \DB::table('paytm')->insert($data);
     }
 
