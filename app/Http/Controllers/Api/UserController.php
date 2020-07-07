@@ -664,6 +664,7 @@ class UserController extends BaseController
             $user->city = $request->city;
             $user->dateOfBirth = $request->dateOfBirth;
             $user->gender = $request->gender;
+            $user->name = $request->name;
             if($request->team_name){
                 $user->team_name = $request->team_name;    
             }
@@ -1134,7 +1135,8 @@ class UserController extends BaseController
         $data['apk_url'] =  $apk_updates->url??null;
 
         $data['pmid']    =  env('paytm_mid','tpJmKe81092739039978');
-        $data['call_url']   =  'https://securegw.paytm.in/theia/paytmCallback?ORDER_ID=';
+        /*$data['call_url']   =  'https://securegw.paytm.in/theia/paytmCallback?ORDER_ID=';*/
+        $data['call_url']   =  'https://sportsfight.in/api/v2/paytmCallback?ORDER_ID=';
 
         if($data){
             $server = [
