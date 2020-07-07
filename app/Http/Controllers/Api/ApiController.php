@@ -57,13 +57,14 @@ class ApiController extends BaseController
         }
     }
 
-    public function statusCheck()
+    public function statusCheck(Request $request)
     {
+        $order_id = $request->order??'20200708111212800110168263334782100';
         $status = PaytmWallet::with('status');
-        $status->prepare(['order' => '20200707111212800110168387435245435']);
+        $status->prepare(['order' => $order_id]);
         $s = $status->check();
 
-        //dd($s);  
+        dd($s);  
     }
 
     /**
