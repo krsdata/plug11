@@ -87,27 +87,11 @@ class ApiController extends BaseController
     {
         $transaction = PaytmWallet::with('receive');
  
-        $response = $transaction->response();
- 
-        if($transaction->isSuccessful()){
-            
-            $data['user_id'] =   285;
-            $data['email'] =   'kroy';
-            $data['payment_status']   =  'success';
-            
-        \DB::table('paytm')->insert($data);     
- 
-        }else if($transaction->isFailed()){
-            $data['user_id'] =   285;
-            $data['email'] =   'kroy';
-            $data['payment_status']   =  'Failed';
-            \DB::table('paytm')->insert($data);
-        }
-
-        $data['user_id'] =   285;
-            $data['email'] =   'kroy';
-            $data['payment_status']   =  'success';
-            
+        $transaction = PaytmWallet::with('receive');
+        
+        $response = $transaction->response(); // To get raw response as array
+        
+        $data['paytm'] =  json_decode($response);   
         \DB::table('paytm')->insert($data); 
     }  
     
