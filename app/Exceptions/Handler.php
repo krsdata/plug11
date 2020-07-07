@@ -70,7 +70,9 @@ class Handler extends ExceptionHandler
      * @return \Illuminate\Http\Response
      */
     public function render($request, Exception $exception)
-    {   if($request->is('admin/*')){
+    {   
+      //dd(url($request->getrequestUri()));
+      if($request->is('admin/*')){
             if ($exception instanceof ViewException) {
                 $exception = $exception->getMessage();
                 echo $exception;
@@ -83,7 +85,7 @@ class Handler extends ExceptionHandler
         }
         $helper = new Helper;
         $send_status = $helper->notifyErrorToAdmin('⚠️ Alert ⛔⚠️😱',
-          $exception->getMessage().'.'.$exception->getfile().'. Line number :'.$exception->getline());
+          $exception->getMessage().'.'.$exception->getfile().'. Line number :'.url($request->getrequestUri()));
         
         $headers = getallheaders(); 
         $path_info_url = $request->getpathInfo();

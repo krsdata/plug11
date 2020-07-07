@@ -2713,7 +2713,7 @@ class ApiController extends BaseController
             ->orderBy('timestamp_start','ASC')
             ->whereMonth('date_start',date('m'))
             ->where('timestamp_start','>=' , time())
-            ->limit(15)
+            ->limit(10)
             ->get()->transform(function($item,$key){
                     $league_title = \DB::table('competitions')->where('id',$item->competition_id)->first()->title??null;
 
@@ -3857,14 +3857,28 @@ class ApiController extends BaseController
     public function getWallet(Request $request){
         $myArr = array();
         $user_id = User::find($request->user_id);
+
+        if($request->user_id==null){
+            return response()->json(
+                [
+                    "status"=>false,
+                    "code"=>201,
+                    "message"=>'Wallet not available'
+                ]
+            );   
+        }        
         
         $wallet = Wallet::where('user_id',$request->user_id)->first();
+       // dd($wallet);
         if($wallet){
+            $wallet = User::find($wallet->user_id);
+
             $myArr['wallet_amount']   = $wallet->usable_amount;
             $myArr['bonus_amount']    = $wallet->bonus_amount;
             $myArr['is_account_verified']    = $this->isAccountVerified($request);
             $myArr['refferal_friends_count']    = $this->getRefferalsCounts($request);
-            $myArr['user_id']         =  $user_id->user_name??null;
+            $myArr['user_id']        =  $wallet->user_name??null;
+            
             $myArr['withdrawal_amount']    = 0;
         }else{
             $myArr['wallet_amount']   = 0;
@@ -4216,7 +4230,7 @@ class ApiController extends BaseController
         $get_join_contest = JoinContest::where('match_id',  $match_id)
           ->where('cancel_contest',0)  
           ->get();
-          
+
         $get_join_contest->transform(function ($item, $key)   {
             
             $ct = CreateTeam::where('match_id',$item->match_id)
