@@ -73,6 +73,12 @@ class DefaultContestController extends Controller {
                         if (!empty($search)) {
                             $query->Where('contest_type', 'LIKE', "%$search%");
                         }
+                        if (!empty($search)) {
+                            $query->orWhere('entry_fees',"%$search%");
+                        }
+                        if (!empty($search)) {
+                            $query->orWhere('total_spots',"%$search%");
+                        }
                         
                     })->Paginate($this->record_per_page);
         } else {
