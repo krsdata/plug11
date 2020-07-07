@@ -1615,9 +1615,11 @@ class UserController extends BaseController
     /*get profile*/
     public function getProfile(Request $request){
 
-        $user = User::select('id','name','email','referal_code','profile_image','mobile_number','birthday','status','city','gender','dateOfBirth','team_name')->find($request->user_id);
-        if($user){
+        $user = User::select('id','name','email','referal_code','profile_image','mobile_number','birthday','status','city','gender','dateOfBirth','team_name','user_name')
+        ->find($request->user_id);
 
+        if($user){
+            $user->user_id = $user->user_name;
             $status = true;
             $code = 200;
             $message = "Record found";
@@ -1629,15 +1631,6 @@ class UserController extends BaseController
             $message = "Record not found";
             $data = null;
         }
-
-        return response()->json(
-            [
-                "status"    =>  $status,
-                'code'      =>  $code,
-                "message"   =>  $message,
-                'data'      =>  $data
-            ]
-        );
     }
 
     public function sendSMS($mobileNumber=null,$message=null)
