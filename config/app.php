@@ -171,6 +171,7 @@ return [
 
          
         Modules\Admin\AdminServiceProvider::class ,
+        Anand\LaravelPaytmWallet\PaytmWalletServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -235,6 +236,7 @@ return [
         'Input' => Illuminate\Support\Facades\Request::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class
+        'PaytmWallet' => Anand\LaravelPaytmWallet\Facades\PaytmWallet::class
 
     ],
 

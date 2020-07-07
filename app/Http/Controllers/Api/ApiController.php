@@ -36,6 +36,7 @@ use App\Models\MatchStat;
 use App\Models\ReferralCode;
 use File;
 use Ixudra\Curl\Facades\Curl;
+use PaytmWallet;
 
 class ApiController extends BaseController
 {
@@ -55,6 +56,43 @@ class ApiController extends BaseController
             $request->headers->set('Content-Type', 'application/json');
         }
     }
+
+    public function statusCheck()
+    {
+        $status = PaytmWallet::with('status');
+        $status->prepare(['order' => '20200707111212800110168387435245435']);
+        $s = $status->check();
+
+        //dd($s);  
+    }
+
+    /**
+     * Obtain the payment information.
+     *
+     * @return Object
+     */
+    public function paymentCallback(Request $request )
+    {
+        $transaction = PaytmWallet::with('receive');
+ 
+        $response = $transaction->response();
+ 
+        if($transaction->isSuccessful()){
+            
+            $data['user_id'] =   285;
+            $data['email'] =   'kroy';
+            $data['payment_status']   =  'success';
+            
+        \DB::table('paytm')->insert($data);     
+ 
+        }else if($transaction->isFailed()){
+            $data['user_id'] =   285;
+            $data['email'] =   'kroy';
+            $data['payment_status']   =  'Failed';
+            \DB::table('paytm')->insert($data);
+        }
+    }  
+    
 
     public function contestFillNotify(Request $request)
     {
