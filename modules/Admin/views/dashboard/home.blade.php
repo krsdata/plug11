@@ -349,6 +349,30 @@
                             </div>
                         </div>
 
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class="dashboard-stat2 bordered">
+                                <div class="display">
+                                    <div class="number">
+                                        <h3 class="font-blue-sharp">
+                                            <span data-counter="counterup" data-value="567">{{$total_user}} INR  </span>
+                                        </h3>
+                                        <small> Today Live User </small>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fa fa-folder-open-o"></i>
+                                    </div>
+                                </div>
+                                <div class="progress-info">
+                                    <div class="progress">
+                                        <span style="width: {{$total_user}}%;" class="progress-bar progress-bar-success blue-sharp">
+                                            <span class="sr-only">{{$total_user}}% grow</span>
+                                        </span>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
 
 
                    
