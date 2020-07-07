@@ -63,6 +63,8 @@
                                             <tr>
                                                  <th>Sno.</th>
                                                 <th> Contest type </th>
+                                                <th> Cancellation </th>
+                                                <th> Is Free </th>
                                                 <th> Entry fees </th>
                                                 <th> Total spots </th>
                                                 <th> First prize </th>
@@ -80,7 +82,12 @@
                                                 <td> {{$contest_type[$result->contest_type]}}
                                                     {!!$result->match_id?'<span class="required" aria-required="true"> * </span>':''!!}
                                                  </td>
-                                                    
+                                                  <th>  {{$result->cancellation?'Yes':'No'}} </th>
+
+                                                <th>  
+                                                    {{$result->is_free?'Yes':'No'}}
+                                                </th>    
+                                                
                                                 <td> {{$result->entry_fees}} </td>
                                                 <td> {{$result->total_spots}} </td>
                                                 <td> {{$result->first_prize}} </td>
