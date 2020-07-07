@@ -203,11 +203,8 @@ class UsersController extends Controller {
 
     public function update(Request $request, $id) {
         $user = User::find($id);
-        //$user->fill(Input::all());
-        if($request->get('password'))
-        {
-            $user->password = Hash::make($request->get('password'));
-        }
+        $user->fill(Input::all());
+        
         $action = $request->get('submit');
         $user->role_type= $request->get('role_type');
         $user->save(); 
@@ -234,12 +231,7 @@ class UsersController extends Controller {
                  
             }
         } 
-
-        if($request->get('role')==3){
-            $Redirect = 'clientuser';
-        }else{
-            $Redirect = 'user';
-        }
+        $Redirect = 'user';
        
         return Redirect::to(route($Redirect))
                         ->with('flash_alert_notice', 'Record successfully updated.');
