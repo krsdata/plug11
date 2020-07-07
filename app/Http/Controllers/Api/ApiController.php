@@ -4559,7 +4559,7 @@ class ApiController extends BaseController
             $data = [
                 "success"=>"1",
                 "msg"=>"Image uplaoded successfully",
-                "imageurl"=> 'https://sportsfight.in/'.'storage/uploads/'. $photo_name
+                "imageurl"=> 'https://api.sportsfight.in/storage/uploads/'. $photo_name
             ];
 
         }
