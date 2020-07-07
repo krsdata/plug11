@@ -5131,8 +5131,8 @@ class ApiController extends BaseController
             ->get();
         //->where('entry_fees','>',0)
         $match_id = $contest->pluck('match_id')->toArray();
-        $match = Matches::whereIn('match_id',$match_id)->where('status',3)->get(['match_id']);
-
+        $match = Matches::whereIn('match_id',$match_id)->get(['match_id']);
+        
         $match->transform(function($item,$key)use($contest){
             $contest_copy = $contest->where('match_id',$item->match_id)->first();
 
