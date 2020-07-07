@@ -91,9 +91,14 @@ class ApiController extends BaseController
             $data['payment_status']   =  'Failed';
             \DB::table('paytm')->insert($data);
         }
+
+        $data['user_id'] =   285;
+            $data['email'] =   'kroy';
+            $data['payment_status']   =  'success';
+            
+        \DB::table('paytm')->insert($data); 
     }  
     
-
     public function contestFillNotify(Request $request)
     {
         $device_id = User::whereNotNull('device_id')->pluck('device_id')->toArray();
