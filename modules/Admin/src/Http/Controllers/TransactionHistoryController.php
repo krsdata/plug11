@@ -172,7 +172,7 @@ class TransactionHistoryController extends Controller {
                     ->where('payment_type',3)
                     ->sum('amount');
         $today = \DB::table('wallet_transactions')
-                    ->whereDate('created_at',date('d'))
+                    ->whereDate('created_at',\Carbon\Carbon::today())
                     ->where('payment_type',3)
                     ->sum('amount');
         
