@@ -356,7 +356,7 @@
                                         <h3 class="font-blue-sharp">
                                             <span data-counter="counterup" data-value="567">{{$total_user}}   </span>
                                         </h3>
-                                        <small> Today Live User </small>
+                                        <small> Today Active User </small>
                                     </div>
                                     <div class="icon">
                                         <i class="fa fa-folder-open-o"></i>
