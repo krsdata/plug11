@@ -63,8 +63,9 @@ class ApiController extends BaseController
         $status = PaytmWallet::with('status');
         $status->prepare(['order' => $order_id]);
         $s = $status->check();
+        $response = $status->response() // To get raw response as array
 
-        dd($s);  
+        dd($response);  
     }
 
     /**
