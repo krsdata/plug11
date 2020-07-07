@@ -66,10 +66,13 @@ class ApiController extends BaseController
         $response = $status->response(); // To get raw response as array
 
         if($status->isSuccessful()){
+            $response['SF_STATUS'] = 1;
            return $response;
         }else if($status->isFailed()){
+            $response['SF_STATUS'] = 2;
             return $response;
         }else if($status->isOpen()){
+            $response['SF_STATUS'] = 3;
           return $response;
         }
         
