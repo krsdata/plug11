@@ -4127,7 +4127,7 @@ class ApiController extends BaseController
 
                     $data['method']     = 'deposit';
                     $data['user_id']    = $request->user_id;
-                    $data['amount']     = $deposit_amount;
+                    $data['amount']     = $request->deposit_amount;
                     $data['content']    = json_encode($request->all());
 
                     \DB::table('payment_logs')->insert($data);
