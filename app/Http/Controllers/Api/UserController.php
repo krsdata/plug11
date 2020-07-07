@@ -754,8 +754,8 @@ class UserController extends BaseController
 
             $wallet_trns['user_id']         =  $refer_by->id??null;
             $wallet_trns['amount']          =  $this->referral_bonus;
-            $wallet_trns['payment_type']    =  2;
-            $wallet_trns['payment_type_string'] = "Referral";
+            $wallet_trns['payment_type']    =  1;
+            $wallet_trns['payment_type_string'] = "Referral Bonus";
             $wallet_trns['transaction_id']  = time().'-'.$refer_by->id??null;
             $wallet_trns['payment_mode']    = "sportsfight";
             $wallet_trns['payment_details'] = json_encode($wallet_trns);
@@ -767,14 +767,14 @@ class UserController extends BaseController
 
             $wallet = Wallet::firstOrNew(
                 [
-                    'payment_type' => 2,
+                    'payment_type' => 1,
                     'user_id' => $refer_by->id
                 ]
             );
             $wallet->user_id        = $refer_by->id;
             $wallet->validate_user  = Hash::make($refer_by->id);
-            $wallet->payment_type   = 2 ;
-            $wallet->payment_type_string = "Referral";
+            $wallet->payment_type   = 1 ;
+            $wallet->payment_type_string = "Referral Bonus";
             $wallet->referal_amount = ($wallet->amount)+$this->referral_bonus;
             $wallet->amount = ($wallet->amount)+$this->referral_bonus;
 
