@@ -59,13 +59,14 @@ class ApiController extends BaseController
 
     public function statusCheck(Request $request)
     {
-        $order_id = $request->order??'20200708111212800110168263334782100';
+        $order_id = $request->order;
         $status = PaytmWallet::with('status');
         $status->prepare(['order' => $order_id]);
         $s = $status->check();
         $response = $status->response(); // To get raw response as array
 
-        if($status->isSuccessful()){
+        try{
+            if($status->isSuccessful()){
             $response['SF_STATUS'] = 1;
            return $response;
         }else if($status->isFailed()){
@@ -75,6 +76,11 @@ class ApiController extends BaseController
             $response['SF_STATUS'] = 3;
           return $response;
         }
+        }catch(\Exception $e){
+            $response['SF_STATUS'] = 2;
+          return $response;
+        }
+        
         
     }
 

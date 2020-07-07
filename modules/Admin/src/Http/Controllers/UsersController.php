@@ -139,13 +139,10 @@ class UsersController extends Controller {
      * Save Group method
      * */
 
-    public function store(UserRequest $request, User $user) {
+    public function store(Request $request, User $user) {
         $user->fill(Input::all());
         $user->password = Hash::make($request->get('password'));
-        
         $action = $request->get('submit');
-
-
         if($action=='avtar'){ 
             if ($request->file('profile_image')) {
                 $profile_image = User::createImage($request,'profile_image');
@@ -192,12 +189,12 @@ class UsersController extends Controller {
 
         $deposit =  \DB::table('wallets')
                     ->where('user_id',$id)
-                    ->where('payment_type',4)
+                    ->where('payment_type',3)
                     ->sum('amount');
 
         $prize =  \DB::table('wallets')
                     ->where('user_id',$id)
-                    ->where('payment_type',3)
+                    ->where('payment_type',4)
                     ->sum('amount');            
 
         $js_file = ['common.js','bootbox.js','formValidate.js'];
@@ -206,11 +203,8 @@ class UsersController extends Controller {
 
     public function update(Request $request, $id) {
         $user = User::find($id);
-        //$user->fill(Input::all());
-        if($request->get('password'))
-        {
-            $user->password = Hash::make($request->get('password'));
-        }
+        $user->fill(Input::all());
+        
         $action = $request->get('submit');
         $user->role_type= $request->get('role_type');
         $user->save(); 
@@ -237,12 +231,7 @@ class UsersController extends Controller {
                  
             }
         } 
-
-        if($request->get('role')==3){
-            $Redirect = 'clientuser';
-        }else{
-            $Redirect = 'user';
-        }
+        $Redirect = 'user';
        
         return Redirect::to(route($Redirect))
                         ->with('flash_alert_notice', 'Record successfully updated.');
