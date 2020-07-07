@@ -1631,6 +1631,15 @@ class UserController extends BaseController
             $message = "Record not found";
             $data = null;
         }
+
+        return response()->json(
+            [
+                "status"    =>  $status,
+                'code'      => $code,
+                "message"   =>  $message,
+                'data'      =>  $data
+            ]
+        );
     }
 
     public function sendSMS($mobileNumber=null,$message=null)
