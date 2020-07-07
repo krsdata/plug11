@@ -95,7 +95,8 @@ class AdminController extends Controller {
 
         $total_user = \DB::table('eventLogs')
                 ->whereDate('created_at',\Carbon\Carbon::today())
-                ->groupBy('user_id')->count();
+                ->groupBy('user_id')
+                ->count();
 
         return view('packages::dashboard.index',compact('joinContest_count','create_count','today_deposit','category_count','users_count','category_grp_count','page_title','page_action','viewPage','match_1','match_2','match_3','match','contest_types','banner','deposit','prize','refunded','referral','join_contest_amt','total_user'));
     }
