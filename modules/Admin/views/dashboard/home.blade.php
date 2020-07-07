@@ -354,7 +354,7 @@
                                 <div class="display">
                                     <div class="number">
                                         <h3 class="font-blue-sharp">
-                                            <span data-counter="counterup" data-value="567">{{$total_user}} INR  </span>
+                                            <span data-counter="counterup" data-value="567">{{$total_user}}   </span>
                                         </h3>
                                         <small> Today Live User </small>
                                     </div>
