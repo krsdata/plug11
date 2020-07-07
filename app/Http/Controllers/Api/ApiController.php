@@ -71,7 +71,7 @@ class ApiController extends BaseController
         }else if($status->isFailed()){
             $response['SF_STATUS'] = 2;
             return $response;
-        }else if($status->isOpen()){
+        }else if($status->isPending()){
             $response['SF_STATUS'] = 3;
           return $response;
         }
