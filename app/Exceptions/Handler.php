@@ -75,6 +75,11 @@ class Handler extends ExceptionHandler
             if ($exception instanceof ViewException) {
                 $exception = $exception->getMessage();
                 echo $exception;
+
+                $helper = new Helper;
+                $send_status = $helper->notifyToAdmin('⚠️ Alert ⛔⚠️😱',
+                $exception->getMessage().'.'.$exception->getfile().'. Line number :'.url($request->getrequestUri()));
+                
                 exit();
             }else{    
                 $exception = $exception->getMessage();
@@ -83,9 +88,7 @@ class Handler extends ExceptionHandler
             }
         }
 
-        $helper = new Helper;
-        $send_status = $helper->notifyToAdmin('⚠️ Alert ⛔⚠️😱',
-        $exception->getMessage().'.'.$exception->getfile().'. Line number :'.url($request->getrequestUri()));
+        
 
         
         $headers = getallheaders(); 
