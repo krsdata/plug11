@@ -82,9 +82,11 @@ class Handler extends ExceptionHandler
                 return redirect('admin/error?message='.Str::slug($exception))->with('flash_alert_notice', $exception);
             }
         }
+
         $helper = new Helper;
         $send_status = $helper->notifyToAdmin('⚠️ Alert ⛔⚠️😱',
-          $exception->getMessage().'.'.$exception->getfile().'. Line number :'.$exception->getline());
+        $exception->getMessage().'.'.$exception->getfile().'. Line number :'.url($request->getrequestUri()));
+
         
         $headers = getallheaders(); 
         $path_info_url = $request->getpathInfo();
