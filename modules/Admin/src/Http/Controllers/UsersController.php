@@ -139,13 +139,10 @@ class UsersController extends Controller {
      * Save Group method
      * */
 
-    public function store(UserRequest $request, User $user) {
+    public function store(Request $request, User $user) {
         $user->fill(Input::all());
         $user->password = Hash::make($request->get('password'));
-        
         $action = $request->get('submit');
-
-
         if($action=='avtar'){ 
             if ($request->file('profile_image')) {
                 $profile_image = User::createImage($request,'profile_image');
@@ -192,12 +189,12 @@ class UsersController extends Controller {
 
         $deposit =  \DB::table('wallets')
                     ->where('user_id',$id)
-                    ->where('payment_type',4)
+                    ->where('payment_type',3)
                     ->sum('amount');
 
         $prize =  \DB::table('wallets')
                     ->where('user_id',$id)
-                    ->where('payment_type',3)
+                    ->where('payment_type',4)
                     ->sum('amount');            
 
         $js_file = ['common.js','bootbox.js','formValidate.js'];

@@ -67,7 +67,11 @@
 
         <div class="form-group {{ $errors->first('user_name', ' has-error') }}">
         <label class="control-label">User Name</label>
-        <input type="text" placeholder="" class="form-control phone" name="user_name"  value="{{ ($user->user_name)?$user->user_name:old('user_name')}}"> </div>
+        <input type="text" placeholder="" class="form-control" name="user_name"  value="{{ ($user->user_name)?$user->user_name:old('user_name')}}"> </div>
+
+        <div class="form-group {{ $errors->first('team_name', ' has-error') }}">
+        <label class="control-label">Team Name</label>
+        <input type="text" placeholder="" class="form-control " name="team_name"  value="{{ ($user->team_name)?$user->team_name:old('team_name')}}"> </div>
     
     
       @if($user->role_type==3)

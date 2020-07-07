@@ -94,6 +94,7 @@
                                  <th>User Name</th>
                                  <th>User Referral </th>
                                  <th>Referral Code</th>
+                                 <th>Team Name</th>
                                 <th> Full Name </th>
                                 <th> Email </th>
                                  <th> Account Balance </th>
@@ -114,6 +115,7 @@
                                  <td> {{$result->user_name}}</td>
                                  <td> {{$result->referal_code}}</td>
                                  <td> {{$result->reference_code}}</td>
+                                 <td> {{$result->team_name}}</td>
                                 <td> {{$result->name}} </td>
                                 <td> {{$result->email}} </td>
                                  <td> {{round($result->balance,2)}} INR </td>
