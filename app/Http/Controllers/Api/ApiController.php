@@ -3878,7 +3878,7 @@ class ApiController extends BaseController
             $myArr['is_account_verified']    = $this->isAccountVerified($request);
             $myArr['refferal_friends_count']    = $this->getRefferalsCounts($request);
             $myArr['user_id']        =  $wallet->user_name??null;
-            
+
             $myArr['withdrawal_amount']    = 0;
         }else{
             $myArr['wallet_amount']   = 0;
@@ -5120,7 +5120,7 @@ class ApiController extends BaseController
         //return false;
         $contest = CreateContest::whereColumn('total_spots','filled_spot')
             ->where('total_spots','<=',3)
-            ->where('is_cloned','!=',1)
+            ->where('is_cloned',0)
             ->where('entry_fees','>',0)
         //    ->where('total_spots','!=',30)
         //    ->where('total_spots','!=',20)
@@ -5131,7 +5131,7 @@ class ApiController extends BaseController
             ->get();
         //->where('entry_fees','>',0)
         $match_id = $contest->pluck('match_id')->toArray();
-        $match = Matches::whereIn('match_id',$match_id)->where('status',1)->get(['match_id']);
+        $match = Matches::whereIn('match_id',$match_id)->where('status',3)->get(['match_id']);
 
         $match->transform(function($item,$key)use($contest){
             $contest_copy = $contest->where('match_id',$item->match_id)->first();
