@@ -65,7 +65,14 @@ class ApiController extends BaseController
         $s = $status->check();
         $response = $status->response(); // To get raw response as array
 
-        dd($response);  
+        if($status->isSuccessful()){
+           return $response;
+        }else if($status->isFailed()){
+            return $response;
+        }else if($status->isOpen()){
+          return $response;
+        }
+        
     }
 
     /**
