@@ -74,15 +74,15 @@ class DefaultContestController extends Controller {
                             $query->Where('contest_type', 'LIKE', "%$search%");
                         }
                         if (!empty($search)) {
-                            $query->orWhere('entry_fees',"%$search%");
+                            $query->orWhere('entry_fees',$search);
                         }
                         if (!empty($search)) {
-                            $query->orWhere('total_spots',"%$search%");
+                            $query->orWhere('total_spots',$search);
                         }
                         
-                    })->Paginate($this->record_per_page);
+                    })->Paginate(20);
         } else {
-            $defaultContest = DefaultContest::orderBy('id','DESC')->Paginate($this->record_per_page);
+            $defaultContest = DefaultContest::orderBy('id','DESC')->Paginate(20);
         }
         
         $contest_type   = ContestType::pluck('contest_type','id');
