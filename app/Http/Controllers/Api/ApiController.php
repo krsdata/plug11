@@ -4571,7 +4571,7 @@ class ApiController extends BaseController
     }
 
 
-    public function createImage($base64,$userId=null,$documentsType)
+    public function createImage($base64=null,$userId=null,$documentsType)
     {   
         try{
             if($base64){
