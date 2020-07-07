@@ -5645,10 +5645,10 @@ class ApiController extends BaseController
             
         \DB::table('paytm')->insert($data);
     }
-    
+
     public function paytmCallBack(Request $request)
     {
-       // $data['paytm'] = json_encode($request->all());
+        $data['paytm'] = json_encode($request->all());
         $data['user_id'] =   $request->user_id;
         $data['email'] =   $request->email;
         $data['deposit_amount'] =   $request->deposit_amount;
