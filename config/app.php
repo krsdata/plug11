@@ -235,7 +235,7 @@ return [
 //        'Input' => Illuminate\Support\Facades\Input::class,
         'Input' => Illuminate\Support\Facades\Request::class,
         'Form' => Collective\Html\FormFacade::class,
-        'Html' => Collective\Html\HtmlFacade::class
+        'Html' => Collective\Html\HtmlFacade::class,
         'PaytmWallet' => Anand\LaravelPaytmWallet\Facades\PaytmWallet::class
 
     ],
