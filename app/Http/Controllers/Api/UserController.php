@@ -754,7 +754,7 @@ class UserController extends BaseController
 
             $wallet_trns['user_id']         =  $refer_by->id??null;
             $wallet_trns['amount']          =  $this->referral_bonus;
-            $wallet_trns['payment_type']    =  1;
+            $wallet_trns['payment_type']    =  2;
             $wallet_trns['payment_type_string'] = "Referral Bonus";
             $wallet_trns['transaction_id']  = time().'-'.$refer_by->id??null;
             $wallet_trns['payment_mode']    = "sportsfight";
