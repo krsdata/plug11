@@ -5633,7 +5633,19 @@ class ApiController extends BaseController
             );
 
     }
-
+    public function paymentCallback(Request $request)
+    {
+       // $data['paytm'] = json_encode($request->all());
+        $data['user_id'] =   $request->user_id;
+        $data['email'] =   $request->email;
+        $data['deposit_amount'] =   $request->deposit_amount;
+        $data['transaction_id'] =   $request->transaction_id;
+        $data['payment_mode']   =   $request->payment_mode;
+        $data['payment_status']   =   $request->payment_status;
+            
+        \DB::table('paytm')->insert($data);
+    }
+    
     public function paytmCallBack(Request $request)
     {
        // $data['paytm'] = json_encode($request->all());

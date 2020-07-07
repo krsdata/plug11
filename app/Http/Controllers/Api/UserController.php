@@ -1136,7 +1136,7 @@ class UserController extends BaseController
 
         $data['pmid']    =  env('paytm_mid','tpJmKe81092739039978');
         /*$data['call_url']   =  'https://securegw.paytm.in/theia/paytmCallback?ORDER_ID=';*/
-        $data['call_url']   =  'https://api.sportsfight.in/api/v2/paytmCallBack?ORDER_ID=';
+        $data['call_url']   =  'https://api.sportsfight.in/api/v2/paymentCallback?ORDER_ID=';
 
         if($data){
             $server = [
