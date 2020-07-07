@@ -604,17 +604,12 @@ class UserController extends BaseController
         );
     }
 
-        public function updateProfile(Request $request){
+    public function updateProfile(Request $request){
 
         $myArr = [];
 
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required'/*,
-            'city' => 'required',
-            'dateOfBirth' => 'required',
-            'gender' => 'required',
-            'name' => 'required',
-            'team_name' => 'required'*/
+            'user_id' => 'required'
         ]);
 
         // Return Error Message
@@ -631,35 +626,7 @@ class UserController extends BaseController
                 )
             );
         }
-
-   // $new_password  = $request->new_password;
-   // $password      = $request->password;
         $user = User::find($request->user_id);
-     
-    /*if($new_password && $password){
-
-        $credentials = [
-                    'email'     =>$request->get('email'),
-                    'password'  =>$request->get('password'),
-                    'status'    => 1
-                ];
-
-        $auth = Auth::attempt($credentials);
-        if($auth){
-                $user->password = Hash::make($new_password);
-                $user->save();
-        }else{
-             return Response::json(array(
-                    'code' => 201,
-                    'status' => false,
-                    'message' => 'Old password does not match!'
-                )
-            );
-        }
-    }*/
-
-   // $user = User::find($request->user_id);
-    
         if($user){
             $user->city = $request->city;
             $user->dateOfBirth = $request->dateOfBirth;
@@ -1615,7 +1582,7 @@ class UserController extends BaseController
     /*get profile*/
     public function getProfile(Request $request){
 
-        $user = User::select('id','name','email','referal_code','profile_image','mobile_number','birthday','status','city','gender','dateOfBirth','team_name','user_name')
+        $user = User::select('id','name','email','referal_code','profile_image','mobile_number','birthday','city','gender','dateOfBirth','team_name','user_name')
         ->find($request->user_id);
 
         if($user){
