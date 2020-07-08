@@ -82,7 +82,7 @@ class Handler extends ExceptionHandler
                     [
                         'status'        => false,
                         'code'          => 201,
-                        'message'       => 'Your request in queue.Try after sometime.'
+                        'message'       => 'Your request is in queue.Try after sometime.'
                     ]
                 );
            exit();

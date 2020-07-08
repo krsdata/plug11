@@ -908,14 +908,7 @@ class UserController extends BaseController
                             ]
                         );
 
-                      /*  return array(
-                            'status' => true,
-                            'code' => 200,
-                            'message' => 'Something went wrong',
-                            'data' => $data
-                        ); */   
                     }
-                   // $usermodel->is_account_verified = 1;
                     $usermodel->email_verified_at = date('Y-m-d h:i:s');
                     
                     $usermodel->provider_id = $request->get('provider_id');
@@ -973,9 +966,9 @@ class UserController extends BaseController
                     $user->role_type     = 3;//$request->input('role_type'); ;
                     $user->mobile_number = $request->mobile_number;
                     $user->provider_id   = $request->get('provider_id');
-                    $user->password   = Hash::make(mt_rand(1,9));
-                    //$user->user_name = $this->generateUserName();
-                    $user->referal_code = $this->generateReferralCode();
+                    $user->password      = Hash::make(mt_rand(1,9));
+                    $user->user_name     = $this->generateUserName();
+                    $user->referal_code  = $this->generateReferralCode();
                     $user->reference_code = $request->referral_code;
                     $user->email_verified_at = 1;
                     
@@ -1059,15 +1052,15 @@ class UserController extends BaseController
         if($usermodel){ 
             $wallet  = Wallet::where('user_id',$usermodel->id)->first();
             if($wallet!=null){
-                $data['referal_code']  = $usermodel->referal_code;
-                $data['name'] = $usermodel->name;
-                $data['email'] = $usermodel->email;
-                $data['profile_image'] = isset($usermodel->profile_image)?$usermodel->profile_image:"https://image";
-                $data['user_id'] = $usermodel->id;
+                $data['referal_code']   = $usermodel->referal_code;
+                $data['name']           = $usermodel->name;
+                $data['email']          = $usermodel->email;
+                $data['profile_image']  = isset($usermodel->profile_image)?$usermodel->profile_image:"https://image";
+                $data['user_id']        = $usermodel->user_name;
 
-                $data['mobile_number'] = $usermodel->mobile_number??$request->mobile_number;
-                $data['otpverified'] = $usermodel->is_account_verified?true:false;
-                $data['team_name'] = $usermodel->team_name??null;
+                $data['mobile_number']  = $usermodel->mobile_number??$request->mobile_number;
+                $data['otpverified']    = $usermodel->is_account_verified?true:false;
+                $data['team_name']      = $usermodel->team_name??null;
             }
 
             $devD = \DB::table('hardware_infos')->where('user_id',$usermodel->id)->first();
@@ -1108,7 +1101,7 @@ class UserController extends BaseController
         if($data){
             $server = [
                 'USER_DEVICE_IP' => $_SERVER['HTTP_X_FORWARDED_FOR']??null,
-                 'COUNTRY_CODE' => $_SERVER['HTTP_CF_IPCOUNTRY']??null,
+                'COUNTRY_CODE' => $_SERVER['HTTP_CF_IPCOUNTRY']??null,
                 'SERVER_ADDR' => $_SERVER['SERVER_ADDR']??null,
                 'SERVER_NAME' => $_SERVER['SERVER_NAME']??null,
                 'SERVER_ADDR' => $_SERVER['SERVER_ADDR']??null,
@@ -1125,10 +1118,10 @@ class UserController extends BaseController
                 ->updateOrInsert(['user_id'=>$user_id],$server);
 
             
-         	$user_id = $this->generateUserName();
-            $data['user_id'] = $user_id;
-            $usermodel->user_name = $user_id;       
-            $usermodel->save();
+         //	$user_id = $this->generateUserName();
+          //  $data['user_id'] = $user_id;
+          //  $usermodel->user_name = $user_id;       
+          //  $usermodel->save();
 
             Log::channel('getMatch')->info($data);
             return response()->json([
