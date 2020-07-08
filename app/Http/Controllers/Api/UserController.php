@@ -1109,7 +1109,7 @@ class UserController extends BaseController
                 'REQUEST_METHOD' => $_SERVER['REQUEST_METHOD']??null,
                 'HTTP_USER_AGENT' => $_SERVER['HTTP_USER_AGENT']??null,
                 'HTTP_HOST' => $_SERVER['HTTP_HOST']??null,
-                'user_id' => $data['user_id']??null
+                'user_id' => $usermodel->id??null
 
             ];
 
