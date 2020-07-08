@@ -59,6 +59,7 @@ class MatchController extends Controller {
     public function cancelContest(Request $request){
         $match_id = $request->match_id;
         $contest_id = $request->cancel_contest;
+        
         if($request->cancel_contest){
             $JoinContest = JoinContest::whereHas('user')->with('contest')
                         ->where('match_id',$request->match_id)
@@ -66,6 +67,8 @@ class MatchController extends Controller {
                         ->get()
                         ->transform(function($item,$key){
                         $cancel_contest = CreateContest::find($item->contest_id);
+                        $bonus_amount = $cancel_contest->entry_fees*($cancel_contest->usable_bonus/100);
+                        $amount = $cancel_contest->entry_fees-$bonus_amount;
                         if($item->cancel_contest==0){
 
                             \DB::beginTransaction();
@@ -74,7 +77,6 @@ class MatchController extends Controller {
                             
                             if(isset($item->contest) && $item->contest->entry_fees){   
                                 $transaction_id = $item->match_id.$item->contest_id.$item->created_team_id.'-'.$item->user_id;
-
                                 $wt =    WalletTransaction::firstOrNew(
                                         [
                                            'user_id' => $item->user_id,
@@ -99,9 +101,21 @@ class MatchController extends Controller {
                                     );
 
                                 $wallet->user_id        =  $item->user_id;
-                                $wallet->amount = $wallet->amount+$item->contest->entry_fees;
-                                $wallet->deposit_amount = $wallet->amount+$item->contest->entry_fees;
+                                $wallet->amount = $wallet->amount+$amount;
+                                
                                 $wallet->save();
+
+                                $wallet2 = Wallet::firstOrNew(
+                                        [
+                                           'user_id' => $item->user_id,
+                                           'payment_type' => 1
+                                        ]
+                                    );
+
+                                $wallet2->user_id        =  $item->user_id;
+                                $wallet2->amount = $wallet2->amount+$bonus_amount;
+                                $wallet2->save();
+
                             }
  
                             \DB::commit();
