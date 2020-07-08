@@ -4561,7 +4561,6 @@ class ApiController extends BaseController
                 "msg"=>"Image uplaoded successfully",
                 "imageurl"=> 'https://api.sportsfight.in/storage/uploads/'. $photo_name
             ];
-
         }
         else
         {
@@ -4602,7 +4601,6 @@ class ApiController extends BaseController
                 
                 return false; 
             }
- 
             
         }catch(Exception $e){
             return false;
@@ -5124,7 +5122,7 @@ class ApiController extends BaseController
             ->where('total_spots','<=',3)
             ->where('is_cloned',0)
             ->where('entry_fees','>',0)
-        //    ->where('total_spots','!=',30)
+            ->where('total_spots','!=',50)
         //    ->where('total_spots','!=',20)
            /* ->where('total_spots','>',20)
             ->where('total_spots','!=',3)
