@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Str;
 use Facade\Ignition\Exceptions\ViewException;
 use App\Helpers\Helper as Helper;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 
 
 class Handler extends ExceptionHandler
@@ -71,7 +72,22 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {   
-      //dd(url($request->getrequestUri()));
+      if ($exception instanceof ThrottleRequestsException) {
+
+          $data['url']        = url($request->getrequestUri());
+          $data['message']    = $exception->getMessage();
+          $data['error_type'] = 'Invalid Url Access';
+          $this->errorLog($data, $exception);
+          echo  json_encode(
+                    [
+                        'status'        => false,
+                        'code'          => 201,
+                        'message'       => 'Your request in queue.Try after sometime.'
+                    ]
+                );
+           exit();
+      
+      }
       if($request->is('admin/*')){
             if ($exception instanceof ViewException) {
                 $exception = $exception->getMessage();
