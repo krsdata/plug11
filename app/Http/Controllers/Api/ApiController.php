@@ -4053,16 +4053,22 @@ class ApiController extends BaseController
     public function addMoney(Request $request){
         $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
 
-        /*$money = [
-                111 => '111',
-                222 => '222',
-                333 => '555',
-                777 => '777',
-                999 => '1999',
-                3999=> '5999'
+        $money = [
+                1,
+                111,
+                222,
+                555,
+                777,
+                1999,
+                5999
             ];
 
-        $money = $money[$request->deposit_amount];   */ 
+        if(in_array($request->deposit_amount, $money))
+        {
+            $bonus = $request->deposit_amount;
+        }else{
+            $bonus = 0;
+        }
 
         if(!$okhttp){
             return array(
@@ -4072,7 +4078,7 @@ class ApiController extends BaseController
                 );
         }
         try{
-            $this->paytmCallBack($request);
+           // $this->paytmCallBack($request);
             }catch(\Exception $e){
              $request->merge(['payment_status'=>'failed']);   
              $this->paytmCallBack($request);   
@@ -4099,7 +4105,7 @@ class ApiController extends BaseController
            return Response::json(array(
                     'code' => 201,
                     'status' => false,
-                    'message' => $error_msg
+                    'message' => $error_msg[0]
                 )
             );
         }
@@ -4156,8 +4162,8 @@ class ApiController extends BaseController
                     $myBlance = Wallet::where('user_id',$wallet->user_id)
                                 ->whereIn('payment_type',[2,3,4])->sum('amount');
 
-                    $myArr['wallet_amount']   = (float) $myBlance??0;
-                    $myArr['user_id']         = (float)$wallet->user_id;
+                    $myArr['wallet_amount']   = $myBlance??0;
+                    $myArr['user_id']         = $wallet->user_id;
 
                     $transaction = new WalletTransaction;
                     $transaction->user_id        =  $request->user_id;
@@ -4174,7 +4180,7 @@ class ApiController extends BaseController
                     $check_cash_back = WalletTransaction::where('user_id',$request->user_id)
                         ->where('payment_type',3)
                         ->count();
-                    if($check_cash_back==1){
+                    if($check_cash_back==1 || $bonus){
                         $txt = new WalletTransaction;
                         $txt->user_id        =  $request->user_id;
                         $txt->amount         =  $request->deposit_amount;
@@ -4195,7 +4201,7 @@ class ApiController extends BaseController
                         $data = [
                                     'action' => 'notify' ,
                                     'title' => "First Deposit Bonus",
-                                    'message' => "100% cashback bonus amount added of INR $txt->amount in your wallet."
+                                    'message' => "Cashback bonus amount added of INR $txt->amount in your wallet."
                                 ];
                                
                         $this->sendNotification($device_id, $data);
