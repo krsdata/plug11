@@ -59,7 +59,7 @@ class MatchController extends Controller {
     public function cancelContest(Request $request){
         $match_id = $request->match_id;
         $contest_id = $request->cancel_contest;
-        
+
         if($request->cancel_contest){
             $JoinContest = JoinContest::whereHas('user')->with('contest')
                         ->where('match_id',$request->match_id)
@@ -67,7 +67,12 @@ class MatchController extends Controller {
                         ->get()
                         ->transform(function($item,$key){
                         $cancel_contest = CreateContest::find($item->contest_id);
-                        $bonus_amount = $cancel_contest->entry_fees*($cancel_contest->usable_bonus/100);
+                        if($cancel_contest->usable_bonus){
+                            $bonus_amount = $cancel_contest->entry_fees*($cancel_contest->usable_bonus/100);    
+                        }else{
+                            $bonus_amount = 0;
+                        }
+                        
                         $amount = $cancel_contest->entry_fees-$bonus_amount;
                         if($item->cancel_contest==0){
 
