@@ -610,6 +610,7 @@ class ApiController extends BaseController
                         $mp     = MatchPoint::where('match_id',$item->match_id)
                                 ->get();
 
+                            $data['points'] = [];    
                             foreach ($mp as $key => $result) {
                                 if(in_array($result->pid, $teams))
                                 {
@@ -626,26 +627,10 @@ class ApiController extends BaseController
                                     $data['points'][] = $pt;
                                 }
                             }
-
                             $total_points = array_sum($data['points']);
                             $match_id = $item->match_id;
                             $join_contest_id = $item->id;
                             $user_id = $item->user_id;
-                            /*
-                            $match_stat = MatchStat::firstOrNew(
-                                [
-                                    'match_id'  =>  $match_id,
-                                    'user_id'   =>  $user_id,
-                                    'team_id'   =>  $ct->id,
-                                    'contest_id' => $contest_id,
-                                    'join_contest_id' => $join_contest_id,
-                                ]
-                            );
-                            $match_stat->points = (float)$total_points;
-                            $match_stat->save();
-                            */
-                            $ct->points = $total_points;
-                            $ct->save();
 
                             $jc_object = JoinContest::find($join_contest_id);
                             $jc_object->points = $total_points;
@@ -662,7 +647,7 @@ class ApiController extends BaseController
     }
 
     // update points by LIVE Match
-    public function updatePointAfterComplete(Request $request){
+/*    public function updatePointAfterComplete(Request $request){
         $matches = Matches::whereIn('status',[2,3])
             ->where('timestamp_start','>=',strtotime("-1 days"))
             ->get();
@@ -694,41 +679,8 @@ class ApiController extends BaseController
 
         echo 'points_updated';
     }
-
-    // update points by LIVE Match
-    public function updatePointsAndPlayerByMatchId(Request $request){
-        $matches = Matches::where('match_id',$request->match_id)
-                ->whereDate('date_start',\Carbon\Carbon::today())
-                ->where('status',2)
-                ->select('match_id','updated_at')
-                ->get();
-
-        foreach ($matches as $key => $match) {   # code...
-
-            $points = file_get_contents($this->cric_url.'matches/'.$match->match_id.'/point?token='.$this->token);
-            $points_json = json_decode($points);
-            $this->storeMatchInfoAtMachine($points,'point/'.$match->match_id.'.txt');
-            
-            foreach ($points_json->response->points as $team => $teams) {
-                if($teams==""){
-                    continue;
-                }
-                foreach ($teams as $key => $players) {
-                    foreach ($players as $key => $result) {
-                        $result->match_id = $match->match_id;
-                        if($result->pid==null){
-                            continue;
-                        }
-                        MatchPoint::updateOrCreate(
-                            ['match_id'=>$match->match_id,'pid'=>$result->pid],
-                            (array)$result);
-
-                    }
-                }
-            }
-        }
-        return "points updated";
-    }
+*/
+   
     // update points by LIVE Match
     public function updatePoints(Request $request){
        // sleep(1);
@@ -747,6 +699,7 @@ class ApiController extends BaseController
                     ->get();
         }
         $m = [];
+
         foreach ($matches as $key => $match) {   # code...
             $points = file_get_contents($this->cric_url.'matches/'.$match->match_id.'/point?token='.$this->token);
             $points_json = json_decode($points);
@@ -756,14 +709,35 @@ class ApiController extends BaseController
                 if($teams==""){
                     continue;
                 }
+
                 foreach ($teams as $key => $players) {
 
                     foreach ($players as $key => $result) {
                         $result->match_id = $match->match_id;
+                        $result->pid = $result->pid;
                         if($result->pid==null){
                             continue;
                         }
-                        
+                        foreach ($result as $key => $value) {
+                            
+                            if($key=='pid'){
+                                $result->pid = $value;
+                            }
+                            elseif($key=='name'){
+                                $result->name = $value;
+                            }
+                            elseif($key=='role'){
+                                $result->role = $value;
+                            }
+                            elseif($key=='match_id'){
+                                $result->match_id = $value;
+                            }
+                            elseif($key=='rating'){
+                                $result->rating = $value;
+                            }else{
+                               $result->$key = 2*$value; 
+                            }
+                        }
                         $m[$result->role][] = [
                             'name'=>$result->name,
                             'point'=> $result->point,
@@ -776,7 +750,7 @@ class ApiController extends BaseController
                     }
                 }
             }
-
+           // dd(MatchPoint::where('match_id',44886)->get());
             $request->merge(['match_id' =>  $match->match_id]);
             $this->updateUserMatchPoints($request);    
             
@@ -868,7 +842,7 @@ class ApiController extends BaseController
 
     }
     // update points by LIVE Match ID
-    public function getPointsByMatch(Request $request){
+    /*public function getPointsByMatch(Request $request){
 
         $points = file_get_contents($this->cric_url.'matches/'.$request->match_id.'/point?token='.$this->token);
         $points_json = json_decode($points);
@@ -890,7 +864,7 @@ class ApiController extends BaseController
             }
         }
         return ['points'=>$m];
-    }
+    }*/
     
   /**
     * Description : Leaderboard data
@@ -4489,10 +4463,6 @@ class ApiController extends BaseController
     }
     /*getScore*/
     public function getScore(Request $request){
-
-        //$this->updatePointsAndPlayerByMatchId($request);
-        //$this->updateUserMatchPoints($request);
-        //$this->prizeDistribution($request);
 
         $score = Matches::with(['teama' => function ($query) {
             $query->select('match_id', 'team_id', 'name','short_name','scores_full','scores','overs');
