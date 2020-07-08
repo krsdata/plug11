@@ -4052,6 +4052,18 @@ class ApiController extends BaseController
     // Add Money
     public function addMoney(Request $request){
         $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
+
+        $money = [
+                111 => '111',
+                222 => '222',
+                333 => '555',
+                777 => '777',
+                999 => '1999',
+                3999=> '5999'
+            ];
+
+        $money = $money[$request->deposit_amount];    
+
         if(!$okhttp){
             return array(
                     'status' => false,
@@ -5291,6 +5303,7 @@ class ApiController extends BaseController
     }
     /*Match auto cancel if not filled*/
     public function matchAutoCancel(){
+
         sleep(1);
         $cancel_match = Matches::where('status',3)
                       // ->whereDate('date_start',\Carbon\Carbon::today())
@@ -5307,6 +5320,7 @@ class ApiController extends BaseController
                                        ->whereColumn('total_spots','!=','filled_spot')
                                         ->where('is_cancelled',0)
                                         ->where('entry_fees','!=',5)
+                                        ->where('entry_fees','!=',50)
                                         ->get()
                                         ->transform(function($item,$key){
                                            
