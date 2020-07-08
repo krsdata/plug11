@@ -652,8 +652,6 @@ class ApiController extends BaseController
                             $jc_object->save();
                     });
             });
-
-
         return [
             'status'=>true,
             'code' => 200,
@@ -1008,7 +1006,7 @@ class ApiController extends BaseController
             $data['user'] = [
                 'first_name'    => $value->user->first_name,
                 'last_name'     => $value->user->last_name,
-                'name'          => $value->user->name,
+                'name'          => $value->user->team_name,
                 'user_name'     => $value->user->team_name??reset($fn),
                 'team_name'     => $value->user->team_name??reset($fn),
                 'profile_image' => $value->user->profile_image,
@@ -1036,7 +1034,7 @@ class ApiController extends BaseController
             $data['user'] = [
                 'first_name'    => reset($fn),
                 'last_name'     => end($fn),
-                'name'          => reset($fn).' '.end($fn),
+                'name'          => $value->user->team_name, //reset($fn).' '.end($fn),
                 'user_name'     => $value->user->team_name??reset($fn),
                 'team_name'     => $value->user->team_name??reset($fn),
                 'profile_image' => isset($user_data)?$value->user->profile_image:null,
@@ -1360,7 +1358,6 @@ class ApiController extends BaseController
             );
         }
     }
-
 
     public function updateContestByMatch($match_id=null){
 
