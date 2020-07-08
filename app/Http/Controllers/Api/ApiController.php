@@ -4053,7 +4053,7 @@ class ApiController extends BaseController
     public function addMoney(Request $request){
         $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
 
-        $money = [
+        /*$money = [
                 111 => '111',
                 222 => '222',
                 333 => '555',
@@ -4062,7 +4062,7 @@ class ApiController extends BaseController
                 3999=> '5999'
             ];
 
-        $money = $money[$request->deposit_amount];    
+        $money = $money[$request->deposit_amount];   */ 
 
         if(!$okhttp){
             return array(
