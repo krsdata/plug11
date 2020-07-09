@@ -32,10 +32,13 @@ if (App::environment('prod')) {
 }
 
 Route::match(['post','get'], 'changePassword', 'UserController@changePassword');
-
 Route::match(['post','get'], 'changePasswordToken', 'UserController@changePasswordToken');
 
 Route::match(['post','get'], '/', function(){
-    echo "access deny";
+    echo "Access deny";
 });
 
+ Route::any('{any}', function(){
+        $data = "Access Deny";
+        echo $data;
+    });
