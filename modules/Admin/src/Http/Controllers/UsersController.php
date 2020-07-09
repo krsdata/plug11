@@ -87,7 +87,8 @@ class UsersController extends Controller {
                                     ->OrWhere('email', 'LIKE', "%$search%")
                                     ->OrWhere('referal_code', 'LIKE', "%$search%")
                                     ->OrWhere('reference_code', 'LIKE', "%$search%")
-                                    ->OrWhere('user_name', 'LIKE', "%$search%");
+                                    ->OrWhere('user_name',$search)
+                                    ->OrWhere('team_name', $search);
                         }
                         if (!empty($status)) {
                             $status =  ($status=='active')?1:0;
