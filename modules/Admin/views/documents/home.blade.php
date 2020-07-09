@@ -79,7 +79,7 @@ th, td {
                                                 <th> Balance </th>
                                                 <th>Status</th>
                                                 <th>Action</th>
-                                                <th>date</th>
+                                                <th>Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
