@@ -1153,11 +1153,10 @@ class ApiController extends BaseController
             $player = Player::whereIn('id',$player_ids)->get();
 
             foreach ($player as $key => $value) {
-                if(count($playing11)){
+                if(is_array($playing11) && count($playing11) && $value->playing_role!="wkbat"){
                     $value->playing_role = $playing11[$value->pid]??$value->playing_role;
                 }
-
-                if($value->playing_role=="wkbat"){
+                elseif($value->playing_role=="wkbat"){
                     $team_role["wk"][] = $value->pid;
                 }else{   
                     $team_role[$value->playing_role][] = $value->pid;
@@ -2947,7 +2946,7 @@ class ApiController extends BaseController
             }
             $pid = $results->pid;
 
-            if(count($final_playing11) && $results->playing_role!="wkbat"){
+            if(is_array($final_playing11) && count($final_playing11) && $results->playing_role!="wkbat"){
                 $rol = $final_playing11[$pid]??$results->playing_role;
                 $rs[$rol][]  = $data;
             }
@@ -4752,7 +4751,7 @@ class ApiController extends BaseController
             'documentType' => 'required'
         ]);
         $request->merge(['event_name'=>'upload_document']);
-        
+
         $this->eventLog($request);
         // Return Error Message
         if ($validator->fails()) {
