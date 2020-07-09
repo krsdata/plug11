@@ -117,10 +117,14 @@ class DocumentController extends Controller
                     $query->orWhere('ifsc_code','LIKE',"%$search%");
                 }
             })->orderBy('id','desc')->Paginate($this->record_per_page);
-        } else {
+        } else { 
             $documents = BankAccounts::whereHas('user')
                         ->orderBy('id','desc')
-                        ->Paginate($this->record_per_page);
+                        ->Paginate($this->record_per_page)
+                        ->transform(function($item,$key){
+                            $user = User::find($item->user_id);
+                            //dd( $user);
+                        });
         }
         
         return view('packages::documents.bank', compact('documents', 'page_title', 'page_action', 'sub_page_title'));
@@ -170,16 +174,33 @@ class DocumentController extends Controller
                         ->Paginate($this->record_per_page);
 
             $documents->transform(function($item,$key){
-                $bankAccount = \DB::table('bank_accounts')->where('user_id',$item->user_id)->first();
-                
+                $bankAccount = \DB::table('bank_accounts')
+                            ->where('user_id',$item->user_id)
+                            ->first();
+
+                $item->account_name = $bankAccount->account_name??null;
+                $item->bank_name = $bankAccount->bank_name??null;
+                $item->account_number = $bankAccount->account_number??null;
+                $item->ifsc_code = $bankAccount->ifsc_code??null;
+                $item->bank_branch = $bankAccount->bank_branch??null;
+                $item->account_type = $bankAccount->account_type??null;
+
                 $wallet = \DB::table('wallets')->where('user_id',$item->user_id)
                     ->where('payment_type','!=',1)
                     ->sum('amount');
                 $item->wallet_balance =   $wallet;
-
+                $user = User::find($item->user_id);
+                $item->user = $user;
                 $item->bankAccount = $bankAccount;
+
+                $bank = \DB::table('bank_accounts')
+                            ->where('user_id',$item->user_id)
+                            ->first();
+                $item->bank = $bank;            
+
                 return $item;
             });
+
         }
         //return ($documents);
         return view('packages::documents.index', compact('documents', 'page_title', 'page_action', 'approved','pending'));

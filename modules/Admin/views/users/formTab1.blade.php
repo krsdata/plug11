@@ -72,6 +72,14 @@
         <div class="form-group {{ $errors->first('team_name', ' has-error') }}">
         <label class="control-label">Team Name</label>
         <input type="text" placeholder="" class="form-control " name="team_name"  value="{{ ($user->team_name)?$user->team_name:old('team_name')}}"> </div>
+
+        <div class="form-group {{ $errors->first('dateOfBirth', ' has-error') }}">
+        <label class="control-label">Date of birth</label>
+        <input type="text" placeholder="DOB" class="form-control " name="dateOfBirth"  value="{{ ($user->dateOfBirth)?$user->dateOfBirth:old('dateOfBirth')}}"> </div>
+
+        <div class="form-group {{ $errors->first('state', ' has-error') }}">
+        <label class="control-label">State</label>
+        <input type="text" placeholder="" class="form-control " name="state"  value="{{ ($user->state)?$user->state:old('state')}}"> </div>
     
     
       @if($user->role_type==3)

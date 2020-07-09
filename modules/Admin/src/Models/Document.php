@@ -25,6 +25,9 @@ class Document extends Eloquent {
      */
     protected $primaryKey = 'id';
     
+    protected $fillable = [
+                            'user_id'
+                        ];  // All field of user table h
     /**
      * The attributes that are mass assignable.
      *
