@@ -397,13 +397,14 @@ class ApiController extends BaseController
         $playerObject = Player::where('match_id',$team_id->match_id)
             ->whereIn('pid',$player_id);
 
+        $final_p11 = $this->getPlaying11Team($team_id->match_id);
+
         $pids = $playerObject->pluck('pid');
         $pids_role = $playerObject->pluck('playing_role','pid');
 
         $player_team_id = $playerObject->pluck('team_id','pid')->toArray();
 
         if(!$mpObject){
-
             $captain        =   $team_id->captain;
             $vice_captain   =   $team_id->vice_captain;
             $trump          =   $team_id->trump;
@@ -465,20 +466,23 @@ class ApiController extends BaseController
             $mpObject = MatchPoint::where('match_id',$team_id->match_id)
                 ->whereIn('pid',$pids)
                 ->select('match_id','pid','name','role','rating','point','starting11')->get();
-           // return $mpObject ;    
-            $mpObject->transform(function($item,$key)use($pids_role){
+           // return $mpObject;
 
+            $mpObject->transform(function($item,$key)use($pids_role){
                         $playing11_a = \DB::table('team_a_squads')
                                     ->where('match_id',$item->match_id)
                                     ->where('player_id',$item->pid)
                                     ->where('playing11','true')
                                     ->first();
+
                         $playing11_b = \DB::table('team_b_squads')
                                     ->where('match_id',$item->match_id)
                                     ->where('playing11','true')
                                     ->where('player_id',$item->pid)
                                     ->first();
                         $role_cat = ['wkcap','cap','squad'];
+                        
+                        $item->role = $pids_role[$item->pid];            
                                     
                         if($playing11_a){
                             $item->role = $playing11_a->role;
@@ -493,8 +497,6 @@ class ApiController extends BaseController
                         }else{
                            $item->playing11 = false; 
                         }
-
-                        $item->role = $pids_role[$item->pid];
                         return $item;
                     });
             //mp=match point
@@ -750,7 +752,6 @@ class ApiController extends BaseController
                     }
                 }
             }
-           // dd(MatchPoint::where('match_id',44886)->get());
             $request->merge(['match_id' =>  $match->match_id]);
             $this->updateUserMatchPoints($request);    
             
@@ -848,7 +849,6 @@ class ApiController extends BaseController
         $points_json = json_decode($points);
         $this->storeMatchInfoAtMachine($points,'point/'.$request->match_id.'.txt');
             
-        // dd($points_json->response->points);
         foreach ($points_json->response->points as $team => $teams) {
             foreach ($teams as $key => $players) {
                 foreach ($players as $key => $result) {
@@ -856,7 +856,6 @@ class ApiController extends BaseController
                     if($result->pid==null){
                         continue;
                     }
-                    //  dd($result);
                     $m[] = MatchPoint::updateOrCreate(
                         ['match_id'=>$request->match_id,'pid'=>$result->pid],
                         (array)$result);
@@ -1045,9 +1044,39 @@ class ApiController extends BaseController
 
     }
 
+
+    public function getPlaying11Team($match_id=null){
+
+        $playing11a  =\DB::table('team_a_squads')
+                ->where('match_id',$match_id)
+                ->where('playing11','true')
+                ->pluck('role','player_id')->toArray();
+               // dd($playing11_a );
+        $playing11b  =\DB::table('team_b_squads')
+                ->where('match_id',$match_id)
+                ->where('playing11','true')
+                ->pluck('role','player_id')->toArray();
+        $a = array_merge($playing11a,$playing11b);
+
+
+        $playing11a1  =\DB::table('team_a_squads')
+                ->where('match_id',$match_id)
+                ->where('playing11','true')
+                ->pluck('player_id')->toArray();
+               // dd($playing11_a );
+        $playing11b1  =\DB::table('team_b_squads')
+                ->where('match_id',$match_id)
+                ->where('playing11','true')
+                ->pluck('player_id')->toArray();
+        $b = array_merge($playing11a1,$playing11b1);
+
+        $final_playing11 = array_combine($b, $a);
+
+        return $final_playing11;
+    }
+
     /*
     @method : createTeam
-
    */
     public function getMyTeam(Request $request){
 
@@ -1105,6 +1134,13 @@ class ApiController extends BaseController
 
             $k['created_team'] = ['team_id' => $result->id];
 
+            $playing11 = $this->getPlaying11Team($result->match_id);
+            if(count($playing11)){
+                $playing11 = $playing11;
+            }else{
+                $playing11 = false;
+            }
+
             $player = Player::WhereIn('team_id',$team_id)
                 ->whereIn('pid',$teams)
                 ->where('match_id',$result->match_id)
@@ -1117,7 +1153,10 @@ class ApiController extends BaseController
             $player = Player::whereIn('id',$player_ids)->get();
 
             foreach ($player as $key => $value) {
-                                
+                if(count($playing11)){
+                    $value->playing_role = $playing11[$value->pid]??$value->playing_role;
+                }
+
                 if($value->playing_role=="wkbat"){
                     $team_role["wk"][] = $value->pid;
                 }else{   
@@ -1174,7 +1213,6 @@ class ApiController extends BaseController
         }
 
         $match_info = $this->setMatchStatusTime($match_id);
-          //  dd($match_info);
             return response()->json(
                 [
                     'system_time'=>time(),
@@ -1308,7 +1346,6 @@ class ApiController extends BaseController
 
             Log::channel('after_create_team')->info($request->all());
             $match_info = $this->setMatchStatusTime($match_id);
-          //  dd($match_info);
             return response()->json(
                 [
                     'system_time'=>time(),
@@ -2284,7 +2321,6 @@ class ApiController extends BaseController
             ->get();
             
             $upcomingMatches->transform(function($items,$key)use($user_id){
-                //  dd($items);
 
                 $league_title = \DB::table('competitions')->where('id',$items->competition_id)->first()->title??null;
 
@@ -2350,7 +2386,7 @@ class ApiController extends BaseController
             ->orderBy('timestamp_start','desc')
             ->get()
             ->transform(function($items,$key)use($user_id){
-                //  dd($items);
+                
                 $league_title = \DB::table('competitions')->where('id',$items->competition_id)->first()->title??null;
 
                 $items->league_title = $league_title;
@@ -2807,7 +2843,8 @@ class ApiController extends BaseController
 
             ];
         }
-
+        $final_playing11 = $this->getPlaying11Team($match_id);
+        
         $players =  Player::with(['teama'=>function($q) use ($match_id){
             $q->where('match_id',$match_id);
         }])
@@ -2908,14 +2945,18 @@ class ApiController extends BaseController
             if(count($pids[$data['pid']])>1){
                 continue;
             }
+            $pid = $results->pid;
 
-            if($results->playing_role=="wkbat")
+            if(count($final_playing11) && $results->playing_role!="wkbat"){
+                $rol = $final_playing11[$pid]??$results->playing_role;
+                $rs[$rol][]  = $data;
+            }
+            elseif($results->playing_role=="wkbat")
             {
                 $rs['wk'][]  = $data;
             }else{
                 $rs[$results->playing_role][]  = $data;
             }
-
             $data = [];
         }
 
@@ -3381,11 +3422,8 @@ class ApiController extends BaseController
                     }else{
                         $final_paid_amount = $final_paid_amount;
                         //-$deduct_from_bonus;
-
                     }
-                   
-                  //  dd($bonus_amount->amount);
-                  //  dd($bonus_amount->amount,$contestT->bonus_contest,$final_paid_amount,$deduct_from_bonus);
+
                     if($contestT->bonus_contest && $bonus_amount){
                          
                        if($bonus_amount->amount>$final_paid_amount){
@@ -3509,7 +3547,6 @@ class ApiController extends BaseController
         Log::channel('after_join_contest')->info($cont);
 
         $match_info = $this->setMatchStatusTime($match_id);
-          //  dd($match_info);
             return response()->json(
                 [
                 'session_expired'=>$this->is_session_expire,    
@@ -3660,7 +3697,6 @@ class ApiController extends BaseController
 
                 $myjoinedContest = $this->myJoinedTeam($request->match_id,$request->user_id,$result->id);
 
-                // dd($result);
                 $data2['isCancelled'] =   $result->is_cancelled?true:false;
                 $data2['maxAllowedTeam'] =   $result->contestType->max_entries??1;
                 $data2['usable_bonus'] =   $result->usable_bonus;
@@ -3840,7 +3876,6 @@ class ApiController extends BaseController
         }        
         
         $wallet = Wallet::where('user_id',$request->user_id)->first();
-       // dd($wallet);
         if($wallet){
             $wallet = User::find($wallet->user_id);
 
@@ -4027,6 +4062,7 @@ class ApiController extends BaseController
         $money = [
                 1,
                 111,
+                333,
                 222,
                 555,
                 777,
@@ -4450,7 +4486,6 @@ class ApiController extends BaseController
                         }else{
                             $amt =  $rank_prize->sum('prize_amount')??0;
                             if($rank_to==8){
-                                dd($amt);
                             }
                             $prizeBreakup = $amt/$repeat_rank;
                         }
@@ -4630,9 +4665,6 @@ class ApiController extends BaseController
         if(!File::isDirectory($storagePath)){
             File::makeDirectory($storagePath, 0777, true, true);
         }
-
-        //dd('done');
-
         //$imagePath = $storagePath.$image_name;
         //echo "\nImage Path ".$imagePath;
        // imagepng($im, $imagePath, 0);
@@ -4719,7 +4751,9 @@ class ApiController extends BaseController
         $validator = Validator::make($request->all(), [
             'documentType' => 'required'
         ]);
-
+        $request->merge(['event_name'=>'upload_document']);
+        
+        $this->eventLog($request);
         // Return Error Message
         if ($validator->fails()) {
             $error_msg  =   [];
@@ -4733,9 +4767,6 @@ class ApiController extends BaseController
                 )
             );
         }
-
-      //  Log::channel('document_info')->info($request->all());
-
         if($user){
             $documentType = $request->documentType;
 
@@ -4744,15 +4775,6 @@ class ApiController extends BaseController
             $msg = "$user->name has uploaded $documentType";
 
             $helper->notifyToAdmin('🗎 Document uploaded 🗎',$msg);
-
-            /*if($is_exist){
-                    \DB::table('verify_documents')
-                            ->where('user_id',$request->user_id)
-                            ->where('doc_type','pancard')
-                            ->update($data);
-                } else{
-                     \DB::table('verify_documents')->insert($data);
-                }*/
 
             if($documentType=='pancard'){
                 $data = array();
@@ -5660,15 +5682,23 @@ class ApiController extends BaseController
     }
 
     public function eventLog(Request $request){
-        $user_info = (object)$request->user_info;
-        $signature = (object)$request->deviceDetails;
-        
-        $data['eventLog'] = json_encode($request->all());
-        $data['user_id'] = $user_info->user_id??null;
-        $data['email'] = $user_info->email??null;
-        $data['mobile_number'] = $user_info->mobile_number??null;
-        $data['event_name'] = $request->event_name??null;
-        $data['signature'] = $signature->signature??null;
+        if($request->event_name=='upload_document')
+        {
+            $data['eventLog'] = json_encode($request->all());
+            $data['user_id'] = $request->user_id??null;
+            $data['email'] = $request->email??null;
+            $data['mobile_number'] = $request->mobile_number??null;
+            $data['event_name'] = $request->event_name??null;
+        }else{
+           $user_info = (object)$request->user_info;
+            $signature = (object)$request->deviceDetails;  
+            $data['eventLog'] = json_encode($request->all());
+            $data['user_id'] = $user_info->user_id??null;
+            $data['email'] = $user_info->email??null;
+            $data['mobile_number'] = $user_info->mobile_number??null;
+            $data['event_name'] = $request->event_name??null;
+            $data['signature'] = $signature->signature??null; 
+        }
 
         try{
             \DB::table('eventLogs')->insert($data); 
