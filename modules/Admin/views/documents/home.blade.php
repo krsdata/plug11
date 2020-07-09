@@ -79,8 +79,7 @@ th, td {
                                                 <th> Balance </th>
                                                 <th>Status</th>
                                                 <th>Action</th>
-                                                <th>date</th> 
-                                                <th>Time</th>
+                                                <th>date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -395,9 +394,9 @@ Front Adhar<br>
                                                         {!! Carbon\Carbon::parse($result->created_at)->format('d-m-Y'); !!}
                                                 </td>
                                                     
-                                                <td> 
+                                                <!-- 
 
-                                                {!! Carbon\Carbon::parse($result->created_at)->format('h:i:s A'); !!}
+                                                {!! Carbon\Carbon::parse($result->created_at)->format('h:i:s A'); !!} -->
 
                                                        <!--  {!! Form::open(array('class' => 'form-inline pull-left deletion-form', 'method' => 'DELETE',  'id'=>'deleteForm_'.$result->id, 'route' => array('documents.destroy', $result->id))) !!}
                                                         <button class='delbtn btn btn-danger btn-xs' type="submit" name="remove_levels" value="delete" id="{{$result->id}}"><i class="fa fa-fw fa-trash" title="Delete"></i></button> 
@@ -406,7 +405,6 @@ Front Adhar<br>
                                                          <!-- <a href="{{ route('documents.edit',$result->id)}}">
                                             <i class="fa fa-fw fa-pencil-square-o" title="edit"></i> 
                                         </a> -->
-                                                    </td>
                                                
                                             </tr>
                                            @endforeach
