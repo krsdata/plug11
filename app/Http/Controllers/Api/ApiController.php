@@ -633,7 +633,9 @@ class ApiController extends BaseController
                             $match_id = $item->match_id;
                             $join_contest_id = $item->id;
                             $user_id = $item->user_id;
-
+                            $ct->points = $total_points;
+                            $ct->save();
+                            
                             $jc_object = JoinContest::find($join_contest_id);
                             $jc_object->points = $total_points;
                             $jc_object->save();
