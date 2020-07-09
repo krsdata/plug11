@@ -89,7 +89,8 @@
 
             <div class="margin-top-10"> 
                  <button type="submit" class="btn green" value="avtar" name="submit"> Save Changes </button>
-                <button type="submit" class="btn default"> Cancel </button>
+                <a href="{{url(URL::previous())}}">
+{!! Form::button('Back', ['class'=>'btn btn-warning text-white']) !!} </a>
             </div> 
            <!--  {!! Form::close() !!} -->
             </div>
