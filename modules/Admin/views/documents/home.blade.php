@@ -80,7 +80,7 @@ th, td {
                                                 <th>Status</th>
                                                 <th>Action</th>
                                                 <th>date</th> 
-                                                <th>Action</th>
+                                                <th>Time</th>
                                             </tr>
                                         </thead>
                                         <tbody>
