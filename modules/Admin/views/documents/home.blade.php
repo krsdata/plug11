@@ -400,9 +400,9 @@ Front Adhar<br>
                                                         <button class='delbtn btn btn-danger btn-xs' type="submit" name="remove_levels" value="delete" id="{{$result->id}}"><i class="fa fa-fw fa-trash" title="Delete"></i></button> 
                                                         
                                                          {!! Form::close() !!}
-                                                         <a href="{{ route('documents.edit',$result->id)}}">
+                                                         <!-- <a href="{{ route('documents.edit',$result->id)}}">
                                             <i class="fa fa-fw fa-pencil-square-o" title="edit"></i> 
-                                        </a>
+                                        </a> -->
                                                     </td>
                                                
                                             </tr>
