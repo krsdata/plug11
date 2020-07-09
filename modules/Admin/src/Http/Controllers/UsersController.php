@@ -25,7 +25,10 @@ use Crypt;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Dispatcher; 
 use App\Helpers\Helper;
-use Modules\Admin\Models\Roles; 
+use Modules\Admin\Models\Roles;
+
+use Modules\Admin\Models\Document;
+use Modules\Admin\Models\BankAccounts; 
  
 
 /**
@@ -88,7 +91,8 @@ class UsersController extends Controller {
                                     ->OrWhere('referal_code', 'LIKE', "%$search%")
                                     ->OrWhere('reference_code', 'LIKE', "%$search%")
                                     ->OrWhere('user_name',$search)
-                                    ->OrWhere('team_name', $search);
+                                    ->OrWhere('team_name', $search)
+                                    ->OrWhere('id', $search);
                         }
                         if (!empty($status)) {
                             $status =  ($status=='active')?1:0;
@@ -196,27 +200,88 @@ class UsersController extends Controller {
         $prize =  \DB::table('wallets')
                     ->where('user_id',$id)
                     ->where('payment_type',4)
-                    ->sum('amount');            
+                    ->sum('amount'); 
+
+        $document =    Document::where('user_id', $id)
+                        ->where(function($q){
+                            $q->where('doc_type','pancard');
+                            $q->orWhere('doc_type','adharcard');
+                        })
+                        ->first();
+
+        $bank =    BankAccounts::where('user_id', $id)
+                        ->first();
+
+        $paytm =    Document::where('user_id', $id)
+                        ->where(function($q){
+                            $q->where('doc_type','paytm');
+                        })
+                        ->first();
 
         $js_file = ['common.js','bootbox.js','formValidate.js'];
-        return view('packages::users.edit', compact('js_file','role_id','roles','user', 'page_title', 'page_action','match_id','contest_id','win','referral','deposit','prize'));
+        return view('packages::users.edit', compact('js_file','role_id','roles','user', 'page_title', 'page_action','match_id','contest_id','win','referral','deposit','prize','document','paytm','bank'));
     }
 
     public function update(Request $request, $id) {
         $user = User::find($id);
-        $user->fill(Input::all());
-        
         $action = $request->get('submit');
+        $user->fill(Input::all());
         $user->role_type= $request->get('role_type');
-        $user->save(); 
-        
+        $user->save();   
+    
         if($action=='avtar'){ 
             if ($request->file('profile_image')) {
                 $profile_image = User::createImage($request,'profile_image');
                 $request->merge(['profilePic'=> $profile_image]);
                $user->profile_image = $request->get('profilePic'); 
+            } 
+        } 
+
+        if($request->action=='document'){
+            if ($request->file('document')) {
+                $document_url = User::uploadDocs($request,'document');
+                $request->merge(['document_url'=> $document_url]); 
             }
-           
+            if($request->account_number){
+                $bankAcc = BankAccounts::firstOrNew([
+                'user_id' => $request->user_id
+                ]);
+                $bankAcc->bank_name = $request->bank_name;
+                $bankAcc->account_name = $request->account_name;
+                $bankAcc->account_number = $request->account_number;
+                $bankAcc->ifsc_code = $request->ifsc_code;
+                $bankAcc->account_type = $request->account_type;
+                $bankAcc->user_id = $request->user_id;
+                $bankAcc->save(); 
+            }
+            //doc_url_front
+            $docs = Document::firstOrNew([
+                'user_id' => $request->user_id,
+                'doc_type' => $request->doc_type
+                ]);
+
+            $docs->user_id      = $request->user_id;
+            $docs->doc_type     = $request->doc_type;
+            $docs->doc_number   = $request->doc_number;
+            $docs->doc_name     = $request->account_name;
+            if($request->document_url){
+                $docs->doc_url_front = $request->document_url;    
+            }
+            $docs->status       = 2;
+            $docs->save();
+
+            if($request->paytm){
+                $paytm = Document::firstOrNew([
+                'user_id' => $request->user_id,
+                'doc_type' => 'paytm'
+                ]);
+                $paytm->user_id      = $request->user_id;
+                $paytm->doc_type     = 'paytm';
+                $paytm->doc_number   = $request->paytm;
+                $paytm->doc_name     = $request->account_name;
+                $paytm->status       = 2;
+                $paytm->save();
+            }
         } 
 
         $validator_email = User::where('email',$request->get('email'))

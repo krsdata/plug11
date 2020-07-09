@@ -35,14 +35,14 @@
                                     <!-- END SIDEBAR USERPIC -->
                                     <!-- SIDEBAR USER TITLE -->
                                     <div class="profile-usertitle">
-                                        <div class="profile-usertitle-name"> {{$user->first_name}} </div>
+                                        <div class="profile-usertitle-name"> {{$user->name}} </div>
                                         <div class="profile-usertitle-job"> {{$user->position}} </div>
                                     </div>
                                     <!-- END SIDEBAR USER TITLE -->
                                     <!-- SIDEBAR BUTTONS -->
                                     <div class="profile-userbuttons">
-                                        <button type="button" class="btn btn-circle green btn-sm">Email</button>
-                                        <button type="button" class="btn btn-circle red btn-sm">Message</button>
+                                        <button type="button" class="btn btn-circle green btn-sm">{{$user->email}}</button>
+                                        <button type="button" class="btn btn-circle red btn-sm">{{$user->mobile_number}}</button>
                                       
                                     </div>
                                     <!-- END SIDEBAR BUTTONS -->
@@ -50,14 +50,6 @@
                                     <div class="profile-usermenu">
                                         <ul class="nav">
                                             
-                                            <li class="active">
-                                                <a href="#">
-                                                    {{$user->email}} </a>
-                                            </li>
-                                            <li class="active">
-                                                <a href="#">
-                                                    {{$user->mobile_number}} </a>
-                                            </li>
                                             <!-- <li>
                                                 <a href="#">
                                                     <i class="icon-info"></i> Help </a>
@@ -189,12 +181,9 @@
                                                         <a href="#tab_1_1" data-toggle="tab">Personal Info</a>
                                                     </li>
                                                     <li>
-                                                        <a href="#tab_1_2" data-toggle="tab">Change Avatar</a>
+                                                        <a href="#Document" data-toggle="tab">Document</a>
                                                     </li>
                                                    
-                                                    <!-- <li>
-                                                        <a href="#tab_1_4" data-toggle="tab">  Payment Info</a>
-                                                    </li> -->
                                                 </ul>
                                             </div>
                                    {!! Form::model($user, ['method' => 'PATCH', 'route' => ['user.update', $user->id],'enctype'=>'multipart/form-data']) !!}
@@ -216,21 +205,19 @@
 
                                             @include('packages::users.formTab1', compact('user'))
 
-                                            {!! Form::close() !!} 
+                                            
                                             <!-- END PERSONAL INFO TAB --> 
-                                            @include('packages::users.formTab2', compact('user'))
+                                           
                                             <!-- END CHANGE AVATAR TAB -->
                                             <!-- CHANGE PASSWORD TAB -->
                                             <!-- END CHANGE PASSWORD TAB -->
                                             <!-- PRIVACY SETTINGS TAB --> 
-                                            @include('packages::users.formTab4', compact('user')) 
+                                            @include('packages::users.Document', compact('user')) 
                                             <!-- END PRIVACY SETTINGS TAB --> 
-
-                                           
+                                            {!! Form::close() !!} 
                                         </div>
 
                                     </div>
-                                    </form>
                                 </div>
                             </div>
                         </div>
