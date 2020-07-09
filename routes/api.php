@@ -83,7 +83,6 @@ Route::group([
     Route::match(['post','get'],'withdrawAmount', 'Api\ApiController@withdrawAmount');
     Route::match(['post','get'],'getProfile', 'Api\UserController@getProfile');
 
-    Route::match(['post','get'],'getProfile', 'Api\UserController@getProfile');
     Route::match(['get','post'], 'updateLiveMatchStatus', [
         'as' => 'updateLiveMatchStatus',
         'uses' => 'Api\ApiController@updateMatchDataByStatus'
