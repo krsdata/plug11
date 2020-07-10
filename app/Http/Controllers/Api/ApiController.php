@@ -2871,13 +2871,12 @@ class ApiController extends BaseController
         $bat['bowl'] = [];
 
         $match_points= MatchPoint::where('match_id',$match_id)->pluck('point','pid')->toArray();
-
-        foreach ($players as $key => $results) {
-            if($results->teama ){
-
+        $pid = [];
+        foreach ($players as $key => $results) { 
+            if($results->teama && $results->teama->player_id==$results->pid ){
                 $data['playing11'] =  filter_var($results->teama->playing11, FILTER_VALIDATE_BOOLEAN);
             }
-            elseif($results->teamb){
+            elseif($results->teamb &&  $results->teamb->player_id==$results->pid){
 
                 $data['playing11'] =  filter_var($results->teamb->playing11, FILTER_VALIDATE_BOOLEAN);
             }
@@ -2944,13 +2943,14 @@ class ApiController extends BaseController
                 continue;
             }
             $pid = $results->pid;
-            // /$results->pid
-           // dd($final_playing11);
-            //wkcap wkbat
              
-            if(is_array($final_playing11) && count($final_playing11) && $results->playing_role!="wkbat"){
+            if(is_array($final_playing11) && count($final_playing11)){
                 $rol = $final_playing11[$pid]??$results->playing_role;
-                $rs[$rol][]  = $data;
+                if($results->playing_role=="bat"){
+                    $rs[$results->playing_role][]  = $data;
+                }else{
+                    $rs[$rol][]  = $data;  
+                } 
             }
             elseif($results->playing_role=="wkcap")
             {
@@ -2964,7 +2964,6 @@ class ApiController extends BaseController
             }
             $data = [];
         }
-
         return  [
             'system_time'=>time(),
             'status'=>true,
@@ -2976,10 +2975,7 @@ class ApiController extends BaseController
         ];
     }
     
-
-
     // update player by match_id
-
     public function getSquad($match_ids=null){
 
         foreach ($match_ids as $key => $match_id) {
