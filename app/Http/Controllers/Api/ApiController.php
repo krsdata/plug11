@@ -2889,10 +2889,10 @@ class ApiController extends BaseController
                 $data['team_name'] = $results->team_b->short_name;
             }
 
-            $data['pid'] = $results->pid;
-            $data['match_id'] = $results->match_id;
-            $data['team_id'] = $results->team_id;
-            $data['points'] = ($match_points[$results->pid])??0;
+            $data['pid']        = $results->pid;
+            $data['match_id']   = $results->match_id;
+            $data['team_id']    = $results->team_id;
+            $data['points']     = ($match_points[$results->pid])??0;
             $fname = $results->first_name;
             $lname = $results->last_name;
 
@@ -2922,7 +2922,7 @@ class ApiController extends BaseController
                     
                 }
             }*/
-            $data['short_name'] =  $fname.' '.$ln;
+            $data['short_name'] =  $fname[0].' '.$ln;
 
             $data['fantasy_player_rating'] = ($results->fantasy_player_rating);
 
@@ -2944,14 +2944,21 @@ class ApiController extends BaseController
                 continue;
             }
             $pid = $results->pid;
-
+            // /$results->pid
+           // dd($final_playing11);
+            //wkcap wkbat
+             
             if(is_array($final_playing11) && count($final_playing11) && $results->playing_role!="wkbat"){
                 $rol = $final_playing11[$pid]??$results->playing_role;
                 $rs[$rol][]  = $data;
             }
-            elseif($results->playing_role=="wkbat")
+            elseif($results->playing_role=="wkcap")
             {
                 $rs['wk'][]  = $data;
+            }
+            elseif($results->playing_role=="wkbat")
+            {
+                $rs['bat'][]  = $data;
             }else{
                 $rs[$results->playing_role][]  = $data;
             }
