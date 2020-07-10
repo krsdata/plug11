@@ -2897,12 +2897,14 @@ class ApiController extends BaseController
 
             $title  = $results->title??$results->short_name;
             $fn     = explode(" ",$results->title??$results->short_name);
-            $f1     = reset($fn);
-            $ln     = end($fn);
-            $fname  = reset($fn);
-            if(strlen($title)>25){
-               $fname = $f1[0];
+            if(count($fn)>2){
+                $pname =  $fn[0][0].' '.$fn[1][0].' '.end($fn);
+            }else{
+                $f1     = reset($fn);
+                $ln     = end($fn); 
+                $pname = $f1[0].' '.$ln;  
             }
+            $data['short_name'] =  $pname;
 
            /* 
             if($fl>=25){
@@ -2921,7 +2923,6 @@ class ApiController extends BaseController
                     
                 }
             }*/
-            $data['short_name'] =  $fname[0].' '.$ln;
 
             $data['fantasy_player_rating'] = ($results->fantasy_player_rating);
 
@@ -2974,7 +2975,6 @@ class ApiController extends BaseController
             ]
         ];
     }
-    
     // update player by match_id
     public function getSquad($match_ids=null){
 
