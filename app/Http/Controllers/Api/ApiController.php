@@ -635,7 +635,7 @@ class ApiController extends BaseController
                             $user_id = $item->user_id;
                             $ct->points = $total_points;
                             $ct->save();
-                            
+
                             $jc_object = JoinContest::find($join_contest_id);
                             $jc_object->points = $total_points;
                             $jc_object->save();
@@ -1045,8 +1045,6 @@ class ApiController extends BaseController
         }
 
     }
-
-
     public function getPlaying11Team($match_id=null){
 
         $playing11a  =\DB::table('team_a_squads')
@@ -2878,7 +2876,6 @@ class ApiController extends BaseController
             if($results->teama ){
 
                 $data['playing11'] =  filter_var($results->teama->playing11, FILTER_VALIDATE_BOOLEAN);
-
             }
             elseif($results->teamb){
 
@@ -5158,11 +5155,11 @@ class ApiController extends BaseController
 
     }
     public  function getPlaying11()
-    {   sleep(5);
+    {   
         $matches = Matches::whereIn('status',[1,3])
                    ->whereDate('date_start',\Carbon\Carbon::today())
                     ->get(['match_id','timestamp_start','status']);
-                
+               
         foreach ($matches as $key => $match) {
             $match_id = $match->match_id;
 
@@ -5265,13 +5262,12 @@ class ApiController extends BaseController
                             $device_id = User::whereNotNull('device_id')->pluck('device_id')->toArray();
                                                                   
                             if($td>0 && $td%5==0){
-                                    $data = [
-                                        'action' => 'notify' ,
-                                        'title' => "🏏 $item->short_title  🕚 🏆🏆",
-                                        'message' => 'Contest is filling fast. Create your team and join the contest. Hurry up!!'
-                                    ];
-                                    $this->sendNotification($device_id, $data);
-                                
+                                $title = "🏏 $item->short_title  🕚 🏆🏆";
+
+                                $msg = 'Contest is filling fast. Create your team and join the contest. Hurry up!!';
+
+                                $helper = new Helper;
+                                $helper->notifyToAll($title,$msg);
                             }
                             //&& $td%5==0
                             if($lineup || $td > 0 ){ 
@@ -5281,14 +5277,12 @@ class ApiController extends BaseController
                                 }else{
                                     $msg = "Last $td minute left.Create, Join or edit  your team. Hurry Up!!";
                                 }
+                                $title = "🏏 $item->short_title  🕚 🏆🏆";
 
-                                $data = [
-                                    'action' => 'notify' ,
-                                    'title' => "🏏 $item->short_title  🕚 🏆🏆",
-                                    'message' => $msg
-                                ];
+                                $helper = new Helper;
+                                $helper->notifyToAll($title,$msg);
                                
-                                $this->sendNotification($device_id, $data);
+                                //$this->sendNotification($device_id, $data);
                                 return $item; 
                             }    
                                     

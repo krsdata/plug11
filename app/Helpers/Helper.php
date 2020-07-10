@@ -59,6 +59,28 @@ class Helper {
               return false;
           }
     } //
+
+    public function notifyToAll($title=null,$message=null){ 
+        
+        $count =User::count();
+        $j=1;
+        for($i=1; $j<=$count; $i++) {
+            $offset = $j;
+            $j = $i*1000; 
+            $device_id = User::whereNotNull('device_id')
+                  ->skip($offset)
+                  ->take(1000)
+                  ->pluck('device_id')
+                  ->toArray();
+           
+          $data = [
+              'action' => 'notify' ,
+              'title' => $title ,
+              'message' => $message
+          ];
+          $this->sendNotification($device_id,$data);
+        } 
+    }
     public function notifyToAdmin($title=null,$message=null){ 
         $user_email = [env('admin1_email','manoj.i.prasad@gmail.com'),env('admin2_email','kroy.aws@gmail.com'),env('admin3_email','rp.yadav775@gmail.com')];
 
