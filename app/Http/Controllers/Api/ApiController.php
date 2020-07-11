@@ -5298,7 +5298,7 @@ class ApiController extends BaseController
     }
     /*Match auto cancel if not filled*/
     public function matchAutoCancel(){
-
+        return false;
         sleep(1);
         $cancel_match = Matches::where('status',3)
                       // ->whereDate('date_start',\Carbon\Carbon::today())
