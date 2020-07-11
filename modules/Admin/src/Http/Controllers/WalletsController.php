@@ -172,6 +172,7 @@ class WalletsController extends Controller {
                 $wallets->$value = $request->$value;
            }
         }
+        
         $wallets->save();
         return Redirect::to(route('wallets'))
                             ->with('flash_alert_notice', 'Wallets successfully created !');
@@ -189,7 +190,7 @@ class WalletsController extends Controller {
         $page_action = 'Wallets';
 
         $table_cname = \Schema::getColumnListing('wallets');
-        $except = ['id','created_at','updated_at'];
+        $except = ['id','created_at','updated_at','bonus_amount','referal_amount','prize_amount','deposit_amount','usable_amount','usable_amount_validation','total_withdrawal_amount','prize_distributed_id'];
         $data = [];
         foreach ($table_cname as $key => $value) {
 
@@ -199,13 +200,12 @@ class WalletsController extends Controller {
              $tables[] = $value;
         }
 
-
         return view('packages::wallets.edit', compact( 'wallets', 'page_title','page_action', 'tables'));
     }
 
     public function update(Request $request, $id) {
 
-        $wallets = PrizeDistribution::find($id);
+        $wallets = Wallets::find($id);
         $data = [];
         $table_cname = \Schema::getColumnListing('wallets');
         $except = ['id','created_at','updated_at','_token','_method'];
@@ -219,6 +219,7 @@ class WalletsController extends Controller {
                 $wallets->$value = $request->$value;
            }
         }
+
         $wallets->save();
 
         return Redirect::to(route('wallets'))

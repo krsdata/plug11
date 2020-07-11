@@ -100,13 +100,16 @@
                                                  <td>   {{ (($transaction->currentpage()-1)*15)+(++$key) }} 
                                                 </td>
                                                 <td>{{$result->transaction_id}} </td>
-                                                <td> 
+                                                <td>
+                                                  <a href="{{url('admin/user?search='.$result->email)}}"> 
                                                    ID: {{$result->user_id}},<br>
                                                    
                                                    Name: {{$result->name}},<br>
                                                    Email : {{$result->email}}
                                                    <br>
-                                                   Phone : {{$result->phone}} </td>
+                                                   Phone : {{$result->phone}}
+                                                 </a>
+                                                    </td>
                                                 
                                                  <td>{{$result->payment_type_string}} </td>
                                                  <td>
