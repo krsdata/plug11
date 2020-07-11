@@ -708,6 +708,10 @@ class UserController extends BaseController
 
     public function saveReferral($request,$user=null){
 
+        if($request->referal_code=='FANTASYMALIK' || $request->referal_code=='fantasymalik'){
+           $request->referal_code = "SPORTSFIGHT"; 
+        }
+        
         $refer_by = User::where('referal_code',$request->referral_code)
             ->first();
            
