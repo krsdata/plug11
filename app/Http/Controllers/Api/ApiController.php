@@ -2944,7 +2944,7 @@ class ApiController extends BaseController
              
             if(is_array($final_playing11) && count($final_playing11)){
                 $rol = $final_playing11[$pid]??$results->playing_role;
-                if($results->playing_role=="bat" and $rol=='bat'){
+                if($results->playing_role=="bat" or $results->playing_role=="wk"){
                     $rs[$results->playing_role][]  = $data;
                 }else{
                     $rs[$rol][]  = $data;  
