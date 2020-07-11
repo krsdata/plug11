@@ -140,7 +140,9 @@
   of  {{$transaction->total()}} entries 
 </span>
 
-                                     <div class="center" align="center">  {!! $transaction->appends(['search' => isset($_GET['search'])?$_GET['search']:''])->render() !!}</div>
+                                     <div class="center" align="center">  {!! $transaction->appends(['search' => isset($_GET['search'])?$_GET['search']:'','payment_type'=>$_GET['payment_type']??''])->render() !!}</div>
+
+
                                 </div>
                             </div>
                             <!-- END EXAMPLE TABLE PORTLET-->
