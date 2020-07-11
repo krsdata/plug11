@@ -35,7 +35,6 @@
             <label class="control-label col-md-3">Contest type <span class="required"> * </span></label>
             <div class="col-md-4"> 
                 
-
                  {{ Form::select('contest_type',$contest_type, isset($defaultContest->contest_type)?$defaultContest->contest_type:'', ['class' => 'form-control']) }}
 
                 
