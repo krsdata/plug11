@@ -499,8 +499,6 @@ class ApiController extends BaseController
                         }
                         return $item;
                     });
-            //mp=match point
-                //    return $mpObject;
 
             foreach ($mpObject as $key => $result) {
 
@@ -2076,7 +2074,7 @@ class ApiController extends BaseController
     }
 
     public function saveMatchDataFromAPI($data){
-        echo date('h:i:s A');
+        
         if(isset($data->response) && count($data->response->items)){
 
             $results = $data->response->items;
@@ -2190,7 +2188,6 @@ class ApiController extends BaseController
                 $this->getSquad($mid);
             }
         }
-        
         //
         return ["match info updated "];
     }
@@ -2947,7 +2944,7 @@ class ApiController extends BaseController
              
             if(is_array($final_playing11) && count($final_playing11)){
                 $rol = $final_playing11[$pid]??$results->playing_role;
-                if($results->playing_role=="bat"){
+                if($results->playing_role=="bat" and $rol=='bat'){
                     $rs[$results->playing_role][]  = $data;
                 }else{
                     $rs[$rol][]  = $data;  
