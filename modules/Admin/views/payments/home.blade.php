@@ -111,7 +111,7 @@
           <ul class="dropdown-menu">
             <li><a href="{{url('admin/payments?status=2&txt_id='.$result->id)}}">Payment Initiated</a></li>
             <li><a href="{{url('admin/payments?status=3&txt_id='.$result->id)}}">Payment Hold</a></li>
-            <li><a href="{{url('admin/payments?status=4&txt_id='.$result->id)}}">Payment Refund</a></li>
+            <!-- <li><a href="{{url('admin/payments?status=4&txt_id='.$result->id)}}">Payment Refund</a></li> -->
             <li role="separator" class="divider"></li>
             <li><a href="#"   data-toggle="modal" data-target="#myModal" onclick="payment('{{$result->id}}',{{$result->amount}})">Release Fund</a></li>
             <li role="separator" class="divider"></li> 
