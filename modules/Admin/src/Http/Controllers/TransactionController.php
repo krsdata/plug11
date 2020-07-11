@@ -174,7 +174,7 @@ class TransactionController extends Controller {
                         ELSE "New Request" 
                         END) AS withdraw_status'))
                         ->whereIn('withdraw_status',[1,2,3,5])
-                       // ->orderBy('withdraw_status','ASC')
+                        ->orderBy('withdraw_status','ASC')
                         ->Paginate($this->record_per_page);
                         
                         $transaction->transform(function($item, $Key){
