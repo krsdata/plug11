@@ -5129,15 +5129,8 @@ class ApiController extends BaseController
     public function automateCreateContest(){
         //return false;
         $contest = CreateContest::whereColumn('total_spots','filled_spot')
-            ->where('total_spots','<=',3)
+            ->where('cancellation',1)
             ->where('is_cloned',0)
-            ->where('entry_fees','>',0)
-            ->where('total_spots','!=',50)
-        //    ->where('total_spots','!=',20)
-           /* ->where('total_spots','>',20)
-            ->where('total_spots','!=',3)
-            
-            ->where('total_spots','!=',2)*/
             ->get();
         //->where('entry_fees','>',0)
         $match_id = $contest->pluck('match_id')->toArray();
