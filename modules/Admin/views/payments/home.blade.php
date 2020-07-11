@@ -81,7 +81,7 @@
                                                  <td>{{ (($transaction->currentpage()-1)*15)+(++$key) }} 
                                                 </td>
                                                 <td> 
-                                                  <a href="{{url('admin/wallets?search='.$result->email)}}" target="_blank"> 
+                                                  <a href="{{url('admin/user?search='.$result->email)}}" target="_blank"> 
                                                   {!!'Customer Id: '.$result->user_id.'<br>'.$result->name!!},
                                                   <br>{{$result->email}}
                                                 </a>
