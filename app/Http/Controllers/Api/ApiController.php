@@ -485,13 +485,13 @@ class ApiController extends BaseController
                         $item->role = $pids_role[$item->pid];            
                                     
                         if($playing11_a){
-                            $item->role = $playing11_a->role;
+                           // $item->role = $playing11_a->role;
                             $item->playing11 = 'true';
                             $p11=1;
                         }
                         elseif($playing11_b) {
 
-                           $item->role = $playing11_b->role; 
+                         //  $item->role = $playing11_b->role; 
                            $item->playing11 = 'true';
                            $p11=1;
                         }else{
