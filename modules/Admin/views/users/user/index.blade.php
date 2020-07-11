@@ -118,7 +118,50 @@
                                  <td> {{$result->team_name}}</td>
                                 <td> {{$result->name}} </td>
                                 <td> {{$result->email}} </td>
-                                 <td> {{round($result->balance,2)}} INR </td>
+                                 <td>  
+
+                                    <!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#account_{{$result->id}}">
+ {{round($result->balance,2)}} INR
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="account_{{$result->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Account Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table  class="table table-striped table-hover table-bordered"> 
+        @foreach($result->amount as $key => $val)
+          <tr>
+              <td>{{ucfirst($key)}}</td>
+              <td>{{round($val,2)}}</td>
+          </tr>
+        @endforeach
+        <tr>
+              <td>Available Balance</td>
+              <td>{{round($result->balance,2)}} INR</td>
+          </tr>
+        
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <a href="{{url('admin/paymentsHistory?search='.$result->id)}}">
+        <button type="button" class="btn btn-primary">
+            View All Transaction
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+                                 </td>
                                 <td> {{$result->mobile_number}} </td>
                                 <td class="center"> 
                                

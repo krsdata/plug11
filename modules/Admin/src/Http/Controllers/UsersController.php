@@ -108,17 +108,55 @@ class UsersController extends Controller {
             $users->transform(function($item,$key){
                 $wallet_amount = \DB::table('wallets')->where('user_id',$item->id)->sum('amount');
                 $item->balance = $wallet_amount;
+                //SELECT payment_type, payment_type_string, sum(amount) FROM `wallet_transactions` WHERE `user_id` = 686 GROUP by payment_type
+                $account_details = \DB::table('wallet_transactions')
+                                    ->where('user_id',$item->id)
+                                    ->get()
+                                    ->groupBy('payment_type_string')
+                                    ->transform(function($item,$key){
+                                        
+                                        foreach ($item as $key => $value) {
+                                            $sum[] = $value->amount;
+                                            $payment_type_string = $value->payment_type_string;
+                                        }
+                                        $item->$payment_type_string = array_sum($sum);
+                                        return $item;
+                                    });
+                $amount['Bonus'] = 0;                    
+                foreach ($account_details as $key => $value) {
+                    $amount[$key] = $value->$key;
+                }   
+                $item->amount = $amount; 
                 return $item;
             });
         } else {
             $users = User::orderBy('id','desc')->Paginate($this->record_per_page);
             $users->transform(function($item,$key){
-                $wallet_amount = \DB::table('wallets')->where('user_id',$item->id)->sum('amount');
+                $wallet_amount = \DB::table('wallets')->where('user_id',$item->id)->whereIn('payment_type',[1,2,3,4])->sum('amount');
                 $item->balance = $wallet_amount;
+                $account_details = \DB::table('wallet_transactions')
+                                    ->where('user_id',$item->id)
+                                    ->get()
+                                    ->groupBy('payment_type_string')
+                                    ->transform(function($item,$key){
+                                        
+                                        foreach ($item as $key => $value) {
+                                            $sum[] = $value->amount;
+                                            $payment_type_string = $value->payment_type_string;
+                                        }
+                                        $item->$payment_type_string = array_sum($sum);
+                                        return $item;
+                                    });
+                $amount['Bonus'] = 0;                    
+                foreach ($account_details as $key => $value) {
+                    $amount[$key] = $value->$key;
+                }   
+                $item->amount = $amount;   
                 return $item;
             });
             
         } 
+       // return $users;
         $roles = Roles::all();
 
         $js_file = ['common.js','bootbox.js','formValidate.js'];

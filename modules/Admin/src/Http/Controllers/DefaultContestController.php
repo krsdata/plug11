@@ -65,13 +65,11 @@ class DefaultContestController extends Controller {
         // Search by name ,email and group
         $search = Input::get('search');
         $status = Input::get('status');
-        if ((isset($search) && !empty($search))) {
-
-            $search = isset($search) ? Input::get('search') : '';
-               
-            $defaultContest = DefaultContest::where(function($query) use($search,$status) {
-                        if (!empty($search)) {
-                            $query->Where('contest_type', 'LIKE', "%$search%");
+        $contest_type = $request->get('contest_type');
+        if ((isset($search) || !empty($contest_type))) {
+            $defaultContest = DefaultContest::where(function($query) use($search,$status,$contest_type) {
+                        if (!empty($contest_type)) {
+                            $query->Where('contest_type', $contest_type);
                         }
                         if (!empty($search)) {
                             $query->orWhere('entry_fees',$search);
@@ -85,7 +83,7 @@ class DefaultContestController extends Controller {
             $defaultContest = DefaultContest::orderBy('id','DESC')->Paginate(20);
         }
         
-        $contest_type   = ContestType::pluck('contest_type','id');
+        $contest_type   = ContestType::pluck('contest_type','id')->toArray();
         
         return view('packages::defaultContest.index', compact('defaultContest','page_title', 'page_action','sub_page_title','contest_type'));
     }
