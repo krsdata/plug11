@@ -90,7 +90,6 @@
                         <thead>
                             <tr>
                                  <th> Sno. </th>
-                                 <th>User Id</th>
                                  <th>User Details</th>
                                  <th>Referral Code</th>
                                  <th>Team Name</th>
@@ -110,10 +109,13 @@
                         @foreach($users as $key => $result)
                             <tr>
                                  <td> {{ (($users->currentpage()-1)*15)+(++$key) }}</td>
-                                 <td> {{$result->id}} </td>
                                  <td>
 
                               <table class="table table-striped table-hover table-bordered">
+                                <tr>
+                                  <td>User Id</td>
+                                  <td>{{$result->id}}</td>    
+                                </tr>
                                 <tr>
                                   <td>UserName</td>
                                   <td>{{$result->user_name}}</td>    
