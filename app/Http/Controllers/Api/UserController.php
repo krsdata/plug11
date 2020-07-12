@@ -710,9 +710,12 @@ class UserController extends BaseController
 
         if($request->referral_code=='FANTASYMALIK' || $request->referral_code=='fantasymalik'){
            $request->referal_code = "SPORTSFIGHT"; 
+           $ref = "SPORTSFIGHT";
+        }else{
+           $ref = $request->referal_code;  
         }
         
-        $refer_by = User::where('referal_code',$request->referral_code)
+        $refer_by = User::where('referal_code',$ref)
             ->first();
            
         if($refer_by && $user)
