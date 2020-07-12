@@ -92,7 +92,6 @@
                                  <th> Sno. </th>
                                  <th>User Id</th>
                                  <th>User Details</th>
-                                 <th>User Referral </th>
                                  <th>Referral Code</th>
                                  <th>Team Name</th>
                                 <th> Full Name </th>
