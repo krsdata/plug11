@@ -721,7 +721,7 @@ class UserController extends BaseController
         if($refer_by && $user)
         {
             $referralCode = new ReferralCode;
-            $referralCode->referral_code    =   $request->referral_code;
+            $referralCode->referral_code    =   $ref; //$request->referral_code;
             $referralCode->user_id          =   $user->id;
             $referralCode->refer_by         =   $refer_by->id;
             $referralCode->referral_amount  =   $this->referral_bonus;
