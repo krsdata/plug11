@@ -129,11 +129,11 @@
                                 </tr>
                                 <tr>
                                   <td>User deposit</td>
-                                  <td>{{$result->ref_deposit??0}}</td>
+                                  <td>{{round($result->ref_deposit??0,2)}}</td>
                                 </tr>
                                 <tr>  
                                   <td>Referral Deposit</td>
-                                  <td>{{$result->reference_deposit??0}}</td>
+                                  <td>{{round($result->reference_deposit??0,2)}}</td>
                                 </tr>
                               </table>
                                  </td>
