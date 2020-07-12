@@ -268,7 +268,7 @@ class DefaultContestController extends Controller {
                     ->where('match_id',$result->match_id)
                     ->update($request->except(['_token','_method']));
             } else{
-                \DB::table('create_contests')->insert($request->except('_token'));  
+                \DB::table('create_contests')->insert($request->except('_token','_method'));  
             }
         }
 
