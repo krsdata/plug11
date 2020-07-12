@@ -708,7 +708,7 @@ class UserController extends BaseController
 
     public function saveReferral($request,$user=null){
 
-        if($request->referal_code=='FANTASYMALIK' || $request->referal_code=='fantasymalik'){
+        if($request->referral_code=='FANTASYMALIK' || $request->referral_code=='fantasymalik'){
            $request->referal_code = "SPORTSFIGHT"; 
         }
         
