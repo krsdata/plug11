@@ -27,6 +27,16 @@
                 
                 <span class="help-block">{{ $errors->first('match_id', ':message') }}</span>
             </div>
+            Use Match id when you want change in specific match!!.
+        </div>
+        @else
+        <div class="form-group {{ $errors->first('match_id', ' has-error') }}">
+            <label class="control-label col-md-3">Match ID </label>
+            <div class="col-md-4"> 
+                {!! Form::text('match_id',$match, ['class' => 'form-control'])  !!} 
+                
+                <span class="help-block">{{ $errors->first('match_id', ':message') }}</span>
+            </div>
         </div> 
         @endif
 

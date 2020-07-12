@@ -250,7 +250,16 @@ class DefaultContestController extends Controller {
         $defaultContest->save(); 
         $default_contest_id = $id;
 
-        $match  = Matches::where('status',1)->get('match_id');
+        $match = null;
+        $match1  = Matches::where('status',1)->get('match_id');
+        if($match1){
+          $match  = $match1;
+        }
+        $match2  = Matches::where('match_id',$request->match_id)->get('match_id');
+        if($match2){
+          $match  = $match2;
+        }
+
         foreach ($match as $key => $result) {
 
             $request->merge(['match_id' => $result->match_id]);
