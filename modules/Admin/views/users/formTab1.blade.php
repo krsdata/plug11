@@ -18,9 +18,12 @@
         <label class="control-label ">Email</label>
         <input type="email" placeholder="Email" class="form-control" name="email" value="{{ ($user->email)?$user->email:old('email')}}"> 
     </div>
-    <div class="form-group {{ $errors->first('password', ' has-error') }}">
-        <label class="control-label">Password</label>
-        <input type="password" placeholder="******" class="form-control" name="password"> 
+    <div class="form-group {{ $errors->first('block_referral', ' has-error') }}">
+        <label class="control-label">Block Referral</label>
+        <select class="form-control" name="block_referral">
+            <option value="0" {{($user->block_referral==0)?'selected':''}}>No</option>
+            <option value="1" {{($user->block_referral==1)?'selected':''}}>Yes</option>
+        </select> 
     </div>
 
     @if($user->role_type==3)

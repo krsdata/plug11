@@ -55,7 +55,8 @@ class User extends Authenticatable {
                             'reference_code',
                             'team_name',
                             "dateOfBirth",
-                            "state"
+                            "state",
+                            "block_referral"
                         ];  // All field of user table h
 
 
