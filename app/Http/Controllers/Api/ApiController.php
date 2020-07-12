@@ -1152,7 +1152,7 @@ class ApiController extends BaseController
 
             foreach ($player as $key => $value) {
                 if(is_array($playing11) && count($playing11) && $value->playing_role!="wkbat"){
-                    if($value->playing_role=="bat" || $value->playing_role=="wk" || $results->playing_role=="all"){
+                    if($value->playing_role=="bat" || $value->playing_role=="wk" || $value->playing_role=="all"){
 
                     }else{
                         $value->playing_role = $playing11[$value->pid]??$value->playing_role;    
