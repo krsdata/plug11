@@ -708,18 +708,20 @@ class UserController extends BaseController
 
     public function saveReferral($request,$user=null){
 
-        if($request->referral_code=='FANTASYMALIK' || $request->referral_code=='fantasymalik'){
+        if($request->referral_code=='FANTASYMALIK' || $request->referral_code=='SV0CG'){
            $request->referal_code = "SPORTSFIGHT"; 
            $ref = "SPORTSFIGHT";
         }else{
-           $ref = $request->referal_code;  
+           $ref = $request->referral_code; 
         }
-        
         $refer_by = User::where('referal_code',$ref)
             ->first();
            
         if($refer_by && $user)
         {
+            if($refer_by->referal_code=='FANTASYMALIK'){
+                return false;
+            }
             $referralCode = new ReferralCode;
             $referralCode->referral_code    =   $ref; //$request->referral_code;
             $referralCode->user_id          =   $user->id;
@@ -923,7 +925,12 @@ class UserController extends BaseController
                         $usermodel->referal_code  = $usermodel->referal_code;
                     }else{
                         $usermodel->referal_code = $this->generateReferralCode();
-                        $usermodel->reference_code = $request->referral_code;
+                        if($request->referral_code=="FANTASYMALIK"){
+
+                        }else{
+                            $usermodel->reference_code = $request->referral_code;
+                        }
+                        
                     }
 
                     if($request->team_name){
@@ -976,7 +983,10 @@ class UserController extends BaseController
                     $user->password      = Hash::make(mt_rand(1,9));
                     $user->user_name     = $this->generateUserName();
                     $user->referal_code  = $this->generateReferralCode();
-                    $user->reference_code = $request->referral_code;
+                    if($request->referral_code=="FANTASYMALIK"){
+                        $user->reference_code = $request->referral_code;    
+                    }
+                    
                     $user->email_verified_at = 1;
                     
                     if($request->referral_code){
@@ -1147,7 +1157,6 @@ class UserController extends BaseController
                 "code"=>$code,
                 "message" => 'Invalid email or password',
                 'token' =>$token??Hash::make(1)
-
             ]);
         }
     }
