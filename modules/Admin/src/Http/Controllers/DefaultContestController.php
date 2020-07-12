@@ -259,10 +259,17 @@ class DefaultContestController extends Controller {
             $sort_by = \DB::table('contest_types')->where('id',$request->contest_type)->first()->sort_by??0;
             $request->merge(['sort_by'=>$sort_by]);
 
-            \DB::table('create_contests')
+           $cont =  \DB::table('create_contests')
+                    ->where('default_contest_id',$default_contest_id)
+                    ->where('match_id',$result->match_id)->count();
+            if($cont){
+              \DB::table('create_contests')
                     ->where('default_contest_id',$default_contest_id)
                     ->where('match_id',$result->match_id)
                     ->update($request->except(['_token','_method']));
+            } else{
+                \DB::table('create_contests')->insert($request->except('_token'));  
+            }
         }
 
         return Redirect::to(route('defaultContest'))
