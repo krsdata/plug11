@@ -109,6 +109,64 @@ class UsersController extends Controller {
                 $wallet_amount = \DB::table('wallets')->where('user_id',$item->id)->sum('amount');
                 $item->balance = $wallet_amount;
                 //SELECT payment_type, payment_type_string, sum(amount) FROM `wallet_transactions` WHERE `user_id` = 686 GROUP by payment_type
+
+                $ref_count = \DB::table('referral_codes')->where('refer_by',$item->id)->count();
+                $item->ref_count = $ref_count;
+                $account_details = \DB::table('wallet_transactions')
+                                    ->where('user_id',$item->id)
+                                    ->get()
+                                    ->groupBy('payment_type_string')
+                                    ->transform(function($item,$key){
+                                        
+                                        foreach ($item as $key => $value) {
+                                            $sum[] = $value->amount;
+                                            $payment_type_string = $value->payment_type_string;
+                                        }
+                                        $item->$payment_type_string = array_sum($sum);
+                                        return $item;
+                                    });
+                $amount['Bonus'] = 0;                    
+                foreach ($account_details as $key => $value) {
+                    $amount[$key] = $value->$key;
+                }
+                $ref_deposit = \DB::table('wallet_transactions')
+                            ->where('payment_type',3)
+                            ->where('user_id',$item->id)
+                            ->sum('amount');
+                $item->ref_deposit = $ref_deposit;
+                
+                $ref_uid = \DB::table('users')->where('reference_code',$item->referal_code)->pluck('id')->toArray();
+                
+                if($ref_uid){
+                    $reference_deposit = \DB::table('wallet_transactions')
+                            ->where('payment_type',3)
+                            ->whereIn('user_id',$ref_uid)
+                            ->sum('amount');
+                    $item->reference_deposit = $reference_deposit;    
+                }
+                
+
+                $item->amount = $amount; 
+                return $item;
+            });
+        } else {
+            $users = User::orderBy('id','desc')->Paginate($this->record_per_page);
+            $users->transform(function($item,$key){
+                $wallet_amount = \DB::table('wallets')->where('user_id',$item->id)->whereIn('payment_type',[1,2,3,4])->sum('amount');
+                $item->balance = $wallet_amount;
+                
+                $ref_count = \DB::table('referral_codes')
+                            ->where('refer_by',$item->id)
+                            ->count();
+                $item->ref_count = $ref_count;
+
+
+                $ref_deposit = \DB::table('wallet_transactions')
+                            ->where('payment_type',3)
+                            ->where('user_id',$item->id)
+                            ->sum('amount');
+                $item->ref_deposit = $ref_deposit;
+
                 $account_details = \DB::table('wallet_transactions')
                                     ->where('user_id',$item->id)
                                     ->get()
@@ -127,31 +185,17 @@ class UsersController extends Controller {
                     $amount[$key] = $value->$key;
                 }   
                 $item->amount = $amount; 
-                return $item;
-            });
-        } else {
-            $users = User::orderBy('id','desc')->Paginate($this->record_per_page);
-            $users->transform(function($item,$key){
-                $wallet_amount = \DB::table('wallets')->where('user_id',$item->id)->whereIn('payment_type',[1,2,3,4])->sum('amount');
-                $item->balance = $wallet_amount;
-                $account_details = \DB::table('wallet_transactions')
-                                    ->where('user_id',$item->id)
-                                    ->get()
-                                    ->groupBy('payment_type_string')
-                                    ->transform(function($item,$key){
-                                        
-                                        foreach ($item as $key => $value) {
-                                            $sum[] = $value->amount;
-                                            $payment_type_string = $value->payment_type_string;
-                                        }
-                                        $item->$payment_type_string = array_sum($sum);
-                                        return $item;
-                                    });
-                $amount['Bonus'] = 0;                    
-                foreach ($account_details as $key => $value) {
-                    $amount[$key] = $value->$key;
-                }   
-                $item->amount = $amount;   
+
+                $ref_uid = \DB::table('users')->where('reference_code',$item->referal_code)->pluck('id')->toArray();
+                
+                if($ref_uid){
+                    $reference_deposit = \DB::table('wallet_transactions')
+                            ->where('payment_type',3)
+                            ->whereIn('user_id',$ref_uid)
+                            ->sum('amount');
+                    $item->reference_deposit = $reference_deposit;    
+                }
+
                 return $item;
             });
             

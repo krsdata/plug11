@@ -91,7 +91,7 @@
                             <tr>
                                  <th> Sno. </th>
                                  <th>User Id</th>
-                                 <th>User Name</th>
+                                 <th>User Details</th>
                                  <th>User Referral </th>
                                  <th>Referral Code</th>
                                  <th>Team Name</th>
@@ -112,9 +112,33 @@
                             <tr>
                                  <td> {{ (($users->currentpage()-1)*15)+(++$key) }}</td>
                                  <td> {{$result->id}} </td>
-                                 <td> {{$result->user_name}}</td>
-                                 <td> {{$result->referal_code}}</td>
-                                 <td> {{$result->reference_code}}</td>
+                                 <td>
+
+                              <table class="table table-striped table-hover table-bordered">
+                                <tr>
+                                  <td>UserName</td>
+                                  <td>{{$result->user_name}}</td>    
+                                </tr>
+                                <tr>
+                                  <td>Referral</td>
+                                  <td>{{$result->referal_code}}</td>
+                                </tr>
+                                <tr>
+                                  <td>Used by</td>
+                                  <td>{{$result->ref_count}}</td>
+                                </tr>
+                                <tr>
+                                  <td>User deposit</td>
+                                  <td>{{$result->ref_deposit??0}}</td>
+                                </tr>
+                                <tr>  
+                                  <td>Referral Deposit</td>
+                                  <td>{{$result->reference_deposit??0}}</td>
+                                </tr>
+                              </table>
+                                 </td>
+                                 <td> {{$result->reference_code}}
+                                 </td>
                                  <td> {{$result->team_name}}</td>
                                 <td> {{$result->name}} </td>
                                 <td> {{$result->email}} </td>
