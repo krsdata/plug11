@@ -104,7 +104,7 @@ class UsersController extends Controller {
                         if ($role_type) {
                             $query->Where('role_type',$role_type);
                         }
-                    })->orderBy('id','desc')->Paginate($this->record_per_page);
+                    })->orderBy('id','asc')->Paginate($this->record_per_page);
             $users->transform(function($item,$key){
                 $wallet_amount = \DB::table('wallets')->where('user_id',$item->id)->sum('amount');
                 $item->balance = $wallet_amount;
