@@ -2593,12 +2593,13 @@ class ApiController extends BaseController
         $banner = \DB::table('banners')->select('title','url','actiontype')->get();
         $join_cont =  \DB::table('join_contests')->where('user_id',$user);
         $join_contests = $join_cont->get('match_id');
-        
+            
         $jm = [];
         $created_team = CreateTeam::where('user_id',$user)
            // ->where('team_join_status',1)
             ->orderBy('updated_at','desc')
             ->limit(5)
+            ->orderBy('match_id','ASC')
             ->get()
             ->groupBy('match_id');
 
@@ -3573,7 +3574,6 @@ class ApiController extends BaseController
 
         $version_code = (object)$request->deviceDetails;
         $version_code = $version_code->versionCode??null;
-       // $request->merge(['user_id'=>285]);
 
         if(!$matchVald){
             return [
@@ -4939,7 +4939,7 @@ class ApiController extends BaseController
 
     public function getMyPlayedMatches(Request $request)
     {
-         $join_contest =\DB::table('join_contests')->where('user_id',285)
+         $join_contest =\DB::table('join_contests')->where('user_id',$request->user_id)
                     ->get();
     }
 

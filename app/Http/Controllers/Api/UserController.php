@@ -708,20 +708,19 @@ class UserController extends BaseController
 
     public function saveReferral($request,$user=null){
 
-        if($request->referral_code=='FANTASYMALIK' || $request->referral_code=='SV0CG'){
-           $request->referal_code = "SPORTSFIGHT"; 
-           $ref = "SPORTSFIGHT";
+        $refer_by = User::where('referal_code',$refer_by->referral_code)
+                    ->where('block_referral',0)
+                    ->first();
+        if($refer_by){
+            //
         }else{
-           $ref = $request->referral_code; 
-        }
-        $refer_by = User::where('referal_code',$ref)
-            ->first();
+            $refer_by = User::where('referal_code','SPORTSFIGHT')
+                    ->where('block_referral',0)
+                    ->first();
+        }            
            
         if($refer_by && $user)
         {
-            if($refer_by->referal_code=='FANTASYMALIK'){
-                return false;
-            }
             $referralCode = new ReferralCode;
             $referralCode->referral_code    =   $ref; //$request->referral_code;
             $referralCode->user_id          =   $user->id;
@@ -925,12 +924,7 @@ class UserController extends BaseController
                         $usermodel->referal_code  = $usermodel->referal_code;
                     }else{
                         $usermodel->referal_code = $this->generateReferralCode();
-                        if($request->referral_code=="FANTASYMALIK"){
-
-                        }else{
-                            $usermodel->reference_code = $request->referral_code;
-                        }
-                        
+                        $usermodel->reference_code = $request->referral_code;
                     }
 
                     if($request->team_name){
@@ -983,10 +977,7 @@ class UserController extends BaseController
                     $user->password      = Hash::make(mt_rand(1,9));
                     $user->user_name     = $this->generateUserName();
                     $user->referal_code  = $this->generateReferralCode();
-                    if($request->referral_code=="FANTASYMALIK"){
-                        $user->reference_code = $request->referral_code;    
-                    }
-                    
+                    $user->reference_code = $request->referral_code;
                     $user->email_verified_at = 1;
                     
                     if($request->referral_code){
@@ -1016,7 +1007,7 @@ class UserController extends BaseController
                         if($devid<2){
                             $this->saveReferral($request,$user);
                         }
-                        
+
                         $wallet = new Wallet;
                         $wallet->user_id = $user->id;
                         $wallet->validate_user = Hash::make($user->id);
