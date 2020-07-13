@@ -2608,7 +2608,7 @@ class ApiController extends BaseController
 
                 # code...
                 $jmatches = Matches::with('teama','teamb')->where('match_id',$match_id)->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','game_state','game_state_str','current_status','competition_id','timestamp_end')
-                    ->orderBy('status','DESC')
+                    //->orderBy('status','DESC')
                     ->first();
 
                 $winning_amount = $join_cont->where('cancel_contest',0)
