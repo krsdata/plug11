@@ -339,7 +339,7 @@ class UserController extends BaseController
             $referralCode = new ReferralCode;
             $referralCode->referral_code    =   $request->referral_code;
             $referralCode->user_id          =   $user_id;
-            $referralCode->refer_by         =   $refer_by->id;
+            $referralCode->refer_by         =   $refer_by->id??$user->id;
             $referralCode->save();
 
 
