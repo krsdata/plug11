@@ -2606,10 +2606,10 @@ class ApiController extends BaseController
             foreach ($created_team as $match_id => $join_contest) {
 
                 # code...
-                $jmatches = Matches::with('teama','teamb')->where('match_id',$match_id)->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','game_state','game_state_str','current_status','competition_id','timestamp_end')
+                $jmatches = Matches::with('teama','teamb')->where('match_id',$match_id)->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','game_state','game_state_str','current_status','competition_id','timestamp_end','format_str','format')
                     //->orderBy('status','DESC')
                     ->first();
-
+                    
                 $winning_amount = $join_cont->where('cancel_contest',0)
                         ->where('user_id',$request->user_id)
                         ->where('match_id',$jmatches->match_id)
@@ -2620,11 +2620,11 @@ class ApiController extends BaseController
                 $league_title = \DB::table('competitions')->where('id',$jmatches->competition_id)
                     ->first()->title??null;
 
-                $prize = \DB::table('prize_distributions')
+                $prize = 0; /*\DB::table('prize_distributions')
                         ->where('match_id' ,$jmatches->match_id)
                         ->where('user_id',$request->user_id)
                         ->where('rank','>',0)
-                        ->sum('prize_amount');
+                        ->sum('prize_amount');*/
                         
                 $winning_amount = \DB::table('join_contests')
                         ->where('match_id' ,$jmatches->match_id)
@@ -2633,8 +2633,8 @@ class ApiController extends BaseController
                         ->sum('winning_amount');
                 
               //  $jmatches->prize_amount = $prize??$winning_amount;
-                $join_match->winning_amount = $winning_amount;
-                $join_match->prize_amount = $winning_amount??$prize;
+                $join_match->winning_amount = $winning_amount??0;
+                $join_match->prize_amount = $winning_amount??0;
                 $jmatches->league_title = $league_title;
 
                 if($jmatches->is_free==0){
@@ -2660,8 +2660,6 @@ class ApiController extends BaseController
                     if($td11<0 && $join_match->status==3){
                         $this->updatePoints($request);   
                     }
- 
-
                 }elseif($join_match->current_status==1){
                     $join_match->status_str = "Completed";
                 }else{
@@ -2716,7 +2714,7 @@ class ApiController extends BaseController
         //dd(\Carbon\Carbon::now()->endOfWeek());
         $match = Matches::whereHas('player')->with('teama','teamb')
             ->whereIn('status',[1,3])
-            ->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','date_start','date_end','game_state','game_state_str','is_free','competition_id')
+            ->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','date_start','date_end','game_state','game_state_str','is_free','competition_id','format_str','format')
             ->orderBy('is_free','DESC')
             ->orderBy('timestamp_start','ASC')
             ->whereMonth('date_start',date('m'))
@@ -2766,7 +2764,7 @@ class ApiController extends BaseController
                         $item->is_lineup = false;
                     }
 
-                    $item->league_title = $league_title;
+                    $item->league_title = $item->format_str.':'.$league_title;
                     return $item;
             });
 
