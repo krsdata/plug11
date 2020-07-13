@@ -2597,7 +2597,7 @@ class ApiController extends BaseController
         $jm = [];
         $match_ids  = CreateTeam::where('user_id',$user)
                     ->groupBy('match_id')
-                    ->orderBy('match_id','asc')
+                    ->orderBy('match_id','desc')
                     ->limit(3)
                     ->pluck('match_id')->toArray();
         
