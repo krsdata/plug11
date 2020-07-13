@@ -2595,14 +2595,15 @@ class ApiController extends BaseController
         $join_contests = $join_cont->get('match_id');
             
         $jm = [];
-        $created_team = CreateTeam::where('user_id',$user)
+        $created_team = CreateTeam::where('user_id',285)
            // ->where('team_join_status',1)
             ->orderBy('updated_at','desc')
             ->orderBy('match_id','ASC')
-            ->limit(3)
+           // ->limit(5)
             ->get()
-            ->groupBy('match_id');
-
+            ->groupBy('match_id')
+            ->slice(0,3);
+        //  dd($created_team);     
         if($created_team->count()){
             foreach ($created_team as $match_id => $join_contest) {
 
