@@ -2898,7 +2898,7 @@ class ApiController extends BaseController
             $title  = $results->title??$results->short_name;
             $fn     = explode(" ",trim($title));
             if(count($fn)>2){
-                $pname =  $fn[0][0]??.' '.$fn[1][0]??.' '.end($fn);
+                $pname =  $fn[0][0]??''.' '.$fn[1][0]??''.' '.end($fn);
             }else{
                 $f1     = reset($fn);
                 $ln     = end($fn); 
