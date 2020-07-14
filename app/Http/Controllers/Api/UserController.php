@@ -708,7 +708,7 @@ class UserController extends BaseController
 
     public function saveReferral($request,$user=null){
 
-        $refer_by = User::where('referal_code',$refer_by->referral_code)
+        $refer_by = User::where('referal_code',$request->referral_code)
                     ->where('block_referral',0)
                     ->first();
         if($refer_by){

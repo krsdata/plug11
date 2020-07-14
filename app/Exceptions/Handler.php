@@ -72,6 +72,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {   
+
       if ($exception instanceof ThrottleRequestsException) {
 
           $data['url']        = url($request->getrequestUri());
