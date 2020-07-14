@@ -1151,12 +1151,12 @@ class ApiController extends BaseController
             $player = Player::whereIn('id',$player_ids)->get();
 
             foreach ($player as $key => $value) {
-                if(is_array($playing11) && count($playing11) && $value->playing_role!="wkbat"){
-                    if($value->playing_role=="wk" || $value->playing_role=="all"){
+                if(is_array($playing11) && count($playing11) && isset($playing11[$value->pid])){
+                  //  if($value->playing_role=="wk" || $value->playing_role=="all"){
 
-                    }else{
+                 //   }else{
                         $value->playing_role = $playing11[$value->pid]??$value->playing_role;    
-                    }
+                 //   }
                 }
 
                 if($value->playing_role=="wkbat"){
