@@ -1998,7 +1998,7 @@ class ApiController extends BaseController
                 $competition->$key = $value;
             }
             $competition->save();
-            $competition_id = $competition->id;
+            $competition_id = $competition->cid;
 
             /*TEAM A*/
             $team_a = TeamA::firstOrNew(['match_id' => $data_set['match_id']]);
@@ -2103,7 +2103,7 @@ class ApiController extends BaseController
                     $competition->$key = $value;
                 }
                 $competition->save();
-                $competition_id = $competition->id;
+                $competition_id = $competition->cid;
 
                 /*TEAM A*/
                 $team_a = TeamA::firstOrNew(['match_id' => $data_set['match_id']]);
@@ -2179,7 +2179,7 @@ class ApiController extends BaseController
                 $matches->venue_id = $venue_id;
                 $matches->teama_id = $team_a_id;
                 $matches->teamb_id = $team_b_id;
-                $matches->competition_id = $toss_id;
+                $matches->competition_id = $competition_id;
 
                 $matches->save();
 
