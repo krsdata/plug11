@@ -2979,10 +2979,10 @@ class ApiController extends BaseController
     public function getSquad($match_ids=null){
 
         foreach ($match_ids as $key => $match_id) {
-            # code...
+            # code... 
             $t1 =  date('h:i:s');
             $token =  $this->token;
-            $path = $this->cric_url.'matches/'.$match_id.'/squads/?token='.$token;
+            $path = $this->cric_url.'matches/'.$match_id.'/squads/?token='.$token;  
             $data = $this->getJsonFromLocal($path);
             // update team a players
             $teama = $data->response->teama;
@@ -2994,6 +2994,10 @@ class ApiController extends BaseController
                         'match_id'=>$match_id
                     ]
                 );
+                if($squads->role!="squad"){
+                    $p11_team[$squads->player_id] = $squads->role;    
+                }
+                
 
                 $teama_obj->team_id   =  $teama->team_id;
                 $teama_obj->player_id =  $squads->player_id;
@@ -3020,13 +3024,20 @@ class ApiController extends BaseController
                 $teamb_obj->name      =  $squads->name;
                 $teamb_obj->match_id  =  $match_id;
                 $teamb_obj->save();
-
+               // $p11_team[$squads->player_id] = $squads->role;
                 $team_id[$squads->player_id] = $teamb->team_id;
+                if($squads->role!="squad"){
+                    $p11_team[$squads->player_id] = $squads->role;    
+                }
             }
             // update all players
             foreach ($data->response->players as $pkey => $pvalue)
-            {
-
+            {   
+                if(isset($p11_team) && count($p11_team)==22){
+                    if(isset($p11_team[$pvalue->pid]) && $p11_team[$pvalue->pid]){
+                        $pvalue->playing_role = $p11_team[$pvalue->pid];
+                    }
+                }
                 $data_set =   Player::firstOrNew(
                     [
                         'pid'=>$pvalue->pid,
