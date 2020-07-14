@@ -437,6 +437,9 @@ class ApiController extends BaseController
                 if($result->playing_role=='wkbat'){
                     $result->playing_role = "wk";
                 }
+                elseif($result->playing_role=='wkcap'){
+                    $result->playing_role = "wk";
+                }
 
                 $data[] = [
 
@@ -518,40 +521,40 @@ class ApiController extends BaseController
 
                 $array_sum[] = $point;
 
-                $name = explode(' ', $result->name);
-
-                $fname = $name[0]??"";
-                $lname = $name[1]??"" ;
-
-                $fl = strlen(trim($fname.trim($lname)));
-                if($fl<=10){
-                    $short_name = $result->short_name;
-                }else{
-                    if(strlen($lname)>=10)
-                    {
-                        $short_name = $lname;
-                    }
-                     else{
-                        $short_name = $fname[0].' '.$lname;
-                    }
-                }
                 if($result->role=='wkbat'){
                     $result->role = "wk";
                 }
-                $fn = explode(" ",$result->name);
-                $f1  = reset($fn);
-
-                $ln  = end($fn);
-                $fname  = reset($fn);
-                if(strlen($result->name)>15){
-                   $fname = $f1[0]??'';    
+                if($result->playing_role=='wkcap'){
+                    $result->playing_role = "wk";
                 }
+
+                $name = explode(" ",trim($result->name));
+                if(count($name)>3){
+                    $fname = $name[0][0]??'';
+                    $mname = $name[1][0]??''; 
+                    $lname = $name[2][0]??''.' '.$name[3]??'';
+                }
+                elseif(count($name)>2){
+                    $fname = $name[0][0]??'';
+                    $mname = $name[1][0]??''; 
+                    $lname = $name[2]??'';
+                }elseif(count($name)==2){
+                    $fname = $name[0][0]??'';
+                    $mname = $name[1]??''; 
+                    $lname = '';
+                }else{
+                    $fname = $result->name??'';
+                    $mname = ''; 
+                    $lname = '';
+                }
+                $name = trim($fname.' '.$mname.' '.$lname);
                 //$short_name??$result->name
+                
                 $data[] = [
                     'pid'       => $result->pid,
                     'team_id'   => $player_team_id[$result->pid]??null,
-                    'name'      => reset($fn).end($fn),
-                    'short_name'=> $fname.' '.$ln,
+                    'name'      => $name,
+                    'short_name'=> $name,
                     'points'    => (float)$point,
                     'fantasy_player_rating'    => (float)$result->rating,
                     'role'      => ($result->role=='wkbat')?'wk':$result->role,
@@ -1153,13 +1156,15 @@ class ApiController extends BaseController
             foreach ($player as $key => $value) {
                 if(is_array($playing11) && count($playing11) && isset($playing11[$value->pid])){
                   //  if($value->playing_role=="wk" || $value->playing_role=="all"){
-
                  //   }else{
-                        $value->playing_role = $playing11[$value->pid]??$value->playing_role;    
+                     //   $value->playing_role = $playing11[$value->pid]??$value->playing_role;
                  //   }
                 }
 
-                if($value->playing_role=="wkbat"){
+                if($value->playing_role=="wkcap"){
+                    $team_role["wk"][] = $value->pid;
+                }
+                elseif($value->playing_role=="wkbat"){
                     $team_role["wk"][] = $value->pid;
                 }else{   
                     $team_role[$value->playing_role][] = $value->pid;
@@ -2897,15 +2902,29 @@ class ApiController extends BaseController
 
             $title  = $results->title??$results->short_name;
             $fn     = explode(" ",trim($title));
+
             if(count($fn)>2){
-                $pname =  $fn[0][0]??''.' '.$fn[1][0]??''.' '.end($fn);
+                $fname = $fn[0][0]??'';
+                $mname = $fn[1][0]??'';
+                $lname = $fn[2][0]??'';
+                $lname2 = $fn[3]??'';
+                $pname = $fname.' '.$mname.' '.$lname.' '.$lname2;
+            }
+            elseif(count($fn)>2){
+                $fname = $fn[0][0]??'';
+                $mname = $fn[1][0]??'';
+                $lname = $fn[2]??'';
+                $pname = $fname.' '.$mname.' '.$lname;
+            }
+            elseif(count($fn)==2){
+                $fname = $fn[0][0]??'';
+                $mname = $fn[1]??'';
+                $pname = $fname.' '.$mname;
             }else{
-                $f1     = reset($fn);
-                $ln     = end($fn); 
-                $pname = $f1[0].' '.$ln;  
+                $pname  = $title;
             }
             $data['short_name'] =  $pname;
-
+            
            /* 
             if($fl>=25){
                 $data['short_name'] = $results->short_name;
@@ -2944,23 +2963,27 @@ class ApiController extends BaseController
                 continue;
             }
             $pid = $results->pid;
-             
+            $data['playing11'] =  false;
+            
             if(is_array($final_playing11) && count($final_playing11) && isset($final_playing11[$pid])){
 
                 $rol = $final_playing11[$pid]??$results->playing_role;
+
+                $data['playing11'] =  true;
+
               //  if($results->playing_role=="wk" or $results->playing_role=="all"){
               //      $rs[$results->playing_role][]  = $data;
               //  }else{
-                    $rs[$rol][]  = $data;  
+                  //  $rs[$rol][]  = $data;  
                // } 
             }
-            elseif($results->playing_role=="wkcap")
+            if($results->playing_role=="wkcap")
             {
                 $rs['wk'][]  = $data;
             }
             elseif($results->playing_role=="wkbat")
             {
-                $rs['wk'][]  = $data;
+                $rs['bat'][]  = $data;
             }else{
                 $rs[$results->playing_role][]  = $data;
             }
