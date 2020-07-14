@@ -2896,7 +2896,7 @@ class ApiController extends BaseController
             $lname = $results->last_name;
 
             $title  = $results->title??$results->short_name;
-            $fn     = explode(" ",$results->title??$results->short_name);
+            $fn     = explode(" ",trim($title));
             if(count($fn)>2){
                 $pname =  $fn[0][0].' '.$fn[1][0].' '.end($fn);
             }else{
@@ -2945,13 +2945,14 @@ class ApiController extends BaseController
             }
             $pid = $results->pid;
              
-            if(is_array($final_playing11) && count($final_playing11)){
+            if(is_array($final_playing11) && count($final_playing11) && isset($final_playing11[$pid])){
+
                 $rol = $final_playing11[$pid]??$results->playing_role;
-                if($results->playing_role=="wk" or $results->playing_role=="all"){
-                    $rs[$results->playing_role][]  = $data;
-                }else{
+              //  if($results->playing_role=="wk" or $results->playing_role=="all"){
+              //      $rs[$results->playing_role][]  = $data;
+              //  }else{
                     $rs[$rol][]  = $data;  
-                } 
+               // } 
             }
             elseif($results->playing_role=="wkcap")
             {
