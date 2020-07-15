@@ -3264,7 +3264,7 @@ class ApiController extends BaseController
         $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
        // $version_code = 
 
-        if(!$okhttp){
+        if($okhttp){
             return array(
                     'status' => false,
                     'code' => 201,
@@ -3277,7 +3277,6 @@ class ApiController extends BaseController
         $created_team_id    = $request->created_team_id;
         $contest_id         = $request->contest_id;
         $max_t = $this->maxAllowedTeam($request);
-        // join team validation 
 
         $this->matchInfo($request,'joinContest'); 
 
