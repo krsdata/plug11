@@ -63,8 +63,9 @@ class MatchContestController extends Controller {
         $created_team_id = \DB::table('join_contests')
                     ->where('contest_id',$contest_id)
                     ->where('match_id',$match_id)
+                    ->orderBy('ranks','asc')
                     ->pluck('created_team_id')
-                    ->toArray();  
+                    ->toArray();
         
         $matchTeams = MatchTeams::orderBy('id','desc')
                     ->whereIn('id',$created_team_id)
