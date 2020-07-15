@@ -67,8 +67,7 @@ class MatchContestController extends Controller {
                     ->pluck('created_team_id')
                     ->toArray();
         
-        $matchTeams = MatchTeams::orderBy('id','desc')
-                    ->whereIn('id',$created_team_id)
+        $matchTeams = MatchTeams::whereIn('id',$created_team_id)
                     ->get();                                  
             $matchTeams->transform(function($item,$key)use($contest_id){ 
                 
