@@ -24,6 +24,7 @@ use App\Models\WalletTransaction;
 use App\Models\CreateContest;
 use App\Models\CreateTeam;
 use Modules\Admin\Models\Player;
+use PDF;
 
 /**
  * Class MenuController
@@ -47,6 +48,95 @@ class MatchContestController extends Controller {
         View::share('route_url',route('matchContest'));
 
         $this->record_per_page = Config::get('app.record_per_page');
+    }
+
+    public function contestReports(MatchTeams $matchTeams, Request $request)
+    {   
+        $page_title = 'Contest Reports';
+        $sub_page_title = 'Contest Reports';
+        $page_action = 'Contest Reports'; 
+        $match_id = $request->get('match_id');
+        $contest_id = $request->get('contest_id');
+
+        $contest = CreateContest::find($contest_id);
+
+        $created_team_id = \DB::table('join_contests')
+                    ->where('contest_id',$contest_id)
+                    ->where('match_id',$match_id)
+                    ->pluck('created_team_id')
+                    ->toArray();  
+        
+        $matchTeams = MatchTeams::orderBy('id','desc')
+                    ->whereIn('id',$created_team_id)
+                    ->get();                                  
+            $matchTeams->transform(function($item,$key)use($contest_id){ 
+                
+                    $match = Match::where('match_id',$item->match_id)->select('short_title','status_str')->first();
+                    $item->status = $match->status_str??null;
+                    $item->match_name = $match->short_title??null;
+
+                    $teams = json_decode($item->teams);
+
+                    $teams = Player::where('match_id',$item->match_id)->whereIn('pid',$teams)
+                        ->get(['pid','team_id','match_id','title','short_name','playing_role','fantasy_player_rating']);
+                    $item->teams = $teams; 
+
+                    $user = User::find($item->user_id);
+                    $item->user_name = $user->name??null; 
+                    $item->referral_code = $user->reference_code??null;
+            $joinContest = JoinContest::where('match_id',$item->match_id)
+                ->where('team_count',$item->team_count)
+                ->where('contest_id',$contest_id)
+                ->where('user_id',$item->user_id)
+                ->where('created_team_id',$item->id)
+                ->first();
+
+                if($joinContest){
+                    $item->point = $joinContest->points;
+                    $item->rank  = $joinContest->ranks;
+                    $item->prize_amount = $joinContest->winning_amount;
+                }else{
+                    $item->point = 0;
+                    $item->rank  = 0;
+                    $item->prize_amount = 0;   
+                }
+                    
+                return $item; 
+            });
+
+        //dd($matchTeams);    
+        $table_cname = \Schema::getColumnListing('create_teams');
+        
+        $except = ['id','created_at','updated_at','contest_id','user_id','isWinning','edit_team_count','team_id','captain','vice_captain','trump','teams','team_join_status','points','rank','prize_amount'];
+        $data = [];
+
+        $tables[] = 'match_name';
+        $tables[] = 'status';
+        $tables[] = 'user_name';
+        $tables[] = 'referral_code';
+        $tables[] = 'rank';
+        $tables[] = 'point';
+        $tables[] = 'prize_amount';
+
+      //  $tables[] = 'join_status';
+
+        foreach ($table_cname as $key => $value) {
+
+           if(in_array($value, $except )){
+                continue;
+           }
+              
+            $tables[] = $value;
+        }
+
+        $contest_id = $request->contest_id;
+
+        $contest_type = \DB::table('contest_types')->where('id',$contest->contest_type)->first();
+        $contest_name = $contest_type->contest_type??'';
+
+        $pdf = PDF::loadView('packages::matchContest.reports', compact('matchTeams','tables','contest_id','contest_name','contest'));
+        
+        return $pdf->download('reports.pdf');
     }
 
     public function matchTeams(MatchTeams $matchTeams, Request $request)
@@ -184,11 +274,9 @@ class MatchContestController extends Controller {
 
            if(in_array($value, $except )){
                 continue;
-           }
-              
+           }     
             $tables[] = $value;
         }
-
         $contest_id = $request->contest_id;
 
         return view('packages::matchContest.matchTeams', compact('matchTeams', 'page_title', 'page_action','sub_page_title','tables','contest_id'));

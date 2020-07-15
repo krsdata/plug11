@@ -368,6 +368,11 @@ if (App::environment('prod')) {
             ]
                 ]
         );
+
+        
+        Route::get(
+            'admin/contestReports',
+            'Modules\Admin\Http\Controllers\MatchContestController@contestReports')->name('contestReports');
         
        Route::get(
             'admin/matchTeams',
