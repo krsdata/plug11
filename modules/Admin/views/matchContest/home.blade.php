@@ -83,19 +83,20 @@
                     <td> 
                         
 
-                        <a href="{{ route('prizeDistribution','search='.$result->match_id)}}">
-                            <button class="btn btn-success btn-xs">
-                               View Prize
-                            <i class="fa fa-fw fa-eye" title="edit"></i> 
-                            </button>
-                        </a>
+                        
                         <a href="{{ route('matchTeams','search='.$result->match_id.'&contest_id='.$result->id)}}">
-                            <button class="btn btn-success btn-xs">
+                            <button class="btn btn-success btn-sm">
                                View Teams
                             <i class="fa fa-fw fa-eye" title="edit"></i> 
                             </button>
+                        </a> <br><br>
+                        <a href="{{ route('contestReports','match_id='.$result->match_id.'&contest_id='.$result->id)}}">
+                            <button class="btn btn-info btn-sm">
+                               Generate Reposrt
+                            <i class="fa fa-fw fa-eye" title="edit"></i> 
+                            </button>
                         </a>
- 
+                        
                         
                          {!! Form::close() !!}
 
