@@ -488,7 +488,7 @@ class ApiController extends BaseController
                                     ->first();
                         $role_cat = ['wkcap','cap','squad'];
                        
-                        $item->role = $player_match_id[$item->pid];            
+                        $item->role = $player_match_id[$item->pid]??$item->role;            
                                     
                         if($playing11_a){
                           //  $item->role = $playing11_a->role;
