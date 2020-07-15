@@ -2626,7 +2626,7 @@ class ApiController extends BaseController
                         ->sum('winning_amount');
 
                 $join_match = $jmatches;
-                $league_title = \DB::table('competitions')->where('id',$jmatches->competition_id)
+                $league_title = \DB::table('competitions')->where('competition_id',$jmatches->competition_id)
                     ->first()->title??null;
 
                 $prize = 0; /*\DB::table('prize_distributions')
@@ -2730,7 +2730,7 @@ class ApiController extends BaseController
             ->where('timestamp_start','>=' , time())
             ->limit(10)
             ->get()->transform(function($item,$key){
-                    $league_title = \DB::table('competitions')->where('id',$item->competition_id)->first()->title??null;
+                    $league_title = \DB::table('competitions')->where('competition_id',$item->competition_id)->first()->title??null;
 
                     if($item->is_free==0){
                         $item->has_free_contest= false;
