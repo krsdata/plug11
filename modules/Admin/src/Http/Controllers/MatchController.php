@@ -427,16 +427,17 @@ class MatchController extends Controller {
                             $query->where('date_start','LIKE',"%$match_start_date%");  
                         }
                         if (!empty($status)) { 
-                            if($status==1){
-                                $query->orderBy('timestamp_start','ASC');
+                            if($status==1){ 
+                                $query->orderBy('timestamp_start','ASC');   
+                              //  ->WhereMonth('date_start',date('m'));
                                 $query->where('status',1);
                             }
                             if($status==2){ 
-                                $query->orderBy('timestamp_start','DESC');
+                                $query->orderBy('match_id','DESC');
                                 $query->where('status',2);
                             }
                             if($status==3){ 
-                                $query->orderBy('timestamp_start','DESC');
+                                $query->orderBy('match_id','asc');
                                 $query->where('status',3);
                             }
                             if($status==4){ 
@@ -451,8 +452,7 @@ class MatchController extends Controller {
                         }    
                         
                     })
-                     ->whereDate('date_start','<=',\Carbon\Carbon::today())
-                   // ->WhereMonth('date_start',date('m'))
+                   //  ->whereDate('date_start','<=',\Carbon\Carbon::today())
                     ->orderBy('date_start','desc')
                     ->Paginate($this->record_per_page);
 

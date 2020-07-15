@@ -136,7 +136,7 @@ class MatchContestController extends Controller {
 
         $pdf = PDF::loadView('packages::matchContest.reports', compact('matchTeams','tables','contest_id','contest_name','contest'));
         
-        return $pdf->download('reports.pdf');
+        return $pdf->download($contest_name.'.pdf');
     }
 
     public function matchTeams(MatchTeams $matchTeams, Request $request)
