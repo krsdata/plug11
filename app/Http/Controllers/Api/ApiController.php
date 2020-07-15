@@ -2391,7 +2391,6 @@ class ApiController extends BaseController
             ->whereIn('match_id',
                 \DB::table('join_contests')->where('user_id',$user_id)
                     ->where('created_at','>=',$date)
-                    ->orderBy('id','desc')
                     ->groupBy('match_id')
                     ->pluck('match_id')
                     ->toArray()
