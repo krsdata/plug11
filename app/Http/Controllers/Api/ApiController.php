@@ -3264,7 +3264,7 @@ class ApiController extends BaseController
         $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
        // $version_code = 
 
-        if(!$okhttp){
+        if($okhttp){
             return array(
                     'status' => false,
                     'code' => 201,
@@ -3492,36 +3492,30 @@ class ApiController extends BaseController
                         $refer_amount->save();
                          
                     }else{
-                        //dd($final_paid_amount);
-                       /* $prize_ref_depo = \DB::table('wallets')
-                            ->whereIn('payment_type',[2,3,4])
+                        $fm=$final_paid_amount;
+                        $prize_ref_depo = \DB::table('wallets')
+                            ->whereIn('payment_type',[3,4])
                             ->where('user_id',$request->user_id)
-                            ->get();
-                        if($prize_ref_depo->count() && $prize_ref_depo->sum('amount') > $final_paid_amount){
-                            $fm=0;
+                            ->get(); 
+                        if($prize_ref_depo->count() && $prize_ref_depo->sum('amount') >= $final_paid_amount){
+                            
                             foreach ($prize_ref_depo as $key => $rs) {
-                                if($rs->amount){
-                                    $w = Wallet::find($rs->id);
+                                $w = Wallet::find($rs->id);
+                                if($w->amount>0){
                                     $pay = $rs->amount;
-                                
-                                    if($pay >0 && $final_paid_amount>=$pay){
-                                        $w->amount = $rs->amount-$pay;
+                                    if($fm>$pay){
+                                        $w->amount = $pay-$w->amount;
+
+                                        $fm = $fm-$pay;
                                     }else{
-                                       // $final_paid_amount = $fm-$final_paid_amount;
-                                       // dd($final_paid_amount);
-                                        $w->amount = $rs->amount-$final_paid_amount;
+                                        $w->amount = $pay-$fm;
                                     }
+                                    $d[] = $fm;
                                     $w->save();
-                                    $fm = $fm+$pay;
-                                    if($final_paid_amount>=0){
-                                        $fpaid_amount = $final_paid_amount-$pay;
-                                    }
-                                    
                                 }
                             }
-                        }*/
-                        //else{
-
+                        }
+                        else{
                             if(isset($is_full) && $is_full->entry_fees>0){
                                 return [
                                     'session_expired'=>$this->is_session_expire,
@@ -3530,7 +3524,7 @@ class ApiController extends BaseController
                                     'message' => "You don't have sufficient balance!"
                                 ];
                             }
-                     //   }
+                       }
                     } 
 
                  //   $cc->save(); 
