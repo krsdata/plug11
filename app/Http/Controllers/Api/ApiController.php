@@ -2384,18 +2384,23 @@ class ApiController extends BaseController
 
 
 
+        $date = \Carbon\Carbon::today()->subDays(7);
+
         $completedMatches = Matches::with('teama','teamb')
             ->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','date_start','date_end','game_state','game_state_str','competition_id','current_status')
             ->whereIn('match_id',
                 \DB::table('join_contests')->where('user_id',$user_id)
+                    ->where('created_at','>=',$date)
                     ->groupBy('match_id')
+                    ->orderBy('id','desc')
                     ->pluck('match_id')
                     ->toArray()
             )
             ->whereIn('status',[2,4])
             ->orderBy('timestamp_start','desc')
-            ->get()
-            ->transform(function($items,$key)use($user_id){
+            ->get();
+
+            $completedMatches->transform(function($items,$key)use($user_id){
                 
                 $league_title = \DB::table('competitions')->where('id',$items->competition_id)->first()->title??null;
 
