@@ -356,8 +356,12 @@ class MatchController extends Controller {
     {  
         $page_title = 'Match';
         $sub_page_title = 'View Match';
-        $page_action = 'View Match'; 
-
+        $page_action = 'View Match';
+        $match_start_date =null; 
+        if($request->match_start_date){
+            $match_start_date = $request->match_start_date;    
+        }
+               
         if($request->match_id && (($request->date_start && $request->date_end) || $request->status)){
             if($request->date_end && $request->date_start){
                 $date_start = \Carbon\Carbon::createFromFormat('Y-m-d H:i',$request->date_start)
@@ -415,13 +419,14 @@ class MatchController extends Controller {
         // Search by name ,email and group
         $search = Input::get('search');
         $status = Input::get('status');
-        if ((isset($search) || isset($status))) {
+        if ((isset($search) || isset($status) || isset($match_start_date))) {
              
             $search = isset($search) ? Input::get('search') : '';
-               
-            $match = Match::with('teama','teamb')->where(function($query) use($search,$status) {    
-                        if (!empty($status) && empty($search)) {
-                           // $query->Where('status', '=', $status);
+            $match = Match::with('teama','teamb')->where(function($query) use($search,$status,$match_start_date) {
+                        if($match_start_date){
+                            $query->where('date_start','LIKE',"%$match_start_date%");  
+                        }
+                        if (!empty($status)) { 
                             if($status==1){
                                 $query->orderBy('timestamp_start','ASC');
                                 $query->where('status',1);
@@ -438,17 +443,13 @@ class MatchController extends Controller {
                                 $query->orderBy('timestamp_start','DESC');
                                 $query->where('status',4);
                             }
-                        }else{
-                            if (!empty($status) && !empty($search)) {
-                                $query->Where('match_id',$search);
-                                $query->where('status', $status);
-                            }elseif(!empty($search)){
-                                $query->orWhere('match_id',$search);
-                                $query->orWhere('status',$status);
-                                $query->orWhere('title', 'LIKE', "$search%");
-                                $query->orWhere('short_title', 'LIKE', "$search%");
-                            }    
                         }
+                        if (!empty($search)) {
+                            $query->orWhere('match_id',$search);
+                            $query->orWhere('title', 'LIKE', "$search%");
+                            $query->orWhere('short_title', 'LIKE', "$search%");
+                        }    
+                        
                     })
                      ->whereDate('date_start','<=',\Carbon\Carbon::today())
                    // ->WhereMonth('date_start',date('m'))

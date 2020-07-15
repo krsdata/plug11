@@ -72,6 +72,13 @@
                                                 </select>
                                             </div>
                                             <div class="col-md-2">
+                                              <input type="hidden" name="change_date" value="change_date">
+          <div class="form-group">
+
+            <input type="date" class="form-control  form_datetime" id="start_date" value="{{$_REQUEST['match_start_date']??'Search By Date'}}"   name="match_start_date">
+          </div>
+                                            </div>
+                                            <div class="col-md-2">
                                                 <input type="submit" value="Search" class="btn btn-primary form-control">
                                             </div>
                                            
