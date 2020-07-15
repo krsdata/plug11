@@ -121,6 +121,7 @@ class MatchContestController extends Controller {
 
                 $user = User::find($item->user_id);
                 $item->user_name = $user->name??null;
+                $item->referral_code = $user->reference_code??null;
                 $item->teams = $teams;
                 $item->join_status =  ($cc->team_join_status==1)?'<span class="btn btn-success btn-xs">Joined</span>':'<span class="btn btn-danger btn-xs">Not Joined</span>';
                 return $item; 
@@ -142,7 +143,7 @@ class MatchContestController extends Controller {
 
                     $user = User::find($item->user_id);
                     $item->user_name = $user->name??null; 
-                    
+                    $item->referral_code = $user->reference_code??null;
             $joinContest = JoinContest::where('match_id',$item->match_id)
                 ->where('team_count',$item->team_count)
                 ->where('user_id',$item->user_id)
@@ -172,6 +173,7 @@ class MatchContestController extends Controller {
         $tables[] = 'match_name';
         $tables[] = 'status';
         $tables[] = 'user_name';
+        $tables[] = 'referral_code';
         $tables[] = 'rank';
         $tables[] = 'point';
         $tables[] = 'prize_amount';
