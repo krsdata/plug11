@@ -2902,15 +2902,15 @@ class ApiController extends BaseController
 
             $title  = $results->title??$results->short_name;
             $fn     = explode(" ",trim($title));
-
-            if(count($fn)>2){
+            
+            if(count($fn)>3){
                 $fname = $fn[0][0]??'';
                 $mname = $fn[1][0]??'';
                 $lname = $fn[2][0]??'';
                 $lname2 = $fn[3]??'';
                 $pname = $fname.' '.$mname.' '.$lname.' '.$lname2;
             }
-            elseif(count($fn)>2){
+            elseif(count($fn)==3){
                 $fname = $fn[0][0]??'';
                 $mname = $fn[1][0]??'';
                 $lname = $fn[2]??'';
