@@ -2384,7 +2384,7 @@ class ApiController extends BaseController
 
 
 
-        $date = \Carbon\Carbon::today()->subDays(7);
+        $date = \Carbon\Carbon::today()->subDays(6);
 
         $completedMatches = Matches::with('teama','teamb')
             ->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','date_start','date_end','game_state','game_state_str','competition_id','current_status')
