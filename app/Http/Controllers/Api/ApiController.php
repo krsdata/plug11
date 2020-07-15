@@ -3264,7 +3264,7 @@ class ApiController extends BaseController
         $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
        // $version_code = 
 
-        if($okhttp){
+        if(!$okhttp){
             return array(
                     'status' => false,
                     'code' => 201,
@@ -3429,8 +3429,6 @@ class ApiController extends BaseController
 
                 $ctid  = CreateTeam::find($ct_id);
                 $data['team_count'] = $ctid->team_count??null;
-
-
 
                     $total_fee          =  $cc->entry_fees;
                     $payable_amount     =  $total_fee; 
