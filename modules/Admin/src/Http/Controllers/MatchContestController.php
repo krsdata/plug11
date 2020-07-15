@@ -63,11 +63,11 @@ class MatchContestController extends Controller {
         $created_team_id = \DB::table('join_contests')
                     ->where('contest_id',$contest_id)
                     ->where('match_id',$match_id)
-                    ->orderBy('ranks','asc')
                     ->pluck('created_team_id')
                     ->toArray();
-        
+
         $matchTeams = MatchTeams::whereIn('id',$created_team_id)
+                    ->orderBy('points' ,'DESC')
                     ->get();                                  
             $matchTeams->transform(function($item,$key)use($contest_id){ 
                 
