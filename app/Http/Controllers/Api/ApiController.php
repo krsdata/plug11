@@ -2987,7 +2987,7 @@ class ApiController extends BaseController
             }
             elseif($results->playing_role=="wkbat")
             {
-                $rs['bat'][]  = $data;
+                $rs['wk'][]  = $data;
             }else{
                 $rs[$results->playing_role][]  = $data;
             }
