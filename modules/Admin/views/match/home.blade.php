@@ -293,7 +293,7 @@
                                          <td> {{$result->status_str}} </td>
                                          <td> 
                                           {{
-                                            date('Y-m-d h:i:s A',$result->timestamp_start)
+                                            date('D d, M Y h:i A',$result->timestamp_start)
                                           }}
                                             
                                         </td>
