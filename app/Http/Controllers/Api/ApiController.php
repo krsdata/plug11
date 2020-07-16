@@ -2721,7 +2721,7 @@ class ApiController extends BaseController
 
             $data['matchdata'][] = [
                 'viewType'=>1,
-                'joinedmatches'=>null //array_values($jm)
+                'joinedmatches'=>array_values($jm)
             ];
         }
         //dd(\Carbon\Carbon::now()->endOfWeek());
