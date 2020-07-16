@@ -2693,7 +2693,7 @@ class ApiController extends BaseController
                         $request->merge(['match_id'=>$jmatches->match_id]);
                         $request->merge(['status'=>3]);
                         if($td11<0){
-                            $this->updatePoints($request);     
+                          //  $this->updatePoints($request);     
                         }
                     }
                 }                
