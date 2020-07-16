@@ -610,7 +610,7 @@ class ApiController extends BaseController
                         $ct = CreateTeam::where('id',$item->created_team_id)
                             ->where('match_id',$item->match_id)
                             ->first();
-
+                    
                         $contest_id = $item->contest_id;    
                         $teams  = json_decode($ct->teams);
 
