@@ -610,8 +610,8 @@ class ApiController extends BaseController
                         $ct = CreateTeam::where('id',$item->created_team_id)
                             ->where('match_id',$item->match_id)
                             ->first();
-                    
-                        $contest_id = $item->contest_id;    
+                        if(isset($ct->teams)){
+                            $contest_id = $item->contest_id;    
                         $teams  = json_decode($ct->teams);
 
                         $mp     = MatchPoint::where('match_id',$item->match_id)
@@ -645,6 +645,8 @@ class ApiController extends BaseController
                             $jc_object->points = $total_points;
                             $jc_object->save();
                     });
+                        }
+                        
             });
         return [
             'status'=>true,
