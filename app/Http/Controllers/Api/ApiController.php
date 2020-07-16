@@ -692,6 +692,7 @@ class ApiController extends BaseController
    
     // update points by LIVE Match
     public function updatePoints(Request $request){
+        return false;
        // sleep(1);
         if($request->match_id){
             if($request->status==3){
@@ -2671,7 +2672,7 @@ class ApiController extends BaseController
                     $td11 = round((($t11 - $t21)/60),2);
                        
                     if($td11<0 && $join_match->status==3){
-                        $this->updatePoints($request);   
+                       // $this->updatePoints($request);   
                     }
                 }elseif($join_match->current_status==1){
                     $join_match->status_str = "Completed";
