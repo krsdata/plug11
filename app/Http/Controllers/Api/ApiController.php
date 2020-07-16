@@ -610,8 +610,8 @@ class ApiController extends BaseController
                         $ct = CreateTeam::where('id',$item->created_team_id)
                             ->where('match_id',$item->match_id)
                             ->first();
-                        if(isset($ct->teams)){
-                            $contest_id = $item->contest_id;    
+
+                        $contest_id = $item->contest_id;    
                         $teams  = json_decode($ct->teams);
 
                         $mp     = MatchPoint::where('match_id',$item->match_id)
@@ -645,8 +645,6 @@ class ApiController extends BaseController
                             $jc_object->points = $total_points;
                             $jc_object->save();
                     });
-                        }
-                        
             });
         return [
             'status'=>true,
@@ -3533,7 +3531,7 @@ class ApiController extends BaseController
                  //   $cc->save(); 
                     // transaction histoory
                     $tid = $request->match_id.'-'.$request->contest_id.'-'.$request->user_id;
-
+                    
                     if($final_paid_amount){
                         $wt =  new WalletTransaction;
                         $wt->user_id = $user_id;
@@ -3541,7 +3539,7 @@ class ApiController extends BaseController
                         $wt->payment_type = 6;
                         $wt->payment_type_string = 'Join Contest';
                         $wt->transaction_id = $tid;
-                        $wt->payment_mode =  'sf';
+                        $wt->payment_mode =  'Sportfight';
                         $wt->payment_status =  'Success';
                         $wt->debit_credit_status = "-";
                         $wt->payment_details = json_encode($request->all());
