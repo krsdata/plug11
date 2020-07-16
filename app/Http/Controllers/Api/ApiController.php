@@ -3370,7 +3370,7 @@ class ApiController extends BaseController
         if($ct)
         {   //sleep(1;);
             foreach ($created_team_id as $key => $ct_id) {
-             //   \DB::beginTransaction();
+               \DB::beginTransaction();
                 
                 $is_full = CreateContest::find($contest_id);
                 if($is_full==null){
@@ -3534,14 +3534,19 @@ class ApiController extends BaseController
 
                  //   $cc->save(); 
                     // transaction histoory
+                    $contest_id = $request->contest_id;
+                    $match_id = $request->match_id;
+
                     if($final_paid_amount){
                         $wt =  new WalletTransaction;
                         $wt->user_id = $user_id;
                         $wt->amount  =$final_paid_amount;
+                        $wt->match_id  =$match_id??null;
+                        $wt->contest_id  =$contest_id??null;
                         $wt->payment_type = 6;
                         $wt->payment_type_string = 'Join Contest';
-                        $wt->transaction_id = time().'-'.$user_id;
-                        $wt->payment_mode =  'Sportfight';
+                        $wt->transaction_id = $match_id.'-'.$contest_id.'-'.$user_id;
+                        $wt->payment_mode =  'sf';
                         $wt->payment_status =  'Success';
                         $wt->debit_credit_status = "-";
                         $wt->payment_details = json_encode($request->all());
@@ -3575,7 +3580,7 @@ class ApiController extends BaseController
                 $is_full->filled_spot =  $c_count;
                 $is_full->save();
 
-          //  \DB::commit();
+            \DB::commit();
 
             }
             $message = "Team created successfully!";
