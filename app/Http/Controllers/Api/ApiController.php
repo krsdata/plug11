@@ -612,9 +612,10 @@ class ApiController extends BaseController
                             ->first();
 
                         $contest_id = $item->contest_id;    
-                        $teams  = json_decode($ct->teams);
+                        try{
+                            $teams  = json_decode($ct->teams);
 
-                        $mp     = MatchPoint::where('match_id',$item->match_id)
+                            $mp     = MatchPoint::where('match_id',$item->match_id)
                                 ->get();
 
                             $data['points'] = [];    
@@ -644,6 +645,9 @@ class ApiController extends BaseController
                             $jc_object = JoinContest::find($join_contest_id);
                             $jc_object->points = $total_points;
                             $jc_object->save();
+                         }catch(\Exception $e){
+                            return false;  
+                        }    
                     });
             });
         return [
@@ -692,7 +696,6 @@ class ApiController extends BaseController
    
     // update points by LIVE Match
     public function updatePoints(Request $request){
-        return false;
        // sleep(1);
         if($request->match_id){
             if($request->status==3){
@@ -709,7 +712,7 @@ class ApiController extends BaseController
                     ->get();
         }
         $m = [];
-
+        //dd($matches);
         foreach ($matches as $key => $match) {   # code...
             $points = file_get_contents($this->cric_url.'matches/'.$match->match_id.'/point?token='.$this->token);
             $points_json = json_decode($points);
