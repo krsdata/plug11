@@ -2675,7 +2675,7 @@ class ApiController extends BaseController
                     $td11 = round((($t11 - $t21)/60),2);
                        
                     if($td11<0 && $join_match->status==3){
-                       // $this->updatePoints($request);   
+                        $this->updatePoints($request);   
                     }
                 }elseif($join_match->current_status==1){
                     $join_match->status_str = "Completed";
@@ -2697,7 +2697,7 @@ class ApiController extends BaseController
                         $request->merge(['match_id'=>$jmatches->match_id]);
                         $request->merge(['status'=>3]);
                         if($td11<0){
-                          //  $this->updatePoints($request);     
+                            $this->updatePoints($request);     
                         }
                     }
                 }                
