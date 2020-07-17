@@ -36,7 +36,6 @@ use App\Models\MatchStat;
 use App\Models\ReferralCode;
 use File;
 use Ixudra\Curl\Facades\Curl;
-use Detection\MobileDetect as Mobile_Detect;
 use Jenssegers\Agent\Agent;
 
 
@@ -50,7 +49,6 @@ class ApiController extends BaseController
 
     public function __construct(Request $request) {
 
-        $detect = new Mobile_Detect;
 
         $agent      = new Agent();
 
@@ -65,7 +63,7 @@ class ApiController extends BaseController
         $data['request']    = json_encode($request->all());
         \DB::table('device_details')->insert($data);
 
-        if( $detect->isAndroidOS() || $detect->isMobile() ){
+        if($agent->isAndroidOS()){
            // $detect->version('Android');
         }else{
             die('Access Deny!');
