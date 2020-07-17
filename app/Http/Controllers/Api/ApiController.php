@@ -71,6 +71,7 @@ class ApiController extends BaseController
             "code" => 201,
             "Message" => "Access Deny"
           ];
+          exit();
         }
 
         $this->date = date('Y-m-d');
