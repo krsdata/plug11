@@ -1719,7 +1719,6 @@ class ApiController extends BaseController
                 }
                 //notification per
                 $data2['contest_type_id'] =   $result->contest_type;
-                $data2['match_id'] =   $result->match_id;
                 $data2['isCancelled'] =   $result->is_cancelled?true:false;
                 $data2['maxAllowedTeam'] =   $result->contestType->max_entries??1;
                 $data2['usable_bonus'] =   $result->usable_bonus;
