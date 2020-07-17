@@ -17,9 +17,7 @@
         "laravel/tinker": "^1.0",
         "laravelcollective/html": "^6.0",
         "phpmailer/phpmailer": "^5.2",
-        "mobiledetect/mobiledetectlib": "^2.8",
-        "jenssegers/agent"
-
+        "mobiledetect/mobiledetectlib": "^2.8"
     },
     "require-dev": {
         "facade/ignition": "^1.4",
