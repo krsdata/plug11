@@ -62,7 +62,7 @@ class ApiController extends BaseController
         $platform = $agent->platform();
         $data['version']    = $agent->version($platform);
         $data['user_id']    = $request->user_id;
-        $data['request']    = $request->all();
+        $data['request']    = json_encode($request->all());
         \DB::table('device_details')->insert($data);
 
         if( $detect->isAndroidOS() || $detect->isMobile() ){
