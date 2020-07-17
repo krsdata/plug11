@@ -61,16 +61,16 @@ class ApiController extends BaseController
         $data['version']    = $agent->version($platform);
         $data['user_id']    = $request->user_id;
         $data['request']    = json_encode($request->all());
-        \DB::table('device_details')->insert($data);
+       // \DB::table('device_details')->insert($data);
 
         if($data['robotName']==='Okhttp' || $data['robotName']==='Curl'){
            // $detect->version('Android');
-        }else{
-          return [
+        }else{ 
+          echo json_encode([
             "status" => false,
-            "code" => 201,
+            "code" => 401,
             "Message" => "Access Deny"
-          ];
+          ]);
           exit();
         }
 
