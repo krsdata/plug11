@@ -67,9 +67,9 @@ class ApiController extends BaseController
            // $detect->version('Android');
         }else{
           return [
-            "status":false,
-            "code":201,
-            "Message":"Access Deny"
+            "status" => false,
+            "code" => 201,
+            "Message" => "Access Deny"
           ];
         }
 
