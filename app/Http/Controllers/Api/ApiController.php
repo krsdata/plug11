@@ -48,7 +48,6 @@ class ApiController extends BaseController
     public $is_session_expire;
 
     public function __construct(Request $request) {
-
         $agent      = new Agent();
 
         $data['platform']   = $agent->platform();
@@ -2953,9 +2952,9 @@ class ApiController extends BaseController
         $data['matchdata'][] = ['viewType'=>3,'upcomingmatches'=>$match];
         
         Log::channel('getMatch')->info($request->all());
-        
+       
         return [
-            'maintainance'=>true,
+            'maintainance'=>env('DEVELOPMENT')??false,
             'session_expired'=>$this->is_session_expire,
             'total_result'=>count($match),
             'status'=>true,
