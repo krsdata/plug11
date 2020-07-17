@@ -228,8 +228,11 @@ Route::group([
 
     Route::match(['post','get'],'eventLog', 'Api\ApiController@eventLog');
     
-
     Route::match(['post','get'],'getContestByType', 'Api\ApiController@getContestByType');
+
+    Route::match(['post','get'],'detectDevice', 'Api\ApiController@detectDevice');
+
+    
     }
 );
 

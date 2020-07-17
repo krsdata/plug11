@@ -36,6 +36,7 @@ use App\Models\MatchStat;
 use App\Models\ReferralCode;
 use File;
 use Ixudra\Curl\Facades\Curl;
+use Detection\MobileDetect as Mobile_Detect;
 
 class ApiController extends BaseController
 {
@@ -46,6 +47,15 @@ class ApiController extends BaseController
     public $is_session_expire;
 
     public function __construct(Request $request) {
+
+        $detect = new Mobile_Detect;
+         
+        if( $detect->isAndroidOS() || $detect->isMobile() ){
+           // $detect->version('Android');
+        }else{
+            die('Access Deny!');
+        }
+
         $this->date = date('Y-m-d');
         $this->token = env('CRIC_API_KEY',"8740931958a5c24fed8b66c7609c1c49");
         $request->headers->set('Accept', 'application/json');
@@ -1494,6 +1504,7 @@ class ApiController extends BaseController
     }
     // get contest details by match id
     public function getContestByType(Request $request){
+
         $contest_type_id = $request->contest_type_id;
 
         $match_id =  $request->match_id;
@@ -5878,5 +5889,16 @@ class ApiController extends BaseController
                     "message" => "success"
                 ]
             );
+    }
+
+    public function detectDevice(Request $request){
+
+        try{
+            
+
+        }catch(\Exception $e){
+
+        }
+
     }
 }

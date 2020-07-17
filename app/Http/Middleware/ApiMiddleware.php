@@ -16,9 +16,7 @@ class ApiMiddleware
      * @return mixed
      */
     public function handle($request, Closure $next)
-    {
-       
-          
+    {  
         //dd(str_random());
         return $next($request);
     }

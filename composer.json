@@ -16,7 +16,10 @@
         "laravel/passport": "^8.4",
         "laravel/tinker": "^1.0",
         "laravelcollective/html": "^6.0",
-        "phpmailer/phpmailer": "^5.2"
+        "phpmailer/phpmailer": "^5.2",
+        "mobiledetect/mobiledetectlib": "^2.8",
+        "jenssegers/agent"
+
     },
     "require-dev": {
         "facade/ignition": "^1.4",
