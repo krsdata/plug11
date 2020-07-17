@@ -63,10 +63,14 @@ class ApiController extends BaseController
         $data['request']    = json_encode($request->all());
         \DB::table('device_details')->insert($data);
 
-        if($agent->isAndroidOS()){
+        if($data['robotName']==='Okhttp' || $data['robotName']==='Curl'){
            // $detect->version('Android');
         }else{
-          //  die('Access Deny!');
+          return [
+            "status":false,
+            "code":201,
+            "Message":"Access Deny"
+          ];
         }
 
         $this->date = date('Y-m-d');
