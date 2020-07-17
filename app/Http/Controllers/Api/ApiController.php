@@ -66,7 +66,7 @@ class ApiController extends BaseController
         if($agent->isAndroidOS()){
            // $detect->version('Android');
         }else{
-            die('Access Deny!');
+          //  die('Access Deny!');
         }
 
         $this->date = date('Y-m-d');
