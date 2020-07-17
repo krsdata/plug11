@@ -53,12 +53,13 @@ class ApiController extends BaseController
         $detect = new Mobile_Detect;
 
         $agent      = new Agent();
-        
+
         $data['platform']   = $agent->platform();
         $data['device']     = $agent->device();
         $browser            = $agent->browser();
         $data['robot']      = $agent->isRobot();
         $data['robotName']  = $agent->robot();
+        $platform = $agent->platform();
         $data['version']    = $agent->version($platform);
         $data['user_id']    = $request->user_id;
         $data['request']    = $request->all();
