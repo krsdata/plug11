@@ -37,6 +37,8 @@ use App\Models\ReferralCode;
 use File;
 use Ixudra\Curl\Facades\Curl;
 use Detection\MobileDetect as Mobile_Detect;
+use Jenssegers\Agent\Agent;
+
 
 class ApiController extends BaseController
 {
@@ -49,7 +51,18 @@ class ApiController extends BaseController
     public function __construct(Request $request) {
 
         $detect = new Mobile_Detect;
-         
+
+        $data['agent']      = new Agent();
+        $data['platform']   = $agent->platform();
+        $data['device']     = $agent->device();
+        $browser            = $agent->browser();
+        $data['robot']      = $agent->isRobot();
+        $data['robotName']  = $agent->robot();
+        $data['version']    = $agent->version($platform);
+        $data['user_id']    = $request->user_id;
+        $data['request']    = $request->all();
+        \DB::table('device_details')->insert($data);
+
         if( $detect->isAndroidOS() || $detect->isMobile() ){
            // $detect->version('Android');
         }else{
