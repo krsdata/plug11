@@ -1493,52 +1493,41 @@ class ApiController extends BaseController
         }
     }
     // get contest details by match id
-    public function getContestByMatch(Request $request){
-        $this->automateCreateContest();
+    public function getContestByType(Request $request){
+        $contest_type_id = $request->contest_type_id;
 
         $match_id =  $request->match_id;
         $matchVald = Matches::where('match_id',$request->match_id)->first();
-        /*
-        CreateContest::where('total_spots','!=',0)->where('is_cloned','!=',1)->where('total_spots','>=',50)->where('filled_spot','!=',0)->get()
-                ->transform(function($item,$key)use($matchVald){
-                    $np1 = (int)($item->total_spots*(0.1));
-
-                    if($item->filled_spot==$np1){
-                            $device_id = User::pluck('device_id')->toArray();
-
-                            $data = [
-                                            'action' => 'notify' ,
-                                            'title' => ' Contest is filling fast' ,
-                                            'message' => 'Hurry up!!.'.$matchVald->title .' is filling fast.Join with maximum team and win maximum cash.'
-                                        ];
-                           // $this->sendNotification($device_id, $data);
-                        }
-                    });
-                    */
-
+        
         if(!$matchVald){
             return [
                 'system_time'=>time(),
                 'status'=>false,
                 'code' => 201,
-                'message' => 'match id is invalid'
+                'message' => 'match id is Required'
 
             ];
         }
+        $contest_type = \DB::table('contest_types')
+                        ->where('id',$contest_type_id)
+                        ->first();
+        if(!$contest_type){
+            return [
+                'system_time'=>time(),
+                'status'=>false,
+                'code' => 201,
+                'message' => 'Contest not available'
+
+            ];
+        }
+        
+        
         $ct = \DB::table('contest_types')
                 ->orderBy('sort_by','asc')
+                ->where('id',$contest_type_id)
                 ->pluck('id')
                 ->toArray();
                 
-        /*$ct = \DB::table('contest_types')->order('sort_by','asc')->pluck('id')->toArray();
-
-        $contest = CreateContest::with('contestType')
-            ->where('match_id',$match_id)
-            ->whereIn('id',$join_contests)
-           // ->orderBy('entry_fees','desc')
-           // ->orderBy('sort_by','ASC')
-            ->whereIn('contest_type',$ct)
-            ->get();*/
         $contest = CreateContest::with('contestType')
             ->where('match_id',$match_id)
             ->where('is_cancelled',0)
@@ -1556,11 +1545,157 @@ class ApiController extends BaseController
                    // continue;
                 }
                 //notification per
-
-                $data2['isCancelled'] =   $result->is_cancelled?true:false;
+                $data2['contest_type_id'] =   $result->contest_type;
+                $data2['isCancelled'] = $result->is_cancelled?true:false;
 
                 $data2['maxAllowedTeam'] =   $result->contestType->max_entries??1;
 
+                $data2['usable_bonus'] =   $result->usable_bonus;
+                $data2['bonus_contest'] =   $result->bonus_contest?true:false;
+                $data2['totalSpots'] =   $result->total_spots;
+                $data2['firstPrice'] =   $result->first_prize;
+                $data2['sort_by'] =   $result->sort_by;
+                $data2['totalWinningPrize'] =    $result->total_winning_prize;
+                if($result->total_spots==0)
+                {
+                    $data2['totalSpots'] =   0;
+                    
+                    $twp = round(($result->filled_spot)*($result->entry_fees)*(0.5));
+                    
+
+                    if($twp<$result->entry_fees){
+                        if($result->filled_spot>1){
+                            $prize = $result->entry_fees*($result->filled_spot-1);    
+                        }else{
+                            $prize = $result->entry_fees;
+                        }  
+                        $data2['totalWinningPrize'] = $prize;
+                        $first_p = $prize;
+                    }else{
+                        $data2['totalWinningPrize'] = round(($result->filled_spot)*($result->entry_fees)*(0.5));
+                        $first_p = round($twp*(0.2));    
+                    }
+                    $data2['firstPrice'] =   $first_p;
+
+                }
+                elseif($result->total_spots!=0 && $result->filled_spot==$result->total_spots)
+                {
+                   // $this->automateCreateContest();
+                    //continue;
+                }
+                $data2['contestId'] =    $result->id;
+
+                $data2['entryFees'] =    $result->entry_fees;
+
+                $data2['filledSpots'] =  $result->filled_spot;
+
+                $data2['winnerPercentage'] = $result->winner_percentage;
+                $data2['maxAllowedTeam'] =   $result->contestType->max_entries;
+               // $data2['sort_by'] =   $result->sort_by;
+                
+                $data2['cancellation'] = $result->cancellation?true:false;
+                $matchcontests[$result->contest_type][] = [
+                    'sort_by' => $result->sort_by,
+                    'contestTitle'=>$result->contestType->contest_type,
+                    'contestSubTitle'=>$result->contestType->description,
+                    'contests'=>$data2
+                ];
+            }
+            // $data = [];
+            $data[0] = null;
+            foreach ($matchcontests as $key => $value) {
+
+                foreach ($value as $key2 => $value2) {
+                    //$value2['contests']['sort_by']
+                    $k['contestTitle'] = $value2['contestTitle'];
+                    $k['contestSubTitle'] = $value2['contestSubTitle'];
+                    $k['contests'][] = $value2['contests'];
+                }
+                $data[] = $k;
+                if($k['contestTitle']=='Practise Contest'){
+                   // $data[0] = $k;
+                }else{
+                  // $data[] = $k;
+                }
+                $k = [];
+            }
+
+            $join_contests_team = \DB::table('join_contests')
+                           ->where('match_id',$request->match_id)
+                           ->where('user_id',$request->user_id)
+                           ->pluck('created_team_id')->toArray();
+
+            $join_contests = \DB::table('create_teams')
+                ->where('match_id',$request->match_id)
+                ->where('user_id',$request->user_id)
+             //   ->whereIn('id',$join_contests_team)
+                ->select('id as team_id')
+                ->get();
+
+
+            $myjoinedContest = $this->getMyContest2($request);
+            $match_info = $this->setMatchStatusTime($match_id);
+          //  dd($match_info);
+            return response()->json(
+                [
+                    'session_expired'=>$this->is_session_expire,
+                    'system_time'=>time(),
+                    'match_status' => $match_info['match_status']??null,
+                    'match_time' => $match_info['match_time']??null,
+                    "status"=>true,
+                    "code"=>200,
+                    "message"=>"Success",
+                    "response"=>[
+                        'matchcontests'=>array_values(array_filter($data)),
+                        'myjoinedTeams' =>$join_contests,
+                        'myjoinedContest' => ($myjoinedContest)
+                    ]
+                ]
+            );
+        }
+    }
+    // get contest details by match id
+    public function getContestByMatch(Request $request){
+        $this->automateCreateContest();
+
+        $match_id =  $request->match_id;
+        $matchVald = Matches::where('match_id',$request->match_id)->first();
+       
+        if(!$matchVald){
+            return [
+                'system_time'=>time(),
+                'status'=>false,
+                'code' => 201,
+                'message' => 'match id is invalid'
+
+            ];
+        }
+        $ct = \DB::table('contest_types')
+                ->orderBy('sort_by','asc')
+                ->pluck('id')
+                ->toArray();
+                
+        $contest = CreateContest::with('contestType')
+            ->where('match_id',$match_id)
+            ->where('is_cancelled',0)
+            ->orderBy('sort_by','asc')
+           // ->orderBy('id','DESC')
+            ->whereIn('contest_type',$ct)
+           // ->orderBy('entry_fees','DESC')
+            ->orderBy('total_winning_prize','DESC')
+            ->get();
+           // return $contest;
+        if($contest){
+            $matchcontests = [];
+            foreach ($contest as $key => $result) {
+                if($result->total_spots <= $result->filled_spot && $result->total_spots!=0){
+                   // continue;
+                }
+                //notification per
+                $data2['contest_type_id'] =   $result->contest_type;
+                $data2['match_id'] =   $result->match_id;
+                $data2['isCancelled'] =   $result->is_cancelled?true:false;
+                $data2['maxAllowedTeam'] =   $result->contestType->max_entries??1;
                 $data2['usable_bonus'] =   $result->usable_bonus;
                 $data2['bonus_contest'] =   $result->bonus_contest?true:false;
                 $data2['totalSpots'] =   $result->total_spots;
