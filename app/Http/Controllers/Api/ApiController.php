@@ -1665,6 +1665,7 @@ class ApiController extends BaseController
           //  dd($match_info);
             return response()->json(
                 [
+                    'maintainance'=>env('DEVELOPMENT')??false,
                     'session_expired'=>$this->is_session_expire,
                     'system_time'=>time(),
                     'match_status' => $match_info['match_status']??null,
