@@ -49,7 +49,6 @@ class ApiController extends BaseController
 
     public function __construct(Request $request) {
 
-
         $agent      = new Agent();
 
         $data['platform']   = $agent->platform();
@@ -63,7 +62,7 @@ class ApiController extends BaseController
         $data['request']    = json_encode($request->all());
        // \DB::table('device_details')->insert($data);
 
-        if($data['robotName']==='Okhttp' || $data['robotName']==='Curl'){
+        if($data['robotName']==='Okhttp' || $data['robotName']==='Curl' || $request->allowme){
            // $detect->version('Android');
         }else{ 
           echo json_encode([
@@ -1772,7 +1771,9 @@ class ApiController extends BaseController
                     'sort_by' => $result->sort_by,
                     'contestTitle'=>$result->contestType->contest_type,
                     'contestSubTitle'=>$result->contestType->description,
-                    'contests'=>$data2
+                    'contests'=>$data2,
+                    'contest_type_id' =>   $result->contest_type
+                
                 ];
             }
             // $data = [];
@@ -1781,12 +1782,13 @@ class ApiController extends BaseController
 
                 foreach ($value as $key2 => $value2) {
                     //$value2['contests']['sort_by']
+                    $k['contest_type_id'] = $value2['contest_type_id'];
                     $k['contestTitle'] = $value2['contestTitle'];
                     $k['contestSubTitle'] = $value2['contestSubTitle'];
                     $k['contests'][] = $value2['contests'];
                 }
                 $data[] = $k;
-                if($k['contestTitle']=='Practise Contest'){
+                if(isset($k['contestTitle']) && $k['contestTitle']=='Practise Contest'){
                    // $data[0] = $k;
                 }else{
                   // $data[] = $k;
