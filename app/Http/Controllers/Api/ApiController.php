@@ -2782,7 +2782,6 @@ class ApiController extends BaseController
         //  dd($created_team);     
         if($created_team->count()){
             foreach ($created_team as $match_id => $join_contest) {
-
                 # code...
                 $jmatches = Matches::with('teama','teamb')->where('match_id',$match_id)->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','game_state','game_state_str','current_status','competition_id','timestamp_end','format_str','format')
                     //->orderBy('status','DESC')
@@ -2952,6 +2951,7 @@ class ApiController extends BaseController
         Log::channel('getMatch')->info($request->all());
         
         return [
+            'maintainance':false,
             'session_expired'=>$this->is_session_expire,
             'total_result'=>count($match),
             'status'=>true,
