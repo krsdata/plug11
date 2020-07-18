@@ -5377,7 +5377,7 @@ class ApiController extends BaseController
                     )->where('playing11','true')->count();
 
             if($td>0 && $td<=90){
-                if($p111){
+                if($p11){
                     $this->isLineUp($match_id);
                 }
             }else{
