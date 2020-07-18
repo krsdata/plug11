@@ -82,7 +82,8 @@ class Helper {
         } 
     }
     public function notifyToAdmin($title=null,$message=null){ 
-        $user_email = [env('admin1_email','manoj.i.prasad@gmail.com'),env('admin2_email','kroy.aws@gmail.com'),env('admin3_email','rp.yadav775@gmail.com')];
+      //env('admin1_email','manoj.i.prasad@gmail.com'),
+        $user_email = [env('admin2_email','kroy.aws@gmail.com'),env('admin3_email','rp.yadav775@gmail.com')];
 
         $device_id = User::whereIn('email',$user_email)->pluck('device_id')->toArray();
           

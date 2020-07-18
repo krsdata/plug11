@@ -4932,7 +4932,8 @@ class ApiController extends BaseController
     }
 
     public function notifyToAdmin(){
-        $user_email = [env('admin1_email','manoj.i.prasad@gmail.com'),env('admin2_email','kroy.aws@gmail.com')];
+        //env('admin1_email','manoj.i.prasad@gmail.com'),
+        $user_email = [env('admin2_email','kroy.aws@gmail.com')];
 
         $user = User::whereIn('email',$user_email)->get();
         foreach ($user as $key => $result) {
