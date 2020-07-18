@@ -5376,14 +5376,13 @@ class ApiController extends BaseController
                         ]
                     )->where('playing11','true')->count();
 
-            if($td>0 && $td<=60){
-                if($p11){
+            if($td>0 && $td<=90){
+                if($p111){
                     $this->isLineUp($match_id);
                 }
             }else{
                 continue;
             }
-
             if($p11){
                 if($match->status==1){
                     $match_obj = Matches::firstOrNew(
@@ -5465,23 +5464,23 @@ class ApiController extends BaseController
                             $device_id = User::whereNotNull('device_id')->pluck('device_id')->toArray();
                                                                   
                             if($td>0 && $td%5==0){
-                                $title = "🏏 $item->short_title  🕚 🏆🏆";
-
+                                $title = "🏏 $item->short_title - $item->format_str 🕚 ".date('h:i A',$t1);
+                                
                                 $msg = 'Contest is filling fast. Create your team and join the contest. Hurry up!!';
 
                                 $helper = new Helper;
                                 $helper->notifyToAll($title,$msg);
                             }
                             //&& $td%5==0
-                            if($lineup || $td > 0 ){ 
+                            if($lineup || $td > 1){ 
                                 $td = (int)$td;
                                 if($td>30){
                                     $msg = "$td minute left. Create, Join or edit  your team";
                                 }else{
                                     $msg = "Last $td minute left.Create, Join or edit  your team. Hurry Up!!";
                                 }
-                                $title = "🏏 $item->short_title  🕚 🏆🏆";
-
+                                $title = "🏏 $item->short_title  🕚Deadline - ".date('h:i A',$t1);
+                                
                                 $helper = new Helper;
                                 $helper->notifyToAll($title,$msg);
                                
