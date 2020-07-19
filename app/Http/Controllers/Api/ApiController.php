@@ -2794,7 +2794,7 @@ class ApiController extends BaseController
                 $winning_amount = $join_cont->where('cancel_contest',0)
                         ->where('user_id',$request->user_id)
                         ->where('match_id',$jmatches->match_id)
-                        ->where('ranks','>',0)
+                        ->where('winning_amount','>',0)
                         ->sum('winning_amount');
 
                 $join_match = $jmatches;
@@ -3054,7 +3054,10 @@ class ApiController extends BaseController
 
         $match_points= MatchPoint::where('match_id',$match_id)->pluck('point','pid')->toArray();
         $pid = [];
-        foreach ($players as $key => $results) { 
+         $playerPoints = $this->playerPoints($request);
+        
+        foreach ($players as $key => $results) {
+            $data['playerPoints'] = $playerPoints[$results->pid]??0;
             if($results->teama && $results->teama->player_id==$results->pid ){
                 $data['playing11'] =  filter_var($results->teama->playing11, FILTER_VALIDATE_BOOLEAN);
             }
@@ -5919,5 +5922,37 @@ class ApiController extends BaseController
 
         }
 
+    }
+
+
+    public function playerPoints(Request $request){
+
+        $match_id = $request->match_id;
+
+        $cid = Competition::where('match_id',$match_id)
+                    ->pluck('cid')->first();
+                   
+        $match = Matches::where('match_id',$match_id)->first();
+        $competitions_match_id = Competition::where('cid',Competition::where('match_id',$match_id)
+                    ->pluck('cid')->first()
+                )->pluck('match_id');
+
+        $match_pid = MatchPoint::where('match_id',$match_id)
+                ->pluck('pid');
+       // return $match_pid;
+        $mathcPoint = MatchPoint::select('pid','match_id','point')
+                ->whereIn('match_id',$competitions_match_id)    
+                ->whereIn('pid',$match_pid)
+                ->get()
+                ->groupBy('pid');                
+                $mathcPoint->transform(function($item,$key){
+                    $item->playerPoints = $item->where('pid',$key)->sum('point');
+                    return $item;
+                });
+        $data = [];        
+        foreach ($mathcPoint as $key => $value) {
+                    $data[$key] = $value->playerPoints;
+                }
+        return $data;
     }
 }
