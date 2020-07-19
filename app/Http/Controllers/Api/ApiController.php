@@ -5928,14 +5928,30 @@ class ApiController extends BaseController
 
         try{
             $match_id = $request->match_id;
-            $player_points = MatchPoint::where('match_id',$match_id)->select('name','role','rating','point')->get();
+
+            $teama_pid = TeamASquad::where('match_id',$match_id)
+                            ->where('playing11',"true")
+                            ->pluck('player_id')->toArray();
+            $teamb_pid = TeamBSquad::where('match_id',$match_id)
+                            ->where('playing11',"true")    
+                            ->pluck('player_id')->toArray();
+
+            $array_pid = array_merge($teama_pid,$teamb_pid);
+           // dd($array_pid);              
+            if(count($teamb_pid) && count($teama_pid)){
+                $player_points = MatchPoint::where('match_id',$match_id)
+                        ->whereIn('pid',$array_pid)
+                        ->select('name','role','rating','point')->get();
+            }else{
+                $player_points = MatchPoint::where('match_id',$match_id)->select('name','role','rating','point')->get();
+            }
 
             return response()->json(
                 [
                     "status"=>true,
                     "code"=>200,
                     "message" => "success",
-                    'data' => $player_points
+                    'data' => $player_points??null
                 ]
             );
 
