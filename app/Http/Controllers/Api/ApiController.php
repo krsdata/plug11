@@ -5134,18 +5134,15 @@ class ApiController extends BaseController
                     ->delete();
 
             foreach ($teams as $key => $result) {
-                $data['player_id'] = $result;
-                
+                $data['player_id'] = $result;   
                 \DB::table('player_analytics')
                         ->insert($data);
             }
-
             return ['Player details added'];
         }
     }
 
     /*getMyPlayedMatches*/
-
     public function getMyPlayedMatches(Request $request)
     {
          $join_contest =\DB::table('join_contests')->where('user_id',$request->user_id)
@@ -5923,6 +5920,38 @@ class ApiController extends BaseController
         }
 
     }
+
+    /*
+    * Player Stat
+    */
+    public function playerStat(Request $request){
+
+        try{
+            $match_id = $request->match_id;
+            $player_points = MatchPoint::where('match_id',$match_id)->select('name','role','rating','point')->get();
+
+            return response()->json(
+                [
+                    "status"=>true,
+                    "code"=>200,
+                    "message" => "success",
+                    'data' => $player_points
+                ]
+            );
+
+
+        }catch(\Exception $e){
+            return response()->json(
+                [
+                    "status" => false,
+                    "code" => 201,
+                    "message" => "No Stat found"
+                ]
+            );
+        }
+
+    }
+    
 
 
     public function playerPoints(Request $request){

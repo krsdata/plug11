@@ -234,6 +234,7 @@ Route::group([
 
     Route::match(['post','get'],'playerPoints', 'Api\ApiController@playerPoints');
 
+    Route::match(['post','get'],'playerStat', 'Api\ApiController@playerStat');
     
     }
 );
