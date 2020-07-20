@@ -71,7 +71,7 @@ class Handler extends ExceptionHandler
      * @return \Illuminate\Http\Response
      */
     public function render($request, Throwable $exception)
-    {   //dd($exception);
+    {   dd($exception);
         if($request->is('admin/*')){
             if ($exception instanceof ViewException) {
                 $exception = $exception->getMessage();
