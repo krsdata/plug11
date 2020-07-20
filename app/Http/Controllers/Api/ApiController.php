@@ -4935,9 +4935,7 @@ class ApiController extends BaseController
     }
 
     public function notifyToAdmin(){
-        //env('admin1_email','manoj.i.prasad@gmail.com'),
         $user_email = [env('admin2_email','kroy.aws@gmail.com')];
-
         $user = User::whereIn('email',$user_email)->get();
         foreach ($user as $key => $result) {
             $data = [
@@ -5967,8 +5965,6 @@ class ApiController extends BaseController
         }
 
     }
-    
-
 
     public function playerPoints(Request $request){
 
@@ -5996,7 +5992,7 @@ class ApiController extends BaseController
                 });
         $data = [];        
         foreach ($mathcPoint as $key => $value) {
-                    $data[$key] = $value->playerPoints;
+                    $data[$key] = (int)$value->playerPoints;
                 }
         return $data;
     }
