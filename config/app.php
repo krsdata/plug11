@@ -169,7 +169,7 @@ return [
          * Package Service Providers...
          */
 
-         
+        Barryvdh\DomPDF\ServiceProvider::class, 
         Modules\Admin\AdminServiceProvider::class ,
         Anand\LaravelPaytmWallet\PaytmWalletServiceProvider::class,
 
@@ -236,6 +236,7 @@ return [
         'Input' => Illuminate\Support\Facades\Request::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
         'PaytmWallet' => Anand\LaravelPaytmWallet\Facades\PaytmWallet::class
 
     ],
