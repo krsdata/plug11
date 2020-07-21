@@ -5926,6 +5926,8 @@ class ApiController extends BaseController
 
         try{
             $match_id = $request->match_id;
+            $analytics  = $this->getAnalytics($match_id);
+            $selection = $analytics->pluck('selection','player_id')->toArray();
 
             $teama_pid = TeamASquad::where('match_id',$match_id)
                             ->where('playing11',"true")
@@ -5939,9 +5941,17 @@ class ApiController extends BaseController
             if(count($teamb_pid) && count($teama_pid)){
                 $player_points = MatchPoint::where('match_id',$match_id)
                         ->whereIn('pid',$array_pid)
-                        ->select('name','role','rating','point')->get();
+                        ->select('pid','name','role','rating','point')->get()
+                        ->transform(function($item,$key)use($selection){
+                        $item->selection = $selection[$item->pid]??0;
+                        return $item;
+                    });
             }else{
-                $player_points = MatchPoint::where('match_id',$match_id)->select('name','role','rating','point')->get();
+                $player_points = MatchPoint::where('pid','match_id',$match_id)->select('name','role','rating','point')->get()
+                    ->transform(function($item,$key){
+                        $item->selection = $selection[$item->pid]??0;
+                        return $item;
+                    });
             }
 
             return response()->json(
@@ -5969,7 +5979,6 @@ class ApiController extends BaseController
     public function playerPoints(Request $request){
 
         $match_id = $request->match_id;
-
         $cid = Competition::where('match_id',$match_id)
                     ->pluck('cid')->first();
                    
