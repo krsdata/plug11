@@ -58,12 +58,12 @@
                             {{$result->league_title}} 
                           </b> : {{date('h:i A, d M Y',$result->timestamp_start)}}
                           </div>
-                          <div class="col-md-2" style="float: left;">
+                          <div class="col-md-4" style="float: left;">
                             <img  class="MatchLogo" src="{{$result->teama->logo_url}}">
                             <br>
                             <span>{{$result->teama->short_name}}</span>
                           </div>
-                          <div class="col-md-1" style="float: right; ">
+                          <div class="col-md-4" style="float: right; ">
                             <img class="MatchLogo" src="{{$result->teamb->logo_url}}"> <br>
                             <span > {{$result->teamb->short_name}} </span>
                           </div>
