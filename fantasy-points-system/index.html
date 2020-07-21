@@ -21,12 +21,21 @@
 th, td {
   padding: 5px;
 }
-.btn-link, .card-header{
+.btn-link-color, .card-header{
    background: #0D98BA;
    color: #fff;
 }
+.btn-link{
+   color: #fff !important;
+}
 .bs-example{
    padding: 15px;
+}
+button:hover {
+   color: #fff;
+}
+.mb-0:hover{
+   color: #fff;
 }
 </style>
 </head>
@@ -35,8 +44,8 @@ th, td {
     <div class="accordion" id="accordionExample">
         <div class="card">
             <div class="card-header" id="headingOne">
-                <h2 class="mb-0">
-                    <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne">FANTASY POINTS</button>                           
+                <h2 class="mb-0" data-toggle="collapse" data-target="#collapseOne">
+                    <button type="button" class="btn btn-link-color" data-toggle="collapse" data-target="#collapseOne">FANTASY POINTS</button>                           
                 </h2>
             </div>
             <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
@@ -120,8 +129,8 @@ th, td {
         </div>
         <div class="card">
             <div class="card-header" id="headingTwo">
-                <h2 class="mb-0">
-                    <button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo">BONUS POINTS</button>
+                <h2 class="mb-0" data-toggle="collapse" data-target="#collapseTwo">
+                    <button type="button" class="btn btn-link-color collapsed" data-toggle="collapse" data-target="#collapseTwo">BONUS POINTS</button>
                 </h2>
             </div>
             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
@@ -226,8 +235,8 @@ th, td {
         </div>
         <div class="card">
             <div class="card-header" id="headingThree">
-                <h2 class="mb-0">
-                    <button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree">ECONOMY RATE</button>                     
+                <h2 class="mb-0" data-toggle="collapse" data-target="#collapseThree">
+              <button type="button" class="btn btn-link-color collapsed" data-toggle="collapse" data-target="#collapseThree">ECONOMY RATE</button>                     
                 </h2>
             </div>
             <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
@@ -414,8 +423,8 @@ th, td {
 
         <div class="card">
             <div class="card-header" id="headingFour">
-                <h2 class="mb-0">
-                    <button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFour">STRIKE RATE</button>                     
+                <h2 class="mb-0" data-toggle="collapse" data-target="#collapseFour">
+                    <button type="button" class="btn btn-link-color collapsed" data-toggle="collapse" data-target="#collapseFour">STRIKE RATE</button>                     
                 </h2>
             </div>
             <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
