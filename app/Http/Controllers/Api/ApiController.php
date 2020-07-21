@@ -5929,6 +5929,18 @@ class ApiController extends BaseController
             $analytics  = $this->getAnalytics($match_id);
             $selection = $analytics->pluck('selection','player_id')->toArray();
 
+            $players =  Player::with('team_b','team_a')
+            ->where(function($q) use($match_id){
+                $q->where('match_id',$match_id);
+            })
+            ->select('pid','playing11','team_id','match_id','nationality','short_name')
+            ->orderBy('fantasy_player_rating','DESC')
+            ->get()->transform(function($item,$key){
+                $item->team_name = $item->team_b->short_name??$item->team_a->short_name;
+                $item->country = $item->nationality;
+                return $item;
+            });
+
             $teama_pid = TeamASquad::where('match_id',$match_id)
                             ->where('playing11',"true")
                             ->pluck('player_id')->toArray();
@@ -5942,13 +5954,18 @@ class ApiController extends BaseController
                 $player_points = MatchPoint::where('match_id',$match_id)
                         ->whereIn('pid',$array_pid)
                         ->select('pid','name','role','rating','point')->get()
-                        ->transform(function($item,$key)use($selection){
+                        ->transform(function($item,$key)use($selection,$players){
+                        $team = $players->where('pid',$item->pid)->first();
+                        $item->team_name = $team->team_name??null;
                         $item->selection = $selection[$item->pid]??0;
                         return $item;
                     });
             }else{
-                $player_points = MatchPoint::where('pid','match_id',$match_id)->select('name','role','rating','point')->get()
-                    ->transform(function($item,$key){
+                $player_points = MatchPoint::where('pid','match_id',$match_id)->select('name','role','rating','point')->get();
+
+                    $player_points->transform(function($item,$key)use($selection,$players){
+                        $team = $players->where('pid',$item->pid)->first();
+                        $item->team_name = $team->team_name??null;
                         $item->selection = $selection[$item->pid]??0;
                         return $item;
                     });
@@ -5956,10 +5973,10 @@ class ApiController extends BaseController
 
             return response()->json(
                 [
-                    "status"=>true,
-                    "code"=>200,
-                    "message" => "success",
-                    'data' => $player_points??null
+                    "status"=>count($player_points)?true:false,
+                    "code"=>count($player_points)?200:201,
+                    "message" => count($player_points)?"success":"Player Stat not found",
+                    'data' => count($player_points)?$player_points:null
                 ]
             );
 
