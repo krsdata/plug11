@@ -1,4 +1,4 @@
-     <?php $bgUrl = URL::asset("webmedia/images/bg_2.jpg"); ?>
+     <?php $bgUrl = "https://sportsfight.in/webmedia/images/bg_2.jpg"; ?>
       <section class="hero-wrap js-fullheight" style="background-image: url('<?php echo $bgUrl; ?>')" data-section="home" data-stellar-background-ratio="0.5" id="home-section">
         <img src="">
       <div class="overlay"></div>
@@ -10,14 +10,8 @@
             <form action="#" class="search-location">
                     <div class="row">
                         <div class="col-lg align-items-end">
-<<<<<<< HEAD
                              <a href="https://sportsfight.in/apk">
-=======
-                             <a href="https://sportsfight.in/apk" target="_blank">
->>>>>>> d274c57db9d4032aa23670e3877b6da50a9cfb6e
                             <img  src="{{ URL::asset('webmedia/images/download-android-new.png')}}" alt="android-new" style="width: 200px;">
-
-                            
                         </a>
                         </div>
                     </div>
