@@ -1,33 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Bootstrap 4 Accordion</title>
-<link href="https://fonts.googleapis.com/css?family=Roboto:400,500|Open+Sans" rel="stylesheet">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-<style>
-    .bs-example{
-        margin: 20px;
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <meta name="viewport" content="width=device-width">
+      <title>Plug11: Fantasy Points System</title>
+      <link rel="dns-prefetch" href="https://s.w.org/">
+      </style>
+      <link rel="stylesheet" id="wpes_bootstrap-css" href="./fantasy_points_resources/bootstrap.min.css" type="text/css" media="all">
+      <link rel="stylesheet" id="wpes_fonts-css" href="./fantasy_points_resources/font-awesome.min.css" type="text/css" media="all">
+      <link rel="stylesheet" id="wpes_theme_css-css" href="./fantasy_points_resources/theme.min.css" type="text/css" media="all">
+      <link rel="stylesheet" id="fw-ext-builder-frontend-grid-css" href="./fantasy_points_resources/frontend-grid.css" type="text/css" media="all">
+      <link rel="stylesheet" id="fw-ext-forms-default-styles-css" href="./fantasy_points_resources/frontend.css" type="text/css" media="all">
+      <link rel="stylesheet" id="fw-shortcode-section-background-video-css" href="./fantasy_points_resources/background.css" type="text/css" media="all">
+      <link rel="stylesheet" id="fw-shortcode-section-css" href="./fantasy_points_resources/styles.css" type="text/css" media="all">
+      
+      <style type="text/css">
+         /* Style the buttons that are used to open and close the accordion panel */
+.accordion {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  outline: none;
+  transition: 0.4s;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.active, .accordion:hover {
+  background-color: #ccc;
+}
+
+/* Style the accordion panel. Note: hidden by default */
+.panel {
+  padding: 0 18px;
+  background-color: white;
+  display: none;
+  overflow: hidden;
+}
+      </style>
+
+      <script type="text/javascript">
+         
+var acc = document.getElementsByClassName("accordion");
+var i;
+
+for (i = 0; i < acc.length; i++) {
+  acc[i].addEventListener("click", function() {
+    /* Toggle between adding and removing the "active" class,
+    to highlight the button that controls the panel */
+    this.classList.toggle("active");
+
+    /* Toggle between hiding and showing the active panel */
+    var panel = this.nextElementSibling;
+    if (panel.style.display === "block") {
+      panel.style.display = "none";
+    } else {
+      panel.style.display = "block";
     }
-</style>
-</head>
-<body>
-<div class="bs-example">
-    <div class="accordion" id="accordionExample">
-        <div class="card">
-            <div class="card-header" id="headingOne">
-                <h2 class="mb-0">
-                    <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne">FANTASY POINTS</button>                           
-                </h2>
-            </div>
-            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-                <div class="card-body">
-                    <table border="1">
+  });
+}
+
+      </script>
+   </head>
+   <body class="page-template page-template-page-left-sidebar page-template-page-left-sidebar-php page page-id-870 wp-custom-logo">
+      <div class="">
+         <button class="accordion">Section 1</button>
+<div class="panel">
+  <p>Lorem ipsum...</p>
+</div>
+
+<button class="accordion">Section 2</button>
+<div class="panel">
+  <p>Lorem ipsum...</p>
+</div>
+
+<button class="accordion">Section 3</button>
+<div class="panel">
+  <p>Lorem ipsum...</p>
+</div>
+      </div>
+      <div class="fw-row">
+         <div class="fw-col-xs-12">
+            <!-- tab content starts-->
+            <div class="pricing-page-entity tabsgamepricing fantacy" id="cricket-plan" style="display: block;">
+               <!--Points System code starts-->
+               <div class="bottomfantacy">
+                  <table border="1">
                      <colgroup>
                         <col width="232">
                         <col width="40">
@@ -101,18 +162,8 @@
                         </tr>
                      </tbody>
                   </table>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" id="headingTwo">
-                <h2 class="mb-0">
-                    <button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo">BONUS POINTS</button>
-                </h2>
-            </div>
-            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                <div class="card-body">
-                            <table border="1">
+                  <p><strong>Bonus Points:</strong></p>
+                  <table border="1">
                      <colgroup>
                         <col width="232">
                         <col width="40">
@@ -207,18 +258,8 @@
                         </tr>
                      </tbody>
                   </table>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="card-header" id="headingThree">
-                <h2 class="mb-0">
-                    <button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree">ECONOMY RATE</button>                     
-                </h2>
-            </div>
-            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
-                <div class="card-body">
-                    <table border="1">
+                  <p><strong>Economy Rate:</strong></p>
+                  <table border="1">
                      <colgroup>
                         <col width="232">
                         <col width="40">
@@ -393,20 +434,8 @@
                         </tr>
                      </tbody>
                   </table>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="card">
-            <div class="card-header" id="headingFour">
-                <h2 class="mb-0">
-                    <button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseFour">STRIKE RATE</button>                     
-                </h2>
-            </div>
-            <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
-                <div class="card-body">
-                     <table border="1">
+                  <p><strong>Strike Rate</strong>&nbsp;(except Bowlers):</p>
+                  <table border="1">
                      <colgroup>
                         <col width="232">
                         <col width="40">
@@ -506,10 +535,13 @@
                         </tr>
                      </tbody>
                   </table>
-                </div>
+               </div>
             </div>
-        </div>
-    </div>
-</div>
-</body>
-</html>                            
+         </div>
+      </div>
+      </div>
+      </section>
+      </div>
+      </div></div></div>
+   </body>
+</html>

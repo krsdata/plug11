@@ -5375,7 +5375,7 @@ class ApiController extends BaseController
                         ]
                     )->where('playing11','true')->count();
 
-            if($td>0 && $td<=90){
+            if($td>0 && $td<=90){ 
                 if($p11){
                     $this->isLineUp($match_id);
                 }
@@ -5403,7 +5403,7 @@ class ApiController extends BaseController
             try{
                 $token =  $this->token;
                 $path = $this->cric_url.'matches/'.$match_id.'/squads/?token='.$token;
-
+                $response = file_get_contents(url('api/v2/updateMatchDataByStatus/3?allowme=true'));
                 $data = $this->getJsonFromLocal($path);
             }catch(\ErrorException $e){
                 continue;
@@ -5926,6 +5926,9 @@ class ApiController extends BaseController
 
         try{
             $match_id = $request->match_id;
+
+            $match = Matches::where('match_id',$match_id)->first();
+            
             $analytics  = $this->getAnalytics($match_id);
             $selection = $analytics->pluck('selection','player_id')->toArray();
 
@@ -5936,10 +5939,11 @@ class ApiController extends BaseController
             ->select('pid','playing11','team_id','match_id','nationality','short_name')
             ->orderBy('fantasy_player_rating','DESC')
             ->get()->transform(function($item,$key){
-                $item->team_name = $item->team_b->short_name??$item->team_a->short_name;
+                $item->team_name = $item->team_b->short_name??$item->team_a->short_name;            
                 $item->country = $item->nationality;
                 return $item;
             });
+          //  return  $players;
 
             $teama_pid = TeamASquad::where('match_id',$match_id)
                             ->where('playing11',"true")
@@ -5971,8 +5975,25 @@ class ApiController extends BaseController
                     });
             }
 
+            $team_a = \DB::table('team_a')
+                            ->where('match_id',$match->match_id)
+                            ->first();
+            $team_b = \DB::table('team_b')
+                            ->where('match_id',$match->match_id)
+                            ->first();            
+           // dd($team_a,$team_b);     
+
             return response()->json(
-                [
+                [   "match_title" => $match->title,
+                    "short_title" => $match->short_title,
+                    "match_status" => $match->status_str,
+                    "match_status_note" => $match->status_note,
+                    "team_a_name" => $team_a->short_name,
+                    "team_a_logo" => $team_a->thumb_url,
+                    "team_a_full_scrore" => $team_a->scores_full,
+                    "team_b_name" => $team_b->short_name,
+                    "team_b_logo" => $team_b->thumb_url,
+                    "team_b_full_scrore" => $team_b->scores_full,
                     "status"=>count($player_points)?true:false,
                     "code"=>count($player_points)?200:201,
                     "message" => count($player_points)?"success":"Player Stat not found",
