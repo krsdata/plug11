@@ -6051,9 +6051,10 @@ class ApiController extends BaseController
         sleep(1);
         $data = null;
         try{
+           // dd(strtotime("-30 minutes"));
             $match = Matches::where('status',2)
                         ->where('current_status',0)
-                        ->whereDate('date_start',\Carbon\Carbon::today())
+                        ->where('timestamp_end','<',time())
                         ->get();
             if($match->count()){
                 foreach ($match as $key => $value) {
