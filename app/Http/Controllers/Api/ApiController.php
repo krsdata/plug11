@@ -137,7 +137,7 @@ class ApiController extends BaseController
 
             if($apk_update_status){
                 return [
-                    'spalshScreen'  => 'https://api.sportsfight.in/splashScreen/splashScreen2.jpg',
+                    'splashScreen'  => 'https://api.sportsfight.in/splashScreen/splashScreen2.jpg',
                     'status'        =>  true,
                     'code'          =>  200,
                     'message'       =>  $apk_update_status->message?$apk_update_status->message:'Update is available',
@@ -147,7 +147,7 @@ class ApiController extends BaseController
                 ];
             }else{
                 return [
-                    'spalshScreen'  => 'https://api.sportsfight.in/splashScreen/splashScreen2.jpg',
+                    'splashScreen'  => 'https://api.sportsfight.in/splashScreen/splashScreen2.jpg',
                     'status'        =>  false,
                     'code'          =>  201,
                     'message'       =>  'No update available',
@@ -160,7 +160,7 @@ class ApiController extends BaseController
 
         }else{
             return [
-                'spalshScreen'  => 'https://api.sportsfight.in/splashScreen/splashScreen2.jpg',
+                'splashScreen'  => 'https://api.sportsfight.in/splashScreen/splashScreen2.jpg',
                 'status'        =>  false,
                 'code'          =>  201,
                 'message'       =>  'No update available',
