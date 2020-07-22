@@ -6062,7 +6062,7 @@ class ApiController extends BaseController
                 $this->updatePoints($request);
                 sleep(1);
                 $this->prizeDistribution($request);
-                $data[] = $value->short_title;
+                $data[$value->match_id] = $value->short_title;
                 $findMatch = Matches::find($value->id);
                 $findMatch->current_status=1;
                 $findMatch->save();
