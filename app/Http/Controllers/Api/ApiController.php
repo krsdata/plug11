@@ -6046,4 +6046,36 @@ class ApiController extends BaseController
                 }
         return $data;
     }
+
+    public function distributePrize(Request $request){
+        $data = null;
+        try{
+            $match = Matches::where('status',2)
+                        ->where('current_status',0)
+                        ->whereDate('date_start',\Carbon\Carbon::today())
+                        ->orwhereDate('date_end',\Carbon\Carbon::today())
+                        ->get();
+            if($match->count()){
+                foreach ($match as $key => $value) {
+                $request->merge(['match_id'=>$value->match_id]);
+                $this->prizeDistribution($request);
+                $data[] = $value->short_title;
+                $findMatch = Matches::find($value->id);
+                $findMatch->current_status=1;
+                $findMatch->save();
+            }
+            return [
+                'message' => "Prize Distributed for ",
+                "data" => $data
+            ];    
+            }else{
+                echo "Prize distribution Already Done!!";    
+            }            
+            
+
+        }catch(\Exception $e){
+            echo "Already distributed";
+        }
+
+    }
 }
