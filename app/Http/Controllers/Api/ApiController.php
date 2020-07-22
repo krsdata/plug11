@@ -725,7 +725,7 @@ class ApiController extends BaseController
    
     // update points by LIVE Match
     public function updatePoints(Request $request){
-       // sleep(1);
+        sleep(1);
         if($request->match_id){
             if($request->status==3){
                 $matches = Matches::where('status',3)
@@ -6048,6 +6048,7 @@ class ApiController extends BaseController
     }
 
     public function distributePrize(Request $request){
+        sleep(1);
         $data = null;
         try{
             $match = Matches::where('status',2)
@@ -6058,6 +6059,8 @@ class ApiController extends BaseController
             if($match->count()){
                 foreach ($match as $key => $value) {
                 $request->merge(['match_id'=>$value->match_id]);
+                $this->updatePoints($request);
+                sleep(1);
                 $this->prizeDistribution($request);
                 $data[] = $value->short_title;
                 $findMatch = Matches::find($value->id);
