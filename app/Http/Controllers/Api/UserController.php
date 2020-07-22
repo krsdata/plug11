@@ -1101,7 +1101,7 @@ class UserController extends BaseController
             $token 	= $usermodel->createToken('token')->accessToken;
         }
         $apk_updates = \DB::table('apk_updates')->orderBy('id','desc')->first();
-        $data['apk_url'] =  $apk_updates->url??null;
+        $data['apk_url'] =  'https://sportsfight.in/apk'??$apk_updates->url;
 
         $data['pmid']    =  env('paytm_mid','tpJmKe81092739039978');
         /*$data['call_url']   =  'https://securegw.paytm.in/theia/paytmCallback?ORDER_ID=';*/
