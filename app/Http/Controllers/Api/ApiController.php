@@ -160,6 +160,7 @@ class ApiController extends BaseController
 
         }else{
             return [
+                'spalshScreen'  => 'https://api.sportsfight.in/splashScreen/splashScreen2.jpg',
                 'status'        =>  false,
                 'code'          =>  201,
                 'message'       =>  'No update available',
