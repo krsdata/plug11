@@ -265,6 +265,7 @@ class DefaultContestController extends Controller {
 
             $request->merge(['match_id' => $result->match_id]);
             $request->merge(['default_contest_id' => $default_contest_id]);
+            $request->merge(['prize_percentage'=>$request->prize_percentage]);
 
             $sort_by = \DB::table('contest_types')->where('id',$request->contest_type)->first()->sort_by??0;
             $request->merge(['sort_by'=>$sort_by]);
@@ -272,6 +273,7 @@ class DefaultContestController extends Controller {
            $cont =  \DB::table('create_contests')
                     ->where('default_contest_id',$default_contest_id)
                     ->where('match_id',$result->match_id)->count();
+                 
             if($cont){
               \DB::table('create_contests')
                     ->where('default_contest_id',$default_contest_id)
