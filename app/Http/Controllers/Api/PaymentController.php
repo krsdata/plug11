@@ -467,7 +467,6 @@ class PaymentController extends BaseController
                         $item->deposit_amount = 0;
                         
                         $prize_amounts = Wallet::where('user_id',$item->user_id)->get();
-
                         foreach ($prize_amounts  as $key => $prize_amount) {
                             if($prize_amount->payment_type==1){
                                 $item->bonus_amount   = $prize_amount->amount;
@@ -482,10 +481,21 @@ class PaymentController extends BaseController
                                 $item->deposit_amount = $prize_amount->amount;
                             }
                         }
-                        
 
                         $transaction = [];
-                        $wallet_transactions = \DB::table('wallet_transactions')->where('user_id',$item->user_id)->orderBy('id','desc')->get();
+                        $wallet_transactions = \DB::table('wallet_transactions')->where('user_id',$item->user_id)->orderBy('id','desc')
+                            ->whereMonth('created_at',date('m'))
+                            ->get()
+                            ->transform(function($item,$key){
+
+                                if($item->match_id!==null){
+                                    $match_name = Matches::where('match_id',$item->match_id)->first();
+                                    $item->match_name = $match_name->short_title;
+                                }else{
+                                    $item->match_name = null;
+                                }
+                                return $item;
+                            });
                         foreach ($wallet_transactions as $key => $value) {
                             
                             $dt =  strtotime($value->created_at); //\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value->created_at, 'IST')
@@ -499,7 +509,7 @@ class PaymentController extends BaseController
                                 'payment_mode'   => $value->payment_mode??'Online',
                                 'payment_status' => $value->payment_status??'success',
                                 'transaction_id' => $value->transaction_id??time(),
-                                'payment_type'   => $value->payment_type_string??'Deposit',
+                                'payment_type'   => $value->payment_type_string.' | '.$value->match_name,
                                 'debit_credit_status' => $value->debit_credit_status,
                                 'date'           => $d 
 

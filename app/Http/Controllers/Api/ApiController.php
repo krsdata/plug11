@@ -1590,9 +1590,7 @@ class ApiController extends BaseController
                 if($result->total_spots==0)
                 {
                     $data2['totalSpots'] =   0;
-                    
                     $twp = round(($result->filled_spot)*($result->entry_fees)*(0.5));
-                    
 
                     if($twp<$result->entry_fees){
                         if($result->filled_spot>1){
@@ -1621,7 +1619,7 @@ class ApiController extends BaseController
                 $data2['filledSpots'] =  $result->filled_spot;
 
                 $data2['winnerPercentage'] = $result->winner_percentage;
-                $data2['winnerCount'] = $result->winner_count??$result->winner_percentage;
+                $data2['winnerCount'] = $result->winner_count??$result->prize_percentage;
                 $data2['maxAllowedTeam'] =   $result->contestType->max_entries;
                // $data2['sort_by'] =   $result->sort_by;
                 
@@ -1768,9 +1766,8 @@ class ApiController extends BaseController
                 $data2['filledSpots'] =  $result->filled_spot;
 
                 $data2['winnerPercentage'] = $result->winner_percentage;
-                $data2['winnerCount'] = $result->winner_count??$result->winner_percentage;
+                $data2['winnerCount'] = $result->winner_count??$result->prize_percentage;
                 $data2['maxAllowedTeam'] =   $result->contestType->max_entries;
-               // $data2['sort_by'] =   $result->sort_by;
                 
                 $data2['cancellation'] = $result->cancellation?true:false;
                 $matchcontests[$result->contest_type][] = [
@@ -3855,7 +3852,7 @@ class ApiController extends BaseController
                 $data2['entryFees']         =  $result->entry_fees;
                 $data2['filledSpots']       =  $result->filled_spot;
                 $data2['winnerPercentage']  =  $result->winner_percentage;
-                $data2['winnerCount']       = $result->winner_count??$result->winner_percentage;
+                $data2['winnerCount']       = $result->winner_count??$result->prize_percentage;
                 $data2['maxAllowedTeam']    =  $result->contestType->max_entries;
                 $data2['cancellation']      =  $result->cancellation?true:false;
                 $data2['maxEntries']        =  $result->contestType->max_entries;
@@ -3937,7 +3934,7 @@ class ApiController extends BaseController
                 $data2['filledSpots'] =  $result->filled_spot;
                 //  $data2['firstPrice'] =   $result->first_prize;
                 $data2['winnerPercentage'] = $result->winner_percentage;
-                $data2['winnerCount'] = $result->winner_count??$result->winner_percentage;
+                $data2['winnerCount'] = $result->winner_count??$result->prize_percentage;
                 $data2['maxAllowedTeam'] =   $result->contestType->max_entries;
                 $data2['cancellation'] = $result->cancellation?true:false;
                 $data2['maxEntries'] =  $result->contestType->max_entries;
@@ -4038,7 +4035,7 @@ class ApiController extends BaseController
                 $data2['filledSpots']   =  $result->contest->filled_spot;
                 $data2['firstPrice']    =  $result->contest->first_prize;
                 $data2['winnerPercentage'] = $result->contest->winner_percentage;
-                $data2['winnerCount']   = $result->winner_count??$result->winner_percentage;
+                $data2['winnerCount']   = $result->winner_count??$result->prize_percentage;
                 $data2['cancellation']  = $result->contest->cancellation?true:false;
                 $contest_type_id = $result->contest->contest_type;
 
@@ -4790,10 +4787,12 @@ class ApiController extends BaseController
                                 'payment_type_string' => 'prize',
                                 'amount'            =>  $item->prize_amount,
                                 'prize_distributed_id' => $item->id,
-                                'payment_mode'      =>  'sportsfight',
+                                'payment_mode'      =>  'sf',
                                 'payment_details'   =>  json_encode($item),
                                 'payment_status'    =>  'success',
-                                'transaction_id'    =>  time().date('ymdhis').$item->user_id
+                                'match_id'          =>  $item->match_id,
+                                'contest_id'        =>  $item->contest_id,
+                                'transaction_id'    =>  $item->match_id.'-'.$item->content_id.'-'.$item->user_id
                             ]
                         );
 
