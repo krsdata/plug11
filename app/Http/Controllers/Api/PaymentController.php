@@ -490,7 +490,7 @@ class PaymentController extends BaseController
 
                                 if($item->match_id!==null){
                                     $match_name = Matches::where('match_id',$item->match_id)->first();
-                                    $item->match_name = $match_name->short_title;
+                                    $item->match_name = ' | '.$match_name->short_title;
                                 }else{
                                     $item->match_name = null;
                                 }
@@ -509,7 +509,7 @@ class PaymentController extends BaseController
                                 'payment_mode'   => $value->payment_mode??'Online',
                                 'payment_status' => $value->payment_status??'success',
                                 'transaction_id' => $value->transaction_id??time(),
-                                'payment_type'   => $value->payment_type_string.' | '.$value->match_name,
+                                'payment_type'   => $value->payment_type_string.$value->match_name,
                                 'debit_credit_status' => $value->debit_credit_status,
                                 'date'           => $d 
 
