@@ -252,7 +252,6 @@ class DefaultContestController extends Controller {
 
         $match = null;
         $match1  = Matches::where('status',1)
-                    ->whereMonth('created_at',date('m'))
                     ->get('match_id');
         if($match1){
           $match  = $match1;
@@ -262,7 +261,6 @@ class DefaultContestController extends Controller {
           $match  = $match2;
         }
         foreach ($match as $key => $result) {
-
             $request->merge(['match_id' => $result->match_id]);
             $request->merge(['default_contest_id' => $default_contest_id]);
             $request->merge(['prize_percentage'=>$request->prize_percentage]);
@@ -273,12 +271,13 @@ class DefaultContestController extends Controller {
            $cont =  \DB::table('create_contests')
                     ->where('default_contest_id',$default_contest_id)
                     ->where('match_id',$result->match_id)->count();
-                 
+            $request_data = $request->except(['_token','_method']);
+
             if($cont){
               \DB::table('create_contests')
                     ->where('default_contest_id',$default_contest_id)
                     ->where('match_id',$result->match_id)
-                    ->update($request->except(['_token','_method']));
+                    ->update($request_data);
             } else{
                 \DB::table('create_contests')->insert($request->except('_token','_method'));  
             }
