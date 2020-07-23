@@ -2775,7 +2775,7 @@ class ApiController extends BaseController
     public function getMatch(Request $request){
         $user = $request->user_id;
 
-        $banner = \DB::table('banners')->select('title','url','actiontype')->get();
+        $banner = \DB::table('banners')->select('title','url','actiontype','description')->get();
         $join_cont =  \DB::table('join_contests')->where('user_id',$user);
         $join_contests = $join_cont->get('match_id');
             

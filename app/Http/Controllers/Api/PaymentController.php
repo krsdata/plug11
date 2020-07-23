@@ -498,9 +498,7 @@ class PaymentController extends BaseController
                             });
                         foreach ($wallet_transactions as $key => $value) {
                             
-                            $dt =  strtotime($value->created_at); //\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value->created_at, 'IST')
-                            //    ->setTimezone('Asia/Kolkata')
-                              //  ->format('d-m-Y, h:i A');
+                            $dt =  strtotime($value->created_at);
                                                     
                             $d = date('d-M-Y, h:i A',$dt);                        
                              $transaction[] =  [
@@ -511,7 +509,7 @@ class PaymentController extends BaseController
                                 'transaction_id' => $value->transaction_id??time(),
                                 'payment_type'   => ucfirst($value->payment_type_string.$value->match_name),
                                 'debit_credit_status' => $value->debit_credit_status,
-                                'date'           => $d 
+                                'date'           => $d
 
                              ];
                         } 
