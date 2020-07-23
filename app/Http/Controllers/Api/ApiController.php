@@ -6055,13 +6055,14 @@ class ApiController extends BaseController
             $match = Matches::where('status',2)
                         ->where('current_status',0)
                         ->where('is_cancelled',0)
+                        ->whereDate('date_start',\Carbon\Carbon::today())
                         ->get();
-              
+
             if($match->count()){ //dd($match);
                 foreach ($match as $key => $value) {
                 $request->merge(['match_id'=>$value->match_id]);
                 $this->updatePoints($request);
-               // sleep(1);
+                sleep(1);
                 $this->prizeDistribution($request);
                 $data[$value->match_id] = $value->short_title;
                 $findMatch = Matches::find($value->id);
