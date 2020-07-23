@@ -509,7 +509,7 @@ class PaymentController extends BaseController
                                 'payment_mode'   => $value->payment_mode??'Online',
                                 'payment_status' => $value->payment_status??'success',
                                 'transaction_id' => $value->transaction_id??time(),
-                                'payment_type'   => $value->payment_type_string.$value->match_name,
+                                'payment_type'   => ucfirst($value->payment_type_string.$value->match_name),
                                 'debit_credit_status' => $value->debit_credit_status,
                                 'date'           => $d 
 
