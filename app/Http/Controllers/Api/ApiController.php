@@ -1166,7 +1166,6 @@ class ApiController extends BaseController
             $trump = $result->trump;
             $vice_captain = $result->vice_captain;
             $team_count = $result->team_count;
-            $team_count = $result->team_count;
             $user_id    = $result->user_id;
             $match_id   = $result->match_id;
             $points     = $result->points;
@@ -1217,7 +1216,7 @@ class ApiController extends BaseController
                 ->whereIn('pid',[$captain,$vice_captain,$trump])
                 ->where('match_id',$result->match_id)
                 ->pluck('short_name','pid');
-
+            
             $k['c'] = ['pid'=> (int)$captain,'name' => $c[$captain]];
             $k['vc'] = ['pid'=>(int)$vice_captain,'name' => $c[$vice_captain]];
             $k['t'] = ['pid'=>(int)$trump,'name' => $c[$trump]];
@@ -5366,7 +5365,7 @@ class ApiController extends BaseController
         $matches = Matches::whereIn('status',[1,3])
                    ->whereDate('date_start',\Carbon\Carbon::today())
                     ->get(['match_id','timestamp_start','status']);
-               
+          
         foreach ($matches as $key => $match) {
             $match_id = $match->match_id;
 
@@ -5446,7 +5445,6 @@ class ApiController extends BaseController
                 $teamb_obj->save();
                 }   
             }
-            
         }
         return ['playing11 updated'];
     }
@@ -6056,13 +6054,15 @@ class ApiController extends BaseController
            // dd(strtotime("-30 minutes"));
             $match = Matches::where('status',2)
                         ->where('current_status',0)
+                        ->where('is_cancelled',0)
                         ->where('timestamp_end','<',time())
                         ->get();
-            if($match->count()){
+              
+            if($match->count()){ //dd($match);
                 foreach ($match as $key => $value) {
                 $request->merge(['match_id'=>$value->match_id]);
                 $this->updatePoints($request);
-                sleep(1);
+               // sleep(1);
                 $this->prizeDistribution($request);
                 $data[$value->match_id] = $value->short_title;
                 $findMatch = Matches::find($value->id);
@@ -6078,7 +6078,7 @@ class ApiController extends BaseController
             }            
             
 
-        }catch(\Exception $e){
+        }catch(\Exception $e){dd($e);
             echo "Already distributed";
         }
 
