@@ -90,8 +90,8 @@
         </div> 
 
         <div class="form-group {{ $errors->first('winner_percentage', ' has-error') }}">
-            <label class="control-label col-md-3">Winner Percentage</label>
-            <div class="col-md-4"> 
+            <label class="control-label col-md-3">Total Winner</label>
+            <div class="col-md-4">
                 {!! Form::text('winner_percentage',null, ['class' => 'form-control'])  !!} 
                 
                 <span class="help-block">{{ $errors->first('winner_percentage', ':message') }}</span>
