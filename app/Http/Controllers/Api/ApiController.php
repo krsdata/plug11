@@ -6056,7 +6056,7 @@ class ApiController extends BaseController
                         ->where('current_status',0)
                         ->where('is_cancelled',0)
                         ->where('timestamp_end','<',time())
-                        ->whereDate('date_start',\Carbon\Carbon::today())
+                        ->whereDate('date_end',\Carbon\Carbon::today())
                         ->get();
               
             if($match->count()){ //dd($match);
