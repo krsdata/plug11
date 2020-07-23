@@ -3443,7 +3443,6 @@ class ApiController extends BaseController
     {   
         $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
        // $version_code = 
-
         if(!$okhttp){
             return array(
                     'status' => false,
@@ -3570,13 +3569,6 @@ class ApiController extends BaseController
 
                 $contestT = CreateContest::find($contest_id);
                 $contestTyp = \DB::table('contest_types')->where('id',$contestT->contest_type)->first();
-                
-                //return ($contestT);
-                 /*if(
-                    isset($check_max_contest) 
-                    && $check_max_contest>=2 
-                    && $is_full->entry_fees==0 || $check_max_contest>=$contestTyp->max_entries
-                )*/
                 if(
                     isset($check_max_contest) 
                     && $check_max_contest>=$contestTyp->max_entries
@@ -3643,7 +3635,7 @@ class ApiController extends BaseController
 
                     if($contestT->bonus_contest && $bonus_amount){
                          
-                       if($bonus_amount->amount>$final_paid_amount){
+                       if($bonus_amount->amount>=$final_paid_amount){
                           $bonus_amount->amount = $bonus_amount->amount-$final_paid_amount;
                             $bonus_amount->save();  
                        }else{ 
