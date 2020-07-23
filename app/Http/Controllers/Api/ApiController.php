@@ -1621,6 +1621,7 @@ class ApiController extends BaseController
                 $data2['filledSpots'] =  $result->filled_spot;
 
                 $data2['winnerPercentage'] = $result->winner_percentage;
+                $data2['winnerCount'] = $result->winner_count??$result->winner_percentage;
                 $data2['maxAllowedTeam'] =   $result->contestType->max_entries;
                // $data2['sort_by'] =   $result->sort_by;
                 
@@ -1767,6 +1768,7 @@ class ApiController extends BaseController
                 $data2['filledSpots'] =  $result->filled_spot;
 
                 $data2['winnerPercentage'] = $result->winner_percentage;
+                $data2['winnerCount'] = $result->winner_count??$result->winner_percentage;
                 $data2['maxAllowedTeam'] =   $result->contestType->max_entries;
                // $data2['sort_by'] =   $result->sort_by;
                 
@@ -3853,6 +3855,7 @@ class ApiController extends BaseController
                 $data2['entryFees']         =  $result->entry_fees;
                 $data2['filledSpots']       =  $result->filled_spot;
                 $data2['winnerPercentage']  =  $result->winner_percentage;
+                $data2['winnerCount']       = $result->winner_count??$result->winner_percentage;
                 $data2['maxAllowedTeam']    =  $result->contestType->max_entries;
                 $data2['cancellation']      =  $result->cancellation?true:false;
                 $data2['maxEntries']        =  $result->contestType->max_entries;
@@ -3934,6 +3937,7 @@ class ApiController extends BaseController
                 $data2['filledSpots'] =  $result->filled_spot;
                 //  $data2['firstPrice'] =   $result->first_prize;
                 $data2['winnerPercentage'] = $result->winner_percentage;
+                $data2['winnerCount'] = $result->winner_count??$result->winner_percentage;
                 $data2['maxAllowedTeam'] =   $result->contestType->max_entries;
                 $data2['cancellation'] = $result->cancellation?true:false;
                 $data2['maxEntries'] =  $result->contestType->max_entries;
@@ -4029,12 +4033,13 @@ class ApiController extends BaseController
                 $data2['createdTeamId'] =    $result->created_team_id;
                 $data2['contestId'] =    $result->contest_id;
                 $data2['totalWinningPrize'] =    $result->contest->total_winning_prize;
-                $data2['entryFees'] =    $result->contest->entry_fees;
-                $data2['totalSpots'] =   $result->contest->total_spots;
-                $data2['filledSpots'] =  $result->contest->filled_spot;
-                $data2['firstPrice'] =   $result->contest->first_prize;
+                $data2['entryFees']     =  $result->contest->entry_fees;
+                $data2['totalSpots']    =  $result->contest->total_spots;
+                $data2['filledSpots']   =  $result->contest->filled_spot;
+                $data2['firstPrice']    =  $result->contest->first_prize;
                 $data2['winnerPercentage'] = $result->contest->winner_percentage;
-                $data2['cancellation'] = $result->contest->cancellation?true:false;
+                $data2['winnerCount']   = $result->winner_count??$result->winner_percentage;
+                $data2['cancellation']  = $result->contest->cancellation?true:false;
                 $contest_type_id = $result->contest->contest_type;
 
                 $contestType = \DB::table('contest_types')
