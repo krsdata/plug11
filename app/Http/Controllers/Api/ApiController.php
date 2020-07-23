@@ -6055,8 +6055,6 @@ class ApiController extends BaseController
             $match = Matches::where('status',2)
                         ->where('current_status',0)
                         ->where('is_cancelled',0)
-                        //->where('timestamp_end','<',time())
-                        ->whereDate('date_end',\Carbon\Carbon::today())
                         ->get();
               
             if($match->count()){ //dd($match);
