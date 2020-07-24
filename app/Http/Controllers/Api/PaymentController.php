@@ -275,7 +275,7 @@ class PaymentController extends BaseController
                                 'user_id'       =>  $item->user_id,
                                 'validate_user' =>  Hash::make($item->user_id),
                                 'payment_type'  =>  4,
-                                'payment_type_string' => 'prize',
+                                'payment_type_string' => 'Prize',
                                 'amount'        =>  $prize_amount,
                                 'prize_amount'  =>  $prize_amount,
                                 'prize_distributed_id' => $item->id
@@ -290,13 +290,15 @@ class PaymentController extends BaseController
                             [
                                 'user_id'           =>  $item->user_id, 
                                 'payment_type'      =>  4,
-                                'payment_type_string' => 'prize',
+                                'payment_type_string' => 'Prize',
                                 'amount'            =>  $item->prize_amount,
                                 'prize_distributed_id' => $item->id,
-                                'payment_mode'      =>  'sportsfight',
+                                'payment_mode'      =>  'sf',
                                 'payment_details'   =>  json_encode($item),
                                 'payment_status'    =>  'success',
-                                'transaction_id'    =>  time().date('ymdhis').$item->user_id
+                                'match_id'          => $item->match_id,
+                                'contest_id'        => $item->contest_id,
+                                'transaction_id'    =>  $item->match_id.'-'.$item->contest_id.'-'.$item->user_id
                             ]
                         );
 
@@ -312,7 +314,7 @@ class PaymentController extends BaseController
     }
     
     public function sendNotification($tokenList, $data){
-     
+        
         $serverLKey = 'AIzaSyAFIO8uE_q7vdcmymsxwmXf-olotQmOCgE';
         $fcmUrl = 'https://fcm.googleapis.com/fcm/send';
 

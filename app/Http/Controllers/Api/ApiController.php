@@ -4671,16 +4671,15 @@ class ApiController extends BaseController
             $contest_id =   $item->contest_id;
 
            // $item->createdTeam = $ct;
-            $item->user = $user;
-            $item->team_id = $team_id;
+            $item->user     = $user;
+            $item->team_id  = $team_id;
             $item->match_id = $match_id;
-            $item->user_id = $user_id;
-            $item->rank = $rank;
+            $item->user_id  = $user_id;
+            $item->rank     = $rank;
             $item->team_name = $team_name;
             $item->createdTeam = $ct; 
 
             $contest = CreateContest::find($item->contest_id);
-
             if($item->contest==null){
             }else{
               //echo $rank.'-'.$match_id.'-'.$user_id.'-'.$team_id.'<br>';
@@ -4799,7 +4798,7 @@ class ApiController extends BaseController
                             [
                                 'user_id'           =>  $item->user_id, 
                                 'payment_type'      =>  4,
-                                'payment_type_string' => 'prize',
+                                'payment_type_string' => 'Prize',
                                 'amount'            =>  $item->prize_amount,
                                 'prize_distributed_id' => $item->id,
                                 'payment_mode'      =>  'sf',
@@ -4807,7 +4806,7 @@ class ApiController extends BaseController
                                 'payment_status'    =>  'success',
                                 'match_id'          =>  $item->match_id,
                                 'contest_id'        =>  $item->contest_id,
-                                'transaction_id'    =>  $item->match_id.'-'.$item->content_id.'-'.$item->user_id
+                                'transaction_id'    =>  $item->match_id.'-'.$item->contest_id.'-'.$item->user_id
                             ]
                         );
 
