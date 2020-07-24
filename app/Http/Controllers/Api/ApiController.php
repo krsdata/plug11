@@ -463,7 +463,10 @@ class ApiController extends BaseController
 
             foreach ($players as $key => $result) {
 
-                if($result->playing_role=='wkbat'){
+                if($result->playing_role=='cap'){
+                    $result->playing_role = "bat";
+                }
+                elseif($result->playing_role=='wkbat'){
                     $result->playing_role = "wk";
                 }
                 elseif($result->playing_role=='wkcap'){
@@ -560,6 +563,9 @@ class ApiController extends BaseController
                 if($result->playing_role=='wkcap'){
                     $result->playing_role = "wk";
                 }
+                if($result->playing_role=='cap'){
+                    $result->playing_role = "bat";
+                }
 
                 $name = explode(" ",trim($result->name));
                 if(count($name)>3){
@@ -590,7 +596,7 @@ class ApiController extends BaseController
                     'short_name'=> $name,
                     'points'    => (float)$point,
                     'fantasy_player_rating'    => (float)$result->rating,
-                    'role'      => ($result->role=='wkbat')?'wk':$result->role,
+                    'role'      => ($result->role=='cap')?'bat':$result->role,
                     'captain'   =>  ($captain==$result->pid)?true:false,
                     'vice_captain'   => ($vice_captain==$result->pid)?true:false,
                     'trump'     => ($trump==$result->pid)?true:false,
