@@ -3455,16 +3455,6 @@ class ApiController extends BaseController
 
     public function  joinContest(Request  $request)
     {   
-        $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
-       // $version_code = 
-        if(!$okhttp){
-            return array(
-                    'status' => false,
-                    'code' => 201,
-                    'message' => 'unauthorise access!'
-                );
-        }
-
         $match_id           = $request->match_id;
         $user_id            = $request->user_id;
         $created_team_id    = $request->created_team_id;
@@ -3723,7 +3713,7 @@ class ApiController extends BaseController
                         $wt->contest_id  =$contest_id??null;
                         $wt->payment_type = 6;
                         $wt->payment_type_string = 'Join Contest';
-                        $wt->transaction_id = $match_id.'-'.$contest_id.'-'.$user_id;
+                        $wt->transaction_id = $match_id.'S'.$contest_id.'F'.$user_id;
                         $wt->payment_mode =  'sf';
                         $wt->payment_status =  'Success';
                         $wt->debit_credit_status = "-";
@@ -4806,7 +4796,7 @@ class ApiController extends BaseController
                                 'payment_status'    =>  'success',
                                 'match_id'          =>  $item->match_id,
                                 'contest_id'        =>  $item->contest_id,
-                                'transaction_id'    =>  $item->match_id.'-'.$item->contest_id.'-'.$item->user_id
+                                'transaction_id'    =>  $item->match_id.'S'.$item->contest_id.'F'.$item->user_id
                             ]
                         );
 

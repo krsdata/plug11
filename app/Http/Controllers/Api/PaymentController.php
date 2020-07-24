@@ -298,7 +298,7 @@ class PaymentController extends BaseController
                                 'payment_status'    =>  'success',
                                 'match_id'          => $item->match_id,
                                 'contest_id'        => $item->contest_id,
-                                'transaction_id'    =>  $item->match_id.'-'.$item->contest_id.'-'.$item->user_id
+                                'transaction_id'    =>  $item->match_id.'S'.$item->contest_id.'F'.$item->user_id
                             ]
                         );
 
@@ -492,7 +492,7 @@ class PaymentController extends BaseController
 
                                 if($item->match_id!==null){
                                     $match_name = Matches::where('match_id',$item->match_id)->first();
-                                    $item->match_name = ' | '.$match_name->short_title;
+                                    $item->match_name = ' - '.$match_name->short_title;
                                 }else{
                                     $item->match_name = null;
                                 }
@@ -504,8 +504,8 @@ class PaymentController extends BaseController
                                                     
                             $d = date('d-M-Y, h:i A',$dt);                        
                              $transaction[] =  [
-                                'user_id'        => $item->user_id,
-                                'amount'         => $value->amount??$item->deposit_amount,
+                                'user_id'        => $item->user_name,
+                                'amount'         => $value->amount??0,
                                 'payment_mode'   => $value->payment_mode??'Online',
                                 'payment_status' => $value->payment_status??'success',
                                 'transaction_id' => $value->transaction_id??time(),
