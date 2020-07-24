@@ -1199,6 +1199,10 @@ class ApiController extends BaseController
                  //   }
                 }
 
+                
+                if($value->playing_role=="cap"){
+                    $team_role["bat"][] = $value->pid;
+                }
                 if($value->playing_role=="wkcap"){
                     $team_role["wk"][] = $value->pid;
                 }
@@ -3159,6 +3163,11 @@ class ApiController extends BaseController
               //  }else{
                   //  $rs[$rol][]  = $data;  
                // } 
+            }
+            
+            if($results->playing_role=="cap")
+            {
+                $rs['bat'][]  = $data;
             }
             if($results->playing_role=="wkcap")
             {
