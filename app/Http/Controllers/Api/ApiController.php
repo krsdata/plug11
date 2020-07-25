@@ -4207,8 +4207,11 @@ class ApiController extends BaseController
 
         return response()->json(
             [
-                "status"=>true,
-                "code"=>200,
+                'pmid'          =>  env('paytm_mid','xmHOCa32667710380797'),
+                'call_url'      =>  'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID=', 
+                'g_pay'         =>  'sportsfight.in-1@okaxis',
+                "status"       => true,
+                "code"         => 200,
                 "walletInfo"=>$wallet[0]??$myArr
             ]
         );
