@@ -2378,9 +2378,6 @@ class ApiController extends BaseController
 
             }
             if(count($mid)){
-                //$player_match_id =  Matches::whereIn('match_id',$mid)->groupBy('match_id')->pluck('match_id')->toArray();               
-                //$arr = array_diff($mid,$player_match_id);
-
                 $this->getSquad($mid);
             }
         }
@@ -3267,8 +3264,16 @@ class ApiController extends BaseController
                         'match_id'=>$match_id
                     ]
                 );
+                $match_status = Matches::where('match_id',$match_id)->first();
+                $status = 0;
+                if($match_status){
+                    $status = $match_status->status??0;
+                }
 
                 foreach ($pvalue as $key => $value) {
+                    if($status==3){
+                        continue;
+                    }
                     if($key=="primary_team"){
                         continue;
                         $data_set->$key = json_encode($value);
