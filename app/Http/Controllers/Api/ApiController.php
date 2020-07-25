@@ -100,7 +100,6 @@ class ApiController extends BaseController
         }catch(\Exception $e){
 
         }
-        
     }  
     
     public function contestFillNotify(Request $request)
