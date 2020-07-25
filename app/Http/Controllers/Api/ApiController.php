@@ -784,7 +784,7 @@ class ApiController extends BaseController
                             elseif($key=='rating'){
                                 $result->rating = $value;
                             }else{
-                               $result->$key = 2*$value; 
+                               $result->$key = 2*$value??1; 
                             }
                         }
                         $m[$result->role][] = [
