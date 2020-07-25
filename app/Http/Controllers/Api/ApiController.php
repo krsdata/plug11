@@ -4203,6 +4203,7 @@ class ApiController extends BaseController
                         $item->pmid = env('paytm_mid','xmHOCa32667710380797');
                         $item->call_url = 'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID=';
                         $item->g_pay = 'sportsfight.in-1@okaxis';
+                        $item->min_deposit = env('min_deposit',10);
                         
                         return $item;
                     });
@@ -4210,9 +4211,11 @@ class ApiController extends BaseController
         $myArr['pmid']    =  env('paytm_mid','xmHOCa32667710380797');
         $myArr['call_url']   =  'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID='; 
         $myArr['g_pay'] =  'sportsfight.in-1@okaxis';
+        $myArr['min_deposit'] = env('min_deposit',10);
 
         return response()->json(
             [
+                'min_deposit' => env('min_deposit',10),
                 'pmid'          =>  env('paytm_mid','xmHOCa32667710380797'),
                 'call_url'      =>  'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID=', 
                 'g_pay'         =>  'sportsfight.in-1@okaxis',
