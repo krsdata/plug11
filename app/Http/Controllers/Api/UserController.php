@@ -1136,7 +1136,7 @@ class UserController extends BaseController
 
             Log::channel('getMatch')->info($data);
             return response()->json([
-                'pmid'    =>  'kroy',
+                'pmid'    =>  env('paytm_mid','xmHOCa32667710380797'),
                 'call_url'   =>  'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID=', 
                 'g_pay' =>  'sportsfight.in-1@okaxis',
                 "status"=>$status,
@@ -1148,14 +1148,14 @@ class UserController extends BaseController
             ]);
         }else{
             return response()->json([
-                'pmid'    =>  'kroy',
-                'call_url'   =>  'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID=', 
-                'g_pay' =>  'sportsfight.in-1@okaxis',
-                "status"=>$status,
+                'pmid'          =>  env('paytm_mid','xmHOCa32667710380797'),
+                'call_url'      =>  'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID=', 
+                'g_pay'         =>  'sportsfight.in-1@okaxis',
+                "status"        =>  $status,
                 "is_account_verified" => 0,
-                "code"=>$code,
-                "message" => 'Invalid email or password',
-                'token' =>$token??Hash::make(1)
+                "code"          => $code,
+                "message"       => 'Invalid email or password',
+                'token'         => $token??Hash::make(1)
             ]);
         }
     }
