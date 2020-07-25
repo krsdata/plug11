@@ -90,14 +90,14 @@ class ApiController extends BaseController
      * @return Object
      */
     public function paymentCallback(Request $request )
-    {
+    {   
         try{
             $transaction = PaytmWallet::with('receive');
             $response = $transaction->response(); // To get raw response as array
             $data['paytm'] =  json_encode($response);   
             \DB::table('paytm')->insert($data);
         }catch(\Exception $e){
-            
+
         }
         
     }  
