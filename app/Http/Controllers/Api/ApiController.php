@@ -776,9 +776,6 @@ class ApiController extends BaseController
                             elseif($key=='name'){
                                 $result->name = $value;
                             }
-                            elseif($key=='role'){
-                                $result->role = $value;
-                            }
                             elseif($key=='match_id'){
                                 $result->match_id = $value;
                             }
@@ -790,10 +787,9 @@ class ApiController extends BaseController
                         }
                         $m[$result->role][] = [
                             'name'=>$result->name,
-                            'point'=> $result->point,
-                            'role' => $result->role
+                            'point'=> $result->point
                         ];
-
+                        
                         MatchPoint::updateOrCreate(
                             ['match_id'=>$match->match_id,'pid'=>$result->pid],
                             (array)$result);
