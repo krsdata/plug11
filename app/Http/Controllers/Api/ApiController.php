@@ -96,6 +96,7 @@ class ApiController extends BaseController
             $response = $transaction->response(); // To get raw response as array
             $data['paytm'] =  json_encode($response);   
             \DB::table('paytm')->insert($data);
+            return true;
         }catch(\Exception $e){
 
         }
