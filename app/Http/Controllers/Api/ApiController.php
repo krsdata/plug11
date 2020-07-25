@@ -6086,7 +6086,7 @@ class ApiController extends BaseController
            $user_info = (object)$request->user_info;
             $signature = (object)$request->deviceDetails;  
             $data['eventLog'] = json_encode($request->all());
-            $data['user_id'] = $request->user_id??$user_info->user_id;
+            $data['user_id'] = $user_info->user_id??$request->user_id;
             $data['email'] = $user_info->email??null;
             $data['mobile_number'] = $user_info->mobile_number??null;
             $data['event_name'] = $request->event_name??null;
