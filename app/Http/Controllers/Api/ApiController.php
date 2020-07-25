@@ -1494,8 +1494,12 @@ class ApiController extends BaseController
             $createContest->winner_percentage   =   $result->winner_percentage;
             $createContest->cancellation        =   $result->cancellation?true:false;
             $createContest->default_contest_id  =   $result->id;
+            $createContest->bonus_contest       =   $result->bonus_contest;
+            $createContest->usable_bonus        =   $result->usable_bonus;
+            $createContest->prize_percentage    =   $result->prize_percentage;
+            
             $createContest->save();
-
+            
             $default_contest_id = \DB::table('default_contents')
                 ->where('match_id',$match_id)
                 ->whereNull('deleted_at')
