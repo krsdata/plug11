@@ -786,10 +786,9 @@ class ApiController extends BaseController
                             }
                         }
                         $m[$result->role][] = [
-                            'name'=>$result->name,
                             'point'=> $result->point
                         ];
-                        
+
                         MatchPoint::updateOrCreate(
                             ['match_id'=>$match->match_id,'pid'=>$result->pid],
                             (array)$result);
