@@ -1104,7 +1104,7 @@ class UserController extends BaseController
         $data['apk_url'] =  'https://sportsfight.in/apk'??$apk_updates->url;
         //
       //  $data['pmid']    =  env('paytm_mid','tpJmKe81092739039978');
-        $data['pmid']    =  env('paytm_mid');
+        $data['pmid']    =  env('paytm_mid','kroy');
         
         $data['call_url']   =  'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID='; 
         $data['g_pay'] =  'sportsfight.in-1@okaxis';
