@@ -1136,6 +1136,9 @@ class UserController extends BaseController
 
             Log::channel('getMatch')->info($data);
             return response()->json([
+                'pmid'    =>  'kroy',
+                'call_url'   =>  'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID=', 
+                'g_pay' =>  'sportsfight.in-1@okaxis',
                 "status"=>$status,
                 "is_account_verified" => $usermodel->is_account_verified??0,
                 "code"=>$code,
@@ -1145,6 +1148,9 @@ class UserController extends BaseController
             ]);
         }else{
             return response()->json([
+                'pmid'    =>  'kroy',
+                'call_url'   =>  'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID=', 
+                'g_pay' =>  'sportsfight.in-1@okaxis',
                 "status"=>$status,
                 "is_account_verified" => 0,
                 "code"=>$code,
