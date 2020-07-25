@@ -147,6 +147,7 @@ class ApiController extends BaseController
                 ];
             }else{
                 return [
+                    'force_update' => env('force_update',false),
                     'splashScreen'  => 'https://api.sportsfight.in/splashScreen/splashScreen2.jpg',
                     'status'        =>  false,
                     'code'          =>  201,
@@ -160,6 +161,7 @@ class ApiController extends BaseController
 
         }else{
             return [
+                'force_update' => env('force_update',false),
                 'splashScreen'  => 'https://api.sportsfight.in/splashScreen/splashScreen2.jpg',
                 'status'        =>  false,
                 'code'          =>  201,
@@ -1499,7 +1501,7 @@ class ApiController extends BaseController
             $createContest->prize_percentage    =   $result->prize_percentage;
             
             $createContest->save();
-            
+
             $default_contest_id = \DB::table('default_contents')
                 ->where('match_id',$match_id)
                 ->whereNull('deleted_at')
