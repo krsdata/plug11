@@ -4193,8 +4193,18 @@ class ApiController extends BaseController
 
                         $user = User::find($item->user_id);
                         $item->user_id = $user->user_name;
+                        
+                        $item->pmid = env('paytm_mid','xmHOCa32667710380797');
+                        $item->call_url = 'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID=';
+                        $item->g_pay = 'sportsfight.in-1@okaxis';
+                        
                         return $item;
                     });
+
+        $myArr['pmid']    =  env('paytm_mid','xmHOCa32667710380797');
+        $myArr['call_url']   =  'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID='; 
+        $myArr['g_pay'] =  'sportsfight.in-1@okaxis';
+
         return response()->json(
             [
                 "status"=>true,
