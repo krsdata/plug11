@@ -60,16 +60,21 @@ class ApiController extends BaseController
         $data['user_id']    = $request->user_id;
         $data['request']    = json_encode($request->all());
        // \DB::table('device_details')->insert($data);
+        $okhttp = Str::contains($request->url(), 'paytmCallBack');
+        if($okhttp){
+                
+        }else{
 
-        if($data['robotName']==='Okhttp' || $data['robotName']==='Curl' || $request->allowme){
-           // $detect->version('Android');
-        }else{ 
-          echo json_encode([
-            "status" => false,
-            "code" => 401,
-            "Message" => "Access Deny"
-          ]);
-          exit();
+            if($data['robotName']==='Okhttp' || $data['robotName']==='Curl' || $request->allowme){
+               // $detect->version('Android');
+            }else{ 
+                  echo json_encode([
+                    "status" => false,
+                    "code" => 401,
+                    "Message" => "Access Deny"
+                  ]);
+                  exit();
+                }   
         }
 
         $this->date = date('Y-m-d');
