@@ -6090,9 +6090,9 @@ class ApiController extends BaseController
             $data['email'] = $user_info->email??null;
             $data['mobile_number'] = $user_info->mobile_number??null;
             $data['event_name'] = $request->event_name??null;
-            if($data['event_name']=='LEADERSBOARD_REFRESH' || $data['event_name']=='HOMESCREEN'){
+           /* if($data['event_name']=='LEADERSBOARD_REFRESH' || $data['event_name']=='HOMESCREEN'){
                 exit();
-            }
+            }*/
             $data['storage_permission'] = $request->storage_permission;
             $data['signature'] = $signature->signature??null;
             $data['match_id']   = $request->match_id??null;
