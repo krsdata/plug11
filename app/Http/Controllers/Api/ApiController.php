@@ -6077,6 +6077,10 @@ class ApiController extends BaseController
             $data['email'] = $request->email??null;
             $data['mobile_number'] = $request->mobile_number??null;
             $data['event_name'] = $request->event_name??null;
+            $data['match_id']   = $request->match_id??null;
+            $data['contest_id'] = $request->contest_id??null;
+            $data['date_time'] = date('m-d-Y, h:i:s A',time());
+            
         }else{
            $user_info = (object)$request->user_info;
             $signature = (object)$request->deviceDetails;  
@@ -6085,7 +6089,10 @@ class ApiController extends BaseController
             $data['email'] = $user_info->email??null;
             $data['mobile_number'] = $user_info->mobile_number??null;
             $data['event_name'] = $request->event_name??null;
-            $data['signature'] = $signature->signature??null; 
+            $data['signature'] = $signature->signature??null;
+            $data['match_id']   = $request->match_id??null;
+            $data['contest_id'] = $request->contest_id??null;
+            $data['date_time'] = date('m-d-Y, h:i:s A',time()); 
         }
 
         try{
