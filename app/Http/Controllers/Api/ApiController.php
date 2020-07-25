@@ -6104,7 +6104,7 @@ class ApiController extends BaseController
             \DB::table('eventLogs')->insert($data); 
 
         }catch(\Exception $e){
-
+            dd($e);
         }
 
         return response()->json(
