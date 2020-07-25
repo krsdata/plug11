@@ -215,9 +215,9 @@ Route::group([
     Route::match(['post','get'],'getAnalytics', 'Api\ApiController@getAnalytics');
     Route::match(['post','get'],'statusCheck', 'Api\ApiController@statusCheck');
     Route::match(['post','get'],'paymentCallback', 'Api\ApiController@paymentCallback');
-    Route::match(['post','get'],'paytmCallBack', 'Api\ApiController@paytmCallBack');
+    Route::match(['post','get'],'paytmCallBack', 'Api\ApiController@paymentCallback');
 
-    Route::match(['post','get'],'callBackUrl', 'Api\ApiController@paytmCallBack');
+    Route::match(['post','get'],'callBackUrl', 'Api\ApiController@paymentCallback');
     
 }
 );
