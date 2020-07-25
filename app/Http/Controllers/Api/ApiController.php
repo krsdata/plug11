@@ -137,7 +137,7 @@ class ApiController extends BaseController
 
             if($apk_update_status){
                 return [
-                    'splashScreen'  => 'https://api.sportsfight.in/splashScreen/splashScreen2.jpg',
+                    'splashScreen'  => env('splashScreen','https://api.sportsfight.in/splashScreen/splashScreen2.jpg'),
                     'status'        =>  true,
                     'code'          =>  200,
                     'message'       =>  $apk_update_status->message?$apk_update_status->message:'Update is available',
