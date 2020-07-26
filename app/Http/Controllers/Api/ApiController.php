@@ -760,7 +760,7 @@ class ApiController extends BaseController
         foreach ($matches as $key => $match) {   # code...
             $points = file_get_contents($this->cric_url.'matches/'.$match->match_id.'/point?token='.$this->token);
             $points_json = json_decode($points);
-                        
+            
             foreach ($points_json->response->points as $team => $teams) {
                
                 if($teams==""){
@@ -783,13 +783,16 @@ class ApiController extends BaseController
                             elseif($key=='name'){
                                 $result->name = $value;
                             }
+                            elseif($key=='role'){
+                                $result->role = $value;
+                            }
                             elseif($key=='match_id'){
                                 $result->match_id = $value;
                             }
                             elseif($key=='rating'){
                                 $result->rating = $value;
                             }else{
-                               $result->$key = 2*$value??1; 
+                               $result->$key = 2*$value; 
                             }
                         }
                         $m[$result->role][] = [
@@ -4213,8 +4216,8 @@ class ApiController extends BaseController
                         return $item;
                     });
 
-        $myArr['pmid']    =  env('paytm_mid','xmHOCa32667710380797');
-        $myArr['call_url']   =  env('call_url', 'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID='); 
+        $myArr['pmid']          =  env('paytm_mid','xmHOCa32667710380797');
+        $myArr['call_url']      =  env('call_url', 'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID='); 
         $myArr['g_pay'] =  'sportsfight.in-1@okaxis';
         $myArr['min_deposit'] = env('min_deposit',10);
 
