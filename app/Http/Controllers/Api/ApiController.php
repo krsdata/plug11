@@ -3208,7 +3208,6 @@ class ApiController extends BaseController
 
         foreach ($match_ids as $key => $match_id) {
             # code... 
-            $t1 =  date('h:i:s');
             $token =  $this->token;
             $path = $this->cric_url.'matches/'.$match_id.'/squads/?token='.$token;  
             $data = $this->getJsonFromLocal($path);
@@ -3280,7 +3279,7 @@ class ApiController extends BaseController
                 }
 
                 foreach ($pvalue as $key => $value) {
-                    if($status==3){
+                    if($status==3 || $status==1){
                         continue;
                     }
                     if($key=="primary_team"){
