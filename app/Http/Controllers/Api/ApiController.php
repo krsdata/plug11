@@ -5777,11 +5777,10 @@ class ApiController extends BaseController
                                 $wt->debit_credit_status = "+";   
                                 $wt->save();
 
-
                                 $wallet = Wallet::firstOrNew(
                                         [
                                            'user_id' => $item->user_id,
-                                           'payment_type' => 4
+                                           'payment_type' => 3
                                         ]
                                     );
 
@@ -5812,8 +5811,7 @@ class ApiController extends BaseController
            return  ['Selected contest is cancelled'];
 
         }
-
-        
+                
         $match      = Matches::where('match_id',$match_id)->first();
         $contest    = CreateContest::find($contest_id);
 
