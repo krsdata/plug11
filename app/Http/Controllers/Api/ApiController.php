@@ -2071,7 +2071,6 @@ class ApiController extends BaseController
         else{
             return ['data not available'];
         }
-        // https://rest.entitysport.com/v2/matches/44198/info
         //upcoming
         $data =    file_get_contents($this->cric_url.'matches/'.$match_id.'/info?token='.$this->token);
 
@@ -2210,7 +2209,7 @@ class ApiController extends BaseController
 
             /*TEAM B*/
             $team_b = TeamB::firstOrNew(['match_id' => $data_set['match_id']]);
-            $team_b->match_id   = $data_set['match_id'];
+            $team_b->match_id0   = $data_set['match_id'];
 
             foreach ($data_set['teamb'] as $key => $value) {
                 $team_b->$key = $value;
@@ -2263,16 +2262,17 @@ class ApiController extends BaseController
             $matches->venue_id = $venue_id;
             $matches->teama_id = $team_a_id;
             $matches->teamb_id = $team_b_id;
-            $matches->competition_id = $toss_id;
+            $matches->competition_id = $competition_id;
 
             $matches->save();
 
             $mid[] = $data_set['match_id'];
+            $m_cid[$matches->match_id] = $competition_id;
             $this->createContest($data_set['match_id']);
          
             if(count($mid)){
-                $this->getSquad($mid);
-                // $this->saveSquad($mid);
+               // $this->getSquad($mid);
+                $this->saveSquad($mid,$m_cid);
             }
         }
         return [$mid,"match info updated "];
@@ -2379,70 +2379,20 @@ class ApiController extends BaseController
                 $matches->save();
 
                 $mid[] = $data_set['match_id'];
+                $m_cid[$matches->match_id] = $competition_id;
 
-               // if($matches->status==1){
+                if($matches->status==1){
                     $this->createContest($data_set['match_id']);   
-               // }
-                //
-
+                }
             }
-            if(count($mid)){
-                $this->getSquad($mid);
+            if(count($mid)){ 
+               // $this->getSquad($mid,$m_cid);
+                $this->saveSquad($mid,$m_cid);
             }
         }
         //
         return ["match info updated "];
     }
-
-    public function saveSquad($match_ids=null){
-        foreach ($match_ids as $key => $match_id) {
-            # code...
-            $cid = Competition::where('match_id',$match_id)->first();
-
-            $token =  $this->token;
-            $path = $this->cric_url.'competitions/'.$cid->cid.'/squads/'.$match_id.'?token='.$this->token;
-
-            $data_sqd = file_get_contents($path);
-            $this->storeMatchInfoAtMachine($data_sqd,'squads/'.$match_id.'.txt');
-            $data = $this->getJsonFromLocal($path);
-
-            foreach ($data->response->squads as $key => $pvalue) {
-
-                if(!isset($pvalue->players)){
-                    continue;
-                }
-
-                foreach ($pvalue->players as $key2 => $results) {
-
-                    $data_set =   Player::firstOrNew(
-                        [
-                            'pid'       =>  $results->pid,
-                            'team_id'   =>  $pvalue->team_id,
-                            'match_id'  =>  $match_id
-                        ]
-                    );
-
-                    foreach ($results as $key => $value) {
-                        if($key=="primary_team"){
-                            continue;
-                            $data_set->$key = json_encode($value);
-                        }
-                        $data_set->$key         =   $value;
-                        $data_set->match_id     =   $match_id;
-                        $data_set->team_id      =   $pvalue->team_id;
-                        $data_set->cid          =   $cid->cid;
-
-                    }
-
-                    $data_set->save();
-
-                }
-            }
-        }
-        echo "player saved";
-        //return ['saved'];
-    }
-
     public function updateSquad($match_id=null){
 
         # code...
@@ -3211,7 +3161,7 @@ class ApiController extends BaseController
             $token =  $this->token;
             $path = $this->cric_url.'matches/'.$match_id.'/squads/?token='.$token;  
             $data = $this->getJsonFromLocal($path);
-            // update team a players
+           // update team a players
             $teama = $data->response->teama;
             foreach ($teama->squads as $key => $squads) {
                 $teama_obj = TeamASquad::firstOrNew(
@@ -3314,9 +3264,68 @@ class ApiController extends BaseController
                     $data_mp->save(); 
                 } 
             }
-            $t2 =  date('h:i:s');
-            //echo $t1.'--'.$t2;
         }
+    }
+
+    public function saveSquad($match_ids=null,$m_cid=null){
+        foreach ($match_ids as $key => $match_id) {
+            
+            $cid = $m_cid[$match_id]??Competition::where('match_id',$match_id)->first()->cid;
+            
+            $path   =   $this->cric_url.'competitions/'.$cid.'/squads/'.$match_id.'?token='.$this->token;
+
+            $data_sqd = file_get_contents($path);
+
+            $this->storeMatchInfoAtMachine($data_sqd,'squads/'.$match_id.'.txt');
+            
+            $data = $this->getJsonFromLocal($path);
+              
+            foreach ($data->response->squads as $key => $pvalue) {
+
+                if(!isset($pvalue->players)){
+                    continue;
+                }
+                foreach ($pvalue->players as $key2 => $results) {
+                    //player Object
+                    $data_set =   Player::firstOrNew(
+                        [
+                            'pid'       =>  $results->pid,
+                            'team_id'   =>  $pvalue->team_id,
+                            'match_id'  =>  $match_id
+                        ]
+                    );
+
+                    // Match Object
+                    $data_mp =  MatchPoint::firstOrNew(
+                        [
+                            'pid'=>$results->pid,
+                            'match_id'=>$match_id
+                        ]
+                    ); 
+
+                    foreach ($results as $key => $value) {
+                        if($key=="primary_team"){
+                            continue;
+                            $data_set->$key = json_encode($value);
+                        }
+                        $data_set->$key         =   $value;
+                        $data_set->match_id     =   $match_id;
+                        $data_set->team_id      =   $pvalue->team_id;
+                        $data_set->cid          =   $cid;
+
+                        // match point
+                        $data_mp->match_id  =   $match_id;
+                        $data_mp->pid       =   $results->pid; 
+                        $data_mp->role      =   $results->playing_role; 
+                        $data_mp->name      =   $results->short_name; 
+                        $data_mp->rating    =   $results->fantasy_player_rating;
+                    }
+                    $data_set->save();
+                    $data_mp->save();
+                }
+            }
+        }
+        return true;
     }
 
     public function getCompetitionByMatchId($match_id=null){
