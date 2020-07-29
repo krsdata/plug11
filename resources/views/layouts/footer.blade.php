@@ -30,7 +30,7 @@ fan base by keeping a watch over shared posts in the feed. <a href="{{url('about
                           <div class="col-md-6">
 
                             @foreach($static_page as $key =>  $result)
-                            @if($key > 3)
+                            @if($key > 5)
                             <?php continue; ?>
                             @endif
                             <p><a class="scroll-link" href="{{url($result->slug)}}">{{$result->title}}</a></p>
