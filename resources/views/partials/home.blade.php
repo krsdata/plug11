@@ -366,6 +366,4 @@ are getting rewarded based on their ranks.</p>
             <h1>Reach us at info@sportsfight.in </h1>
             
           </div>
-      </div>
-
-      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfWr7M8gwErWn9JVu6y6UmjcNwveRfgX35GchKJp_A1kypGcg/viewform?embedded=true" width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+      </div> 
