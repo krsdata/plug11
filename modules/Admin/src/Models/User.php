@@ -56,7 +56,9 @@ class User extends Authenticatable {
                             'team_name',
                             "dateOfBirth",
                             "state",
-                            "block_referral"
+                            "block_referral",
+                            "affiliate_user",
+                            "affiliate_commission"
                         ];  // All field of user table h
 
 
