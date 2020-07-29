@@ -236,6 +236,7 @@ Route::group([
     
     Route::match(['post','get'],'playerStat', 'Api\ApiController@playerStat');
     Route::match(['post','get'],'distributePrize', 'Api\ApiController@distributePrize');
+    Route::match(['post','get'],'affiliateProgram', 'Api\ApiController@affiliateProgram');
     
     }
 );

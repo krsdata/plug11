@@ -447,16 +447,19 @@ class ApiController extends BaseController
 
             $players =$playerObject->get()
                         ->transform(function($item,$key){
+                        
                         $playing11_a = \DB::table('team_a_squads')
                                     ->where('match_id',$item->match_id)
                                     ->where('player_id',$item->pid)
                                     ->where('playing11','true')
                                     ->first();
+                        
                         $playing11_b = \DB::table('team_b_squads')
                                     ->where('match_id',$item->match_id)
                                     ->where('player_id',$item->pid)
                                     ->where('playing11','true')
                                     ->first();
+
                         if($playing11_a){
                             $item->playing11 = $playing11_a->playing11=='true'?true:false;
                         }elseif ($playing11_b) {
@@ -465,7 +468,6 @@ class ApiController extends BaseController
                            $item->playing11 = false; 
                         }             
                           return $item;
-
                     });
 
             foreach ($players as $key => $result) {
@@ -478,7 +480,7 @@ class ApiController extends BaseController
                 }
                 elseif($result->playing_role=='wkcap'){
                     $result->playing_role = "wk";
-                }
+                }   
 
                 $data[] = [
 
@@ -1209,12 +1211,11 @@ class ApiController extends BaseController
                      //   $value->playing_role = $playing11[$value->pid]??$value->playing_role;
                  //   }
                 }
-
-                
+                                
                 if($value->playing_role=="cap"){
                     $team_role["bat"][] = $value->pid;
                 }
-                if($value->playing_role=="wkcap"){
+                elseif($value->playing_role=="wkcap"){
                     $team_role["wk"][] = $value->pid;
                 }
                 elseif($value->playing_role=="wkbat"){
@@ -1231,32 +1232,34 @@ class ApiController extends BaseController
                 ->whereIn('pid',[$captain,$vice_captain,$trump])
                 ->where('match_id',$result->match_id)
                 ->pluck('short_name','pid');
-            
-            $k['c'] = ['pid'=> (int)$captain,'name' => $c[$captain]];
-            $k['vc'] = ['pid'=>(int)$vice_captain,'name' => $c[$vice_captain]];
-            $k['t'] = ['pid'=>(int)$trump,'name' => $c[$trump]];
+                            
+            $k['c']     = ['pid'=> (int)$captain,'name' => $c[$captain]];
+            $k['vc']    = ['pid'=>(int)$vice_captain,'name' => $c[$vice_captain]];
+            $k['t']     = ['pid'=>(int)$trump,'name' => $c[$trump]];
 
             $t_a = TeamA::WhereIn('team_id',$team_id)
                 ->where('match_id',$result->match_id)
                 ->first();
+
             $t_b = TeamB::WhereIn('team_id',$team_id)
                 ->where('match_id',$result->match_id)
                 ->first();
 
             $tac = Player::Where('team_id',$t_a->team_id)
-                ->whereIn('pid',$teams)
-                ->where('match_id',$result->match_id)
-                ->whereIn('id',$player_ids)
-                ->get();
+                    ->whereIn('pid',$teams)
+                    ->where('match_id',$result->match_id)
+                    ->whereIn('id',$player_ids)
+                    ->get();
+
             $tbc = Player::Where('team_id',$t_b->team_id)
-                ->whereIn('pid',$teams)
-                ->where('match_id',$result->match_id)
-                ->whereIn('id',$player_ids)
-                ->get();
+                    ->whereIn('pid',$teams)
+                    ->where('match_id',$result->match_id)
+                    ->whereIn('id',$player_ids)
+                    ->get();
+
             // team count with name
             $t[]   = ['name' => $t_a->short_name, 'count' => $tac->count()];
             $t[]   = ['name' => $t_b->short_name, 'count' => $tbc->count()];
-
 
             $k['match']   = [$t_a->short_name.'-'.$t_b->short_name];
             $k['team']    = $t;
@@ -4692,7 +4695,7 @@ class ApiController extends BaseController
             $team_id    =   $item->created_team_id;
             $match_id   =   $item->match_id;
             $user_id    =   $item->user_id;
-            $rank       =   $item->ranks; 
+             $rank       =   $item->ranks; 
             $team_name  =   $item->team_count;
             $points     =   $item->points;
             $contest_id =   $item->contest_id;
@@ -4845,6 +4848,9 @@ class ApiController extends BaseController
         });
          $match_id = $request->match_id; 
         \DB::table('matches')->where('match_id',$match_id)->update(['current_status'=>1]);
+
+        $this->affiliateProgram($match_id);
+
         return  Redirect::to(route('match','prize=true'));
     }
     public function checkReaptedRank($rank, $match_id,$contest_id){
@@ -6298,12 +6304,130 @@ class ApiController extends BaseController
             ];    
             }else{
                 echo "Prize distribution Already Done!!";    
-            }            
-            
-
+            }
         }catch(\Exception $e){dd($e);
             echo "Already distributed";
         }
+    }
+    // Affiliates Program
+    public function affiliateProgram(Request $request){
+        
+        $match_id = $request->match_id;
+        if($match_id==null){
+            die('No Match Found');
+        }
 
+        $join_contests = JoinContest::where('match_id',$match_id)
+                        ->where('cancel_contest',0)
+                        ->whereNull('affiliated_user')
+                        ->get()
+                        ->groupBy('contest_id');
+        //dd( $join_contests );
+        foreach ($join_contests as $contest_key => $jc) {
+            //affiliated_user
+          //  \DB::beginTransaction();
+            $jc_users       =   $jc->pluck('user_id')->toArray();
+
+            $contest1        =   CreateContest::where('match_id',$match_id)
+                                ->where('id',$contest_key)
+                                ->where('entry_fees','!=',0)
+                                ->where('bonus_contest',0)
+                                ->first();
+
+            $contest2        =   CreateContest::where('match_id',$match_id)
+                                ->where('id',$contest_key)
+                                ->where('entry_fees','!=',0)
+                                ->whereNull('bonus_contest')
+                                ->first();
+
+            $contest  = $contest1??$contest2;                    
+            if($contest){
+               // dd($contest);
+            }else{
+                continue;
+            }
+
+            \DB::table('join_contests')
+                    ->where('contest_id',$contest_key)
+                    ->update(
+                        [
+                            'affiliated_user' => 1
+                        ]
+                    );
+
+            $total_deposit  =   ($contest->entry_fees)*($contest->total_spots);
+            $company_profit =   $total_deposit - $contest->total_winning_prize;
+
+            // $uid    =   $reference_code->whereIn('id',$jc_users)->get();
+            $reference_code     =   User::whereIn('id',$jc_users)
+                                    ->pluck('reference_code')
+                                    ->toArray();
+
+            $affiliate_user     =   User::where('affiliate_user',1)
+                                        ->whereIn('referal_code',$reference_code)
+                                        ->select('id','name','email',
+                                            'referal_code',
+                                            'reference_code',
+                                            'affiliate_user',
+                                            'affiliate_commission'
+                                        )->get();
+
+            foreach ($affiliate_user as $key => $user) {
+                $action = true;
+                $commsn = $user->affiliate_commission;
+                $percentage_amount = $company_profit*$commsn*(0.01);
+                
+                $actual_payout = round(($percentage_amount/count($jc_users)),2);
+
+                $wt                 =   new WalletTransaction;
+                $wt->user_id        =   $user->id;
+                $wt->amount         =   $actual_payout;
+                $wt->match_id       =   $contest->match_id??null;
+                $wt->contest_id     =   $contest->id??null;
+                $wt->payment_type   =   8;
+                $wt->payment_type_string = 'Affiliate Commission';
+                $wt->transaction_id =   $contest->match_id.'S'.$contest->id.'F'.$user->id;
+                $wt->payment_mode   =   'sf';
+                $wt->payment_status =   'Success';
+                $wt->debit_credit_status = "+";
+                //dd($wt);
+                $wt->save();
+
+                $winning_amount = $actual_payout;
+                $wallet_amount_c =  Wallet::where(
+                            [
+                                'user_id'       => $user->id,
+                                'payment_type'  => 4
+                            ])->first();
+                
+                if($wallet_amount_c){
+                    $winning_amount = $wallet_amount_c->amount+$winning_amount;
+                }
+                
+                $wallets = Wallet::firstOrNew(
+                            [
+                                'user_id'       => $user->id,
+                                'payment_type'  => 4
+                            ]);
+
+                            
+                $wallets->user_id       =  $user->id;
+                $wallets->validate_user =  Hash::make($user->id);
+                $wallets->payment_type  =  4;
+                $wallets->payment_type_string = 'Prize';
+                $wallets->amount =  $winning_amount;
+                $wallets->save();
+            }
+          //  \DB::commit();
+        }   
+
+        if(isset($action)){
+            echo "Affiliate amount distributed";
+        }else{
+            echo "Already Affiliate amount distributed";
+        }
     }
 }
+
+
+
