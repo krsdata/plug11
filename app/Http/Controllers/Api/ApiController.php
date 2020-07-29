@@ -2271,7 +2271,7 @@ class ApiController extends BaseController
             $this->createContest($data_set['match_id']);
          
             if(count($mid)){
-               // $this->getSquad($mid);
+                $this->getSquad($mid);
                 $this->saveSquad($mid,$m_cid);
             }
         }
