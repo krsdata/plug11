@@ -3242,7 +3242,7 @@ class ApiController extends BaseController
                     $data_set->team_id = $team_id[$pvalue->pid];
                 }
 
-                $data_set->save();
+             //   $data_set->save();
             }
             // update player in updatepoint table
 
@@ -3261,7 +3261,7 @@ class ApiController extends BaseController
                     $data_mp->name = $pvalue->short_name; 
                     $data_mp->rating = $pvalue->fantasy_player_rating;
                 
-                    $data_mp->save(); 
+                 //   $data_mp->save(); 
                 } 
             }
         }
