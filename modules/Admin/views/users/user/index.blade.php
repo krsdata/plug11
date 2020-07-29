@@ -144,6 +144,11 @@
                                   <td>Referral Deposit</td>
                                   <td>{{round($result->reference_deposit??0,2)}}</td>
                                 </tr>
+                                <tr>  
+                                  <td>Affiliate User</td>
+                                  <td>{{($result->affiliate_user?'Yes':'No')}}</td>
+                                </tr>
+
                               </table>
                                  </td>
                                  <td> {{$result->reference_code}}

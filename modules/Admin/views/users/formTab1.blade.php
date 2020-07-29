@@ -7,8 +7,6 @@
                 </span>
             </div> 
         </div>
-   
-
     
     <div class="form-group {{ $errors->first('name', ' has-error') }}" >
         <label class="control-label">Full Name</label>
@@ -25,6 +23,20 @@
             <option value="1" {{($user->block_referral==1)?'selected':''}}>Yes</option>
         </select> 
     </div>
+    <div class="form-group {{ $errors->first('affiliate_user', ' has-error') }}">
+        <label class="control-label">Affiliate User</label>
+        <select class="form-control" name="affiliate_user">
+            <option value="0" {{($user->affiliate_user==0)?'selected':''}}>No</option>
+            <option value="1" {{($user->affiliate_user==1)?'selected':''}}>Yes</option>
+        </select> 
+    </div>
+
+    <div class="form-group {{ $errors->first('affiliate_commission', ' has-error') }}">
+        <label class="control-label">Affiliate Commission(%)</label>
+        <input type="text" placeholder="Affiliate commission %" class="form-control" name="affiliate_commission" value="{{ ($user->affiliate_commission)?$user->affiliate_commission:old('affiliate_commission')}}">     
+    </div>
+
+    
 
     @if($user->role_type==3)
      <div class="form-group {{ $errors->first('password', ' has-error') }}">

@@ -67,12 +67,27 @@ class UsersController extends Controller {
             $id = $request->get('id');
             $status = $request->get('status');
             $user = User::find($id);
-            $s = ($status == 1) ? $status = 0 : $status = 1;
+            $s = ($status == 1) ? ($status = 0) : ($status = 1);
             $user->status = $s;
             $user->save();
             echo $s;
             exit();
         }
+
+        $user_id = 285;
+        $user = User::find($user_id);
+        //dd($user);
+        $user_referral = User::where('reference_code',$user->referal_code)->pluck('id');        
+        $referral_user_id   = $user_referral;
+        $join_contests      = \DB::table('join_contests')
+                            ->whereIn('user_id',$referral_user_id)
+                            ->get()
+                            ->groupBy('user_id');
+
+        foreach ($join_contests as $key => $value) {
+           // dd($value);
+        }
+
         // Search by name ,email and group
         $search = Input::get('search');
         $status = Input::get('status');
@@ -201,7 +216,6 @@ class UsersController extends Controller {
         } 
        // return $users;
         $roles = Roles::all();
-
         $js_file = ['common.js','bootbox.js','formValidate.js'];
         return view('packages::users.user.index', compact('js_file','roles','status','users', 'page_title', 'page_action','roles','role_type'));
     }
@@ -368,7 +382,7 @@ class UsersController extends Controller {
         $user->fill(Input::all());
         $user->role_type= $request->get('role_type');
         $user->save();   
-    
+
         if($action=='avtar'){ 
             if ($request->file('profile_image')) {
                 $profile_image = User::createImage($request,'profile_image');
