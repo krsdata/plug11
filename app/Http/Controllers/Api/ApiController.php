@@ -2893,8 +2893,8 @@ class ApiController extends BaseController
             ->orderBy('is_free','DESC')
             ->orderBy('timestamp_start','ASC')
 
-            ->whereMonth('date_start',date('m'))
-            ->orWhereMonth('date_start',\Carbon\Carbon::today()->addDays(7))
+            //->whereMonth('date_start',date('m'))
+            ->whereMonth('date_start',\Carbon\Carbon::today()->addDays(7))
             ->where('timestamp_start','>=' , time())
             ->limit(10)
             ->get()->transform(function($item,$key){
