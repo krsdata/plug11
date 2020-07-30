@@ -1,13 +1,14 @@
      <?php $bgUrl = "https://sportsfight.in/webmedia/images/main.jpg"; ?>
       <section class="hero-wrap js-fullheight" style="background-image: url('<?php echo $bgUrl; ?>')" data-section="home" data-stellar-background-ratio="0.5" id="home-section">
+      	<div style="position: absolute;
+	  	        text-align: center;
+	  	        width: 100%;
+			    top: 90px;">
         <img src="{{URL::asset('webmedia/images/logo.png')}}" width="150px"  style="
 			    border: 0px solid #fff;
 			    border-radius: 5px;
-			    position: absolute;
-			    left: 45%;
-			    top: 70px;
-			">
-
+			" align="center">
+		</div>
       <div class="overlay"></div>
       <div class="container">
         <div class="row no-gutters slider-text js-fullheight align-items-center justify-content-start" data-scrollax-parent="true">
