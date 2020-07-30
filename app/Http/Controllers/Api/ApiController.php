@@ -276,7 +276,7 @@ class ApiController extends BaseController
                 'match_id' => $item->match_id,
                 'contest_id' => $item->id
              ]);
-            if($item->total_spots==0){
+            if($item->filled_spot==0){
                 $prize_amount = $item->first_prize;
             }
             else{
