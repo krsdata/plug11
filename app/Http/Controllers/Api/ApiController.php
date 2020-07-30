@@ -2896,6 +2896,7 @@ class ApiController extends BaseController
             ->whereMonth('date_start',date('m'))
             ->orWhereMonth('date_start',\Carbon\Carbon::today()->addDays(7))
             ->where('timestamp_start','>=' , time())
+            ->where('is_cancelled',0)
             ->limit(10)
             ->get()->transform(function($item,$key){
                     $league_title = \DB::table('competitions')->where('cid',$item->competition_id)->first()->title??null;
