@@ -274,10 +274,11 @@ class ApiController extends BaseController
                 'default_contest_id' => $item->default_contest_id,
                 'contest_type_id' => $item->contest_type
              ]);
-            if($item->filled_spot<=1){
+
+            if($item->filled_spot==0){
                $prize_amount =  $item->first_prize;
             }else{
-                $prize_amount = (int)($item->entry_fees*$item->filled_spot)*(0.7);
+                $prize_amount = (int)(($item->entry_fees*$item->filled_spot)*(0.7));
             }
             
             $prize_breakups->default_contest_id = $item->default_contest_id; 
