@@ -274,20 +274,22 @@ class ApiController extends BaseController
                 'default_contest_id' => $item->default_contest_id,
                 'contest_type_id' => $item->contest_type
              ]);
-
-            if($item->filled_spot==0){
-               $prize_amount =  $item->first_prize;
-            }else{
-                $prize_amount = round(($item->filled_spot)*($item->entry_fees));
+            if($item->total_spots==0){
+                $prize_amount = $item->first_prize;
             }
-            
-            $prize_breakups->default_contest_id = $item->default_contest_id; 
-            $prize_breakups->contest_type_id    = $item->contest_type;
-            $prize_breakups->rank_from          = 1;
-            $prize_breakups->rank_upto          = 1;
-            $prize_breakups->prize_amount       = $prize_amount;
-            $prize_breakups->match_id           = $item->match_id;
-            $prize_breakups->save();
+            else{
+                $prize_amount = round(($item->filled_spot)*($item->entry_fees)*0.7);
+            }
+            if($item->total_spots==0){
+                $prize_amount =  $item->first_prize;
+                $prize_breakups->default_contest_id = $item->default_contest_id; 
+                $prize_breakups->contest_type_id    = $item->contest_type;
+                $prize_breakups->rank_from          = 1;
+                $prize_breakups->rank_upto          = 1;
+                $prize_breakups->prize_amount       = $prize_amount;
+                $prize_breakups->match_id           = $item->match_id;
+                $prize_breakups->save();
+            }
 
             $defaultContest  = \DB::table('prize_breakups')
                 ->where('default_contest_id',$item->default_contest_id)
