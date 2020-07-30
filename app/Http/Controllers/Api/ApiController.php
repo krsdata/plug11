@@ -2766,7 +2766,6 @@ class ApiController extends BaseController
     // get Match by status and all
     public function getMatch(Request $request){
         $user = $request->user_id;
-
         $banner = \DB::table('banners')->select('title','url','actiontype','description')->get();
         $join_cont =  \DB::table('join_contests')->where('user_id',$user);
         $join_contests = $join_cont->get('match_id');
@@ -2893,7 +2892,8 @@ class ApiController extends BaseController
             ->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','date_start','date_end','game_state','game_state_str','is_free','competition_id','format_str','format')
             ->orderBy('is_free','DESC')
             ->orderBy('timestamp_start','ASC')
-            ->whereMonth('date_start',date('m'))
+
+            ->whereMonth('date_start','>=',\Carbon\Carbon::today()->addDays(7))
             ->where('timestamp_start','>=' , time())
             ->limit(10)
             ->get()->transform(function($item,$key){
