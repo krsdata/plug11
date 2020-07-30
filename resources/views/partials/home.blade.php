@@ -1,14 +1,21 @@
-     <?php $bgUrl = URL::asset("webmedia/images/bg_2.jpg"); ?>
+     <?php $bgUrl = URL::asset("webmedia/images/main.jpg"); ?>
       <section class="hero-wrap js-fullheight" style="background-image: url('<?php echo $bgUrl; ?>')" data-section="home" data-stellar-background-ratio="0.5" id="home-section">
-        <img src="">
+        <img src="{{URL::asset('webmedia/images/logo.png')}}" width="150px"  style="
+			    border: 0px solid #fff;
+			    border-radius: 5px;
+			    position: absolute;
+			    left: 45%;
+			    top: 70px;
+			">
+
       <div class="overlay"></div>
       <div class="container">
         <div class="row no-gutters slider-text js-fullheight align-items-center justify-content-start" data-scrollax-parent="true">
-          <div class="col-md-5 ftco-animate" data-scrollax=" properties: { translateY: '70%' }">
-            <h1 class="mb-5" data-scrollax="properties: { translateY: '60%', opacity: 1.6 }">Sportsfight Fantasy League</h1>
-            <p class="mb-5" data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">Fantasy League</p>
-            <form action="#" class="search-location">
-                    <div class="row">
+          <div class="col-md-12 ftco-animate" data-scrollax=" properties: { translateY: '70%' }" >
+            <h1 class="mb-5" data-scrollax="properties: { translateY: '60%', opacity: 1.6 }" align="center" style="color: #FFC103">Sportsfight Fantasy League</h1>
+            
+            <p class="mb-5" data-scrollax="properties: { translateY: '30%', opacity: 1.6 }" align="center">Create Team | Join Contest | Win Cash</p>
+                    <div class="row" align="center">
                         <div class="col-lg align-items-end">
                              <a href="https://sportsfight.in/apk" target="_blank">
                             <img  src="{{ URL::asset('webmedia/images/download-android-new.png')}}" alt="android-new" style="width: 200px;">
@@ -17,7 +24,6 @@
                         </a>
                         </div>
                     </div>
-                </form>
           </div>
         </div>
       </div>
@@ -28,56 +34,6 @@
       </div> -->
     </section>
 
-    <div class="jumbotron jumbotron-fluid">
-          <div class="container center">
-            <h1>Upcoming Match</h2>
-            
-          </div>
-      </div>
-     
-    <section class=" ftco-properties" id="properties-section" style="margin-bottom: 30px">
-         
-         <style type="text/css">
-           .match {
-            border: 1px solid #ccc;
-            border-radius: 1px;
-           }
-           .MatchLogo{
-            height: 50px;
-           }
-         </style>
-          <div class="applic-apps " style="margin-bottom: 0px !important">
-            <div class="container-fluid">
-                <div class="row"  >
-                    <!-- slider Heading -->
-                  @foreach($match_data as $key=> $result)
-                  @if($key>=8)
-                    <?php continue; ?>
-                  @endif
-                    <div class="col-md-6 match" style="float: left;">
-                          <div style="text-align: left;">
-<b>
-                            {{$result->league_title}} 
-                          </b> : {{date('h:i A, d M Y',$result->timestamp_start)}}
-                          </div>
-                          <div class="col-md-4" style="float: left;">
-                            <img  class="MatchLogo" src="{{$result->teama->logo_url}}">
-                            <br>
-                            <span>{{$result->teama->short_name}}</span>
-                          </div>
-                          <div class="col-md-4" style="float: right; ">
-                            <img class="MatchLogo" src="{{$result->teamb->logo_url}}"> <br>
-                            <span > {{$result->teamb->short_name}} </span>
-                          </div>
-                         <!--  <span style="background: #1CA1F2; border-radius: 50px;  padding: 5px; color: #fff">VS</span> -->
-
-                          <!-- 
-
-                          <div class="col-md-12">{{date('h:i A, d M Y',$result->timestamp_start)}}</div>  -->
-                    </div>
-                  @endforeach  
-                </div> 
-    </section>
 
 
         <!-- services -->
@@ -336,26 +292,26 @@ are getting rewarded based on their ranks.</p>
                            
                           <div class="owl-item cloned" style="width: 200px;  margin-right: 10px">
                             <div class="single-cases-img">
-                                <img src="{{url('webmedia/images/s1.jfif')}}" alt="">
+                                <img src="{{url('webmedia/images/s1.jpeg')}}" alt="">
                             </div>
                           </div>
 
                           <div class="owl-item cloned" style="width: 200px; margin-right: 10px">
                             <div class="single-cases-img">
-                                <img src="{{url('webmedia/images/s2.jfif')}}" alt="">
+                                <img src="{{url('webmedia/images/s2.jpeg')}}" alt="">
                             </div>
                           </div>
 
                           <div class="owl-item cloned" style="width: 200px; margin-right: 10px">
                             <div class="single-cases-img">
-                                <img src="{{url('webmedia/images/s3.jfif')}}" alt="">
+                                <img src="{{url('webmedia/images/s3.jpeg')}}" alt="">
                             </div>
                           </div>
-                          <!--  <div class="owl-item cloned" style="width: 200px;  margin-right: 10px">
+                          <div class="owl-item cloned" style="width: 200px;  margin-right: 10px">
                             <div class="single-cases-img">
-                                <img src="{{url('webmedia/images/s4.jfif')}}" alt="">
+                                <img src="{{url('webmedia/images/s4.jpeg')}}" alt="">
                             </div>
-                          </div> -->
+                          </div>
                           
                     </div>
                 </div>
