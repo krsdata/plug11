@@ -34,6 +34,7 @@ use App\Models\MatchPoint;
 use App\Models\PrizeDistribution;
 use App\Models\MatchStat;
 use App\Models\ReferralCode;
+use App\Models\PrizeBreakup;
 use File;
 use Ixudra\Curl\Facades\Curl;
 use Jenssegers\Agent\Agent;
@@ -269,10 +270,30 @@ class ApiController extends BaseController
 
         $contest->transform(function ($item, $key)   {
 
+            $prize_breakups =  PrizeBreakup::firstOrNew([
+                'default_contest_id' => $item->default_contest_id,
+                'contest_type_id' => $item->contest_type
+             ]);
+            if($item->filled_spot<=1){
+               $prize_amount =  $item->first_prize;
+            }else{
+                $prize_amount = (int)($item->entry_fees*$item->filled_spot)*(0.7);
+            }
+            
+            $prize_breakups->default_contest_id = $item->default_contest_id; 
+            $prize_breakups->contest_type_id    = $item->contest_type;
+            $prize_breakups->rank_from          = 1;
+            $prize_breakups->rank_upto          = 1;
+            $prize_breakups->prize_amount       = $prize_amount;
+            $prize_breakups->match_id           = $item->match_id;
+            $prize_breakups->save();
+
             $defaultContest  = \DB::table('prize_breakups')
                 ->where('default_contest_id',$item->default_contest_id)
                 ->where('contest_type_id',$item->contest_type)
                 ->get();
+
+
 
             $rank = [];
             foreach ($defaultContest as $key => $value) {
