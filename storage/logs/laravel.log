@@ -1358,3 +1358,24 @@
   'username' => NULL,
   'version_code' => 0,
 )  
+[2020-07-07 19:32:14] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at /var/www/sportsfight.in/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:192)
+[stacktrace]
+#0 /var/www/sportsfight.in/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(118): Illuminate\\Log\\LogManager->resolve()
+#1 /var/www/sportsfight.in/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(98): Illuminate\\Log\\LogManager->get()
+#2 /var/www/sportsfight.in/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(547): Illuminate\\Log\\LogManager->driver()
+#3 /var/www/sportsfight.in/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(122): Illuminate\\Log\\LogManager->error()
+#4 /var/www/sportsfight.in/app/Exceptions/Handler.php(63): Illuminate\\Foundation\\Exceptions\\Handler->report()
+#5 /var/www/sportsfight.in/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(366): App\\Exceptions\\Handler->report()
+#6 /var/www/sportsfight.in/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(131): Illuminate\\Foundation\\Console\\Kernel->reportException()
+#7 /var/www/sportsfight.in/artisan(37): Illuminate\\Foundation\\Console\\Kernel->handle()
+#8 {main}
+"} 
+[2020-07-07 19:32:14] laravel.ERROR: syntax error, unexpected ''PaytmWallet'' (T_CONSTANT_ENCAPSED_STRING), expecting ']' {"exception":"[object] (ParseError(code: 0): syntax error, unexpected ''PaytmWallet'' (T_CONSTANT_ENCAPSED_STRING), expecting ']' at /var/www/sportsfight.in/config/app.php:239)
+[stacktrace]
+#0 /var/www/sportsfight.in/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/LoadConfiguration.php(39): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->loadConfigurationFiles()
+#1 /var/www/sportsfight.in/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(230): Illuminate\\Foundation\\Bootstrap\\LoadConfiguration->bootstrap()
+#2 /var/www/sportsfight.in/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(310): Illuminate\\Foundation\\Application->bootstrapWith()
+#3 /var/www/sportsfight.in/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(127): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#4 /var/www/sportsfight.in/artisan(37): Illuminate\\Foundation\\Console\\Kernel->handle()
+#5 {main}
+"} 

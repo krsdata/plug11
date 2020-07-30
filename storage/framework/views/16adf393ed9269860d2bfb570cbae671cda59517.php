@@ -72,6 +72,13 @@
                                                 </select>
                                             </div>
                                             <div class="col-md-2">
+                                              <input type="hidden" name="change_date" value="change_date">
+          <div class="form-group">
+
+            <input type="date" class="form-control  form_datetime" id="start_date" value="<?php echo e($_REQUEST['match_start_date']??'Search By Date'); ?>"   name="match_start_date">
+          </div>
+                                            </div>
+                                            <div class="col-md-2">
                                                 <input type="submit" value="Search" class="btn btn-primary form-control">
                                             </div>
                                            
@@ -140,13 +147,15 @@
           <a class="dropdown-item btn btn-warning" href="#">Generate Prize - NA</a>
           <?php endif; ?>  
         <div class="dropdown-divider"></div>
+        <a class="dropdown-item btn btn-danger" data-toggle="modal" data-target="#playing11_<?php echo e($result->id); ?>" href="#">Playing 11 Squad</a>
+
         <a class="dropdown-item btn btn-info" href="<?php echo e(route('triggerEmail','match_id='.$result->match_id)); ?>">Prize Email Trigger</a>
+        <a class="dropdown-item btn btn-success" href="https://api.sportsfight.in/api/v2/affiliateProgram?match_id=<?php echo e($result->match_id); ?>&allowme=1">Add Affiliate Commission</a>
            
           <a class="dropdown-item btn btn-danger" data-toggle="modal" data-target="#cancelContest_<?php echo e($result->id); ?>" href="#">Cancel Match Contest</a>
 
-          <a class="dropdown-item btn btn-danger" data-toggle="modal" data-target="#playing11_<?php echo e($result->id); ?>" href="#">Playing 11 Squad</a>
 
-         <a class="dropdown-item btn btn-primary" href="<?php echo e(route('cancelMatch','match_id='.$result->match_id)); ?>">Cancel This Match</a>
+         <!-- <a class="dropdown-item btn btn-primary" href="<?php echo e(route('cancelMatch','match_id='.$result->match_id)); ?>">Cancel This Match</a> -->
 
 
          <a class="dropdown-item btn btn-primary" href="<?php echo e(route('matchContest','search='.$result->match_id)); ?>">View All Contests</a>
@@ -284,7 +293,7 @@
 
                                          <td> <?php echo e($result->status_str); ?> </td>
                                          <td> 
-                                          <?php echo e(date('Y-m-d h:i:s A',$result->timestamp_start)); ?>
+                                          <?php echo e(date('D d, M Y h:i A',$result->timestamp_start)); ?>
 
                                             
                                         </td>

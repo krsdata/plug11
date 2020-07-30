@@ -1,4 +1,4 @@
-     <?php $bgUrl = URL::asset("webmedia/images/sportsfight_bg.jpg"); ?>
+     <?php $bgUrl = "https://sportsfight.in/webmedia/images/bg_2.jpg"; ?>
       <section class="hero-wrap js-fullheight" style="background-image: url('<?php echo $bgUrl; ?>')" data-section="home" data-stellar-background-ratio="0.5" id="home-section">
         <img src="">
       <div class="overlay"></div>
@@ -10,10 +10,8 @@
             <form action="#" class="search-location">
                     <div class="row">
                         <div class="col-lg align-items-end">
-                             <a href="https://sportsfight.in/public/upload/apk/sportsfight.apk" target="_blank">
+                             <a href="https://sportsfight.in/apk">
                             <img  src="<?php echo e(URL::asset('webmedia/images/download-android-new.png')); ?>" alt="android-new" style="width: 200px;">
-
-                            
                         </a>
                         </div>
                     </div>
@@ -21,10 +19,68 @@
           </div>
         </div>
       </div>
+      <!-- <div>
+        
+              <input type="text" name="link" style="">
+              <span style="float: right;">Get Download Link</span>
+      </div> -->
     </section>
 
+    <div class="jumbotron jumbotron-fluid">
+          <div class="container center">
+            <h1>Upcoming Match</h2>
+            
+          </div>
+      </div>
+     
+    <section class=" ftco-properties" id="properties-section" style="margin-bottom: 30px">
+         
+         <style type="text/css">
+           .match {
+            border: 1px solid #ccc;
+            border-radius: 1px;
+           }
+           .MatchLogo{
+            height: 50px;
+           }
+         </style>
+          <div class="applic-apps " style="margin-bottom: 0px !important">
+            <div class="container-fluid">
+                <div class="row"  >
+                    <!-- slider Heading -->
+                  <?php $__currentLoopData = $match_data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key=> $result): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                  <?php if($key>=8): ?>
+                    <?php continue; ?>
+                  <?php endif; ?>
+                    <div class="col-md-6 match" style="float: left;">
+                          <div style="text-align: left;">
+<b>
+                            <?php echo e($result->league_title); ?> 
+                          </b> : <?php echo e(date('h:i A, d M Y',$result->timestamp_start)); ?>
+
+                          </div>
+                          <div class="col-md-4" style="float: left;">
+                            <img  class="MatchLogo" src="<?php echo e($result->teama->logo_url); ?>">
+                            <br>
+                            <span><?php echo e($result->teama->short_name); ?></span>
+                          </div>
+                          <div class="col-md-4" style="float: right; ">
+                            <img class="MatchLogo" src="<?php echo e($result->teamb->logo_url); ?>"> <br>
+                            <span > <?php echo e($result->teamb->short_name); ?> </span>
+                          </div>
+                         <!--  <span style="background: #1CA1F2; border-radius: 50px;  padding: 5px; color: #fff">VS</span> -->
+
+                          <!-- 
+
+                          <div class="col-md-12"><?php echo e(date('h:i A, d M Y',$result->timestamp_start)); ?></div>  -->
+                    </div>
+                  <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>  
+                </div> 
+    </section>
+
+
         <!-- services -->
-        <section class="ftco-section ftco-services-2" id="services-section">
+<!--     <section class="ftco-section ftco-services-2" id="services-section">
             <div class="container">
                 <div class="row justify-content-center pb-5">
           <div class="col-md-12 heading-section text-center ftco-animate">
@@ -40,10 +96,10 @@
               <div class="media-body">
                 <h3 class="heading mb-3">Easy to Join Contest</h3>
                 <p>Sportsfight Fantasy League allows you to participate in the fantasy sports where you
-can quickly level up your performance choosing your dream players. As you are just a
-step away from the contest, So, buy the entry ticket and get yourself enrolled for the
-upcoming contest just in a few clicks.
-</p>
+        can quickly level up your performance choosing your dream players. As you are just a
+        step away from the contest, So, buy the entry ticket and get yourself enrolled for the
+        upcoming contest just in a few clicks.
+        </p>
               </div>
             </div>      
           </div>
@@ -90,7 +146,7 @@ earnings into your account.</p>
             </div>
         </section>
 
-   
+    -->
 
 
     <!--Section: Content-->
@@ -105,7 +161,7 @@ earnings into your account.</p>
         <div class="col-md-6 mb-4 mb-md-0 heading-section">
 
           <span class="subheading"> </span>
-            <h2 class="mb-4">Our Works</h2>
+            <h2 class="mb-4">What we Do?</h2>
 
           <p class="text-muted">We are here to help you generate income out of your interest by serving you with the best
           fantasy sports opportunity. We help accomplish your dream of playing a digital sport picking
@@ -134,7 +190,7 @@ earnings into your account.</p>
         <!--Grid column-->
         <div class="col-md-5 mb-4 mb-md-0">
 
-          <img src="<?php echo e(url('webmedia/images/screens1.png')); ?>" class="img-fluid" alt="">
+          <img src="<?php echo e(url('webmedia/images/app.jpg')); ?>" class="img-fluid" alt="">
 
         </div>
         <!--Grid column-->
@@ -247,7 +303,7 @@ are getting rewarded based on their ranks.</p>
                 </div>
             </div>
         </section> 
-        <div class="jumbotron jumbotron-fluid">
+    <div class="jumbotron jumbotron-fluid">
           <div class="container center">
             <h1>App Screenshot</h1>
             
@@ -309,5 +365,4 @@ are getting rewarded based on their ranks.</p>
             <h1>Reach us at info@sportsfight.in </h1>
             
           </div>
-      </div>
-<?php /**PATH /var/www/sportsfight.in/resources/views/partials/home.blade.php ENDPATH**/ ?>
+      </div> <?php /**PATH /var/www/sportsfight.in/resources/views/partials/home.blade.php ENDPATH**/ ?>
