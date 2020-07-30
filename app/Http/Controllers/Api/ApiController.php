@@ -1758,8 +1758,9 @@ class ApiController extends BaseController
                 {
                     $data2['totalSpots'] =   0;
                     
-                    $twp = round(($result->filled_spot)*($result->entry_fees)*(0.5));
+                    $twp = round(($result->filled_spot)*($result->entry_fees)*(0.7));
                     
+                    $data2['firstPrice'] = $twp;
 
                     if($twp<$result->entry_fees){
                         if($result->filled_spot>1){
@@ -1770,11 +1771,10 @@ class ApiController extends BaseController
                         $data2['totalWinningPrize'] = $prize;
                         $first_p = $prize;
                     }else{
-                        $data2['totalWinningPrize'] = round(($result->filled_spot)*($result->entry_fees)*(0.5));
+                        $data2['totalWinningPrize'] = round(($result->filled_spot)*($result->entry_fees)*(0.7));
                         $first_p = round($twp*(0.2));    
                     }
-                    $data2['firstPrice'] =   $first_p;
-
+                   // $data2['firstPrice'] =   $first_p;
                 }
                 elseif($result->total_spots!=0 && $result->filled_spot==$result->total_spots)
                 {
