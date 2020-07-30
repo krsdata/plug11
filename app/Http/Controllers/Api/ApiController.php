@@ -274,7 +274,7 @@ class ApiController extends BaseController
                 'default_contest_id' => $item->default_contest_id,
                 'contest_type_id' => $item->contest_type,
                 'match_id' => $item->match_id,
-                'contest_id' => $item->contest_id
+                'contest_id' => $item->id
              ]);
             if($item->total_spots==0){
                 $prize_amount = $item->first_prize;
