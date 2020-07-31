@@ -292,10 +292,23 @@ class ApiController extends BaseController
                 $prize_breakups->save();
             }
 
-            $defaultContest  = \DB::table('prize_breakups')
+            $defaultContest1  = \DB::table('prize_breakups')
+                ->where('default_contest_id',$item->default_contest_id)
+                ->where('contest_type_id',$item->contest_type)
+                ->where('match_id',$item->match_id)
+                ->where('contest_id',$item->id)
+                ->get();
+
+            $defaultContest2  = \DB::table('prize_breakups')
                 ->where('default_contest_id',$item->default_contest_id)
                 ->where('contest_type_id',$item->contest_type)
                 ->get();
+
+            if($defaultContest1->count()){
+                $defaultContest =  $defaultContest1; 
+            }else{
+                 $defaultContest =  $defaultContest2;
+            }    
 
 
             $rank = [];
