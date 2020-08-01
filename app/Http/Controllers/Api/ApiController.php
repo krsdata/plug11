@@ -2901,19 +2901,17 @@ class ApiController extends BaseController
         }
         //dd(\Carbon\Carbon::now()->endOfWeek());
         $match = Matches::whereHas('player')->with('teama','teamb')
-            ->whereIn('status',[1])
+            ->whereIn('status',[1,3])
             ->select('match_id','title','short_title','status','status_str','timestamp_start','timestamp_end','date_start','date_end','game_state','game_state_str','is_free','competition_id','format_str','format')
             ->orderBy('is_free','DESC')
             ->orderBy('timestamp_start','ASC')
-
-           // ->whereMonth('date_start',date('m'))
-            ->WhereMonth('date_start',\Carbon\Carbon::today()->addDays(7))
+            ->whereMonth('date_start',date('m'))
+            //->WhereMonth('date_start',\Carbon\Carbon::today()->addDays(7))
             ->where('timestamp_start','>=' , time())
             ->where('is_cancelled',0)
             ->limit(10)
             ->get()->transform(function($item,$key){
                     $league_title = \DB::table('competitions')->where('cid',$item->competition_id)->first()->title??null;
-
                     if($item->is_free==0){
                         $item->has_free_contest= false;
                     }else{
