@@ -297,6 +297,7 @@ class UserController extends BaseController
     {
         $referal_user = ReferralCode::where('refer_by',$request->user_id)
             ->select('referral_amount','user_id','is_verified','created_at')
+            ->orderBy('id','desc')
             ->get()
             ->transform(function($item,$key){
                 $user = User::find($item->user_id);
