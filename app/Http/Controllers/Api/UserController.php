@@ -752,7 +752,6 @@ class UserController extends BaseController
             $wallet->validate_user  = Hash::make($refer_by->id);
             $wallet->payment_type   = 1 ;
             $wallet->payment_type_string = "Referral Bonus";
-            $wallet->referal_amount = ($wallet->amount)+$this->referral_bonus;
             $wallet->amount = ($wallet->amount)+$this->referral_bonus;
 
             $wallet->save();
@@ -1005,9 +1004,9 @@ class UserController extends BaseController
 
                     if($user->id){
                         $devid = User::where('device_id',$request->device_id)->count();
-                        if($devid<2){
+                       // if($devid<2){
                             $this->saveReferral($request,$user);
-                        }
+                      //  }
 
                         $wallet = new Wallet;
                         $wallet->user_id = $user->id;
