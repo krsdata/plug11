@@ -1,4 +1,4 @@
-<?php
+prize<?php
 namespace Modules\Admin\Http\Controllers;
 
 use Illuminate\Support\Facades\Config;
@@ -150,7 +150,7 @@ class DefaultContestController extends Controller {
     /*
      * Edit Group method
      * @param 
-     * object : $category
+     * object : $categoryprize
      * */
 
     public function edit(Request $request, $id) {
