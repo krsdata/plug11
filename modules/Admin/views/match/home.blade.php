@@ -140,7 +140,9 @@
       <div class="dropdown-menu">
         <a class="dropdown-item btn btn-primary" href="{{ route('match.show',$result->id)}}">View Details <i class="fa fa-eye" title="details"></i> </a>
         @if($result->status==2)
-         <a class="dropdown-item btn btn-success" target="_blank" href=" {{url('api/v2/prizeDistribution?match_id='.$result->match_id)}}">
+
+
+         <a class="dropdown-item btn btn-success" target="_blank" href="http://api.sportsfight.in/api/v2/prizeDistribution?allowme=true&match_id={{$result->match_id)}}">
            Generate Prize
               </a> 
           @else
