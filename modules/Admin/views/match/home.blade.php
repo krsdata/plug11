@@ -142,7 +142,7 @@
         @if($result->status==2)
 
 
-         <a class="dropdown-item btn btn-success" target="_blank" href="http://api.sportsfight.in/api/v2/prizeDistribution?allowme=true&match_id={{$result->match_id)}}">
+         <a class="dropdown-item btn btn-success" target="_blank" href="http://api.sportsfight.in/api/v2/prizeDistribution?allowme=true&match_id={{$result->match_id}}">
            Generate Prize
               </a> 
           @else
@@ -152,7 +152,7 @@
         <a class="dropdown-item btn btn-danger" data-toggle="modal" data-target="#playing11_{{$result->id}}" href="#">Playing 11 Squad</a>
 
         <a class="dropdown-item btn btn-info" href="{{route('triggerEmail','match_id='.$result->match_id)}}">Prize Email Trigger</a>
-        <a class="dropdown-item btn btn-success" href="https://api.sportsfight.in/api/v2/affiliateProgram?match_id={{$result->match_id}}&allowme=1">Add Affiliate Commission</a>
+        <a class="dropdown-item btn btn-success" href="https://api.sportsfight.in/api/v2/affiliateProgram?match_id=&allowme=1">Add Affiliate Commission</a>
            
           <a class="dropdown-item btn btn-danger" data-toggle="modal" data-target="#cancelContest_{{$result->id}}" href="#">Cancel Match Contest</a>
 
