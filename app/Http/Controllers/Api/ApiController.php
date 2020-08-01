@@ -1526,11 +1526,9 @@ class ApiController extends BaseController
         foreach ($default_contest as $key => $result) {
             $createContest = CreateContest::firstOrNew(
                 [
-                    'match_id'          =>  $match_id,
-                    'contest_type'      =>  $result->contest_type,
-                    'entry_fees'        =>  $result->entry_fees,
-                    'total_spots'       =>  $result->total_spots,
-                    'first_prize'       =>  $result->first_prize
+                    'match_id'              =>  $match_id,
+                    'contest_type'          =>  $result->contest_type,
+                    'default_contest_id'    =>  $result->default_contest_id
 
                 ]
             );
