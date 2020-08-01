@@ -3902,10 +3902,10 @@ class ApiController extends BaseController
                 {
                     $data2['totalSpots'] =   0;
 
-                    $twp = round(($result->filled_spot)*($result->entry_fees)*(0.5));
-                    $data2['totalWinningPrize'] = round(($result->filled_spot)*($result->entry_fees)*(0.5));
+                    $twp = round(($result->filled_spot)*($result->entry_fees)*(0.7));
+                    $data2['totalWinningPrize'] = round(($result->filled_spot)*($result->entry_fees)*(0.7));
 
-                    $data2['firstPrice'] =   round($twp*(0.2));
+                    $data2['firstPrice'] =   $twp;
                 }
                 elseif($result->total_spots!=0 && $result->filled_spot==$result->total_spots)
                 {
