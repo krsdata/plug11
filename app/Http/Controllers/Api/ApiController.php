@@ -5524,11 +5524,18 @@ class ApiController extends BaseController
         return "Contest cloned";          
 
     }
-    public  function getPlaying11()
+    public  function getPlaying11(Request $request)
     {   
         $matches = Matches::whereIn('status',[1,3])
                    ->whereDate('date_start',\Carbon\Carbon::today())
                     ->get(['match_id','timestamp_start','status']);
+        
+        $request_match = $request->match_id;
+        
+        if($request_match){
+            $this->recheckPlaying11($request);
+        }
+                    
         foreach ($matches as $key => $match) {
             $match_id = $match->match_id;
 
@@ -5542,6 +5549,7 @@ class ApiController extends BaseController
                             'match_id'=>$match_id
                         ]
                     )->where('playing11','true')->count();
+            
             $p11b = TeamBSquad::where(
                         [
                             'match_id'=>$match_id
@@ -5549,7 +5557,7 @@ class ApiController extends BaseController
                     )->where('playing11','true')->count();
 
             if($td>0 && $td<=90){ 
-                if($p11a && $p11b ){
+                if($p11a && $p11b){
                     $this->isLineUp($match_id);
                 }
             }else{
@@ -5620,6 +5628,55 @@ class ApiController extends BaseController
         }
         return ['playing11 updated'];
     }
+
+    public function recheckPlaying11($request){
+        $match_id = $request->match_id;
+        try{ 
+
+                $token =  $this->token;
+                $path = $this->cric_url.'matches/'.$match_id.'/squads/?token='.$token;
+                $response = file_get_contents(url('api/v2/updateMatchDataByStatus/3?allowme=true'));
+                $data = $this->getJsonFromLocal($path);
+            }catch(\ErrorException $e){
+                continue;
+            }
+            // update team a players
+            $teama = $data->response->teama;
+            if(isset($teama)){
+                foreach ($teama->squads as $key => $squads) {
+                    $teama_obj = TeamASquad::firstOrNew(
+                        [
+                            'team_id'=>$teama->team_id,
+                            'player_id'=>$squads->player_id,
+                            'match_id'=>$match_id
+                        ]
+                    );
+
+                    $teama_obj->playing11 =  $squads->playing11;
+                    $teama_obj->role =  $squads->role;
+                    $teama_obj->save();
+                }
+            }   
+            //getSquad($match_ids=null,$cid=null)           
+            $teamb = $data->response->teamb;
+
+            if(isset($teamb)){
+                foreach ($teamb->squads as $key => $squads) {
+
+                $teamb_obj = TeamBSquad::firstOrNew([
+                    'team_id'=>$teamb->team_id,
+                    'player_id'=>$squads->player_id,
+                    'match_id'=>$match_id
+                ]);
+
+                $teamb_obj->playing11 =  $squads->playing11;
+                $teamb_obj->role =  $squads->role;
+                $teamb_obj->save();
+
+                }   
+            }
+    }
+
     public function isLineUp($match_id=null){
 
         $matches = Matches::where('match_id',$match_id)
