@@ -39,6 +39,26 @@ class Helper {
     public function __construct() {
 
     }
+    public function notifyDocUploadToAdmin($title=null,$message=null){ 
+        $user_email = [env('admin2_email','kroy.aws@gmail.com'),env('admin1_email','manoj.i.prasad@gmail.com'),env('admin3_email','djangde37@gmail.com')];
+        
+        $device_id = User::whereIn('email',$user_email)->pluck('device_id')->toArray();
+          
+          $data = [
+              'action' => 'notify' ,
+              'title' => $title ,
+              'message' => $message
+          ];
+          
+          try{
+             // $helpr = new Helper; 
+              $this->sendNotification($device_id,$data);
+              return true;
+          }catch(\ErrorException $e){
+            
+              return false;
+          }
+    } //
     public function notifyErrorToAdmin($title=null,$message=null){ 
         $user_email = [env('admin2_email','kroy.aws@gmail.com')];
 

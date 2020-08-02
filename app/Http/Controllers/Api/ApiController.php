@@ -5153,8 +5153,8 @@ class ApiController extends BaseController
 
             $msg = "$user->name has uploaded $documentType";
 
-            $helper->notifyToAdmin('🗎 Document uploaded 🗎',$msg);
-
+            $helper->notifyDocUploadToAdmin('🗎 Document uploaded 🗎',$msg);
+            
             if($documentType=='pancard'){
                 $data = array();
                 $data['user_id'] = $request->user_id;
