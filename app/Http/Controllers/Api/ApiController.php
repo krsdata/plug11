@@ -2309,7 +2309,9 @@ class ApiController extends BaseController
             $this->createContest($data_set['match_id']);
          
             if(count($mid)){
-               // $this->getSquad($mid);
+                if($matches->status==3){
+                    $this->getSquad($mid);    
+                }
                 $this->saveSquad($mid,$m_cid);
             }
         }
@@ -3192,7 +3194,7 @@ class ApiController extends BaseController
         ];
     }
     // update player by match_id
-    public function getSquad($match_ids=null,$cid=null){
+    public function getSquad($match_ids=null){
 
         foreach ($match_ids as $key => $match_id) {
             # code... 
@@ -3223,7 +3225,6 @@ class ApiController extends BaseController
                 $teama_obj->match_id  =  $match_id;
 
                 $teama_obj->save();
-                $team_id[$squads->player_id] = $teama->team_id;
             }
 
             $teamb = $data->response->teamb;
@@ -5531,7 +5532,7 @@ class ApiController extends BaseController
                     ->get(['match_id','timestamp_start','status']);
         
         $request_match = $request->match_id;
-        
+
         if($request_match){
             $this->recheckPlaying11($request);
         }
@@ -5549,7 +5550,7 @@ class ApiController extends BaseController
                             'match_id'=>$match_id
                         ]
                     )->where('playing11','true')->count();
-            
+
             $p11b = TeamBSquad::where(
                         [
                             'match_id'=>$match_id
@@ -5638,7 +5639,7 @@ class ApiController extends BaseController
                 $response = file_get_contents(url('api/v2/updateMatchDataByStatus/3?allowme=true'));
                 $data = $this->getJsonFromLocal($path);
             }catch(\ErrorException $e){
-                continue;
+                //continue;
             }
             // update team a players
             $teama = $data->response->teama;
