@@ -140,7 +140,9 @@
       <div class="dropdown-menu">
         <a class="dropdown-item btn btn-primary" href="<?php echo e(route('match.show',$result->id)); ?>">View Details <i class="fa fa-eye" title="details"></i> </a>
         <?php if($result->status==2): ?>
-         <a class="dropdown-item btn btn-success" target="_blank" href=" <?php echo e(url('api/v2/prizeDistribution?match_id='.$result->match_id)); ?>">
+
+
+         <a class="dropdown-item btn btn-success" target="_blank" href="http://api.sportsfight.in/api/v2/prizeDistribution?allowme=true&match_id=<?php echo e($result->match_id); ?>">
            Generate Prize
               </a> 
           <?php else: ?>
