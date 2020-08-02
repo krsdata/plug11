@@ -5638,11 +5638,8 @@ class ApiController extends BaseController
                 $path = $this->cric_url.'matches/'.$match_id.'/squads/?token='.$token;
                 $response = file_get_contents(url('api/v2/updateMatchDataByStatus/3?allowme=true'));
                 $data = $this->getJsonFromLocal($path);
-            }catch(\ErrorException $e){
-                //continue;
-            }
-            // update team a players
-            $teama = $data->response->teama;
+
+                $teama = $data->response->teama;
             if(isset($teama)){
                 foreach ($teama->squads as $key => $squads) {
                     $teama_obj = TeamASquad::firstOrNew(
@@ -5676,6 +5673,11 @@ class ApiController extends BaseController
 
                 }   
             }
+            }catch(\ErrorException $e){
+                //continue;
+            }
+            // update team a players
+            
     }
 
     public function isLineUp($match_id=null){
