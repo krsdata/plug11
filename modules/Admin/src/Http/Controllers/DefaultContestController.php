@@ -1,4 +1,4 @@
-prize<?php
+<?php
 namespace Modules\Admin\Http\Controllers;
 
 use Illuminate\Support\Facades\Config;
