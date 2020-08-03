@@ -6107,7 +6107,15 @@ class ApiController extends BaseController
     }
 
     public function eventLog(Request $request){
-        return true;
+        //return true;
+        return response()->json(
+                [
+                    "status"=>true,
+                    "code"=>200,
+                    "message" => "success"
+                ]
+            );
+        
         if($request->event_name=='upload_document')
         {
             $data['eventLog'] = json_encode($request->all());
