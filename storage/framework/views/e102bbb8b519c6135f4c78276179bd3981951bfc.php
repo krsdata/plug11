@@ -30,7 +30,7 @@ fan base by keeping a watch over shared posts in the feed. <a href="<?php echo e
                           <div class="col-md-6">
 
                             <?php $__currentLoopData = $static_page; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key =>  $result): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <?php if($key > 3): ?>
+                            <?php if($key > 5): ?>
                             <?php continue; ?>
                             <?php endif; ?>
                             <p><a class="scroll-link" href="<?php echo e(url($result->slug)); ?>"><?php echo e($result->title); ?></a></p>
