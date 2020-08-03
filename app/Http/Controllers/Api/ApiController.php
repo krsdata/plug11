@@ -1528,7 +1528,7 @@ class ApiController extends BaseController
                 [
                     'match_id'              =>  $match_id,
                     'contest_type'          =>  $result->contest_type,
-                    'default_contest_id'    =>  $result->default_contest_id
+                    'default_contest_id'    =>  $result->id
 
                 ]
             );
@@ -5154,7 +5154,7 @@ class ApiController extends BaseController
             $msg = "$user->name has uploaded $documentType";
 
             $helper->notifyDocUploadToAdmin('🗎 Document uploaded 🗎',$msg);
-            
+
             if($documentType=='pancard'){
                 $data = array();
                 $data['user_id'] = $request->user_id;
