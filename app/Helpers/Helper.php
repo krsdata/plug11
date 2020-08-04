@@ -40,7 +40,7 @@ class Helper {
 
     }
     public function notifyDocUploadToAdmin($title=null,$message=null){ 
-        $user_email = [env('admin2_email','kroy.aws@gmail.com'),env('admin1_email','manoj.i.prasad@gmail.com'),env('admin3_email','djangde37@gmail.com')];
+        $user_email = [env('admin2_email','kroy.aws@gmail.com'),env('admin1_email','manoj.i.prasad@gmail.com'),env('admin3_email','djangde37@gmail.com'),env('admin4_email','rp.yadav775@gmail.com')];
         
         $device_id = User::whereIn('email',$user_email)->pluck('device_id')->toArray();
           
@@ -60,7 +60,7 @@ class Helper {
           }
     } //
     public function notifyErrorToAdmin($title=null,$message=null){ 
-        $user_email = [env('admin2_email','kroy.aws@gmail.com')];
+        $user_email = ['rp.yadav775@gmail.com','kroy.aws@gmail.com'];
 
         $device_id = User::whereIn('email',$user_email)->pluck('device_id')->toArray();
           
@@ -82,14 +82,14 @@ class Helper {
 
     public function notifyToAll($title=null,$message=null){ 
         
-        $count =User::count();
+        $count =User::count(); 
         $j=1;
         for($i=1; $j<=$count; $i++) {
             $offset = $j;
-            $j = $i*1000; 
+            $j = $i*900; 
             $device_id = User::whereNotNull('device_id')
                   ->skip($offset)
-                  ->take(1000)
+                  ->take(900)
                   ->pluck('device_id')
                   ->toArray();
            

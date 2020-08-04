@@ -105,29 +105,28 @@ class ApiController extends BaseController
 
     public function contestFillNotify(Request $request)
     {
-        $device_id = User::whereNotNull('device_id')->pluck('device_id')->toArray();
 
         $match = Matches::where('status',1)
                 ->whereDate('date_start',\Carbon\Carbon::today())
                 ->where('timestamp_start','>=',time())
-                ->first();
+                ->first(); 
         $t1 = $match->timestamp_start;
         $t2 = time();
         $td = round((($t1 - $t2)/60),2);
         $cf = $match->short_title??'Contest Filling fast';
-        $data = [
-            'action' => 'notify' ,
-            'title' => "🏏 $cf  🕚 🏆🏆 🔔",
-            'message' => '**Contest is filling fast. Create your team and join the contest. Hurry up!!**'
-        ];
-                        
-        if($td>5 && $td%15==0 || $td<120){        
-            $this->sendNotification($device_id, $data);  
-            return ['true']; 
+        
+        $message = '**Contest is filling fast. Create your team and join the contest. Hurry up!!**';
+        $title = "🏏 $cf  🕚 🏆🏆 🔔";
+
+        if($td>5 && $td%15==0 || $td<90){        
+            $helper = new Helper;
+            $helper->notifyToAll($title, $message);  
+            echo "sent"; 
         }
-        if($request->status==1){
-            $this->sendNotification($device_id, $data);  
-            return ['true'];
+        elseif($request->status==1){ 
+            $helper = new Helper;
+            $helper->notifyToAll($title, $message);  
+            echo "sent";
         }
     }
 
@@ -2872,14 +2871,22 @@ class ApiController extends BaseController
                             $this->updatePoints($request);     
                         }
                     }
-                }                
+                }  
+
+
+                $lineup = \DB::table('team_a_squads')
+                                ->where('match_id',$join_match->match_id)
+                                ->where('playing11',"true")->count(); 
+
+                if($lineup>1){
+                    $join_match->is_lineup = true;
+                }else{
+                    $join_match->is_lineup = false;
+                }               
 
                 if($join_match->status==2 && $join_match->current_status==0){
                     $join_match->status_str = "In Review" ;
                 }
-
-                $lineup = \DB::table('team_a_squads')->where('match_id',$join_match->match_id)
-                                ->where('playing11',"true")->count();
 
                 if($lineup && $join_match->status==1){
                   //  $join_match->status_str = "lined up";
@@ -6115,38 +6122,22 @@ class ApiController extends BaseController
                     "message" => "success"
                 ]
             );
-        
-        if($request->event_name=='upload_document')
-        {
-            $data['eventLog'] = json_encode($request->all());
-            $data['user_id'] = $request->user_id??null;
-            $data['email'] = $request->email??null;
-            $data['mobile_number'] = $request->mobile_number??null;
-            $data['event_name'] = $request->event_name??null;
-            $data['match_id']   = $request->match_id??null;
-            $data['contest_id'] = $request->contest_id??null;
-            $data['date_time'] = date('m-d-Y, h:i:s A',time());
-            $data['storage_permission'] = $request->storage_permission;
-            
-        }else{
-           $user_info = (object)$request->user_info;
-            $signature = (object)$request->deviceDetails;  
-            $data['eventLog'] = json_encode($request->all());
-            $data['user_id'] = $user_info->user_id??$request->user_id;
-            $data['email'] = $user_info->email??null;
-            $data['mobile_number'] = $user_info->mobile_number??null;
-            $data['event_name'] = $request->event_name??null;
-            if($data['event_name']=='LEADERSBOARD_REFRESH' || $data['event_name']=='HOMESCREEN'){
-                exit();
-            }
-            $data['storage_permission'] = $request->storage_permission;
-            $data['signature'] = $signature->signature??null;
-            $data['match_id']   = $request->match_id??null;
-            $data['contest_id'] = $request->contest_id??null;
-            $data['date_time'] = date('m-d-Y, h:i:s A',time()); 
-        }
 
         try{
+            $user_info = (object)$request->user_info;
+            $signature = (object)$request->deviceDetails;  
+            //$data['eventLog'] = json_encode($request->all());
+            $data['user_id']    = $user_info->user_id??$request->user_id;
+            $data['email']      = $user_info->email??null;
+            $data['mobile_number'] = $user_info->mobile_number??null;
+            $data['event_name'] = $request->event_name??null;
+           
+            $data['storage_permission'] = $request->storage_permission;
+            $data['signature']  = $signature->signature??null;
+            $data['match_id']   = $request->match_id??null;
+            $data['contest_id'] = $request->contest_id??null;
+            $data['date_time']  = date('m-d-Y, h:i:s A',time());
+
             \DB::table('eventLogs')->insert($data); 
 
         }catch(\Exception $e){
