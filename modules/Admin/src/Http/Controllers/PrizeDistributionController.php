@@ -78,7 +78,10 @@ class PrizeDistributionController extends Controller {
                              $query->orWhere('mobile', 'LIKE', $search);
                         }
 
-                    })->Paginate($this->record_per_page);
+                    })
+                    ->orderBy('rank','asc')
+                    ->where('prize_amount','>',0)
+                    ->Paginate($this->record_per_page);
                  $prizeDistribution->transform(function($item,$key){
                 
                 
@@ -113,7 +116,9 @@ class PrizeDistributionController extends Controller {
             });
         } else {
             $prizeDistribution = PrizeDistribution::
-                                        orderBy('rank','asc')->Paginate($this->record_per_page);
+                                        orderBy('rank','asc')
+                                        ->where('prize_amount','>',0)
+                                        ->Paginate($this->record_per_page);
             $prizeDistribution->transform(function($item,$key){
                 
                 
