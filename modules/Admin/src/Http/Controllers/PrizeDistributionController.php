@@ -79,7 +79,7 @@ class PrizeDistributionController extends Controller {
                         }
 
                     })
-                    ->orderBy('rank','asc')
+                    ->orderBy('id','desc')
                     ->where('prize_amount','>',0)
                     ->where('rank','>',0)
                     ->Paginate($this->record_per_page);
@@ -117,7 +117,7 @@ class PrizeDistributionController extends Controller {
             });
         } else {
             $prizeDistribution = PrizeDistribution::
-                                        orderBy('rank','asc')
+                                        orderBy('id','desc')
                                         ->where('rank','>',0)
                                         ->where('prize_amount','>',0)
                                         ->Paginate($this->record_per_page);
