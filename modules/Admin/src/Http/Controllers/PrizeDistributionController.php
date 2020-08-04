@@ -155,7 +155,7 @@ class PrizeDistributionController extends Controller {
             });
         } 
         $table_cname = \Schema::getColumnListing('prize_distributions');
-        $except = ['user_teams','id','updated_at','device_id','contest_type_id','default_contest_id','user_id','contest_id','created_team_id','match_team_id','email_trigger','user_name','email','team_name','entry_fees','total_spots','filled_spot','first_prize'];
+        $except = ['user_teams','id','updated_at','device_id','contest_type_id','default_contest_id','user_id','contest_id','created_team_id','match_team_id','email_trigger','user_name','email','team_name','entry_fees','first_prize'];
         $data = [];
         foreach ($table_cname as $key => $value) {
 
