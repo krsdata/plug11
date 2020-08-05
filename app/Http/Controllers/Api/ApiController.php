@@ -2080,7 +2080,7 @@ class ApiController extends BaseController
         }
        // echo $this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=30'; die;
         //upcoming $this->cric_url
-        $data =    file_get_contents($this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=30');
+        $data =    file_get_contents($this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=10');
        // return  $data;
         \File::put(public_path('/upload/json/'.$fileName.'.txt'),$data);
         
@@ -6115,14 +6115,6 @@ class ApiController extends BaseController
 
     public function eventLog(Request $request){
         //return true;
-        return response()->json(
-                [
-                    "status"=>true,
-                    "code"=>200,
-                    "message" => "success"
-                ]
-            );
-
         try{
             $user_info = (object)$request->user_info;
             $signature = (object)$request->deviceDetails;  
@@ -6143,7 +6135,7 @@ class ApiController extends BaseController
         }catch(\Exception $e){
             //dd($e);
         }
-
+        
         return response()->json(
                 [
                     "status"=>true,
