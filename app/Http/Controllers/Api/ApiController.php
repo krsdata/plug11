@@ -2080,7 +2080,7 @@ class ApiController extends BaseController
         }
        // echo $this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=30'; die;
         //upcoming $this->cric_url
-        $data =    file_get_contents($this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=30');
+        $data =    file_get_contents($this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=20');
        // return  $data;
         \File::put(public_path('/upload/json/'.$fileName.'.txt'),$data);
         
