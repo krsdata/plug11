@@ -116,7 +116,26 @@ class ApiController extends BaseController
         $cf = $match->short_title??'Contest Filling fast';
         
         $message = '**Contest is filling fast. Create your team and join the contest. Hurry up!!**';
-        $title = "🏏 $cf  🕚 🏆🏆 🔔";
+        $title = "🏏 $cf 🕚 🏆🏆 🔔";
+
+        $image =  "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png";
+
+        $data = [
+            'action' => 'notify' ,
+            'title' => $title,
+            'message' => $message
+        ];
+      /*  
+        $notification = [
+            'title' => 'offer',
+            'body' => $message,
+            'image' => $image
+        ];
+      //  dd($data)
+        $device_id = 'fNs9mYq4QfGdBDNpi39d5g:APA91bF7xWZHzBzCOoWN80deNfT8TQGlJLZGEaU_waZGOcnUzlJsXewBArNIbesHhicrQVkDMMbAq1eLEdFigL8p9atV88OaHNhf5s-yxUJjuGszmG3xRkoP41PkIaKjylY1fvXZLVeh';
+
+        $this->sendNotification($device_id, $data,$notification);
+        die('-----');*/
 
         if($td>5 && $td%15==0 || $td<90){        
             $helper = new Helper;
@@ -275,7 +294,7 @@ class ApiController extends BaseController
                 'match_id' => $item->match_id,
                 'contest_id' => $item->id
              ]);
-            if($item->total_spots==0){
+            if($item->filled_spot<=1){
                 $prize_amount_unlmited = $item->first_prize;
             }
             else{
@@ -5066,7 +5085,7 @@ class ApiController extends BaseController
 
     }
 
-    public function sendNotification($token, $data){
+    public function sendNotification($token, $data,$notification=null){
      
         $serverLKey = 'AIzaSyAFIO8uE_q7vdcmymsxwmXf-olotQmOCgE';
         $fcmUrl = 'https://fcm.googleapis.com/fcm/send';
@@ -5077,14 +5096,14 @@ class ApiController extends BaseController
             $fcmNotification = [
                'registration_ids' => $token, //multple token array
               // 'to' => $token, //single token
-               //'notification' => $notification,
+               'notification' => $notification,
                'data' => $extraNotificationData
             ];
        }else{
             $fcmNotification = [
            //'registration_ids' => $tokenList, //multple token array
            'to' => $token, //single token
-           //'notification' => $notification,
+           'notification' => $notification,
            'data' => $extraNotificationData
         ];
         }
