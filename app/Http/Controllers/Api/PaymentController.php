@@ -489,6 +489,7 @@ class PaymentController extends BaseController
                         $wallet_transactions = \DB::table('wallet_transactions')->where('user_id',$item->user_id)->orderBy('id','desc')
                             //->whereMonth('created_at',date('m'))
                             ->where('created_at','>=',$date)
+                            ->limit(30)
                             ->get()
                             ->transform(function($item,$key){
 
