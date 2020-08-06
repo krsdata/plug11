@@ -483,10 +483,12 @@ class PaymentController extends BaseController
                                 $item->deposit_amount = $prize_amount->amount;
                             }
                         }
+                        $date = \Carbon\Carbon::today()->subDays(7);
 
                         $transaction = [];
                         $wallet_transactions = \DB::table('wallet_transactions')->where('user_id',$item->user_id)->orderBy('id','desc')
-                            ->whereMonth('created_at',date('m'))
+                            //->whereMonth('created_at',date('m'))
+                            ->where('created_at','>=',$date)
                             ->get()
                             ->transform(function($item,$key){
 
