@@ -2343,8 +2343,8 @@ class ApiController extends BaseController
             $results = $data->response->items;
             $mid = [];
             foreach ($results as $key => $result_set) {
-                if($result_set->format==5   or $result_set->format==17){
-                 //   continue;
+                if($result_set->format==5   or $result_set->format==4){
+                    continue;
                 }
                 foreach ($result_set as $key => $rs) {
                     $data_set[$key] = $rs;
