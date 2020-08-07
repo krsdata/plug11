@@ -110,6 +110,7 @@ class ApiController extends BaseController
                 ->whereDate('date_start',\Carbon\Carbon::today())
                 ->where('timestamp_start','>=',time())
                 ->first(); 
+
         $t1 = $match->timestamp_start;
         $t2 = time();
         $td = round((($t1 - $t2)/60),2);
@@ -142,7 +143,7 @@ class ApiController extends BaseController
             $helper->notifyToAll($title, $message);  
             echo "sent"; 
         }
-        elseif($request->status==1){ 
+        elseif($request->status==1 && $td%10==0){
             $helper = new Helper;
             $helper->notifyToAll($title, $message);  
             echo "sent";
@@ -5583,7 +5584,7 @@ class ApiController extends BaseController
                         ]
                     )->where('playing11','true')->count();
 
-            if($td>0 && $td<=90){ 
+            if($td>0 && $td<=60 && $td%10==0){ 
                 if($p11a && $p11b){
                     $this->isLineUp($match_id);
                 }
