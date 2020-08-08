@@ -984,16 +984,6 @@ class ApiController extends BaseController
     */
     public function leaderBoard(Request $request){
         // $join_contests = [];
-
-        $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
-        if(!$okhttp){
-            return array(
-                    'status' => false,
-                    'code' => 201,
-                    'message' => 'unauthorise access!'
-                );
-        }
-
         $match_id = $request->match_id;
         $join_contests = JoinContest::where('match_id',$request->get('match_id'))
             ->where('contest_id',$request->get('contest_id'))
@@ -1090,9 +1080,10 @@ class ApiController extends BaseController
             $data['user'] = [
                 'first_name'    => $value->user->first_name,
                 'last_name'     => $value->user->last_name,
-                'name'          => $value->user->team_name,
-                'user_name'     => $value->user->team_name??reset($fn),
-                'team_name'     => $value->user->team_name??reset($fn),
+                'name'          => $value->user_name??$value->user->team_name,
+                'user_name'     => $value->user_name??$value->user->team_name,
+              //  'team_name'     => $value->team_name??$value->user->team_name??reset($fn),
+                'team_name'     => $value->team_name??$value->user->team_name,
                 'profile_image' => $value->user->profile_image,
                 'short_name'    => substr($value->user->first_name,0,1).substr($value->user->last_name,0,1)
             ];
@@ -3821,7 +3812,7 @@ class ApiController extends BaseController
                 // join contest   
                 $data['user_name'] = $userVald->name;
                 $data['team_name'] = $userVald->team_name;
-                
+
                 $t =   JoinContest::updateOrCreate($data,$data);
 
                // }
