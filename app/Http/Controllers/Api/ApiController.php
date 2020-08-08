@@ -3547,6 +3547,8 @@ class ApiController extends BaseController
         $contest_id         = $request->contest_id;
         $max_t = $this->maxAllowedTeam($request);
 
+        $user_details = User::find($user_id);
+
         $this->matchInfo($request,'joinContest'); 
 
         $validator = Validator::make($request->all(), [
@@ -3629,11 +3631,11 @@ class ApiController extends BaseController
             ->whereIn('id',$created_team_id)->count();
 
         if($ct)
-        {   //sleep(1;);
+        {   
             foreach ($created_team_id as $key => $ct_id) {
                \DB::beginTransaction();
-                
                 $is_full = CreateContest::find($contest_id);
+                
                 if($is_full==null){
                     return [
                         'session_expired'=>$this->is_session_expire,
@@ -3642,6 +3644,7 @@ class ApiController extends BaseController
                         'message' => 'invalid contest'
                     ];
                 }
+                
                 if($is_full && $is_full->total_spots>0  && ($is_full->total_spots==$is_full->filled_spot)){
                     return [
                         'session_expired'=>$this->is_session_expire,
@@ -3658,6 +3661,7 @@ class ApiController extends BaseController
                         ->count(); 
 
                 $contestT = CreateContest::find($contest_id);
+                
                 $contestTyp = \DB::table('contest_types')->where('id',$contestT->contest_type)->first();
                 if(
                     isset($check_max_contest) 
@@ -3814,7 +3818,10 @@ class ApiController extends BaseController
                     ->where('user_id',$user_id)
                     ->count();
                // if($jcc<=$cc->total_spots || $cc->total_spots==0){
-                // join contest    
+                // join contest   
+                $data['user_name'] = $userVald->name;
+                $data['team_name'] = $userVald->team_name;
+                
                 $t =   JoinContest::updateOrCreate($data,$data);
 
                // }
@@ -3833,9 +3840,7 @@ class ApiController extends BaseController
                 $is_full->is_full = $c_count;
                 $is_full->filled_spot =  $c_count;
                 $is_full->save();
-
             \DB::commit();
-
             }
             $message = "Team created successfully!";
         }else{
