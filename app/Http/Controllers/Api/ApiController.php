@@ -1506,10 +1506,8 @@ class ApiController extends BaseController
         foreach ($default_contest as $key => $result) {
             $createContest = CreateContest::firstOrNew(
                 [
-                    'match_id'          =>  $match_id,
-                    'contest_type'      =>  $result->contest_type
-
-
+                    'match_id'           =>  $match_id,
+                    'default_contest_id' =>  $result->id
                 ]
             );
 
@@ -2762,7 +2760,6 @@ class ApiController extends BaseController
         if(count($liveMatches)==0){
             $liveMatches = null;
         }
-
 
         $actiontype = $request->action_type;
 
