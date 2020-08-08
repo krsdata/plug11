@@ -1546,7 +1546,7 @@ class ApiController extends BaseController
             $createContest = CreateContest::firstOrNew(
                 [
                     'match_id'              =>  $match_id,
-                    'contest_type'          =>  $result->contest_type,
+                  //  'contest_type'          =>  $result->contest_type,
                     'default_contest_id'    =>  $result->id
 
                 ]
