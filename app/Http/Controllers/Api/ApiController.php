@@ -1491,6 +1491,8 @@ class ApiController extends BaseController
 
     public function updateContestByMatch($match_id=null){
 
+        return false;
+
         $default_contest = \DB::table('default_contents')
             ->where('match_id',$match_id)
             ->whereNull('deleted_at')
@@ -1504,9 +1506,9 @@ class ApiController extends BaseController
         foreach ($default_contest as $key => $result) {
             $createContest = CreateContest::firstOrNew(
                 [
-                    'match_id'              =>  $match_id,
-                   // 'contest_type'          =>  $result->contest_type,
-                    'default_contest_id'    =>  $result->id
+                    'match_id'          =>  $match_id,
+                    'contest_type'      =>  $result->contest_type
+
 
                 ]
             );
