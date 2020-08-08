@@ -1504,11 +1504,9 @@ class ApiController extends BaseController
         foreach ($default_contest as $key => $result) {
             $createContest = CreateContest::firstOrNew(
                 [
-                    'match_id'          =>  $match_id,
-                    'contest_type'      =>  $result->contest_type,
-                    'entry_fees'        =>  $result->entry_fees,
-                    'total_spots'       =>  $result->total_spots,
-                    'first_prize'       =>  $result->first_prize
+                    'match_id'              =>  $match_id,
+                   // 'contest_type'          =>  $result->contest_type,
+                    'default_contest_id'    =>  $result->id
 
                 ]
             );
@@ -2236,8 +2234,8 @@ class ApiController extends BaseController
             $mid = [];
             //  foreach ($results as $key => $result_set) {
 
-            if($result_set->format==5   or $result_set->format==17){
-                // continue;
+            if($result_set->format==5   or $result_set->format==4){
+                 continue;
             }
             foreach ($result_set as $key => $rs) {
                 $data_set[$key] = $rs;
@@ -2344,7 +2342,7 @@ class ApiController extends BaseController
             $results = $data->response->items;
             $mid = [];
             foreach ($results as $key => $result_set) {
-                if($result_set->format==5   or $result_set->format==4){
+                if($result_set->format==5 || $result_set->format==4){
                     continue;
                 }
                 foreach ($result_set as $key => $rs) {
