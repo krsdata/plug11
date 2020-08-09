@@ -2088,7 +2088,7 @@ class ApiController extends BaseController
         }
        // echo $this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=30'; die;
         //upcoming $this->cric_url
-        $data =    file_get_contents($this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=10');
+        $data =    file_get_contents($this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=30');
        // return  $data;
         \File::put(public_path('/upload/json/'.$fileName.'.txt'),$data);
         
@@ -3322,6 +3322,7 @@ class ApiController extends BaseController
     }
 
     public function saveSquad($match_ids=null,$m_cid=null){
+
         foreach ($match_ids as $key => $match_id) {
             
             $cid = $m_cid[$match_id]??Competition::where('match_id',$match_id)->first()->cid;
