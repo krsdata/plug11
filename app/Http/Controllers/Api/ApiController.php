@@ -111,7 +111,7 @@ class ApiController extends BaseController
                 ->where('timestamp_start','>=',time())
                 ->first(); 
 
-        $t1 = $match->timestamp_start;
+        $t1 = $match->timestamp_start??null;
         $t2 = time();
         $td = round((($t1 - $t2)/60),2);
         $cf = $match->short_title??'Contest Filling fast';
@@ -119,24 +119,25 @@ class ApiController extends BaseController
         $message = '**Contest is filling fast. Create your team and join the contest. Hurry up!!**';
         $title = "🏏 $cf 🕚 🏆🏆 🔔";
 
-        $image =  "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png";
+        $image =  "https://sportsfight.in/webmedia/images/logof.png";
 
         $data = [
             'action' => 'notify' ,
             'title' => $title,
             'message' => $message
         ];
-      /*  
+        
         $notification = [
-            'title' => 'offer',
-            'body' => $message,
+            'action' => 'notify', 
+            'title' => 'Weekend Offer',
+            'body' => "100% cash bonus on deposit of 111",
             'image' => $image
         ];
       //  dd($data)
         $device_id = 'fNs9mYq4QfGdBDNpi39d5g:APA91bF7xWZHzBzCOoWN80deNfT8TQGlJLZGEaU_waZGOcnUzlJsXewBArNIbesHhicrQVkDMMbAq1eLEdFigL8p9atV88OaHNhf5s-yxUJjuGszmG3xRkoP41PkIaKjylY1fvXZLVeh';
 
         $this->sendNotification($device_id, $data,$notification);
-        die('-----');*/
+        die('-----');
 
         if($td>5 && $td%15==0 || $td<90){        
             $helper = new Helper;
@@ -1535,7 +1536,6 @@ class ApiController extends BaseController
             $createContest = CreateContest::firstOrNew(
                 [
                     'match_id'              =>  $match_id,
-                  //  'contest_type'          =>  $result->contest_type,
                     'default_contest_id'    =>  $result->id
 
                 ]
@@ -1989,7 +1989,7 @@ class ApiController extends BaseController
             return "<p style='padding:10px' class='alert alert-success'> Playing11 announced! <p>";
 
         }else{
-            $this->saveMatchDataFromAPI2DB($data); 
+           // $this->saveMatchDataFromAPI2DB($data); 
             $this->removePlaying11($match_id, "false");
             $matches->status =1;
             $matches->status_str = 'upcoming';
@@ -2068,7 +2068,6 @@ class ApiController extends BaseController
             $this->saveMatchDataById($data);
         }
         return [' Live match  updated successfully'];
-
     }
 
     public function updateMatchDataByStatus($status=1)
@@ -5525,6 +5524,7 @@ class ApiController extends BaseController
         $contest = CreateContest::whereColumn('total_spots','filled_spot')
             ->where('cancellation',1)
             ->where('is_cloned',0)
+            ->where('total_spots','>',0)
             ->get();
         //->where('entry_fees','>',0)
         $match_id = $contest->pluck('match_id')->toArray();
