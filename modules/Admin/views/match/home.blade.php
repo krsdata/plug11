@@ -114,8 +114,11 @@
 
                                                {{ (($match->currentpage()-1)*15)+(++$key) }}</td>
                                                 <td> {{$result->match_id}} </td>
-                                                 <td> {{$result->title}} </td>
                                                  <td> {{$result->short_title}} </td>
+                                                 <td> <a class="btn btn-success" href="https://api.sportsfight.in/api/v2/getSquadByMatch/{{$result->match_id}}?allowme=1">
+                                                    update Squad
+                                                 </a>
+                                                  </td>
                                                  <td> <a class="btn btn-success" href="{{route('defaultContest.create')}}?match_id={{$result->match_id}}">
                                                     Add Contest
                                                  </a>
