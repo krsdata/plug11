@@ -61,7 +61,7 @@ Route::middleware('auth:api')->group( function () {
         Route::match(['post','get'],'leaderBoard', 'Api\ApiController@leaderBoard');
         Route::match(['post','get'],'getPoints', 'Api\ApiController@getPoints');
         Route::match(['post','get'],'getPrizeBreakup', 'Api\ApiController@getPrizeBreakup');
-        Route::match(['post','get'],'prizeDistribution', 'Api\PaymentController@prizeDistribution');
+        Route::match(['post','get'],'prizeDistribution', 'Api\ApiController@prizeDistribution');
 
         Route::match(['post','get'],'joinNewContestStatus', 'Api\ApiController@joinNewContestStatus');
 
@@ -237,7 +237,8 @@ Route::group([
     Route::match(['post','get'],'playerStat', 'Api\ApiController@playerStat');
     Route::match(['post','get'],'distributePrize', 'Api\ApiController@distributePrize');
     Route::match(['post','get'],'affiliateProgram', 'Api\ApiController@affiliateProgram');
-    
+
+    Route::match(['post','get'],'getSquadByMatch/{match_id}', 'Api\ApiController@getSquadByMatch');
     }
 );
 

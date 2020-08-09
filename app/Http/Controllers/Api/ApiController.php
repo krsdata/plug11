@@ -3321,6 +3321,55 @@ class ApiController extends BaseController
         }
     }
 
+    public function getSquadByMatch($match_id=null){
+    
+            # code... 
+            $token =  $this->token;
+            $path = $this->cric_url.'matches/'.$match_id.'/squads/?token='.$token;  
+            $data = $this->getJsonFromLocal($path);
+            
+           // update team a players
+            $teama = $data->response->teama;
+            foreach ($teama->squads as $key => $squads) {
+                $teama_obj = TeamASquad::firstOrNew(
+                    [
+                        'team_id'=>$teama->team_id,
+                        'player_id'=>$squads->player_id,
+                        'match_id'=>$match_id
+                    ]
+                );
+                if($squads->role!="squad"){
+                    $p11_team[$squads->player_id] = $squads->role;    
+                }
+
+                $teama_obj->team_id   =  $teama->team_id;
+                $teama_obj->player_id =  $squads->player_id;
+                $teama_obj->role      =  $squads->role;
+                $teama_obj->role_str  =  $squads->role_str;
+                $teama_obj->playing11 =  $squads->playing11;
+                $teama_obj->name      =  $squads->name;
+                $teama_obj->match_id  =  $match_id;
+
+                $teama_obj->save();
+            }
+
+            $teamb = $data->response->teamb;
+            foreach ($teamb->squads as $key => $squads) {
+
+                $teamb_obj = TeamBSquad::firstOrNew(['team_id'=>$teamb->team_id,'player_id'=>$squads->player_id,'match_id'=>$match_id]);
+
+                $teamb_obj->team_id   =  $teamb->team_id;
+                $teamb_obj->player_id =  $squads->player_id;
+                $teamb_obj->role      =  $squads->role;
+                $teamb_obj->role_str  =  $squads->role_str;
+                $teamb_obj->playing11 =  $squads->playing11;
+                $teamb_obj->name      =  $squads->name;
+                $teamb_obj->match_id  =  $match_id;
+                $teamb_obj->save(); 
+            }
+            echo "squad updated";
+    }
+
     public function saveSquad($match_ids=null,$m_cid=null){
 
         foreach ($match_ids as $key => $match_id) {
