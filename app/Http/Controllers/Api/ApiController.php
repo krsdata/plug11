@@ -2085,11 +2085,11 @@ class ApiController extends BaseController
         else{
             return ['data not available'];
         }
-        $data =    file_get_contents($this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=30');
+        $date = date('Y-m-d');
+        $data =    file_get_contents($this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=20&date='.$date);
        // return  $data;
         \File::put(public_path('/upload/json/'.$fileName.'.txt'),$data);
         
-        //$this->storeMatchInfoAtMachine($data,'status/'.$fileName.'.txt');
         $data = $this->storeMatchInfo($fileName);
         
         $this->saveMatchDataFromAPI($data);
