@@ -5512,7 +5512,7 @@ class ApiController extends BaseController
         if($request_match){
             $this->recheckPlaying11($request);
         }
-                    
+        $data_p = [];             
         foreach ($matches as $key => $match) {
             $match_id = $match->match_id;
 
@@ -5570,7 +5570,7 @@ class ApiController extends BaseController
             }
             // update team a players
             $teama = $data->response->teama;
-            $data_p = [];
+            
             if(isset($teama)){
                 foreach ($teama->squads as $key => $squads) {
                     $teama_obj = TeamASquad::firstOrNew(
