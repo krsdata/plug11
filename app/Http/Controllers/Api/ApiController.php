@@ -2055,7 +2055,6 @@ class ApiController extends BaseController
         }
 
         return [$matches->count().' Match is updated successfully'];
-
     }
     public function updateLiveMatchFromApp()
     {
@@ -2086,8 +2085,6 @@ class ApiController extends BaseController
         else{
             return ['data not available'];
         }
-       // echo $this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=30'; die;
-        //upcoming $this->cric_url
         $data =    file_get_contents($this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=30');
        // return  $data;
         \File::put(public_path('/upload/json/'.$fileName.'.txt'),$data);
@@ -2096,9 +2093,7 @@ class ApiController extends BaseController
         $data = $this->storeMatchInfo($fileName);
         
         $this->saveMatchDataFromAPI($data);
-
         return [$fileName.' match data updated successfully'];
-
     }
 
     public function updateMatchDataByMatchId($match_id=null,$status=1)
@@ -2317,9 +2312,7 @@ class ApiController extends BaseController
             $this->createContest($data_set['match_id']);
          
             if(count($mid)){
-                if($matches->status==3){
-                    $this->getSquad($mid);    
-                }
+               // $this->getSquad($mid);   
                 $this->saveSquad($mid,$m_cid);
             }
         }
@@ -2434,7 +2427,7 @@ class ApiController extends BaseController
                 }
             }
             if(count($mid)){ 
-               //$this->getSquad($mid,$m_cid);
+               $this->getSquad($mid,$m_cid);
                 $this->saveSquad($mid,$m_cid);
             }
         }
@@ -3032,7 +3025,6 @@ class ApiController extends BaseController
             });
 
         return $player;
-
     }
     // get players
     public function getPlayer(Request $request)
@@ -3129,24 +3121,6 @@ class ApiController extends BaseController
             }
             $data['short_name'] =  $pname;
             
-           /* 
-            if($fl>=25){
-                $data['short_name'] = $results->short_name;
-            }else{
-                if(strlen($lname)<=25)
-                {
-                    $data['short_name'] = $fname." ".$lname;
-                }
-                else{
-                    if($lname==""){
-                        $data['short_name'] = $results->short_name;
-                    }else{
-                        $data['short_name'] = $fname.' '.$lname;    
-                    }
-                    
-                }
-            }*/
-
             $data['fantasy_player_rating'] = ($results->fantasy_player_rating);
 
             $sel_per = $analytics->where('player_id',$results->pid)->first();
@@ -3172,14 +3146,7 @@ class ApiController extends BaseController
             if(is_array($final_playing11) && count($final_playing11) && isset($final_playing11[$pid])){
 
                 $rol = $final_playing11[$pid]??$results->playing_role;
-
                 $data['playing11'] =  true;
-
-              //  if($results->playing_role=="wk" or $results->playing_role=="all"){
-              //      $rs[$results->playing_role][]  = $data;
-              //  }else{
-                  //  $rs[$rol][]  = $data;  
-               // } 
             }
             
             if($results->playing_role=="cap")
@@ -3255,69 +3222,8 @@ class ApiController extends BaseController
                 $teamb_obj->name      =  $squads->name;
                 $teamb_obj->match_id  =  $match_id;
                 $teamb_obj->save();
-               // $p11_team[$squads->player_id] = $squads->role;
-                $team_id[$squads->player_id] = $teamb->team_id;
-                if($squads->role!="squad"){
-                    $p11_team[$squads->player_id] = $squads->role;    
-                }
+               
             }
-            // update all players
-            /*foreach ($data->response->players as $pkey => $pvalue)
-            {   
-                if(isset($p11_team) && count($p11_team)==22){
-                    if(isset($p11_team[$pvalue->pid]) && $p11_team[$pvalue->pid]){
-                        $pvalue->playing_role = $p11_team[$pvalue->pid];
-                    }
-                }
-                $data_set =   Player::firstOrNew(
-                    [
-                        'pid'=>$pvalue->pid,
-                        'team_id'=>$team_id[$pvalue->pid],
-                        'match_id'=>$match_id
-                    ]
-                );
-                $match_status = Matches::where('match_id',$match_id)->first();
-                $status = 0;
-                if($match_status){
-                    $status = $match_status->status??0;
-                }
-
-                foreach ($pvalue as $key => $value) {
-                    if($status==3 || $status==1){
-                        continue;
-                    }
-                    if($key=="primary_team"){
-                        continue;
-                        $data_set->$key = json_encode($value);
-                    }
-                    $data_set->$key  =  $value;
-                    $data_set->match_id  =  $match_id;
-                    $data_set->pid = $pvalue->pid;
-                    $data_set->team_id = $team_id[$pvalue->pid];
-                }
-
-                $data_set->save();
-            }*/
-            // update player in updatepoint table
-
-            /*foreach ($data->response->players as $pkey => $pvalue)
-            {
-                $data_mp =  MatchPoint::firstOrNew(
-                    [
-                        'pid'=>$pvalue->pid,
-                        'match_id'=>$match_id
-                    ]
-                ); 
-                if($data_mp->short_name==null){
-                    $data_mp->match_id  =  $match_id;
-                    $data_mp->pid = $pvalue->pid; 
-                    $data_mp->role = $pvalue->playing_role; 
-                    $data_mp->name = $pvalue->short_name; 
-                    $data_mp->rating = $pvalue->fantasy_player_rating;
-                
-                    $data_mp->save(); 
-                } 
-            }*/
         }
     }
 
@@ -3369,7 +3275,9 @@ class ApiController extends BaseController
             }
             echo "squad updated";
     }
-
+    /*
+    Save Squad
+    */
     public function saveSquad($match_ids=null,$m_cid=null){
 
         foreach ($match_ids as $key => $match_id) {
@@ -3378,12 +3286,8 @@ class ApiController extends BaseController
             
             $path   =   $this->cric_url.'competitions/'.$cid.'/squads/'.$match_id.'?token='.$this->token;
 
-            $data_sqd = file_get_contents($path);
-
-            $this->storeMatchInfoAtMachine($data_sqd,'squads/'.$match_id.'.txt');
-            
             $data = $this->getJsonFromLocal($path);
-              
+            
             foreach ($data->response->squads as $key => $pvalue) {
 
                 if(!isset($pvalue->players)){
@@ -4671,7 +4575,8 @@ class ApiController extends BaseController
     {  
         $match_id = $request->match_id;  
         $get_join_contest = JoinContest::where('match_id',  $match_id)
-          ->where('winning_amount','>',0)  
+          ->where('winning_amount','>',0)
+          ->where('cancel_contest',0)  
           ->get();
 
         $get_join_contest->transform(function ($item, $key)   {
@@ -5615,7 +5520,7 @@ class ApiController extends BaseController
             $t2 = time();
             //time diff
             $td = round((($t1 - $t2)/60),2); 
-        
+            
             $p11a = TeamASquad::where(
                         [
                             'match_id'=>$match_id
@@ -5628,13 +5533,14 @@ class ApiController extends BaseController
                         ]
                     )->where('playing11','true')->count();
 
-            if($td>0 && $td<=60 && $td%10==0){ 
+            if($td>0 && $td<=60 && $td%5==0){ 
                 if($p11a && $p11b){
                     $this->isLineUp($match_id);
                 }
             }else{
                 continue;
             }
+            
             if($p11a && $p11b){
                 if($match->status==1){
                     $match_obj = Matches::firstOrNew(
@@ -5645,25 +5551,26 @@ class ApiController extends BaseController
                     if($match_obj->status==3){
                         continue;   
                     }
-
                     $match_obj->status =  3;
                     $match_obj->save();
                     continue;
                 }
                 continue;
             }
+
             # code...
             try{ 
-
                 $token =  $this->token;
                 $path = $this->cric_url.'matches/'.$match_id.'/squads/?token='.$token;
                 $response = file_get_contents(url('api/v2/updateMatchDataByStatus/3?allowme=true'));
                 $data = $this->getJsonFromLocal($path);
+
             }catch(\ErrorException $e){
                 continue;
             }
             // update team a players
             $teama = $data->response->teama;
+            $data_p = [];
             if(isset($teama)){
                 foreach ($teama->squads as $key => $squads) {
                     $teama_obj = TeamASquad::firstOrNew(
@@ -5677,9 +5584,11 @@ class ApiController extends BaseController
                     $teama_obj->playing11 =  $squads->playing11;
                     $teama_obj->role =  $squads->role;
                     $teama_obj->save();
+                    $data_p[$squads->player_id] = $squads->playing11;
                 }
             }   
-            //getSquad($match_ids=null,$cid=null)           
+            //getSquad($match_ids=null,$cid=null) 
+            //dd($data);          
             $teamb = $data->response->teamb;
 
             if(isset($teamb)){
@@ -5694,11 +5603,12 @@ class ApiController extends BaseController
                 $teamb_obj->playing11 =  $squads->playing11;
                 $teamb_obj->role =  $squads->role;
                 $teamb_obj->save();
-
+                $data_p[$squads->player_id] = $squads->playing11;
                 }   
             }
         }
-        return ['playing11 updated'];
+
+        return $data_p;
     }
 
     public function recheckPlaying11($request){
@@ -5748,7 +5658,7 @@ class ApiController extends BaseController
                 //continue;
             }
             // update team a players
-            
+            return true;
     }
 
     public function isLineUp($match_id=null){
