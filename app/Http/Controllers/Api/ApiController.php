@@ -5512,7 +5512,7 @@ class ApiController extends BaseController
         if($request_match){
             $this->recheckPlaying11($request);
         }
-        $data_p = [];             
+        $data_p = ['No playing 11'];             
         foreach ($matches as $key => $match) {
             $match_id = $match->match_id;
 
