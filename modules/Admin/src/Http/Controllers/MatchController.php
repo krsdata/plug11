@@ -465,7 +465,19 @@ class MatchController extends Controller {
                                     ->where('match_id',$item->match_id)
                                     ->where('playing11',"true")
                                     ->get();
-                                    //dd($playing11_teamA);
+                    if($playing11_teamA->count()){
+                       $pid1 = $playing11_teamA->pluck('player_id')->toArray();
+                    }
+                    if($playing11_teamB->count()){
+                       $pid2 = $playing11_teamB->pluck('player_id')->toArray();
+                    }
+
+                    if(isset($pid1) && isset($pid2)){
+                        $item->playin11 = array_merge($pid1,$pid2);
+                    }else{
+                        $item->playin11 = [];
+                    }
+
                     $item->playing11_teamA = $playing11_teamA;
                     $item->playing11_teamB = $playing11_teamB;
                                    
@@ -477,11 +489,50 @@ class MatchController extends Controller {
                                 return $item;
                             });
                 $item->contests = $contests;
+
+                $players = \DB::table('players')
+                        ->where('match_id',$item->match_id)
+                        ->get()
+                        ->groupBy('playing_role')
+                        ->transform(function($item,$key){
+                        //    $data[$key] = $item;
+
+                            $item->transform(function($item,$key){ 
+                                    $team_a = \DB::table('team_a')
+                                        ->where('match_id',$item->match_id)
+                                        ->where('team_id',$item->team_id)
+                                        ->first();
+                                    $team_b = \DB::table('team_b')
+                                            ->where('match_id',$item->match_id)
+                                            ->where('team_id',$item->team_id)
+                                            ->first();
+                                    if($team_a){
+                                        $team_name = 
+                                        ' <span class="btn-danger btn-xs">'.
+                                        $team_a->short_name . '</span>';
+                                    }
+
+                                    if($team_b){
+                                         $team_name = 
+                                        ' <span class="btn-primary btn-xs">'.
+                                        $team_b->short_name . '</span>';
+                                    } 
+
+                                    $item->team_name = $team_name??null;
+
+                                    return $item;
+                                });
+                        
+                            return $item;
+                                
+                            });
+                $item->players = $players; 
+                
                 return $item;            
 
-            }); 
+            });  
              
-        } else {
+        } else { 
             $match = Match::with('teama','teamb')
                 ->where('status','1')
                 ->WhereMonth('date_start',date('m'))
@@ -499,6 +550,20 @@ class MatchController extends Controller {
                                 ->where('playing11',"true")
                                 ->get();
 
+                 if($playing11_teamA->count()){
+                       $pid1 = $playing11_teamA->pluck('player_id')->toArray();
+                    }
+                    if($playing11_teamB->count()){
+                       $pid2 = $playing11_teamB->pluck('player_id')->toArray();
+                    }
+
+                    if(isset($pid1) && isset($pid2)){
+                        $item->playin11 = array_merge($pid1,$pid2);
+                    }else{
+                        $item->playin11 = [];
+                    }
+
+
                 $item->playing11_teamA = $playing11_teamA;
                 $item->playing11_teamB = $playing11_teamB;
                 $contests = CreateContest::where('match_id',$item->match_id)->get()
@@ -509,10 +574,50 @@ class MatchController extends Controller {
                                 return $item;
                             });
                 $item->contests = $contests;
+
+                $players = \DB::table('players')
+                        ->where('match_id',$item->match_id)
+                        ->get()
+                        ->groupBy('playing_role')
+                        ->transform(function($item,$key){
+                        //    $data[$key] = $item;
+
+                            $item->transform(function($item,$key){ 
+                                
+                                    $team_a = \DB::table('team_a')
+                                        ->where('match_id',$item->match_id)
+                                        ->where('team_id',$item->team_id)
+                                        ->first();
+                                    $team_b = \DB::table('team_b')
+                                            ->where('match_id',$item->match_id)
+                                            ->where('team_id',$item->team_id)
+                                            ->first();
+                                    if($team_a){
+                                        $team_name = 
+                                        ' <span class="btn-danger btn-xs">'.
+                                        $team_a->short_name . '</span>';
+                                    }
+
+                                    if($team_b){
+                                         $team_name = 
+                                        ' <span class="btn-primary btn-xs">'.
+                                        $team_b->short_name . '</span>';
+                                    } 
+
+                                    $item->team_name = $team_name??null;
+
+                                    return $item;
+                                });
+                        
+                            return $item;
+                                
+                            });
+                $item->players = $players;        
                 return $item;            
 
             });
         }    
+       // return ($match[0]->players['bowl']);
         return view('packages::match.index', compact('match','page_title', 'page_action','sub_page_title'));
     }
 

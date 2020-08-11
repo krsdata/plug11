@@ -337,7 +337,7 @@ class MatchContestController extends Controller {
                     $contest_name = \DB::table('contest_types')->where('id',$item->contest_type)->first();
                     $item->contest_name = $contest_name->contest_type??null;
                     $match = Match::where('match_id',$item->match_id)->select('short_title','status_str')->first();
-                    $item->status = $match->status_str??'Cancel'; 
+                    $item->status = $match->status_str??'Cancel';  
                     return $item; 
             });
         } 
