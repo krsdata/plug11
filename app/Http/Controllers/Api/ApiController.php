@@ -2961,8 +2961,8 @@ class ApiController extends BaseController
                     }else{
                         $item->is_lineup = false;
                     }
-
-                    $item->league_title = $league_title.' - '.$item->format_str;
+                    $item->league_title = $league_title;
+                    //$item->league_title = $league_title.' - '.$item->format_str;
                     return $item;
             });
 
