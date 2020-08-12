@@ -817,14 +817,14 @@ class UserController extends BaseController
 
     public function login(Request $request)
     {   
-        $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
+       /* $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
         if(!$okhttp){
             return array(
                     'status' => false,
                     'code' => 201,
                     'message' => 'unauthorise access!'
                 );
-        }
+        }*/
 
         $request->merge(['user_type'=>'googleAuth']);
         $data = [];
