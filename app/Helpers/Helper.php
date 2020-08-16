@@ -40,7 +40,7 @@ class Helper {
 
     }
     public function notifyDocUploadToAdmin($title=null,$message=null){ 
-        $user_email = [env('admin2_email','kroy.aws@gmail.com'),env('admin1_email','manoj.i.prasad@gmail.com'),env('admin3_email','djangde37@gmail.com'),env('admin4_email','rp.yadav775@gmail.com')];
+        $user_email = [env('admin2_email'),env('admin1_email'),env('admin3_email'),env('admin4_email')];
         
         $device_id = User::whereIn('email',$user_email)->pluck('device_id')->toArray();
           
