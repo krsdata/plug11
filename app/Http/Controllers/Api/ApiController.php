@@ -2982,7 +2982,7 @@ class ApiController extends BaseController
             'response'=>$data
         ];
     }
-
+    
     public function getAllCompetition(){
         $com = \DB::table('competitions')->select('id','match_id','cid')->get()->toArray();
         return $com;
@@ -3229,10 +3229,40 @@ class ApiController extends BaseController
 
     public function getSquadByMatch($match_id=null){
     
-            # code... 
-            $token =  $this->token;
-            $path = $this->cric_url.'matches/'.$match_id.'/squads/?token='.$token;  
-            $data = $this->getJsonFromLocal($path);
+        # code... 
+        $token =  $this->token;
+        $path = $this->cric_url.'matches/'.$match_id.'/squads/?token='.$token;  
+        $data = $this->getJsonFromLocal($path);
+
+        $p11a = TeamASquad::where(
+                    [
+                        'match_id'=>$match_id
+                    ]
+                )->where('playing11','true')->count();
+
+        $p11b = TeamBSquad::where(
+            [
+                'match_id'=>$match_id
+            ]
+        )->where('playing11','true')->count();
+
+
+        if($p11a && $p11b){
+            if($match->status==1){
+                $match_obj = Matches::firstOrNew(
+                    [
+                        'match_id'=>$match_id
+                    ]
+                );
+                if($match_obj->status==3){
+                    return true;   
+                }
+                $match_obj->status =  3;
+                $match_obj->save();
+                return true;
+            }
+            return;
+        }
             
            // update team a players
             $teama = $data->response->teama;
@@ -3273,6 +3303,10 @@ class ApiController extends BaseController
                 $teamb_obj->match_id  =  $match_id;
                 $teamb_obj->save(); 
             }
+
+
+
+
             echo "squad updated";
     }
     /*
@@ -5494,6 +5528,7 @@ class ApiController extends BaseController
             $contest_copy['filled_spot'] = 0;
             $contest_copy['is_cloned'] = 0;
             $contest_copy['is_full'] = 0;
+            $contest_copy['is_free'] = 0;
             \DB::table('create_contests')->insert($contest_copy);
             $item->contest = $contest_copy;
             return $item;
@@ -5508,7 +5543,7 @@ class ApiController extends BaseController
                     ->get(['match_id','timestamp_start','status']);
         
         $request_match = $request->match_id;
-
+        //dd( $matches);
         if($request_match){
             $this->recheckPlaying11($request);
         }
@@ -5520,7 +5555,7 @@ class ApiController extends BaseController
             $t2 = time();
             //time diff
             $td = round((($t1 - $t2)/60),2); 
-            
+           
             $p11a = TeamASquad::where(
                         [
                             'match_id'=>$match_id
@@ -5533,14 +5568,14 @@ class ApiController extends BaseController
                         ]
                     )->where('playing11','true')->count();
 
-            if($td>0 && $td<=60){ 
+            if($td>0 && $td<=60 || 1){ 
                 if($p11a && $p11b  && $td%5==0 ){
                     $this->isLineUp($match_id);
                 }
-            }else{
+            }else{ 
                 continue;
             }
-            
+               
             if($p11a && $p11b){
                 if($match->status==1){
                     $match_obj = Matches::firstOrNew(
@@ -5555,7 +5590,7 @@ class ApiController extends BaseController
                     $match_obj->save();
                     continue;
                 }
-                continue;
+                //continue;
             }
 
             # code...
@@ -5615,12 +5650,12 @@ class ApiController extends BaseController
         $match_id = $request->match_id;
         try{ 
 
-                $token =  $this->token;
-                $path = $this->cric_url.'matches/'.$match_id.'/squads/?token='.$token;
-                $response = file_get_contents(url('api/v2/updateMatchDataByStatus/3?allowme=true'));
-                $data = $this->getJsonFromLocal($path);
+            $token  =   $this->token;
+            $path   =   $this->cric_url.'matches/'.$match_id.'/squads/?token='.$token;
+            $response = file_get_contents(url('api/v2/updateMatchDataByStatus/3?allowme=true'));
+            $data   =   $this->getJsonFromLocal($path);
+            $teama  =   $data->response->teama;
 
-                $teama = $data->response->teama;
             if(isset($teama)){
                 foreach ($teama->squads as $key => $squads) {
                     $teama_obj = TeamASquad::firstOrNew(
