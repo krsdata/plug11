@@ -1140,7 +1140,8 @@ class UserController extends BaseController
                 'call_url'   =>  'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID=', 
                 'g_pay' =>  'sportsfight.in-1@okaxis',
                 "status"=>$status,
-                "is_account_verified" => $usermodel->is_account_verified??0,
+               // "is_account_verified" => $usermodel->is_account_verified??0,
+                "is_account_verified"=>1,
                 "code"=>$code,
                 "message"=> $message ,
                 'data'=> $data,
@@ -1152,7 +1153,7 @@ class UserController extends BaseController
                 'call_url'      =>  'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID=', 
                 'g_pay'         =>  'sportsfight.in-1@okaxis',
                 "status"        =>  $status,
-                "is_account_verified" => 0,
+                "is_account_verified" => 1, //0
                 "code"          => $code,
                 "message"       => 'Invalid email or password',
                 'token'         => $token??Hash::make(1)
