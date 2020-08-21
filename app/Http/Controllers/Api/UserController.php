@@ -817,6 +817,7 @@ class UserController extends BaseController
 
     public function login(Request $request)
     {   
+        
         $request->merge(['user_type'=>'googleAuth']);
         $data = [];
         $input = $request->all();
