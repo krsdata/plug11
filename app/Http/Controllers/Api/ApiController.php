@@ -56,13 +56,13 @@ class ApiController extends BaseController
         $browser            = $agent->browser();
         $data['robot']      = $agent->isRobot();
         $data['robotName']  = $agent->robot();
-        $platform = $agent->platform();
+        $platform           = $agent->platform();
         $data['version']    = $agent->version($platform);
         $data['user_id']    = $request->user_id;
         $data['request']    = json_encode($request->all());
-        \DB::table('device_details')->insert($data);
         
-
+        \DB::table('device_details')->insert($data);
+    
         $this->date = date('Y-m-d');
         $this->token = env('CRIC_API_KEY',"8740931958a5c24fed8b66c7609c1c49");
         $request->headers->set('Accept', 'application/json');

@@ -1094,15 +1094,14 @@ class UserController extends BaseController
 		if($usermodel){
             $token 	= $usermodel->createToken('token')->accessToken;
         }
+        
         $apk_updates = \DB::table('apk_updates')->orderBy('id','desc')->first();
         $data['apk_url'] =  'https://playing11.live/apk'??$apk_updates->url;
-        //
-      //  $data['pmid']    =  env('paytm_mid','tpJmKe81092739039978');
         $data['pmid']    =  'kroy';
         
         $data['call_url']   =  'https://playing11.live/api/v2/paymentCallback?ORDER_ID='; 
         $data['g_pay'] =  'playing11.live@okaxis';
-
+        
         if($data){
             $server = [
                 'USER_DEVICE_IP' => $_SERVER['HTTP_X_FORWARDED_FOR']??null,

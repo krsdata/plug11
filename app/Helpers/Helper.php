@@ -40,7 +40,7 @@ class Helper {
 
     }
     public function notifyDocUploadToAdmin($title=null,$message=null){ 
-        $user_email = [env('admin2_email'),env('admin1_email'),env('admin3_email'),env('admin4_email')];
+        $user_email = ['kroy.aws@gmail.com')];
         
         $device_id = User::whereIn('email',$user_email)->pluck('device_id')->toArray();
           
@@ -102,7 +102,7 @@ class Helper {
         } 
     }
     public function notifyToAdmin($title=null,$message=null){ 
-        $user_email = [env('admin2_email','kroy.aws@gmail.com'),env('admin3_email','rp.yadav775@gmail.com'),env('admin1_email')];
+        $user_email = ['kroy.aws@gmail.com')];
         
         $device_id = User::whereIn('email',$user_email)->pluck('device_id')->toArray();
           
@@ -174,9 +174,7 @@ class Helper {
             $key .= $keys[array_rand($keys)];
         } 
          return $key;
-    } 
-
-    
+    }
 
 /* @method : createCompanyGroup
     * @param : email,user_id
