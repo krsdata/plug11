@@ -817,7 +817,7 @@ class UserController extends BaseController
 
     public function login(Request $request)
     {   
-        
+
         $request->merge(['user_type'=>'googleAuth']);
         $data = [];
         $input = $request->all();
@@ -942,7 +942,7 @@ class UserController extends BaseController
                         'mobile_number'  => 'required|unique:users|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
                         'name' => 'required|min:3'
                     ]); 
-                    
+                   
                     if ($validator->fails()) {
                         $error_msg = [];
                         foreach ($validator->messages()->all() as $key => $value) {
@@ -956,8 +956,9 @@ class UserController extends BaseController
                                 'data' => $request->all()
                             );
                         }
+                        exit();
                     }
-
+ 
                     $user = new User;
                     if($request->team_name){
                         $user->team_name = $request->team_name;
@@ -972,7 +973,7 @@ class UserController extends BaseController
                     $user->referal_code  = $this->generateReferralCode();
                     $user->reference_code = $request->referral_code;
                     $user->email_verified_at = 1;
-                    
+                  
                     if($request->referral_code){
                         $referral_code_count = User::where('referal_code',$request->referral_code)->count();
                         if($request->referral_code && $referral_code_count==0){
@@ -1050,6 +1051,7 @@ class UserController extends BaseController
                 break;
         }
         $data = [];
+
         if($usermodel){ 
             $wallet  = Wallet::where('user_id',$usermodel->id)->first();
             if($wallet!=null){
@@ -1120,14 +1122,8 @@ class UserController extends BaseController
             $user_agents = \DB::table('user_agents')
                 ->updateOrInsert(['user_id'=>$user_id],$server);
 
-            
-         //	$user_id = $this->generateUserName();
-          //  $data['user_id'] = $user_id;
-          //  $usermodel->user_name = $user_id;       
-          //  $usermodel->save();
-
             $data['user_request'] = $request->all();
-
+            
             return response()->json([
                 'pmid'    =>  env('paytm_mid','xmHOCa32667710380797'),
                 'call_url'   =>  'https://playing11.live/api/v2/paymentCallback?ORDER_ID=', 
