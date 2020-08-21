@@ -130,7 +130,7 @@ class UserController extends BaseController
         $invited_by    = $user_data->name==null?$invited_user->first_name.' '.$invited_user->last_name:$user_data->name;
         $referal_code  = $user_data->user_name;
         $receipent_name = "Hi,";
-        $subject       = ucfirst($sender_name)." has invited you to join SportsFight";
+        $subject       = ucfirst($sender_name)." has invited you to join playing11.live";
 
         $email_content = [
             'receipent_email'=> $user_email,
@@ -349,7 +349,7 @@ class UserController extends BaseController
             $wallet_trns['payment_type']    =  2;
             $wallet_trns['payment_type_string'] = "Referral";
             $wallet_trns['transaction_id']  = time().'-'.$refer_by->id??null;
-            $wallet_trns['payment_mode']    = "sportsfight";
+            $wallet_trns['payment_mode']    = "playing11.live";
             $wallet_trns['payment_details'] = json_encode($wallet_trns);
             $wallet_trns['payment_status']  = "success";
 
@@ -474,7 +474,7 @@ class UserController extends BaseController
             $wallet_trns['payment_type']    =  1;
             $wallet_trns['payment_type_string'] = "Bonus";
             $wallet_trns['transaction_id']  = time().'-'.$user->id??null;
-            $wallet_trns['payment_mode']    = "sportsfight";
+            $wallet_trns['payment_mode']    = "playing11.live";
             $wallet_trns['payment_details'] = json_encode($wallet_trns);
             $wallet_trns['payment_status']  = "success";
 
@@ -496,7 +496,7 @@ class UserController extends BaseController
         $user->phone            = $request->phone;
         $user->save();
 
-        $token = $user->createToken('SportsFight')->accessToken;
+        $token = $user->createToken('playing11.live')->accessToken;
         $user_data['referal_code']     =  $user->user_name;
         $user_data['user_id']          =  $user->id;
         $user_data['name']             =  $user->name;
@@ -505,11 +505,11 @@ class UserController extends BaseController
         $user_data['usable_amount']    =  (float)$wallet->usable_amount;
         $user_data['mobile_number']    =  ($user->phone==null)?$user->mobile_number:$user->phone;
 
-        $subject = "Welcome to SportsFight! Verify your email address to get started";
+        $subject = "Welcome to playing11.live! Verify your email address to get started";
         $email_content = [
             'receipent_email'=> $request->input('email'),
             'subject'=>     $subject,
-            'greeting'=>    'SportsFight',
+            'greeting'=>    'playing11.live',
             'first_name'=> $request->input('name')??$request->input('first_name')
         ];
 
@@ -557,7 +557,7 @@ class UserController extends BaseController
             $wallet_trns['payment_type']    =  2;
             $wallet_trns['payment_type_string'] = "Referral";
             $wallet_trns['transaction_id']  = time().'-'.$refer_by->id??null;
-            $wallet_trns['payment_mode']    = "sportsfight";
+            $wallet_trns['payment_mode']    = "playing11.live";
             $wallet_trns['payment_details'] = json_encode($wallet_trns);
             $wallet_trns['payment_status']  = "success";
 
@@ -715,10 +715,10 @@ class UserController extends BaseController
         if($refer_by){
             $ref = $request->referral_code;
         }else{
-            $refer_by = User::where('referal_code','SPORTSFIGHT')
+            $refer_by = User::where('referal_code','PLAYING11')
                     ->where('block_referral',0)
                     ->first();
-            $ref= "SPORTSFIGHT";        
+            $ref= "PLAYING11";        
         }            
            
         if($refer_by && $user)
@@ -735,7 +735,7 @@ class UserController extends BaseController
             $wallet_trns['payment_type']    =  2;
             $wallet_trns['payment_type_string'] = "Referral Bonus";
             $wallet_trns['transaction_id']  = time().'-'.$refer_by->id??null;
-            $wallet_trns['payment_mode']    = "sportsfight";
+            $wallet_trns['payment_mode']    = "playing11.live";
             $wallet_trns['payment_details'] = json_encode($wallet_trns);
             $wallet_trns['payment_status']  = "success";
 
@@ -817,15 +817,6 @@ class UserController extends BaseController
 
     public function login(Request $request)
     {   
-       /* $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
-        if(!$okhttp){
-            return array(
-                    'status' => false,
-                    'code' => 201,
-                    'message' => 'unauthorise access!'
-                );
-        }*/
-
         $request->merge(['user_type'=>'googleAuth']);
         $data = [];
         $input = $request->all();
@@ -864,7 +855,7 @@ class UserController extends BaseController
                         return array(
                             'status' => false,
                             'code' => 420,
-                            'message' => 'Your Account is disabled.To activate write an email at info@sportsfight.in'
+                            'message' => 'Your Account is disabled.To activate write an email at info@playing11.live'
                             );
                     }
 
@@ -874,7 +865,7 @@ class UserController extends BaseController
                     $data['team_name'] 	= $user->team_name??$request->team_name;
                     $data['profile_image'] = $user->profile_image;
                     $data['mobile_number'] = $request->mobile_number??$user->mobile_number;
-                    $data['otpverified'] = $user->is_account_verified?true:false;
+                    $data['otpverified'] = true;
                      // dd($user->mobile_number); 
                      $usermodel = User::where('email',$request->email)->first();
                     if($request->name) {
@@ -1024,7 +1015,7 @@ class UserController extends BaseController
                         $wallet_trns['payment_type']    =  1;
                         $wallet_trns['payment_type_string'] = "Bonus";
                         $wallet_trns['transaction_id']  = time().'-'.$user->id??null;
-                        $wallet_trns['payment_mode']    = "sportsfight";
+                        $wallet_trns['payment_mode']    = "playing11.live";
                         $wallet_trns['payment_details'] = json_encode($wallet_trns);
                         $wallet_trns['payment_status']  = "success";
 
@@ -1101,13 +1092,13 @@ class UserController extends BaseController
             $token 	= $usermodel->createToken('token')->accessToken;
         }
         $apk_updates = \DB::table('apk_updates')->orderBy('id','desc')->first();
-        $data['apk_url'] =  'https://sportsfight.in/apk'??$apk_updates->url;
+        $data['apk_url'] =  'https://playing11.live/apk'??$apk_updates->url;
         //
       //  $data['pmid']    =  env('paytm_mid','tpJmKe81092739039978');
         $data['pmid']    =  'kroy';
         
-        $data['call_url']   =  'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID='; 
-        $data['g_pay'] =  'sportsfight.in-1@okaxis';
+        $data['call_url']   =  'https://playing11.live/api/v2/paymentCallback?ORDER_ID='; 
+        $data['g_pay'] =  'playing11.live@okaxis';
 
         if($data){
             $server = [
@@ -1134,11 +1125,12 @@ class UserController extends BaseController
           //  $usermodel->user_name = $user_id;       
           //  $usermodel->save();
 
-            Log::channel('getMatch')->info($data);
+            $data['user_request'] = $request->all();
+
             return response()->json([
                 'pmid'    =>  env('paytm_mid','xmHOCa32667710380797'),
-                'call_url'   =>  'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID=', 
-                'g_pay' =>  'sportsfight.in-1@okaxis',
+                'call_url'   =>  'https://playing11.live/api/v2/paymentCallback?ORDER_ID=', 
+                'g_pay' =>  'playing11.live@okaxis',
                 "status"=>$status,
                // "is_account_verified" => $usermodel->is_account_verified??0,
                 "is_account_verified"=>1,
@@ -1150,8 +1142,8 @@ class UserController extends BaseController
         }else{
             return response()->json([
                 'pmid'          =>  env('paytm_mid','xmHOCa32667710380797'),
-                'call_url'      =>  'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID=', 
-                'g_pay'         =>  'sportsfight.in-1@okaxis',
+                'call_url'      =>  'https://playing11.live/api/v2/paymentCallback?ORDER_ID=', 
+                'g_pay'         =>  'playing11.live@okaxis',
                 "status"        =>  $status,
                 "is_account_verified" => 1, //0 
                 "code"          => $code,
@@ -1207,9 +1199,9 @@ class UserController extends BaseController
 
         $email_content = array(
             'receipent_email'   => $request->input('email'),
-            'subject'           => 'Your Sportsfight Account Password',
+            'subject'           => 'Your playing11 Account Password',
             'name'              => $user->first_name,
-            'greeting'          => 'Sportsfight',
+            'greeting'          => 'playing11.live',
             'links'             => $links
 
         );
@@ -1505,7 +1497,7 @@ class UserController extends BaseController
 
         $data['email'] = $user->email??$request->get('email');
 
-        $urlencode = urldecode("Your verification \n OTP is : ".$otp."\n Notes: Sportsfight never calls you asking for OTP.");
+        $urlencode = urldecode("Your verification \n OTP is : ".$otp."\n Notes: playing11.live never calls you asking for OTP.");
 
         if($request->mobile_number){
             $this->sendSMS($request->mobile_number,$urlencode);
@@ -1527,9 +1519,9 @@ class UserController extends BaseController
         if($user){
             $email_content = [
                 'receipent_email'=> $user->email,
-                'subject'=> 'Sportsfight: Otp Verification',
+                'subject'=> 'Playing11.live: Otp Verification',
                 'receipent_name'=> $user->name,
-                'sender_name'=>'Sportsfight',
+                'sender_name'=>'playing11.live',
                 'data' => 'Welcome! <br><br>Your verification Otp is : <br><b>'.$otp.'</b>'
             ];
 
