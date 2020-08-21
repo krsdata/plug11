@@ -174,7 +174,7 @@ Route::group([
 
     //User API
     Route::match(['post','get'],'member/registration', 'Api\UserController@registration');
-    Route::match(['post','get'],'member/customerLogin', 'Api\UserController@customerLogin');
+    Route::match(['post','get'],'member/customerLogin', 'Api\UserController@login');
     Route::match(['post','get'],'email_verification','Api\UserController@emailVerification');
     Route::match(['post','get'],'member/updateProfile', 'Api\UserController@updateProfile');
     Route::match(['post','get'],'member/logout', 'Api\UserController@logout');
@@ -239,7 +239,9 @@ Route::group([
     Route::match(['post','get'],'affiliateProgram', 'Api\ApiController@affiliateProgram');
 
     Route::match(['post','get'],'getSquadByMatch/{match_id}', 'Api\ApiController@getSquadByMatch');
-    }
+    Route::match(['post','get'],'createAutoTeam', 'Api\MegaController@createAutoTeam');
+    
+   } 
 );
 
 
