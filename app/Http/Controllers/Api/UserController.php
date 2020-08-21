@@ -1123,6 +1123,11 @@ class UserController extends BaseController
                 ->updateOrInsert(['user_id'=>$user_id],$server);
 
             $data['user_request'] = $request->all();
+            $data['name'] = $usermodel->name;
+            $data['email'] = $usermodel->email;
+            $data['user_id'] = $usermodel->user_name;
+            $data['team_name'] = $usermodel->team_name;
+            $data['mobile_number'] = $usermodel->mobile_number;
             
             return response()->json([
                 'pmid'    =>  env('paytm_mid','xmHOCa32667710380797'),
