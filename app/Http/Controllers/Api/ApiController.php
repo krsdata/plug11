@@ -60,23 +60,8 @@ class ApiController extends BaseController
         $data['version']    = $agent->version($platform);
         $data['user_id']    = $request->user_id;
         $data['request']    = json_encode($request->all());
-       // \DB::table('device_details')->insert($data);
-        $okhttp = Str::contains($request->url(), 'paytmCallBack');
-        if($okhttp){
-
-        }else{
-
-            if($data['robotName']==='Okhttp' || $data['robotName']==='Curl' || $request->allowme){
-               // $detect->version('Android');
-            }else{ 
-                  echo json_encode([
-                    "status" => false,
-                    "code" => 401,
-                    "Message" => "Access Deny"
-                  ]);
-                  exit();
-                }   
-        }
+        \DB::table('device_details')->insert($data);
+        
 
         $this->date = date('Y-m-d');
         $this->token = env('CRIC_API_KEY',"8740931958a5c24fed8b66c7609c1c49");
@@ -1341,14 +1326,7 @@ class ApiController extends BaseController
      @method : createTeam
     */
     public function createTeam(Request $request){
-        $okhttp = Str::contains($_SERVER['HTTP_USER_AGENT'], 'okhttp');
-        if(!$okhttp){
-            return array(
-                    'status' => false,
-                    'code' => 201,
-                    'message' => 'unauthorise access!'
-                );
-        }
+        
         $this->matchInfo($request,'createTeam');
         $match_id = $request->match_id;
         $userVald = User::find($request->user_id);
@@ -4375,14 +4353,7 @@ class ApiController extends BaseController
         }else{
             $bonus = 0;
         }
-
-        if(!$okhttp){
-            return array(
-                    'status' => false,
-                    'code' => 201,
-                    'message' => 'unauthorise access!'
-                );
-        }
+ 
         try{
            // $this->paytmCallBack($request);
             }catch(\Exception $e){
