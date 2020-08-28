@@ -51,8 +51,8 @@ class ApiController extends BaseController
         $request->headers->set('Accept', 'application/json');
         
         $this->date     = date('Y-m-d');
-        $this->token    = env('CRIC_API_KEY');
-        $this->cric_url = env('CRIC_API_KEY');
+        $this->token    = env('CRIC_API_KEY','8740931958a5c24fed8b66c7609c1c49');
+        $this->cric_url = env('CRIC_API_URL','https://rest.entitysport.com/v2/');
         
         $user_name  = $request->user_id;
         $user       = User::where('user_name',$user_name)->first();
@@ -2040,12 +2040,8 @@ class ApiController extends BaseController
         }
         $date = date('Y-m-d');
         $data =    file_get_contents($this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=20');
-       // return  $data;
-        \File::put(public_path('/upload/json/'.$fileName.'.txt'),$data);
-       
-        $data = $this->storeMatchInfo($fileName);
         
-        $this->saveMatchDataFromAPI($data);
+        $this->saveMatchDataFromAPI(json_decode($data));
         return [$fileName.' match data updated successfully'];
     }
 
@@ -2341,8 +2337,6 @@ class ApiController extends BaseController
 
                 $remove_data = ['toss','venue','teama','teamb','competition'];
 
-
-
                 $matches = Matches::firstOrNew(
                     [
                         'match_id' => $data_set['match_id']
@@ -2378,9 +2372,10 @@ class ApiController extends BaseController
                 if($matches->status==1){
                     $this->createContest($data_set['match_id']);   
                 }
+
             }
             if(count($mid)){ 
-               $this->getSquad($mid,$m_cid);
+                $this->getSquad($mid,$m_cid);
                 $this->saveSquad($mid,$m_cid);
             }
         }
