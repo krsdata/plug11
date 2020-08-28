@@ -17,6 +17,25 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $controllers = [];
+        try{
+            $main_menu = \DB::table('menus')->where('parent_id',0)
+                    ->get()
+                    ->transform(function($item,$key){
+                        $item->sub_menu = \DB::table('menus')
+                                ->where('parent_id',$item->id)
+                                ->get();
+                        return $item;
+
+                    });
+            $settings = \DB::table('settings')->pluck('field_value','field_key')->toArray();        
+            $setting  = (object)$settings;
+
+        }catch(\Illuminate\Database\QueryException $e){
+            $main_menu = (object)[];
+        } 
+        
+        View::share('main_menu',$main_menu??null); 
+        View::share('setting',$setting??null);
     }
 
     /**
