@@ -4,57 +4,25 @@
         <div class="portlet-title">
             <div class="caption">
                 <i class="icon-social-dribbble font-green"></i>
-                <span class="caption-subject font-green bold uppercase">Business Info
+                <span class="caption-subject font-green bold uppercase">Upload Documents
                 </span>
             </div> 
         </div>
         
             <div class="portlet-body">  
                 <div class="form-group">
-                    <label for="multiple" class="control-label">Nature of Business</label>
-                    <select id="multiple" class="form-control select2" multiple name="businessCategoryId">
-                         
-                           <optgroup label="Nature of Business">
-                        @foreach ($BusinessNatureType as $key => $result) 
-                            <option value="{{$result->id}}">{{$result->title}}</option>
-                               
-                        @endforeach
-                         </optgroup>
-                        
-                    </select>
+                    <label for="multiple" class="control-label">Document Type</label>
+                     <select class="form-control">
+                         <option value="pancard">PAN</option>
+                         <option value="adharcard">Adhar</option>
+                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="multiple" class="control-label">Targeting Markets</label>
-                    <select id="multiple" class="form-control select2" multiple name="targetMarketId">
-                       
-                        <optgroup label="Targeting Markets">
-                        @foreach ($targetMarketType as $key => $result) 
-                            <option value="{{$result->id}}">{{$result->title}}</option>
-                               
-                        @endforeach
-                         </optgroup>
-                    </select>
+                    <label for="multiple" class="control-label">Adhar Number</label>
+                     <input type="" name="" class="form-control">
                 </div>
-
-                <div class="form-group">
-                    <label for="multiple" class="control-label">Targeting Countries/Cities/Region</label>
-                    <select id="multiple" class="form-control select2" multiple name="regionId">
-
-
-                             @foreach ($countries as $key => $result) 
-                                 <optgroup label="{{$result->name}}">
-                                @foreach ($result->state as $key => $state) 
-                                     
-                                <option value="{{$state->id}}">{{$result->name}} {{$state->name}}</option>
-                                   
-                                 @endforeach
-                                 </optgroup>
-                            @endforeach
-                       
-                       
-                    </select>
-                </div>
+                 
             </div>
              <div class="margin-top-10">
                 <button type="submit" class="btn green" value="businessInfo" name="submit"> Save Changes </button>

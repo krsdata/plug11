@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Notification;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\QueryException;
-use Config,Mail,View,Redirect,Validator,Response;
-use Crypt,okie,Hash,Lang,JWTAuth,Input,Closure,URL;
+use Config,Mail,Redirect,Validator,Response;
+use Crypt,okie,Hash,Lang,Input,Closure,URL;
 use App\Helpers\Helper as Helper;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
@@ -36,9 +36,7 @@ use App\Models\MatchStat;
 use App\Models\ReferralCode;
 use App\Models\PrizeBreakup;
 use File;
-use Ixudra\Curl\Facades\Curl;
-use Jenssegers\Agent\Agent;
-
+use Ixudra\Curl\Facades\Curl; 
 
 class ApiController extends BaseController
 {
@@ -49,29 +47,13 @@ class ApiController extends BaseController
     public $is_session_expire;
 
     public function __construct(Request $request) {
-        $agent      = new Agent();
-
-        $data['platform']   = $agent->platform();
-        $data['device']     = $agent->device();
-        $browser            = $agent->browser();
-        $data['robot']      = $agent->isRobot();
-        $data['robotName']  = $agent->robot();
-        $platform           = $agent->platform();
-        $data['version']    = $agent->version($platform);
-        $data['user_id']    = $request->user_id;
-        $data['request']    = json_encode($request->all());
         
-        \DB::table('device_details')->insert($data);
-    
         $this->date = date('Y-m-d');
         $this->token = env('CRIC_API_KEY',"8740931958a5c24fed8b66c7609c1c49");
         $request->headers->set('Accept', 'application/json');
-        
         $this->cric_url = 'https://rest.entitysport.com/v2/';
-
-        if ($request->header('Content-Type') != "application/json")  {
-            $request->headers->set('Content-Type', 'application/json');
-        }
+        
+        
         $user_name = $request->user_id;
         $user = User::where('user_name',$user_name)->first();
         if($user && $request->user_id){
@@ -1355,7 +1337,6 @@ class ApiController extends BaseController
         }
 
         $ct = CreateTeam::firstOrNew(['id'=>$request->create_team_id]);
-        Log::channel('before_create_team')->info($request->all());
         if($request->create_team_id){ 
 
             if($ct->id==null){
@@ -1433,7 +1414,6 @@ class ApiController extends BaseController
             
             $this->playerAnalytics($request);
 
-            Log::channel('after_create_team')->info($request->all());
             $match_info = $this->setMatchStatusTime($match_id);
             return response()->json(
                 [
@@ -2064,10 +2044,10 @@ class ApiController extends BaseController
             return ['data not available'];
         }
         $date = date('Y-m-d');
-        $data =    file_get_contents($this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=50');
+        $data =    file_get_contents($this->cric_url.'matches/?status='.$status.'&token='.$this->token.'&per_page=20');
        // return  $data;
         \File::put(public_path('/upload/json/'.$fileName.'.txt'),$data);
-        
+       
         $data = $this->storeMatchInfo($fileName);
         
         $this->saveMatchDataFromAPI($data);
@@ -2947,8 +2927,6 @@ class ApiController extends BaseController
         $data['matchdata'][] = ['viewType'=>2,'banners'=>$banner];
         $data['matchdata'][] = ['viewType'=>3,'upcomingmatches'=>$match];
         
-        Log::channel('getMatch')->info($request->all());
-       
         return [
             'maintainance'=>env('DEVELOPMENT')??false,
             'session_expired'=>$this->is_session_expire,
@@ -3531,8 +3509,6 @@ class ApiController extends BaseController
             );
         }
 
-        //Log::channel('before_join_contest')->info($request->all());
-
         $check_join_contest = \DB::table('join_contests')
             ->whereIn('created_team_id',$created_team_id)
             ->where('match_id',$match_id)
@@ -3803,7 +3779,6 @@ class ApiController extends BaseController
             $cont = ["error"=>"contest id not found"];
             $message = "Something went wrong!";
         }
-        Log::channel('after_join_contest')->info($cont);
 
         $match_info = $this->setMatchStatusTime($match_id);
             return response()->json(
@@ -4386,8 +4361,6 @@ class ApiController extends BaseController
                 )
             );
         }
-
-        Log::channel('payment_info')->info($request->all());
 
         if($user){
             $check_user = Hash::check($user->id,$user->validate_user);
@@ -5231,9 +5204,6 @@ class ApiController extends BaseController
                 )
             );
         }
-
-        Log::channel('update_profile')->info($request->all());
-
         if($user){
             $data = array();
             $data['user_id'] = $request->user_id;

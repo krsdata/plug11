@@ -35,32 +35,21 @@
                                     <!-- END SIDEBAR USERPIC -->
                                     <!-- SIDEBAR USER TITLE -->
                                     <div class="profile-usertitle">
-                                        <div class="profile-usertitle-name"> {{$user->first_name}} </div>
+                                        <div class="profile-usertitle-name"> {{$user->name}} </div>
                                         <div class="profile-usertitle-job"> {{$user->position}} </div>
                                     </div>
                                     <!-- END SIDEBAR USER TITLE -->
                                     <!-- SIDEBAR BUTTONS -->
                                     <div class="profile-userbuttons">
-                                        <button type="button" class="btn btn-circle green btn-sm">Email</button>
-                                        <button type="button" class="btn btn-circle red btn-sm">Message</button>
-                                      @if($user->role_type==3)
-                                        <a href="{{url('admin/mytask/'.$user->id)}}">
-                                         <button type="button" class="btn btn-circle green btn-sm">Task</button>
-                                         </a>
-                                         @endif
+                                        <button type="button" class="btn btn-circle green btn-sm">{{$user->email}}</button>
+                                        <button type="button" class="btn btn-circle red btn-sm">{{$user->mobile_number}}</button>
+                                      
                                     </div>
                                     <!-- END SIDEBAR BUTTONS -->
                                     <!-- SIDEBAR MENU -->
                                     <div class="profile-usermenu">
                                         <ul class="nav">
-                                            <li>
-                                               <a href="{{url('admin/mytask/'.$user->id)}}">
-                                                    <i class="icon-home"></i> Overview </a>
-                                            </li>
-                                            <li class="active">
-                                                <a href="#">
-                                                    <i class="icon-settings"></i> Account Settings </a>
-                                            </li>
+                                            
                                             <!-- <li>
                                                 <a href="#">
                                                     <i class="icon-info"></i> Help </a>
@@ -76,26 +65,94 @@
                                    
                                     <!-- END STAT -->
                                     <div>
-                                        <h4 class="profile-desc-title">About {{$user->first_name}}</h4>
+                                        <h4 class="profile-desc-title">About Match</h4>
                                           <div class="row list-separated profile-stat">
-                                      <!--   <div class="col-md-4 col-sm-4 col-xs-6">
-                                            <div class="uppercase profile-stat-title"> 37 </div>
-                                            <div class="uppercase profile-stat-text"> Projects </div>
-                                        </div> -->
-                                        <!-- <div class="col-md-4 col-sm-4 col-xs-6">
-                                            <div class="uppercase profile-stat-title"> 0 </div>
-                                            <div class="uppercase profile-stat-text"> Tasks </div>
-                                        </div> -->
-                                      <!--   <div class="col-md-4 col-sm-4 col-xs-6">
-                                            <div class="uppercase profile-stat-title"> 61 </div>
-                                            <div class="uppercase profile-stat-text"> Uploads </div>
-                                        </div> -->
+                                        <div class="col-md-4 col-sm-4 col-xs-6">
+                                            <div class="uppercase profile-stat-title"> {{$match_id??0}} </div>
+                                            <div class="uppercase profile-stat-text">  Match </div>
+                                        </div> 
+                                        <div class="col-md-4 col-sm-4 col-xs-6">
+                                            <div class="uppercase profile-stat-title"> {{$contest_id??0}} </div>
+                                            <div class="uppercase profile-stat-text"> contest </div>
+                                        </div>
+                                         <div class="col-md-4 col-sm-4 col-xs-6">
+                                            <div class="uppercase profile-stat-title"> {{$win??0}} </div>
+                                            <div class="uppercase profile-stat-text"> WIN </div>
+                                        </div>
+                                         
                                     </div>
                                         <span class="profile-desc-text">{{$user->about_me}}</span>
                                         <div class="margin-top-20 profile-desc-link">
                                             <i class="fa fa-phone"></i>
                                             {{$user->phone}}
                                         </div>
+                                       <!--  <div class="margin-top-20 profile-desc-link">
+                                            <i class="fa fa-twitter"></i>
+                                            <a href="http://www.twitter.com/keenthemes/">@keenthemes</a>
+                                        </div>
+                                        <div class="margin-top-20 profile-desc-link">
+                                            <i class="fa fa-facebook"></i>
+                                            <a href="http://www.facebook.com/keenthemes/">keenthemes</a>
+                                        </div> -->
+                                    </div>
+                                </div>
+
+
+                                <div class="portlet light bordered">
+                                    <!-- STAT -->
+                                   
+                                    <!-- END STAT -->
+                                    <div>
+                                        <h4 class="profile-desc-title">Referral : {{$user->referal_code}}</h4>
+                                          <div class="row list-separated profile-stat">
+                                        <div class="col-md-6 col-sm-4 col-xs-6">
+                                            <div class="uppercase profile-stat-title"> {{$referral??0}} </div>
+                                            <div class="uppercase profile-stat-text">  Total Referral </div>
+                                        </div> 
+                                        <div class="col-md-4 col-sm-4 col-xs-6">
+                                            <div class="uppercase profile-stat-title"> {{$referral*3??0}} </div>
+                                            <div class="uppercase profile-stat-text"> Earning </div>
+                                        </div>
+                                         
+                                         
+                                    </div>
+                                        <span class="profile-desc-text">{{$user->about_me}}</span>
+                                        <div class="margin-top-20 profile-desc-link">
+                                            <i class="fa fa-phone"></i>
+                                            {{$user->phone}}
+                                        </div>
+                                       <!--  <div class="margin-top-20 profile-desc-link">
+                                            <i class="fa fa-twitter"></i>
+                                            <a href="http://www.twitter.com/keenthemes/">@keenthemes</a>
+                                        </div>
+                                        <div class="margin-top-20 profile-desc-link">
+                                            <i class="fa fa-facebook"></i>
+                                            <a href="http://www.facebook.com/keenthemes/">keenthemes</a>
+                                        </div> -->
+                                    </div>
+                                </div>
+
+
+                                <div class="portlet light bordered">
+                                    <!-- STAT -->
+                                   
+                                    <!-- END STAT -->
+                                    <div>
+                                        <h4 class="profile-desc-title">Wallets : INR {{round($prize+$deposit+$referral*3,2)}}</h4>
+                                          <div class="row list-separated profile-stat">
+                                        <div class="col-md-6 col-sm-4 col-xs-6">
+                                            <div class="  profile-stat-title">   {{round($prize??0,2)}} </div>
+                                            <div class="uppercase profile-stat-text"> Prize </div>
+                                        </div> 
+                                        <div class="col-md-4 col-sm-4 col-xs-6">
+                                            <div class="  profile-stat-title">   {{round($deposit??0,2)}} </div>
+                                            <div class="uppercase profile-stat-text"> Deposit </div>
+                                        </div>
+                                         
+                                         
+                                    </div>
+                                         
+                                         
                                        <!--  <div class="margin-top-20 profile-desc-link">
                                             <i class="fa fa-twitter"></i>
                                             <a href="http://www.twitter.com/keenthemes/">@keenthemes</a>
@@ -124,12 +181,9 @@
                                                         <a href="#tab_1_1" data-toggle="tab">Personal Info</a>
                                                     </li>
                                                     <li>
-                                                        <a href="#tab_1_2" data-toggle="tab">Change Avatar</a>
+                                                        <a href="#Document" data-toggle="tab">Document</a>
                                                     </li>
                                                    
-                                                    <!-- <li>
-                                                        <a href="#tab_1_4" data-toggle="tab">  Payment Info</a>
-                                                    </li> -->
                                                 </ul>
                                             </div>
                                    {!! Form::model($user, ['method' => 'PATCH', 'route' => ['user.update', $user->id],'enctype'=>'multipart/form-data']) !!}
@@ -151,21 +205,19 @@
 
                                             @include('packages::users.formTab1', compact('user'))
 
-                                            {!! Form::close() !!} 
+                                            
                                             <!-- END PERSONAL INFO TAB --> 
-                                            @include('packages::users.formTab2', compact('user'))
+                                           
                                             <!-- END CHANGE AVATAR TAB -->
                                             <!-- CHANGE PASSWORD TAB -->
                                             <!-- END CHANGE PASSWORD TAB -->
                                             <!-- PRIVACY SETTINGS TAB --> 
-                                            @include('packages::users.formTab4', compact('user')) 
+                                            @include('packages::users.Document', compact('user')) 
                                             <!-- END PRIVACY SETTINGS TAB --> 
-
-                                           
+                                            {!! Form::close() !!} 
                                         </div>
 
                                     </div>
-                                    </form>
                                 </div>
                             </div>
                         </div>

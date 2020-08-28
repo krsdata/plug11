@@ -65,21 +65,25 @@ class DefaultContestController extends Controller {
         // Search by name ,email and group
         $search = Input::get('search');
         $status = Input::get('status');
-        if ((isset($search) && !empty($search))) {
-
-            $search = isset($search) ? Input::get('search') : '';
-               
-            $defaultContest = DefaultContest::where(function($query) use($search,$status) {
+        $contest_type = $request->get('contest_type');
+        if ((isset($search) || !empty($contest_type))) {
+            $defaultContest = DefaultContest::where(function($query) use($search,$status,$contest_type) {
+                        if (!empty($contest_type)) {
+                            $query->Where('contest_type', $contest_type);
+                        }
                         if (!empty($search)) {
-                            $query->Where('contest_type', 'LIKE', "%$search%");
+                            $query->orWhere('entry_fees',$search);
+                        }
+                        if (!empty($search)) {
+                            $query->orWhere('total_spots',$search);
                         }
                         
-                    })->Paginate($this->record_per_page);
+                    })->Paginate(20);
         } else {
-            $defaultContest = DefaultContest::orderBy('id','DESC')->Paginate($this->record_per_page);
+            $defaultContest = DefaultContest::orderBy('id','DESC')->Paginate(20);
         }
         
-        $contest_type   = ContestType::pluck('contest_type','id');
+        $contest_type   = ContestType::pluck('contest_type','id')->toArray();
         
         return view('packages::defaultContest.index', compact('defaultContest','page_title', 'page_action','sub_page_title','contest_type'));
     }
@@ -114,6 +118,9 @@ class DefaultContestController extends Controller {
     public function store(DefaultContestRequest $request, DefaultContest $defaultContest) 
     {   
         $defaultContest->fill(Input::all()); 
+        $defaultContest->cancellation = $request->cancellation?true:false;
+        $defaultContest->bonus_contest = $request->bonus_contest?true:false;
+        $defaultContest->usable_bonus = $request->usable_bonus;
         $defaultContest->save(); 
 
         $default_contest_id = $defaultContest->id;
@@ -143,11 +150,12 @@ class DefaultContestController extends Controller {
     /*
      * Edit Group method
      * @param 
-     * object : $category
+     * object : $categoryprize
      * */
 
     public function edit(Request $request, $id) {
         $defaultContest = DefaultContest::find($id);
+        //dd($defaultContest);
         $page_title     = 'Default Contest';
         $page_action    = 'Edit Default Contest'; 
         $contest_type   = ContestType::pluck('contest_type','id');
@@ -235,22 +243,44 @@ class DefaultContestController extends Controller {
 
         $defaultContest = DefaultContest::find($id);
         $defaultContest->fill(Input::all()); 
+        
+        $defaultContest->bonus_contest = $request->bonus_contest?true:false;
+        $defaultContest->usable_bonus = $request->usable_bonus;
+        $defaultContest->cancellation = $request->cancellation?true:false;
         $defaultContest->save(); 
         $default_contest_id = $id;
 
-        $match  = Matches::where('status',1)->get('match_id');
+        $match = null;
+        $match1  = Matches::where('status',1)
+                    ->get('match_id');
+        if($match1){
+          $match  = $match1;
+        }
+        $match2  = Matches::where('match_id',$request->match_id)->get('match_id');
+        if($match2->count()){
+          $match  = $match2;
+        }
         foreach ($match as $key => $result) {
-
             $request->merge(['match_id' => $result->match_id]);
             $request->merge(['default_contest_id' => $default_contest_id]);
+            $request->merge(['prize_percentage'=>$request->prize_percentage]);
 
             $sort_by = \DB::table('contest_types')->where('id',$request->contest_type)->first()->sort_by??0;
             $request->merge(['sort_by'=>$sort_by]);
 
-            \DB::table('create_contests')
+           $cont =  \DB::table('create_contests')
+                    ->where('default_contest_id',$default_contest_id)
+                    ->where('match_id',$result->match_id)->count();
+            $request_data = $request->except(['_token','_method']);
+
+            if($cont){
+              \DB::table('create_contests')
                     ->where('default_contest_id',$default_contest_id)
                     ->where('match_id',$result->match_id)
-                    ->update($request->except(['_token','_method']));
+                    ->update($request_data);
+            } else{
+                \DB::table('create_contests')->insert($request->except('_token','_method'));  
+            }
         }
 
         return Redirect::to(route('defaultContest'))

@@ -75,7 +75,8 @@ class TransactionController extends Controller {
         
         $payment_string = ['2'=>'Withdraw Initiated','3'=>'Payment Hold','4'=>'Withdraw amount Refunded','5'=>'Withdraw amount Released'];
 
-        $wt = WalletTransaction::find($request->txt_id);   
+        $wt = WalletTransaction::find($request->txt_id);
+
         if($wt && $request->status>1){
            $wt->payment_type_string =  $payment_string[$request->status];
            $wt->payment_status      =  $payment_string[$request->status];
@@ -83,13 +84,27 @@ class TransactionController extends Controller {
 
            $user     = User::find($wt->user_id);
            if($user && $request->status==4 && $wt->payment_status!=4){
-                $Wallet = Wallet::where('user_id',$wt->user_id)
-                            ->where('payment_type',4)
-                            ->first();
-                $Wallet->amount = $Wallet->amount+$wt->amount;
-                $Wallet->save();
-            $wt->debit_credit_status = '+';  
+                $wt->debit_credit_status = '+';
+
+                if(!$wt->refund_id){
+
+                    $Wallet = Wallet::firstOrNew([
+                                    'user_id' => $user->id,
+                                    'payment_type' => 7
+                                ]);
+
+                    $Wallet->amount = $Wallet->amount+$wt->amount;
+                    $Wallet->total_withdrawal_amount = $wt->amount;
+                    $Wallet->payment_type = 4;
+                    $Wallet->payment_type_string = "Refund";
+                    $Wallet->user_id = $wt->user_id;
+                    $Wallet->validate_user = Hash::make($wt->user_id);
+                    $Wallet->save();
+                }
+                $wt->refund_id = $wt->id;
+                $wt->save();
            }
+            
            if($user){
                 $token = $user->device_id;
                 $data = [
@@ -126,7 +141,7 @@ class TransactionController extends Controller {
                                 ->where('user_id',$item->user_id)
                                 ->sum('amount');
 
-                            $item->total_balance = round(Wallet::whereIn('payment_type',[2,4])
+                            $item->total_balance = round(Wallet::whereIn('payment_type',[2,3,4])
                                 ->where('user_id',$item->user_id)
                                 ->sum('amount'),2);
 
@@ -159,7 +174,8 @@ class TransactionController extends Controller {
                         ELSE "New Request" 
                         END) AS withdraw_status'))
                         ->whereIn('withdraw_status',[1,2,3,5])
-                       // ->orderBy('withdraw_status','ASC')
+                        ->where('withdraw_status','!=',0)
+                        ->orderBy('withdraw_status','ASC')
                         ->Paginate($this->record_per_page);
                         
                         $transaction->transform(function($item, $Key){
@@ -168,7 +184,7 @@ class TransactionController extends Controller {
                                 ->where('user_id',$item->user_id)
                                 ->sum('amount');
 
-                            $item->total_balance = round(Wallet::whereIn('payment_type',[2,4])
+                            $item->total_balance = round(Wallet::whereIn('payment_type',[2,3,4])
                                 ->where('user_id',$item->user_id)
                                 ->sum('amount'),2);
 
@@ -222,7 +238,7 @@ class TransactionController extends Controller {
         $wt = WalletTransaction::find($request->payment_id);   
         
         if($wt){
-            $user     = User::find($wt->user_id??0);
+            $user     = User::find($wt->user_id??285);
             $adminUser  = User::find(env('DEFAULT_USER_ID'));
             
             $registatoin_ids=array();
@@ -231,7 +247,7 @@ class TransactionController extends Controller {
 
             $data = [
                         'action' => 'notify' ,
-                        'title' => "₹ Amount Withdrawal Released ",
+                        'title' => "Amount Withdrawal Released ",
                         'message' => "Hi $user->name, Your withdraw amount ₹ $wt->amount successfully sent"
                     ];
 

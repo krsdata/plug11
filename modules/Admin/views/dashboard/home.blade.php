@@ -207,7 +207,7 @@
                                 <div class="display">
                                     <div class="number">
                                         <h3 class="font-blue-sharp">
-                                            <span data-counter="counterup" data-value="567">{{$deposit}} INR  </span>
+                                            <span data-counter="counterup" data-value="567">{{round($deposit,2)}} INR  </span>
                                         </h3>
                                         <small> Total Deposit </small>
                                     </div>
@@ -342,6 +342,54 @@
                                     <div class="progress">
                                         <span style="width: {{$today_deposit}}%;" class="progress-bar progress-bar-success blue-sharp">
                                             <span class="sr-only">{{$today_deposit}}% grow</span>
+                                        </span>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class="dashboard-stat2 bordered">
+                                <div class="display">
+                                    <div class="number">
+                                        <h3 class="font-blue-sharp">
+                                            <span data-counter="counterup" data-value="567">{{$total_user}}   </span>
+                                        </h3>
+                                        <small> Today Active User </small>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fa fa-folder-open-o"></i>
+                                    </div>
+                                </div>
+                                <div class="progress-info">
+                                    <div class="progress">
+                                        <span style="width: {{$total_user}}%;" class="progress-bar progress-bar-success blue-sharp">
+                                            <span class="sr-only">{{$total_user}}% grow</span>
+                                        </span>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class="dashboard-stat2 bordered">
+                                <div class="display">
+                                    <div class="number">
+                                        <h3 class="font-blue-sharp">
+                                            <span data-counter="counterup" data-value="567">{{$today_withdrawal}}   </span>
+                                        </h3>
+                                        <small> Total Withdrawal </small>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="fa fa-folder-open-o"></i>
+                                    </div>
+                                </div>
+                                <div class="progress-info">
+                                    <div class="progress">
+                                        <span style="width: {{$today_withdrawal}}%;" class="progress-bar progress-bar-success blue-sharp">
+                                            <span class="sr-only">{{$today_withdrawal}}% grow</span>
                                         </span>
                                     </div>
                                     

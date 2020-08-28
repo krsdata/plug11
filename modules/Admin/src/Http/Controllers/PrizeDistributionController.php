@@ -78,7 +78,11 @@ class PrizeDistributionController extends Controller {
                              $query->orWhere('mobile', 'LIKE', $search);
                         }
 
-                    })->Paginate($this->record_per_page);
+                    })
+                    ->orderBy('id','desc')
+                    ->where('prize_amount','>',0)
+                    ->where('rank','>',0)
+                    ->Paginate($this->record_per_page);
                  $prizeDistribution->transform(function($item,$key){
                 
                 
@@ -113,7 +117,10 @@ class PrizeDistributionController extends Controller {
             });
         } else {
             $prizeDistribution = PrizeDistribution::
-                                        orderBy('rank','asc')->Paginate($this->record_per_page);
+                                        orderBy('id','desc')
+                                        ->where('rank','>',0)
+                                        ->where('prize_amount','>',0)
+                                        ->Paginate($this->record_per_page);
             $prizeDistribution->transform(function($item,$key){
                 
                 
@@ -148,7 +155,7 @@ class PrizeDistributionController extends Controller {
             });
         } 
         $table_cname = \Schema::getColumnListing('prize_distributions');
-        $except = ['user_teams','id','created_at','updated_at','device_id','contest_type_id','default_contest_id','user_id','contest_id','created_team_id','match_team_id'];
+        $except = ['user_teams','id','updated_at','device_id','contest_type_id','default_contest_id','user_id','contest_id','created_team_id','match_team_id','email_trigger','user_name','email','first_prize'];
         $data = [];
         foreach ($table_cname as $key => $value) {
 

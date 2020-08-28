@@ -59,14 +59,14 @@ class ApkUpdateController extends Controller {
         if ((isset($search) && !empty($search))) {
 
             $search = isset($search) ? Input::get('search') : '';
-            $apkUpdate = ApkUpdate::where(function($query) use($search) {
+            $apkUpdate = ApkUpdate::orderBy('id','desc')->where(function($query) use($search) {
                         if (!empty($search)) {
                             $query->Where('title', 'LIKE', "%$search%");
                         }
                         
                     })->Paginate($this->record_per_page);
         } else {
-            $apkUpdate = ApkUpdate::Paginate($this->record_per_page);
+            $apkUpdate = ApkUpdate::orderBy('id','desc')->Paginate($this->record_per_page);
         } 
         return view('packages::apkUpdate.index', compact('apkUpdate', 'page_title', 'page_action','sub_page_title'));
     }
@@ -89,19 +89,29 @@ class ApkUpdateController extends Controller {
     /*
      * Save Group method
      * */
-    public function sendNotification($token, $data){
+     public function sendNotification($token, $data){
      
         $serverLKey = 'AIzaSyAFIO8uE_q7vdcmymsxwmXf-olotQmOCgE';
         $fcmUrl = 'https://fcm.googleapis.com/fcm/send';
 
        $extraNotificationData = $data;
 
-       $fcmNotification = [
+       if(is_array($token)){
+            $fcmNotification = [
+               'registration_ids' => $token, //multple token array
+              // 'to' => $token, //single token
+               //'notification' => $notification,
+               'data' => $extraNotificationData
+            ];
+       }else{
+            $fcmNotification = [
            //'registration_ids' => $tokenList, //multple token array
            'to' => $token, //single token
            //'notification' => $notification,
            'data' => $extraNotificationData
-       ];
+        ];
+        }
+       
 
        $headers = [
            'Authorization: key='.$serverLKey,
@@ -122,34 +132,34 @@ class ApkUpdateController extends Controller {
        curl_close($ch);
        return true;
     }
+    
     public function store(ApkUpdateRequest $request, ApkUpdate $apkUpdate) 
     {  
-        
+        $apkUpdate = new ApkUpdate;     
          
         $apk = $request->file('apk');
-        $destinationPath = public_path('upload/apk');
-        $apk->move($destinationPath, 'sportsfight.'.$apk->getClientOriginalExtension());
-        $apkUrl = 'sportsfight.'.$apk->getClientOriginalExtension();
-        $request->merge(['apkUrl'=>$apkUrl]);
-        
-        $apkUpdate = new ApkUpdate;
+        if($apk){
+            $destinationPath = public_path('upload/apk');
+            $apk->move($destinationPath, 'sportsfight.'.$apk->getClientOriginalExtension());
+            $apkUrl = 'sportsfight.'.$apk->getClientOriginalExtension();
+            $request->merge(['apkUrl'=>$apkUrl]);
+            $apkUpdate->apk             =  $apkUrl;
+            $apkUpdate->url             =  url('public/upload/apk/'.$apkUrl);
+                
+        }
 
         $apkUpdate->title           =  $request->get('title');
-        $apkUpdate->apk             =  $apkUrl;
-        $apkUpdate->url             =  url('public/upload/apk/'.$apkUrl);
         $apkUpdate->message         =  $request->get('message');
         $apkUpdate->version_code    =  $request->get('version_code');
         $apkUpdate->release_notes   =  $request->get('release_notes');
          
         $apkUpdate->save();   
-        $apkUrl = url('public/upload/apk/'.$apkUrl);    
-        User::whereNotNull('device_id')
-                ->get()
-                ->transform(function($item, $key) use($apkUpdate,$apkUrl,$request){
-                    
-                    $token = $item->device_id;
+        $apkUrl = url('public/upload/apk/sportsfight.apk');    
 
-                    $data = [
+        $token = User::whereNotNull('device_id')
+                ->pluck('device_id')->toArray();
+
+        $data = [
                             'action' => 'update' ,
                             'title' => 'New update available' ,
                             'message' => 'Stable release' ,
@@ -157,10 +167,7 @@ class ApkUpdateController extends Controller {
                             'release_note' => $request->get('release_notes')
                         ];
 
-                    $this->sendNotification($token,$data);
-                });
-       
-
+        $state = $this->sendNotification($token,$data); 
         return Redirect::to(route('apkUpdate'))
                             ->with('flash_alert_notice', 'New apkUpdate  successfully uploaded !');
         }
@@ -182,7 +189,6 @@ class ApkUpdateController extends Controller {
 
     public function update(ApkUpdateRequest $request,  $id) {
         $apkUpdate = ApkUpdate::find($id);
-
         $validate_cat = ApkUpdate::where('version_code',$request->get('version_code'))
                             ->where('id','!=',$apkUpdate->id)
                             ->first();
@@ -208,8 +214,23 @@ class ApkUpdateController extends Controller {
         $apkUpdate->version_code    =  $request->get('version_code');
         $apkUpdate->release_notes   =  $request->get('release_notes');
          
-        $apkUpdate->save();    
+        $apkUpdate->save();  
 
+
+        $apkUrl = url('public/upload/apk/sportsfight.apk');    
+
+        $token = User::whereNotNull('device_id')
+                ->pluck('device_id')->toArray();
+
+        $data = [
+                            'action' => 'update' ,
+                            'title' => 'New update available' ,
+                            'message' => 'Stable release' ,
+                            'apk_update_url' => $apkUrl,
+                            'release_note' => $request->get('release_notes')
+                        ];
+
+        $state = $this->sendNotification($token,$data);  
 
         return Redirect::to(route('apkUpdate'))
                         ->with('flash_alert_notice', ' ApkUpdate  successfully updated.');

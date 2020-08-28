@@ -59,6 +59,7 @@ class MatchController extends Controller {
     public function cancelContest(Request $request){
         $match_id = $request->match_id;
         $contest_id = $request->cancel_contest;
+
         if($request->cancel_contest){
             $JoinContest = JoinContest::whereHas('user')->with('contest')
                         ->where('match_id',$request->match_id)
@@ -66,6 +67,13 @@ class MatchController extends Controller {
                         ->get()
                         ->transform(function($item,$key){
                         $cancel_contest = CreateContest::find($item->contest_id);
+                        if($cancel_contest->usable_bonus){
+                            $bonus_amount = $cancel_contest->entry_fees*($cancel_contest->usable_bonus/100);    
+                        }else{
+                            $bonus_amount = 0;
+                        }
+                        
+                        $amount = $cancel_contest->entry_fees-$bonus_amount;
                         if($item->cancel_contest==0){
 
                             \DB::beginTransaction();
@@ -74,7 +82,6 @@ class MatchController extends Controller {
                             
                             if(isset($item->contest) && $item->contest->entry_fees){   
                                 $transaction_id = $item->match_id.$item->contest_id.$item->created_team_id.'-'.$item->user_id;
-
                                 $wt =    WalletTransaction::firstOrNew(
                                         [
                                            'user_id' => $item->user_id,
@@ -99,9 +106,21 @@ class MatchController extends Controller {
                                     );
 
                                 $wallet->user_id        =  $item->user_id;
-                                $wallet->amount = $wallet->amount+$item->contest->entry_fees;
-                                $wallet->deposit_amount = $wallet->amount+$item->contest->entry_fees;
+                                $wallet->amount = $wallet->amount+$amount;
+                                
                                 $wallet->save();
+
+                                $wallet2 = Wallet::firstOrNew(
+                                        [
+                                           'user_id' => $item->user_id,
+                                           'payment_type' => 1
+                                        ]
+                                    );
+
+                                $wallet2->user_id        =  $item->user_id;
+                                $wallet2->amount = $wallet2->amount+$bonus_amount;
+                                $wallet2->save();
+
                             }
  
                             \DB::commit();
@@ -337,8 +356,12 @@ class MatchController extends Controller {
     {  
         $page_title = 'Match';
         $sub_page_title = 'View Match';
-        $page_action = 'View Match'; 
-
+        $page_action = 'View Match';
+        $match_start_date =null; 
+        if($request->match_start_date){
+            $match_start_date = $request->match_start_date;    
+        }
+               
         if($request->match_id && (($request->date_start && $request->date_end) || $request->status)){
             if($request->date_end && $request->date_start){
                 $date_start = \Carbon\Carbon::createFromFormat('Y-m-d H:i',$request->date_start)
@@ -396,46 +419,40 @@ class MatchController extends Controller {
         // Search by name ,email and group
         $search = Input::get('search');
         $status = Input::get('status');
-        if ((isset($search) || isset($status))) {
+        if ((isset($search) || isset($status) || isset($match_start_date))) {
              
             $search = isset($search) ? Input::get('search') : '';
-               
-            $match = Match::with('teama','teamb')->where(function($query) use($search,$status) {    
-                        if (!empty($status) && empty($search)) {
-                           // $query->Where('status', '=', $status);
-                            if($status==1){
-                                $query->orderBy('timestamp_start','ASC');
+            $match = Match::with('teama','teamb')->where(function($query) use($search,$status,$match_start_date) {
+                        if($match_start_date){
+                            $query->where('date_start','LIKE',"%$match_start_date%");  
+                        }
+                        if (!empty($status)) { 
+                            if($status==1){ 
+                                $query->orderBy('timestamp_start','ASC');   
+                              //  ->WhereMonth('date_start',date('m'));
                                 $query->where('status',1);
                             }
                             if($status==2){ 
-                                $query->orderBy('timestamp_start','DESC');
+                                $query->orderBy('match_id','DESC');
                                 $query->where('status',2);
                             }
                             if($status==3){ 
-                                $query->orderBy('timestamp_start','DESC');
+                                $query->orderBy('match_id','asc');
                                 $query->where('status',3);
                             }
                             if($status==4){ 
                                 $query->orderBy('timestamp_start','DESC');
                                 $query->where('status',4);
                             }
-                        }else{
-                            if (!empty($status) && !empty($search)) {
-                                $query->Where('match_id',$search);
-                                $query->where('status', $status);
-                            }elseif(!empty($search)){
-                                $query->orWhere('match_id',$search);
-                                $query->orWhere('status',$status);
-                                $query->orWhere('title', 'LIKE', "$search%");
-                                $query->orWhere('short_title', 'LIKE', "$search%"); 
-                                
-                            }    
                         }
-                         
+                        if (!empty($search)) {
+                            $query->orWhere('match_id',$search);
+                            $query->orWhere('title', 'LIKE', "$search%");
+                            $query->orWhere('short_title', 'LIKE', "$search%");
+                        }    
                         
                     })
-                     ->whereDate('date_start','<=',\Carbon\Carbon::today())
-                    ->WhereMonth('date_start',date('m'))
+                   //  ->whereDate('date_start','<=',\Carbon\Carbon::today())
                     ->orderBy('date_start','desc')
                     ->Paginate($this->record_per_page);
 
@@ -448,7 +465,19 @@ class MatchController extends Controller {
                                     ->where('match_id',$item->match_id)
                                     ->where('playing11',"true")
                                     ->get();
-                                    //dd($playing11_teamA);
+                    if($playing11_teamA->count()){
+                       $pid1 = $playing11_teamA->pluck('player_id')->toArray();
+                    }
+                    if($playing11_teamB->count()){
+                       $pid2 = $playing11_teamB->pluck('player_id')->toArray();
+                    }
+
+                    if(isset($pid1) && isset($pid2)){
+                        $item->playin11 = array_merge($pid1,$pid2);
+                    }else{
+                        $item->playin11 = [];
+                    }
+
                     $item->playing11_teamA = $playing11_teamA;
                     $item->playing11_teamB = $playing11_teamB;
                                    
@@ -460,11 +489,50 @@ class MatchController extends Controller {
                                 return $item;
                             });
                 $item->contests = $contests;
+
+                $players = \DB::table('players')
+                        ->where('match_id',$item->match_id)
+                        ->get()
+                        ->groupBy('playing_role')
+                        ->transform(function($item,$key){
+                        //    $data[$key] = $item;
+
+                            $item->transform(function($item,$key){ 
+                                    $team_a = \DB::table('team_a')
+                                        ->where('match_id',$item->match_id)
+                                        ->where('team_id',$item->team_id)
+                                        ->first();
+                                    $team_b = \DB::table('team_b')
+                                            ->where('match_id',$item->match_id)
+                                            ->where('team_id',$item->team_id)
+                                            ->first();
+                                    if($team_a){
+                                        $team_name = 
+                                        ' <span class="btn-danger btn-xs">'.
+                                        $team_a->short_name . '</span>';
+                                    }
+
+                                    if($team_b){
+                                         $team_name = 
+                                        ' <span class="btn-primary btn-xs">'.
+                                        $team_b->short_name . '</span>';
+                                    } 
+
+                                    $item->team_name = $team_name??null;
+
+                                    return $item;
+                                });
+                        
+                            return $item;
+                                
+                            });
+                $item->players = $players; 
+                
                 return $item;            
 
-            }); 
+            });  
              
-        } else {
+        } else { 
             $match = Match::with('teama','teamb')
                 ->where('status','1')
                 ->WhereMonth('date_start',date('m'))
@@ -482,6 +550,20 @@ class MatchController extends Controller {
                                 ->where('playing11',"true")
                                 ->get();
 
+                 if($playing11_teamA->count()){
+                       $pid1 = $playing11_teamA->pluck('player_id')->toArray();
+                    }
+                    if($playing11_teamB->count()){
+                       $pid2 = $playing11_teamB->pluck('player_id')->toArray();
+                    }
+
+                    if(isset($pid1) && isset($pid2)){
+                        $item->playin11 = array_merge($pid1,$pid2);
+                    }else{
+                        $item->playin11 = [];
+                    }
+
+
                 $item->playing11_teamA = $playing11_teamA;
                 $item->playing11_teamB = $playing11_teamB;
                 $contests = CreateContest::where('match_id',$item->match_id)->get()
@@ -492,10 +574,50 @@ class MatchController extends Controller {
                                 return $item;
                             });
                 $item->contests = $contests;
+
+                $players = \DB::table('players')
+                        ->where('match_id',$item->match_id)
+                        ->get()
+                        ->groupBy('playing_role')
+                        ->transform(function($item,$key){
+                        //    $data[$key] = $item;
+
+                            $item->transform(function($item,$key){ 
+                                
+                                    $team_a = \DB::table('team_a')
+                                        ->where('match_id',$item->match_id)
+                                        ->where('team_id',$item->team_id)
+                                        ->first();
+                                    $team_b = \DB::table('team_b')
+                                            ->where('match_id',$item->match_id)
+                                            ->where('team_id',$item->team_id)
+                                            ->first();
+                                    if($team_a){
+                                        $team_name = 
+                                        ' <span class="btn-danger btn-xs">'.
+                                        $team_a->short_name . '</span>';
+                                    }
+
+                                    if($team_b){
+                                         $team_name = 
+                                        ' <span class="btn-primary btn-xs">'.
+                                        $team_b->short_name . '</span>';
+                                    } 
+
+                                    $item->team_name = $team_name??null;
+
+                                    return $item;
+                                });
+                        
+                            return $item;
+                                
+                            });
+                $item->players = $players;        
                 return $item;            
 
             });
         }    
+       // return ($match[0]->players['bowl']);
         return view('packages::match.index', compact('match','page_title', 'page_action','sub_page_title'));
     }
 

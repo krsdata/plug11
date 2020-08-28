@@ -119,12 +119,34 @@ class NotificationController extends Controller {
                 'title' => $notification->title,
                 'message' => $notification->message
             ];
-
-        $this->sendNotification($device_id,$data);
+       // $helper = new Helper;
+        $this->notifyToAll($notification->title,$notification->message);    
+        //$this->sendNotification($device_id,$data);
         return Redirect::to(route('notification'))
                             ->with('flash_alert_notice', 'New Notification  successfully created!');
     }
 
+    public function notifyToAll($title=null,$message=null){ 
+        
+        $count =User::count();
+        $j=1;
+        for($i=1; $j<=$count; $i++) {
+            $offset = $j;
+            $j = $i*1000; 
+            $device_id = User::whereNotNull('device_id')
+                  ->skip($offset)
+                  ->take(1000)
+                  ->pluck('device_id')
+                  ->toArray();
+           
+          $data = [
+              'action' => 'notify' ,
+              'title' => $title ,
+              'message' => $message
+          ];
+          $this->sendNotification($device_id,$data);
+        } 
+    }
     /*
      * Edit Group method
      * @param 

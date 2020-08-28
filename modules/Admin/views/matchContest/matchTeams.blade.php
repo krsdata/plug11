@@ -167,7 +167,7 @@
         Showing {{($matchTeams->currentpage()-1)*$matchTeams->perpage()+1}} to {{$matchTeams->currentpage()*$matchTeams->perpage()}}
                             of  {{$matchTeams->total()}} entries </span>
                             
- <div class="center" align="center">  {!! $matchTeams->appends(['search' => isset($_GET['search'])?$_GET['search']:''])->render() !!}</div>
+ <div class="center" align="center">  {!! $matchTeams->appends(['search' => isset($_GET['search'])?$_GET['search']:'','contest_id' => isset($_GET['contest_id'])?$_GET['contest_id']:''])->render() !!}</div>
 </div>
                     </div>
                     <!-- END EXAMPLE TABLE PORTLET-->

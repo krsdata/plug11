@@ -45,6 +45,48 @@ class DocumentController extends Controller
         $this->record_per_page = Config::get('app.record_per_page');
     }
 
+    public function sendNotification($token, $data){
+     
+        $serverLKey = 'AIzaSyAFIO8uE_q7vdcmymsxwmXf-olotQmOCgE';
+        $fcmUrl = 'https://fcm.googleapis.com/fcm/send';
+
+       $extraNotificationData = $data;
+
+       if(is_array($token)){
+            $fcmNotification = [
+               'registration_ids' => $token, //multple token array
+              // 'to' => $token, //single token
+               //'notification' => $notification,
+               'data' => $extraNotificationData
+            ];
+       }else{
+            $fcmNotification = [
+           //'registration_ids' => $tokenList, //multple token array
+           'to' => $token, //single token
+           //'notification' => $notification,
+           'data' => $extraNotificationData
+        ];
+        }
+       
+       $headers = [
+           'Authorization: key='.$serverLKey,
+           'Content-Type: application/json'
+       ];
+
+       $ch = curl_init();
+       curl_setopt($ch, CURLOPT_URL, $fcmUrl);
+       curl_setopt($ch, CURLOPT_POST, true);
+       curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+       curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+       curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fcmNotification));
+       $result = curl_exec($ch);
+       //echo "result".$result;
+       //die;
+       curl_close($ch);
+       return true;
+    }
+
     /*
      * Dashboard
      * */
@@ -53,8 +95,7 @@ class DocumentController extends Controller
 
         $page_title     = 'Document';
         $sub_page_title = 'Document';
-        $page_action    = 'View Bank Accounts'; 
-
+        $page_action    = 'View Bank Accounts';
         
         // Search by name ,email and  
         $search = Input::get('search'); 
@@ -76,17 +117,21 @@ class DocumentController extends Controller
                     $query->orWhere('ifsc_code','LIKE',"%$search%");
                 }
             })->orderBy('id','desc')->Paginate($this->record_per_page);
-        } else {
+        } else { 
             $documents = BankAccounts::whereHas('user')
                         ->orderBy('id','desc')
-                        ->Paginate($this->record_per_page);
+                        ->Paginate($this->record_per_page)
+                        ->transform(function($item,$key){
+                            $user = User::find($item->user_id);
+                            //dd( $user);
+                        });
         }
         
         return view('packages::documents.bank', compact('documents', 'page_title', 'page_action', 'sub_page_title'));
     }
 
     public function index(Document $documents, Request $request)
-    {
+    {   
         $page_title     = 'Document';
         $sub_page_title = 'Document';
         $page_action    = 'View Document'; 
@@ -97,32 +142,68 @@ class DocumentController extends Controller
                             ->orWhere('name','LIKE',"%$search%")
                             ->orWhere('team_name','LIKE',"%$search%")
                             ->get('id')->pluck('id');
-         
+        $approved = Document::where('status',2)->count();
+        $pending  =  Document::where('status','!=',2)->count();
+
         if ((isset($search) && !empty($search))) {
 
             $documents = Document::with('user')->where(function ($query) use ($search,$user) {
                 if (!empty($search) && !empty($user)) {
                    $query->whereIn('user_id', $user);
                 }
-            })->orderBy('id','desc')->Paginate($this->record_per_page);
+            })
+            ->orderBy('status','asc')
+           // ->orderBy('id','desc')
+            ->Paginate($this->record_per_page);
            // dd($documents);
             $documents->transform(function($item,$key){
                 $bankAccount = \DB::table('bank_accounts')->where('user_id',$item->user_id)->first();
                 $item->bankAccount = $bankAccount;
+
+                $wallet = \DB::table('wallets')->where('user_id',$item->user_id)
+                    ->where('payment_type','!=',1)
+                    ->sum('amount');
+                $item->wallet_balance =   $wallet;
+
                 return $item;
             });
         } else {
             $documents = Document::with('user')
-                        ->orderBy('id','desc')
+                        ->orderBy('status','asc')
+                       // ->groupBy('user_id')
                         ->Paginate($this->record_per_page);
+
             $documents->transform(function($item,$key){
-                $bankAccount = \DB::table('bank_accounts')->where('user_id',$item->user_id)->first();
+                $bankAccount = \DB::table('bank_accounts')
+                            ->where('user_id',$item->user_id)
+                            ->first();
+
+                $item->account_name = $bankAccount->account_name??null;
+                $item->bank_name = $bankAccount->bank_name??null;
+                $item->account_number = $bankAccount->account_number??null;
+                $item->ifsc_code = $bankAccount->ifsc_code??null;
+                $item->bank_branch = $bankAccount->bank_branch??null;
+                $item->account_type = $bankAccount->account_type??null;
+
+                $wallet = \DB::table('wallets')->where('user_id',$item->user_id)
+                    ->where('payment_type','!=',1)
+                    ->sum('amount');
+                $item->wallet_balance =   $wallet;
+                $user = User::find($item->user_id);
+                $item->user = $user;
                 $item->bankAccount = $bankAccount;
+
+                $bank = \DB::table('bank_accounts')
+                            ->where('user_id',$item->user_id)
+                            ->first();
+                $item->bank = $bank;            
+
                 return $item;
             });
+
         }
         //return ($documents);
-        return view('packages::documents.index', compact('documents', 'page_title', 'page_action', 'sub_page_title'));
+        return view('packages::documents.index', compact('documents', 'page_title', 'page_action', 'approved','pending'));
     }
 
     /*
@@ -138,8 +219,7 @@ class DocumentController extends Controller
      * Save   method
      * */
     public function store(Request $request, Document $documents)
-    { 
-        
+    {   
         if($request->doc_id){
            // dd(1);
             $documents1 =  Document::where('id',$request->doc_id)->first();
@@ -176,6 +256,27 @@ class DocumentController extends Controller
             }
             $msg = "User has not uploaded bank account details";
         }
+        $uid    = $documents1->user_id??$documents2->user_id;
+
+        $user   = User::find($uid); 
+
+        if($request->document_status==4){
+            $documents1 = Document::where('user_id',$user->id)->delete();
+            $documents2 = BankAccounts::where('user_id',$user->id)->delete();
+        }
+
+        if($user){
+                $token = $user->device_id;
+                $msg = $request->notes??'Under Review';
+                $data = [
+                        'action' => 'notify' ,
+                        'title' => "Document Verification Status",
+                        'message' => $msg
+                    ];
+                $this->sendNotification($token, $data);
+                
+           }
+
         return Redirect::to('admin/documents')
                             ->with('flash_alert_notice', $msg);
     }

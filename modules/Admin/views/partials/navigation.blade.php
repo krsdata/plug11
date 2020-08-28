@@ -78,12 +78,7 @@
                              <a class="btn red-haze btn-sm dropdown-toggle"  href="{{ route('defaultContest')}}">
                                     <i class="glyphicon glyphicon-th"></i> Default Contest </a>
                     </div>
-
-                    <div class="btn-group"> 
-                             <a class="btn red-haze btn-sm dropdown-toggle"  href="{{ route('prizeDistribution')}}">
-                                    <i class="glyphicon glyphicon-th"></i> View Prize </a>
-                    </div>
-
+ 
 
                     <div class="btn-group"> 
                              <a class="btn red-haze btn-sm dropdown-toggle"  href="{{ route('notification')}}">

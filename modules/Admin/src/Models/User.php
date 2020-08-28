@@ -42,20 +42,23 @@ class User extends Authenticatable {
      * @var array
      */
    protected $fillable = [
-                            'first_name',
                             'name',
-                            'last_name',
-                            'about_me',
                             'profile_image',
-                            'phone',
                             'mobile',
                             'email', 
                             'role_type',
                             'password',
                             'status',
-                            'tagLine',
-                            'address',
-                            'birthday'
+                            'user_name',
+                            'mobile_number',
+                            'referal_code',
+                            'reference_code',
+                            'team_name',
+                            "dateOfBirth",
+                            "state",
+                            "block_referral",
+                            "affiliate_user",
+                            "affiliate_commission"
                         ];  // All field of user table h
 
 
@@ -79,7 +82,7 @@ class User extends Authenticatable {
         return User::all();
     }
 
-      public static function createImage($request, $fielName)
+    public static function createImage($request, $fielName)
     {
         try{
            
@@ -91,6 +94,28 @@ class User extends Authenticatable {
                 $photo_name = time().$photo->getClientOriginalName();
                 return  URL::asset('storage/uploads/profile/'.$photo_name);
                 //$request->merge(['photo'=>$photo_name]);
+            }else{
+                 return false;
+            }  
+            
+        }catch(Exception $e){
+            return false;
+        }
+        
+    }
+
+    public static function uploadDocs($request, $fielName)
+    {
+        try{
+           
+            if ($request->file($fielName)) {
+                $photo = $request->file($fielName);
+
+                $destinationPath = storage_path('uploads/documents/');
+                $photo->move($destinationPath, time().$photo->getClientOriginalName());
+                $photo_name = time().$photo->getClientOriginalName();
+                return  URL::asset('storage/uploads/documents/'.$photo_name);
+                
             }else{
                  return false;
             }  

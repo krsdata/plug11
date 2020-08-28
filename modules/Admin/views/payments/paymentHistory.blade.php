@@ -29,7 +29,20 @@
                                         <i class="icon-settings font-red"></i>
                                         <span class="caption-subject font-red sbold uppercase">Payments History</span>
                                     </div>
-                                      
+
+                                    <div class="col-md-2 pull-right">
+                                                <input type="submit" value="Today  : {{round($today,2)}}" class="btn btn-info form-control">
+                                            </div>
+                                          <div class="col-md-2 pull-right">
+                                                <input type="submit" value="Monthly  : {{round($month,2)}}" class="btn btn-info form-control">
+                                            </div>
+                                            <div class="col-md-2 pull-right">
+                                                <input type="submit" value="Weekly : {{round($week,2)}}" class="btn btn-info form-control">
+                                            </div>
+                                            <div class="col-md-3 pull-right">
+                                                <input type="submit" value="Total Deposit : {{round($deposit,2)}}" class="btn btn-info form-control">
+                                            </div>
+
                                      
                                 </div>
                                   
@@ -87,12 +100,16 @@
                                                  <td>   {{ (($transaction->currentpage()-1)*15)+(++$key) }} 
                                                 </td>
                                                 <td>{{$result->transaction_id}} </td>
-                                                <td> 
-
+                                                <td>
+                                                  <a href="{{url('admin/user?search='.$result->email)}}"> 
+                                                   ID: {{$result->user_id}},<br>
+                                                   
                                                    Name: {{$result->name}},<br>
                                                    Email : {{$result->email}}
                                                    <br>
-                                                   Phone : {{$result->phone}} </td>
+                                                   Phone : {{$result->phone}}
+                                                 </a>
+                                                    </td>
                                                 
                                                  <td>{{$result->payment_type_string}} </td>
                                                  <td>
@@ -123,7 +140,9 @@
   of  {{$transaction->total()}} entries 
 </span>
 
-                                     <div class="center" align="center">  {!! $transaction->appends(['search' => isset($_GET['search'])?$_GET['search']:''])->render() !!}</div>
+                                     <div class="center" align="center">  {!! $transaction->appends(['search' => isset($_GET['search'])?$_GET['search']:'','payment_type'=>$_GET['payment_type']??''])->render() !!}</div>
+
+
                                 </div>
                             </div>
                             <!-- END EXAMPLE TABLE PORTLET-->

@@ -118,41 +118,63 @@ class TransactionHistoryController extends Controller {
 
         if ((isset($search) && !empty($search))) { 
                
-            $transaction = $transaction->whereHas('user')->where(function ($query) use ($search,$user) {
+            $transaction = $transaction->whereHas('user')->where(function ($query) use ($search,$user,$request) {
                 if (!empty($search) && !empty($user)) {
                    $query->whereIn('user_id', $user);
-                   $query->orWhere('user_id', $search);
-                   $query->orWhere('transaction_id', $search);
-                   $query->orWhere('payment_type_string', $search); 
+                   $query->orwhere('user_id', $search);
                 }
-                 
+                 if($request->payment_type){
+                    $query->where('payment_type', $request->payment_type);
+                }
             })
             ->orderBy('id','desc')->Paginate($this->record_per_page);
             
              $transaction->transform(function($item, $Key){
-                            $user = User::find($item->user_id); 
-                            $item->name = $user->first_name??null;
+                            $user = User::find($item->user_id);
+                            $item->user_id = $user->id??null; 
+                            $item->name = $user->name??null;
                             $item->email = $user->email??null;
                             $item->phone = $user->mobile_number??null;
                             return $item;
-                                 
                         });
 
         } else {  
             $transaction = $transaction->whereHas('user')
-                        ->orderBy('id','desc')->Paginate($this->record_per_page); 
+                        ->orderBy('id','desc')
+                        ->where('payment_type',3)
+                       // ->whereDate('created_at',\Carbon\Carbon::today())
+                        ->Paginate(30);
                         
             $transaction->transform(function($item, $Key){
                             $user = User::find($item->user_id); 
-                             $item->name = $user->first_name??null;
+                            $item->user_id = $user->id??null;
+                            $item->name = $user->name??null;
                             $item->email = $user->email??null;
                             $item->phone = $user->mobile_number??null;
                             return $item;  
                         }); 
         }
-         
-        return view('packages::payments.paymentHistory', compact('transaction', 'page_title', 'page_action','msg'));
-   
+
+        $deposit = \DB::table('wallet_transactions')
+                    ->where('payment_type',3)
+                    ->sum('amount');
+
+        $week = \DB::table('wallet_transactions')
+                ->whereBetween('created_at', [\Carbon\Carbon::now()->startOfWeek(), \Carbon\Carbon::now()->endOfWeek()])
+                ->where('payment_type',3)
+                ->sum('amount');
+
+        $month = \DB::table('wallet_transactions')
+                    ->whereMonth('created_at',date('m'))
+                    ->where('payment_type',3)
+                    ->sum('amount');
+        $today = \DB::table('wallet_transactions')
+                    ->whereDate('created_at',\Carbon\Carbon::today())
+                    ->where('payment_type',3)
+                    ->sum('amount');
+        
+        return view('packages::payments.paymentHistory', compact('transaction', 'page_title', 'page_action','msg','deposit','week','month','today'));
+        
     }
 
     /*

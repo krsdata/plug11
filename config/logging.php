@@ -54,46 +54,6 @@ return [
             'days' => 14,
         ],
 
-        'before_join_contest' => [
-            'driver' => 'daily',
-            'path' => storage_path('logs/before_join_contest/before_join_contest.log'),
-            'level' => 'debug',
-            'days' => 7,
-        ], 
-
-        'after_join_contest' => [
-            'driver' => 'daily',
-            'path' => storage_path('logs/after_join_contest/after_join_contest.log'),
-            'level' => 'debug',
-            'days' => 7,
-        ], 
-
-         'before_getMatch' => [
-            'driver' => 'daily',
-            'path' => storage_path('logs/before_getMatch.log'),
-            'level' => 'debug',
-            'days' => 7,
-        ], 
-
-         'after_getMatch' => [
-            'driver' => 'daily',
-            'path' => storage_path('logs/after_getMatch.log'),
-            'level' => 'debug',
-            'days' => 7,
-        ], 
-
-         'before_create_team' => [
-            'driver' => 'daily',
-            'path' => storage_path('logs/before_create_team/before_create_team.log'),
-            'level' => 'debug',
-            'days' => 7,
-        ], 
-         'after_create_team' => [
-            'driver' => 'daily',
-            'path' => storage_path('logs/after_create_team/after_create_team.log'),
-            'level' => 'debug',
-            'days' => 7,
-        ],  
          'payment_info' => [
             'driver' => 'daily',
             'path' => storage_path('logs/payment_info/payment_info.log'),

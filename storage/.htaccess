@@ -1,5 +1,0 @@
-Deny from all
-<FilesMatch "\.(jpg|gif|png|php)$">
-Order Deny,Allow
-   Allow from all
-</FilesMatch>

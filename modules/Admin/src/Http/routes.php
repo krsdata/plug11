@@ -1,5 +1,7 @@
 <?php
-
+if (App::environment('prod')) {
+    \URL::forceScheme('https');
+}
     Route::match(['get','post'],'admin/updatePoint', 'Modules\Admin\Http\Controllers\UpdatePlayerPointsController@updatePoint');
 
     Route::get('admin/forgot-password', 'Modules\Admin\Http\Controllers\AuthController@forgetPassword');
@@ -10,6 +12,7 @@
 
     Route::post('admin/blog/ajax', 'Modules\Admin\Http\Controllers\BlogController@ajax');
     Route::get('admin/error', 'Modules\Admin\Http\Controllers\PageController@error');
+
     Route::post('admin/login', function (App\Admin $user) {
 
         $credentials = ['email' => Input::get('email'), 'password' => Input::get('password')];
@@ -365,6 +368,11 @@
             ]
                 ]
         );
+
+        
+        Route::get(
+            'admin/contestReports',
+            'Modules\Admin\Http\Controllers\MatchContestController@contestReports')->name('contestReports');
         
        Route::get(
             'admin/matchTeams',

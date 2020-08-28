@@ -84,6 +84,8 @@ class AdminController extends Controller {
 
         $join_contest_amt = WalletTransaction::where('payment_type',6)->sum('amount');
 
+        $today_withdrawal = WalletTransaction::where('payment_type',5)->sum('amount');
+
         $create_count = CreateTeam::count();
 
         $joinContest_count = JoinContest::count(); 
@@ -93,7 +95,13 @@ class AdminController extends Controller {
         $contest_types = \DB::table('contest_types')->count();
         $banner = \DB::table('banners')->count();
 
-        return view('packages::dashboard.index',compact('joinContest_count','create_count','today_deposit','category_count','users_count','category_grp_count','page_title','page_action','viewPage','match_1','match_2','match_3','match','contest_types','banner','deposit','prize','refunded','referral','join_contest_amt'));
+        $total_user = \DB::table('eventLogs')
+                ->whereDate('created_at',\Carbon\Carbon::today())
+                ->groupBy('user_id')
+                ->pluck('user_id')
+                ->count();
+
+        return view('packages::dashboard.index',compact('joinContest_count','create_count','today_deposit','category_count','users_count','category_grp_count','page_title','page_action','viewPage','match_1','match_2','match_3','match','contest_types','banner','deposit','prize','refunded','referral','join_contest_amt','total_user','today_withdrawal'));
     }
 
    public function profile(Request $request,Admin $users)

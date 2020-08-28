@@ -81,7 +81,7 @@
                                                  <td>{{ (($transaction->currentpage()-1)*15)+(++$key) }} 
                                                 </td>
                                                 <td> 
-                                                  <a href="{{url('admin/wallets?search='.$result->email)}}" target="_blank"> 
+                                                  <a href="{{url('admin/user?search='.$result->email)}}" target="_blank"> 
                                                   {!!'Customer Id: '.$result->user_id.'<br>'.$result->name!!},
                                                   <br>{{$result->email}}
                                                 </a>
@@ -111,7 +111,7 @@
           <ul class="dropdown-menu">
             <li><a href="{{url('admin/payments?status=2&txt_id='.$result->id)}}">Payment Initiated</a></li>
             <li><a href="{{url('admin/payments?status=3&txt_id='.$result->id)}}">Payment Hold</a></li>
-            <li><a href="{{url('admin/payments?status=4&txt_id='.$result->id)}}">Payment Refund</a></li>
+            <!-- <li><a href="{{url('admin/payments?status=4&txt_id='.$result->id)}}">Payment Refund</a></li> -->
             <li role="separator" class="divider"></li>
             <li><a href="#"   data-toggle="modal" data-target="#myModal" onclick="payment('{{$result->id}}',{{$result->amount}})">Release Fund</a></li>
             <li role="separator" class="divider"></li> 

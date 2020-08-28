@@ -38,25 +38,21 @@ if(isset($_POST['ORDER_ID']) and empty($_POST['ORDER_ID']) OR !isset($_POST['ORD
 } 
 
 if($_POST){
-          $paramList['MID'] =$_POST['MID'];
- $paramList['INDUSTRY_TYPE_ID'] =$_POST['INDUSTRY_TYPE_ID'];
- $paramList['CHANNEL_ID'] =$_POST['CHANNEL_ID'];
- $paramList['WEBSITE'] =$_POST['WEBSITE'];
-	 $paramList['ORDER_ID'] =$_POST['ORDER_ID'];
-         $paramList['CALLBACK_URL'] =$_POST['CALLBACK_URL'];
-         $paramList['CUST_ID'] =$_POST['CUST_ID'];
-         $paramList['EMAIL'] =$_POST['EMAIL'];
-         $paramList['MOBILE_NO'] =$_POST['MOBILE_NO'];
-          $paramList['TXN_AMOUNT'] =$_POST['TXN_AMOUNT']; 
-     
+  $paramList['MID']               = $_POST['MID'];
+  $paramList['INDUSTRY_TYPE_ID']  = $_POST['INDUSTRY_TYPE_ID'];
+  $paramList['CHANNEL_ID']        = $_POST['CHANNEL_ID'];
+  $paramList['WEBSITE']           = $_POST['WEBSITE'];
+  $paramList['ORDER_ID']          = $_POST['ORDER_ID'];
+  $paramList['CALLBACK_URL']      = $_POST['CALLBACK_URL'];
+  $paramList['CUST_ID']           = $_POST['CUST_ID'];
+  $paramList['EMAIL']             = $_POST['EMAIL'];
+  $paramList['MOBILE_NO']         = $_POST['MOBILE_NO'];
+  $paramList['TXN_AMOUNT']        = $_POST['TXN_AMOUNT'];
   //  print_r($paramList);
 }
-
-  
 //Here checksum string will return by getChecksumFromArray() function.
 $checkSum = getChecksumFromArray($paramList,"jWBrK0hmx%Ok7rTd");
 //print_r($_POST);
- echo json_encode(array("CHECKSUMHASH" => $checkSum,"order_id" => $_POST["ORDER_ID"], "status" => "1"));
- 
- 
+echo json_encode(array("CHECKSUMHASH" => $checkSum,"order_id" => $_POST["ORDER_ID"], "status" => "1"));
+
 ?>

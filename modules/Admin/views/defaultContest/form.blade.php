@@ -6,8 +6,6 @@
   <!--   <div class="alert alert-success display-hide">
         <button class="close" data-close="alert"></button> Your form validation is successful! </div>
 -->
-        @if($match)  
-
         <div class="form-group {{ $errors->first('is_free', ' has-error') }}">
             <label class="control-label col-md-3">Free Contest Type</label>
             <div class="col-md-4"> 
@@ -19,8 +17,19 @@
                 <span class="help-block">{{ $errors->first('is_free', ':message') }}</span>
             </div>
         </div>
+        @if($match)  
 
-         <div class="form-group {{ $errors->first('match_id', ' has-error') }}">
+                 <div class="form-group {{ $errors->first('match_id', ' has-error') }}">
+            <label class="control-label col-md-3">Match ID </label>
+            <div class="col-md-4"> 
+                {!! Form::text('match_id',$match, ['class' => 'form-control'])  !!} 
+                
+                <span class="help-block">{{ $errors->first('match_id', ':message') }}</span>
+            </div>
+            Use Match id when you want change in specific match!!.
+        </div>
+        @else
+        <div class="form-group {{ $errors->first('match_id', ' has-error') }}">
             <label class="control-label col-md-3">Match ID </label>
             <div class="col-md-4"> 
                 {!! Form::text('match_id',$match, ['class' => 'form-control'])  !!} 
@@ -35,7 +44,6 @@
             <label class="control-label col-md-3">Contest type <span class="required"> * </span></label>
             <div class="col-md-4"> 
                 
-
                  {{ Form::select('contest_type',$contest_type, isset($defaultContest->contest_type)?$defaultContest->contest_type:'', ['class' => 'form-control']) }}
 
                 
@@ -63,8 +71,8 @@
 
 
         <div class="form-group {{ $errors->first('prize_percentage', ' has-error') }}">
-            <label class="control-label col-md-3">Prize percentage </label>
-            <div class="col-md-4"> 
+            <label class="control-label col-md-3">Total Winner </label>
+            <div class="col-md-4">
                 {!! Form::text('prize_percentage',null, ['class' => 'form-control'])  !!} 
                 
                 <span class="help-block">{{ $errors->first('prize_percentage', ':message') }}</span>
@@ -81,8 +89,8 @@
         </div> 
 
         <div class="form-group {{ $errors->first('winner_percentage', ' has-error') }}">
-            <label class="control-label col-md-3">Winner Percentage</label>
-            <div class="col-md-4"> 
+            <label class="control-label col-md-3">Winner percentage</label>
+            <div class="col-md-4">
                 {!! Form::text('winner_percentage',null, ['class' => 'form-control'])  !!} 
                 
                 <span class="help-block">{{ $errors->first('winner_percentage', ':message') }}</span>
@@ -92,11 +100,16 @@
 
        <div class="form-group {{ $errors->first('cancellation', ' has-error') }}">
             <label class="control-label col-md-3">Cancellation</label>
+
             <div class="col-md-4"> 
-                {!! Form::text('cancellation',null, ['class' => 'form-control'])  !!} 
+                <select name="cancellation" class="form-control">
+                    <option value="0" >False</option>
+                    <option value="1" {{$defaultContest->cancellation?'selected':''}}>True</option>
+                </select>
                 
                 <span class="help-block">{{ $errors->first('cancellation', ':message') }}</span>
             </div>
+
         </div>
 
         <div class="form-group {{ $errors->first('total_winning_prize', ' has-error') }}">
@@ -106,6 +119,29 @@
                 <span class="help-block">{{ $errors->first('total_winning_prize', ':message') }}</span>
             </div>
         </div>
+
+
+        <div class="form-group {{ $errors->first('usable_bonus', ' has-error') }}">
+            <label class="control-label col-md-3">Usable Bonus %</label>
+            <div class="col-md-4"> 
+                {!! Form::text('usable_bonus',$defaultContest->usable_bonus??10, ['class' => 'form-control','placeholder'=>'10'])  !!} 
+                <span class="help-block">{{ $errors->first('usable_bonus', ':message') }}</span>
+            </div>
+        </div>
+
+        <div class="form-group {{ $errors->first('bonus_contest', ' has-error') }}">
+            <label class="control-label col-md-3">Bonus Contest</label>
+            <div class="col-md-4"> 
+                <select name="bonus_contest" class="form-control">
+                    <option value="0" >No</option>
+                    <option value="1" {{$defaultContest->bonus_contest?'selected':''}}>Yes</option>
+                </select>
+                
+                <span class="help-block">{{ $errors->first('bonus_contest', ':message') }}</span>
+            </div>
+
+        </div>
+
     </div>
     <div class="form-actions">
         <div class="row">

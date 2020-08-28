@@ -42,6 +42,13 @@
                                     <div class="table-toolbar">
                                         <div class="row">
                                             <form action="{{route('defaultContest')}}" method="get" id="filter_data">
+
+
+        <div class="col-md-3">
+                    
+                 {{ Form::select('contest_type',$contest_type, $_GET['contest_type']??0, ['class' => 'form-control','onchange'=>"this.form.submit()"]) }}
+        </div> 
+
                                              
                                             <div class="col-md-3">
                                                 <input value="{{ (isset($_REQUEST['search']))?$_REQUEST['search']:''}}" placeholder="Search " type="text" name="search" id="search" class="form-control" >
@@ -63,6 +70,8 @@
                                             <tr>
                                                  <th>Sno.</th>
                                                 <th> Contest type </th>
+                                                <th> Cancellation </th>
+                                                <th> Is Free </th>
                                                 <th> Entry fees </th>
                                                 <th> Total spots </th>
                                                 <th> First prize </th>
@@ -80,7 +89,12 @@
                                                 <td> {{$contest_type[$result->contest_type]}}
                                                     {!!$result->match_id?'<span class="required" aria-required="true"> * </span>':''!!}
                                                  </td>
-                                                    
+                                                  <th>  {{$result->cancellation?'Yes':'No'}} </th>
+
+                                                <th>  
+                                                    {{$result->is_free?'Yes':'No'}}
+                                                </th>    
+                                                
                                                 <td> {{$result->entry_fees}} </td>
                                                 <td> {{$result->total_spots}} </td>
                                                 <td> {{$result->first_prize}} </td>
@@ -109,8 +123,8 @@
                                         </tbody>
                                     </table>
                                     <span>
-                                     
-                                     <div class="center" align="center">  {!! $defaultContest->appends(['search' => isset($_GET['search'])?$_GET['search']:''])->render() !!}</div>
+                                        
+                                     <div class="center" align="center">  {!! $defaultContest->appends(['search' => isset($_GET['search'])?$_GET['search']:'','contest_type'=>$_GET['contest_type']??null])->render() !!}</div>
                                 </div>
                             </div>
                             <!-- END EXAMPLE TABLE PORTLET-->
