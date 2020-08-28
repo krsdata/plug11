@@ -66,7 +66,7 @@
           <div class="col-md-12 heading-section text-center ftco-animate">
             <span class="subheading">Features</span>
             <h2 class="mb-4 wow animated bounceInLeft ">Our features</h2>
-            <p>Sportsfight fantasy league</p>
+            <p>{{env('company_name')}} fantasy league</p>
           </div>
         </div>
         <div class="row">
@@ -75,7 +75,7 @@
               <div class="icon justify-content-center align-items-center d-flex"><span class="flaticon-pin"></span></div>
               <div class="media-body">
                 <h3 class="heading mb-3">Easy to Join Contest</h3>
-                <p>Sportsfight Fantasy League allows you to participate in the fantasy sports where you
+                <p>{{env('company_name')}} Fantasy League allows you to participate in the fantasy sports where you
 can quickly level up your performance choosing your dream players. As you are just a
 step away from the contest, So, buy the entry ticket and get yourself enrolled for the
 upcoming contest just in a few clicks.
@@ -88,7 +88,7 @@ upcoming contest just in a few clicks.
               <div class="icon justify-content-center align-items-center d-flex"><span class="flaticon-detective"></span></div>
               <div class="media-body">
                 <h3 class="heading mb-3">High speedy app</h3>
-                <p>Download the Sportsfight app to access exciting features easily. Also, the app is super
+                <p>Download the {{env('company_name')}} app to access exciting features easily. Also, the app is super
 easy to use as it fastens the speed so download it to win your cash rewards a few
 clicks away. Besides this, get instant notifications, offers and promotions in regards to
 your fantasy sport, upcoming contests, dream player, and so forth.</p>

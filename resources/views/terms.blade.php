@@ -46,7 +46,7 @@
           <div class="faq_content wow fadeIn animated" data-wow-delay="400ms">
                             <p style="color: #00bade;"><strong>T&amp;C</strong><strong>&nbsp;AND DISCLAIMER</strong></p>
 
-<p>All sales are final as Sportsfight &amp; Advisory offers free 2-day evaluation to ensure that our products and services will meet your needs without the need to purchase, there will be ABSOLUTELY NO REFUNDS and CANCELLATIONS.</p>
+<p>All sales are final as {{env('company_name')}} &amp; Advisory offers free 2-day evaluation to ensure that our products and services will meet your needs without the need to purchase, there will be ABSOLUTELY NO REFUNDS and CANCELLATIONS.</p>
 
 <p>Before deciding to subscribe to our services, please make sure to take our 2 day free trial, the evaluation version that we provide. We do not offer refunds on subscriptions that have already been taken. We believe in our services and support and even give two-day free trial that without any exception we have NO REFUND POLICY.</p>
 <br>

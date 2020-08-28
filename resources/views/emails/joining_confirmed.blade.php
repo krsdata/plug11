@@ -492,8 +492,8 @@ td[class="buttonContent"] a {
                                                 <tr>
                                                   <td style="text-align:center;font-family:calibri, Lucida Grande;font-size: 16px;color:#000;line-height: 52px; color: #000;  background:#c61d22;" >
 													  
-                                                  <a href="" target="_blank" style="color:#ffffff; font-family: calibri, Lucida Grande; font-size:50px"> 
-                                                  		SportsFight
+                                                  
+                                                  		
                                                   </td>
                                                 </tr>
                                                
@@ -963,7 +963,7 @@ td[class="buttonContent"] a {
                                   <td valign="top" class="textContent"><div align="center"><table width="100%" align="center" border="0" cellpadding="0" cellspacing="0" style="padding-top: 5px; padding-bottom: 5px;">
   <tbody>
     <tr>
-      <td align="center" style="font-family:calibri, Lucida Grande; font-size:13px; color:#666666;"><a href="" style="text-decoration:none;color: #666;">SportsFight Fantasy Pvt. Ltd.</a></td>
+      <td align="center" style="font-family:calibri, Lucida Grande; font-size:13px; color:#666666;"><a href="" style="text-decoration:none;color: #666;"> Fantasy Pvt. Ltd.</a></td>
     
     </tr>
 	<tr>

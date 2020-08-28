@@ -12,7 +12,7 @@
           <div class="col-md-12 heading-section text-center ftco-animate">
             <span class="subheading">Features</span>
             <h2 class="mb-4 wow animated bounceInLeft ">Our features</h2>
-            <p>Sportsfight fantasy league</p>
+            <p>fantasy league</p>
           </div>
         </div>
         <div class="row">
