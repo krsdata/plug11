@@ -82,8 +82,9 @@ class CronController extends BaseController
 
         $date   = date('Y-m-d');
         $token  = env('CRIC_API_KEY');
+        $CRIC_API_URL = env('CRIC_API_URL');
         //upcoming
-        $data   =    file_get_contents($CRIC_API_KEY.'matches/?status='.$status.'&pre_squad=true&date='.$date.'&per_page=10&paged=1&token='.$token);
+        $data   =    file_get_contents($CRIC_API_URL.'matches/?status='.$status.'&pre_squad=true&date='.$date.'&per_page=10&paged=1&token='.$token);
         
         \File::put(public_path('/upload/json/'.$fileName.'.txt'),$data);
         $this->updateMatchInDB();
