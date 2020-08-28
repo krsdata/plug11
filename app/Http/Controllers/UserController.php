@@ -100,10 +100,10 @@ class UserController extends BaseController
 
         $email_content = array(
                         'receipent_email'   => $request->input('email'),
-                        'subject'           => 'Your Sportsfight Account Password',
+                        'subject'           => "Your env('company_name') Account Password",
                         'name'              => $user->first_name,
                         'encrypt_key'       => Crypt::encryptString($email),
-                        'greeting'          => 'Sportsfight',
+                        'greeting'          => env('company_name'),
                         'links'             => $links
 
                     );

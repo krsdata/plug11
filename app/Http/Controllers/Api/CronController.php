@@ -43,32 +43,31 @@ class CronController extends BaseController
      {
 
         $date = date('Y-m-d');
-        $token = "8740931958a5c24fed8b66c7609c1c49";
+        $token = env('CRIC_API_KEY');
         //upcoming
-        $upcoming =    file_get_contents('https://rest.entitysport.com/v2/matches/?status=1&pre_squad=true&date='.$date.'&per_page=100&paged=1&token='.$token);
+        $CRIC_API_URL = env('CRIC_API_URL');
+
+        $upcoming =    file_get_contents($CRIC_API_URL.'matches/?status=1&pre_squad=true&date='.$date.'&per_page=100&paged=1&token='.$token);
 
         \File::put(public_path('/upload/json/upcoming.txt'),$upcoming);
 
         //complted
-        $completed =    file_get_contents('https://rest.entitysport.com/v2/matches/?status=2&pre_squad=true&date='.$date.'&per_page=10&paged=1&token='.$token);
+        $completed =    file_get_contents($CRIC_API_URL.'matches/?status=2&pre_squad=true&date='.$date.'&per_page=10&paged=1&token='.$token);
 
         \File::put(public_path('/upload/json/completed.txt'),$completed);
 
         //live
-        $live =    file_get_contents('https://rest.entitysport.com/v2/matches/?status=3&pre_squad=true&date='.$date.'&per_page=10&paged=1&token='.$token);
+        $live =    file_get_contents($CRIC_API_URL.'matches/?status=3&pre_squad=true&date='.$date.'&per_page=10&paged=1&token='.$token);
 
         \File::put(public_path('/upload/json/live.txt'),$live);
 
         sleep(1);
         $this->updateMatchInDB();
-
        return  ['Match info updated'];
-
     } 
 
      public function updateMatchDataByStatus($status=1)
-     {
-
+     {  
         if($status==1){
             $fileName="upcoming";
         }
@@ -81,15 +80,13 @@ class CronController extends BaseController
             return ['data not available'];
         }
 
-        $date = date('Y-m-d');
-        $token = "8740931958a5c24fed8b66c7609c1c49";
+        $date   = date('Y-m-d');
+        $token  = env('CRIC_API_KEY');
         //upcoming
-        $data =    file_get_contents('https://rest.entitysport.com/v2/matches/?status='.$status.'&pre_squad=true&date='.$date.'&per_page=10&paged=1&token='.$token);
+        $data   =    file_get_contents($CRIC_API_KEY.'matches/?status='.$status.'&pre_squad=true&date='.$date.'&per_page=10&paged=1&token='.$token);
         
         \File::put(public_path('/upload/json/'.$fileName.'.txt'),$data);
-
         $this->updateMatchInDB();
-        
 
         return Redirect::to(URL::previous())
                             ->with('flash_alert_notice', $fileName.' Match status updated');
@@ -100,7 +97,6 @@ class CronController extends BaseController
     public function getJsonFromLocal($path=null)
     {
         return json_decode(file_get_contents($path));
-
     }
 
     // store by match type
@@ -208,15 +204,10 @@ class CronController extends BaseController
                         $matches->teama_id = $team_a_id;
                         $matches->teamb_id = $team_b_id;
                         $matches->competition_id = $toss_id;
-
                         $matches->save();
-                    
             }            
 
         }
         return ["match info updated "];
-
     }
- 
- 
 }

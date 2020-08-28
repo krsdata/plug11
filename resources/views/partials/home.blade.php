@@ -1,30 +1,42 @@
-     <?php $bgUrl = URL::asset("webmedia/images/sportsfight_bg.jpg"); ?>
+     <?php $bgUrl = "https://sportsfight.in/webmedia/images/main.jpg"; ?>
       <section class="hero-wrap js-fullheight" style="background-image: url('<?php echo $bgUrl; ?>')" data-section="home" data-stellar-background-ratio="0.5" id="home-section">
-        <img src="">
+      	<div style="position: absolute;
+	  	        text-align: center;
+	  	        width: 100%;
+			    top: 90px;">
+        <img src="{{URL::asset('webmedia/images/logo.png')}}" width="150px"  style="
+			    border: 0px solid #fff;
+			    border-radius: 5px;
+			" align="center">
+		</div>
       <div class="overlay"></div>
       <div class="container">
         <div class="row no-gutters slider-text js-fullheight align-items-center justify-content-start" data-scrollax-parent="true">
-          <div class="col-md-5 ftco-animate" data-scrollax=" properties: { translateY: '70%' }">
-            <h1 class="mb-5" data-scrollax="properties: { translateY: '60%', opacity: 1.6 }">Sportsfight Fantasy League</h1>
-            <p class="mb-5" data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">Fantasy League</p>
-            <form action="#" class="search-location">
-                    <div class="row">
+          <div class="col-md-12 ftco-animate" data-scrollax=" properties: { translateY: '70%' }" >
+            <h1 class="mb-5" data-scrollax="properties: { translateY: '60%', opacity: 1.6 }" align="center" style="color: #FFC103">Sportsfight Fantasy League</h1>
+            
+            <p class="mb-5" data-scrollax="properties: { translateY: '30%', opacity: 1.6 }" align="center">Create Team | Join Contest | Win Cash</p>
+                    <div class="row" align="center">
                         <div class="col-lg align-items-end">
-                             <a href="https://sportsfight.in/public/upload/apk/sportsfight.apk" target="_blank">
+                             <a href="https://sportsfight.in/apk">
                             <img  src="{{ URL::asset('webmedia/images/download-android-new.png')}}" alt="android-new" style="width: 200px;">
-
-                            
                         </a>
                         </div>
                     </div>
-                </form>
           </div>
         </div>
       </div>
+      <!-- <div>
+        
+              <input type="text" name="link" style="">
+              <span style="float: right;">Get Download Link</span>
+      </div> -->
     </section>
 
+
+
         <!-- services -->
-        <section class="ftco-section ftco-services-2" id="services-section">
+<!--     <section class="ftco-section ftco-services-2" id="services-section">
             <div class="container">
                 <div class="row justify-content-center pb-5">
           <div class="col-md-12 heading-section text-center ftco-animate">
@@ -40,10 +52,10 @@
               <div class="media-body">
                 <h3 class="heading mb-3">Easy to Join Contest</h3>
                 <p>Sportsfight Fantasy League allows you to participate in the fantasy sports where you
-can quickly level up your performance choosing your dream players. As you are just a
-step away from the contest, So, buy the entry ticket and get yourself enrolled for the
-upcoming contest just in a few clicks.
-</p>
+        can quickly level up your performance choosing your dream players. As you are just a
+        step away from the contest, So, buy the entry ticket and get yourself enrolled for the
+        upcoming contest just in a few clicks.
+        </p>
               </div>
             </div>      
           </div>
@@ -90,7 +102,7 @@ earnings into your account.</p>
             </div>
         </section>
 
-   
+    -->
 
 
     <!--Section: Content-->
@@ -105,7 +117,7 @@ earnings into your account.</p>
         <div class="col-md-6 mb-4 mb-md-0 heading-section">
 
           <span class="subheading"> </span>
-            <h2 class="mb-4">Our Works</h2>
+            <h2 class="mb-4">What we Do?</h2>
 
           <p class="text-muted">We are here to help you generate income out of your interest by serving you with the best
           fantasy sports opportunity. We help accomplish your dream of playing a digital sport picking
@@ -134,7 +146,7 @@ earnings into your account.</p>
         <!--Grid column-->
         <div class="col-md-5 mb-4 mb-md-0">
 
-          <img src="{{url('webmedia/images/screens1.png')}}" class="img-fluid" alt="">
+          <img src="{{url('webmedia/images/app.jpg')}}" class="img-fluid" alt="">
 
         </div>
         <!--Grid column-->
@@ -247,7 +259,7 @@ are getting rewarded based on their ranks.</p>
                 </div>
             </div>
         </section> 
-        <div class="jumbotron jumbotron-fluid">
+    <div class="jumbotron jumbotron-fluid">
           <div class="container center">
             <h1>App Screenshot</h1>
             
@@ -279,26 +291,26 @@ are getting rewarded based on their ranks.</p>
                            
                           <div class="owl-item cloned" style="width: 200px;  margin-right: 10px">
                             <div class="single-cases-img">
-                                <img src="{{url('webmedia/images/s1.jfif')}}" alt="">
+                                <img src="{{url('webmedia/images/s1.jpeg')}}" alt="">
                             </div>
                           </div>
 
                           <div class="owl-item cloned" style="width: 200px; margin-right: 10px">
                             <div class="single-cases-img">
-                                <img src="{{url('webmedia/images/s2.jfif')}}" alt="">
+                                <img src="{{url('webmedia/images/s2.jpeg')}}" alt="">
                             </div>
                           </div>
 
                           <div class="owl-item cloned" style="width: 200px; margin-right: 10px">
                             <div class="single-cases-img">
-                                <img src="{{url('webmedia/images/s3.jfif')}}" alt="">
+                                <img src="{{url('webmedia/images/s3.jpeg')}}" alt="">
                             </div>
                           </div>
-                          <!--  <div class="owl-item cloned" style="width: 200px;  margin-right: 10px">
+                          <div class="owl-item cloned" style="width: 200px;  margin-right: 10px">
                             <div class="single-cases-img">
-                                <img src="{{url('webmedia/images/s4.jfif')}}" alt="">
+                                <img src="{{url('webmedia/images/s4.jpeg')}}" alt="">
                             </div>
-                          </div> -->
+                          </div>
                           
                     </div>
                 </div>
@@ -309,4 +321,4 @@ are getting rewarded based on their ranks.</p>
             <h1>Reach us at info@sportsfight.in </h1>
             
           </div>
-      </div>
+      </div> 

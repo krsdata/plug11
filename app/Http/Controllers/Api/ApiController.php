@@ -46,16 +46,17 @@ class ApiController extends BaseController
     public $cric_url;
     public $is_session_expire;
 
-    public function __construct(Request $request) {
-        
-        $this->date = date('Y-m-d');
-        $this->token = env('CRIC_API_KEY',"8740931958a5c24fed8b66c7609c1c49");
+    public function __construct(Request $request) 
+    {
         $request->headers->set('Accept', 'application/json');
-        $this->cric_url = 'https://rest.entitysport.com/v2/';
         
+        $this->date     = date('Y-m-d');
+        $this->token    = env('CRIC_API_KEY');
+        $this->cric_url = env('CRIC_API_KEY');
         
-        $user_name = $request->user_id;
-        $user = User::where('user_name',$user_name)->first();
+        $user_name  = $request->user_id;
+        $user       = User::where('user_name',$user_name)->first();
+        
         if($user && $request->user_id){
             $this->is_session_expire = false;
             $request->merge(['user_id'=>$user->id]);    
@@ -67,12 +68,12 @@ class ApiController extends BaseController
             $this->is_session_expire = true;
             $request->merge(['user_id'=>null]);
         }
-        
     }
-
+    /*
+    Contest Filling Fast
+    */
     public function contestFillNotify(Request $request)
     {
-
         $match = Matches::where('status',1)
                 ->whereDate('date_start',\Carbon\Carbon::today())
                 ->where('timestamp_start','>=',time())
@@ -86,26 +87,22 @@ class ApiController extends BaseController
         $message = '**Contest is filling fast. Create your team and join the contest. Hurry up!!**';
         $title = "🏏 $cf 🕚 🏆🏆 🔔";
 
-        $image =  "https://sportsfight.in/webmedia/images/logof.png";
+        $image =  env('company_logo_url');
 
         $data = [
-            'action' => 'notify' ,
-            'title' => $title,
-            'message' => $message
-        ];
-        
+            'action'    => 'notify' ,
+            'title'     => $title,
+            'message'   => $message
+        ];              
+                        
         $notification = [
-            'action' => 'notify', 
-            'title' => 'Weekend Offer',
-            'body' => "100% cash bonus on deposit of 111",
-            'image' => $image
+            'action'    => 'notify', 
+            'title'     => 'Weekend Offer',
+            'body'      => "100% cash bonus on deposit of 111",
+            'image'     => $image
         ];
-      //  dd($data)
-        $device_id = 'fNs9mYq4QfGdBDNpi39d5g:APA91bF7xWZHzBzCOoWN80deNfT8TQGlJLZGEaU_waZGOcnUzlJsXewBArNIbesHhicrQVkDMMbAq1eLEdFigL8p9atV88OaHNhf5s-yxUJjuGszmG3xRkoP41PkIaKjylY1fvXZLVeh';
 
-        $this->sendNotification($device_id, $data,$notification);
-        die('-----');
-
+       // $this->sendNotification($device_id, $data,$notification);
         if($td>5 && $td%15==0 || $td<90){        
             $helper = new Helper;
             $helper->notifyToAll($title, $message);  
@@ -121,27 +118,25 @@ class ApiController extends BaseController
     public function apkUpdate(Request $request ){
 
         $version_code = $request->version_code;
-
         if($version_code){
-
             $apk_update_status = \DB::table('apk_updates')
                 ->where('version_code','>',$version_code)
                 ->first();
 
             if($apk_update_status){
                 return [
-                    'splashScreen'  => env('splashScreen','https://api.sportsfight.in/splashScreen/splashScreen2.jpg'),
+                    'splashScreen'  => env('splashScreen'),
                     'status'        =>  true,
                     'code'          =>  200,
                     'message'       =>  $apk_update_status->message?$apk_update_status->message:'Update is available',
-                    'url'           =>  'https://sportsfight.in/public/upload/apk/sportsfight.apk',
+                    'url'           =>  env('apk_url'),
                     'title'         =>  $apk_update_status->title,
                     'release_note'  =>  $apk_update_status->release_notes??'new updates'
                 ];
             }else{
                 return [
-                    'force_update' => env('force_update',false),
-                    'splashScreen'  => 'https://api.sportsfight.in/splashScreen/splashScreen2.jpg',
+                    'force_update' =>  env('force_update',false),
+                    'splashScreen'  => env('splashScreen'),
                     'status'        =>  false,
                     'code'          =>  201,
                     'message'       =>  'No update available',
@@ -155,7 +150,7 @@ class ApiController extends BaseController
         }else{
             return [
                 'force_update' => env('force_update',false),
-                'splashScreen'  => 'https://api.sportsfight.in/splashScreen/splashScreen2.jpg',
+                'splashScreen'  => env('splashScreen'),
                 'status'        =>  false,
                 'code'          =>  201,
                 'message'       =>  'No update available',
@@ -2906,8 +2901,6 @@ class ApiController extends BaseController
                     if($td>1 and $td<=30){
                         $item->status=1;
                         $item->status_str='Upcoming';
-                       // $item->is_lineup = true; 
-                        //exec('curl https://sportsfight.in/api/v2/updateMatchDataByStatus/3');
         
                     }else{
                        //$item->is_lineup = 'true';
@@ -3736,7 +3729,7 @@ class ApiController extends BaseController
                         $wt->payment_type = 6;
                         $wt->payment_type_string = 'Join Contest';
                         $wt->transaction_id = $match_id.'S'.$contest_id.'F'.$user_id;
-                        $wt->payment_mode =  'sf';
+                        $wt->payment_mode =  env('company_name');
                         $wt->payment_status =  'Success';
                         $wt->debit_credit_status = "-";
                         $wt->payment_details = json_encode($request->all());
@@ -4216,25 +4209,25 @@ class ApiController extends BaseController
                         $user = User::find($item->user_id);
                         $item->user_id = $user->user_name;
                         
-                        $item->pmid = env('paytm_mid','xmHOCa32667710380797');
-                        $item->call_url = env('call_url', 'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID=');
-                        $item->g_pay = 'sportsfight.in-1@okaxis';
+                        $item->pmid     = env('paytm_mid');
+                        $item->call_url = env('paytm_call_back_url');
+                        $item->g_pay    =  env('gpay_id');
                         $item->min_deposit = env('min_deposit',10);
                         
                         return $item;
                     });
 
-        $myArr['pmid']          =  env('paytm_mid','xmHOCa32667710380797');
-        $myArr['call_url']      =  env('call_url', 'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID='); 
-        $myArr['g_pay'] =  'sportsfight.in-1@okaxis';
-        $myArr['min_deposit'] = env('min_deposit',10);
+        $myArr['pmid']          =   env('paytm_mid');
+        $myArr['call_url']      =   env('paytm_call_back_url'); 
+        $myArr['g_pay']         =   env('gpay_id');
+        $myArr['min_deposit']   =   env('min_deposit',10);
 
         return response()->json(
             [
                 'min_deposit'   =>  env('min_deposit',10),
-                'pmid'          =>  env('paytm_mid','xmHOCa32667710380797'),
-                'call_url'      =>  env('call_url', 'https://sportsfight.in/api/v2/paymentCallback?ORDER_ID='),
-                'g_pay'         =>  'sportsfight.in-1@okaxis',
+                'pmid'          =>  env('paytm_mid'),
+                'call_url'      =>  env('paytm_call_back_url'),
+                'g_pay'         =>  env('gpay_id'),
                 "status"       => true,
                 "code"         => 200,
                 "walletInfo"=>$wallet[0]??$myArr
@@ -4705,7 +4698,7 @@ class ApiController extends BaseController
                                 'payment_type_string' => 'Prize',
                                 'amount'            =>  $item->prize_amount,
                                 'prize_distributed_id' => $item->id,
-                                'payment_mode'      =>  'sf',
+                                'payment_mode'      => env('company_name'),
                                 'payment_details'   =>  json_encode($item),
                                 'payment_status'    =>  'success',
                                 'match_id'          =>  $item->match_id,
@@ -4912,7 +4905,7 @@ class ApiController extends BaseController
             $data = [
                 "success"=>"1",
                 "msg"=>"Image uplaoded successfully",
-                "imageurl"=> 'https://api.sportsfight.in/storage/uploads/'. $photo_name
+                "imageurl"=> env('image_upload_path').'/'. $photo_name
             ];
         }
         else
@@ -4991,9 +4984,6 @@ class ApiController extends BaseController
 
             $url =  $this->createImage($request->get('image_bytes'),$userId,$documentsType);
         }
-        //echo "storagePath".$storagePath;
-
-        // $path = public_path('upload/itsolutionstuff.com');
 
         if(!File::isDirectory($storagePath)){
             File::makeDirectory($storagePath, 0777, true, true);
@@ -5012,14 +5002,13 @@ class ApiController extends BaseController
 
     }
 
-    public function sendNotification($token, $data,$notification=null){
-     
-        $serverLKey = 'AIzaSyAFIO8uE_q7vdcmymsxwmXf-olotQmOCgE';
-        $fcmUrl = 'https://fcm.googleapis.com/fcm/send';
+    public function sendNotification($token, $data,$notification=null)
+    { 
+        $serverLKey = env('serverLKey');
+        $fcmUrl     = env('fcmUrl');
+        $extraNotificationData = $data;
 
-       $extraNotificationData = $data;
-
-       if(is_array($token)){
+        if(is_array($token)){
             $fcmNotification = [
                'registration_ids' => $token, //multple token array
               // 'to' => $token, //single token
@@ -5057,7 +5046,7 @@ class ApiController extends BaseController
     }
 
     public function notifyToAdmin(){
-        $user_email = [env('admin2_email','kroy.aws@gmail.com')];
+        $user_email = [env('admin1_email')];
         $user = User::whereIn('email',$user_email)->get();
         foreach ($user as $key => $result) {
             $data = [
@@ -5758,7 +5747,7 @@ class ApiController extends BaseController
                                 $wt->payment_type       = 7;  
                                 $wt->payment_type_string = "Refunded";
                                 $wt->transaction_id     = $transaction_id;
-                                $wt->payment_mode       = 'Sportsfight';    
+                                $wt->payment_mode       = env('company_name');    
                                 $wt->payment_status     = "success";
                                 $wt->debit_credit_status = "+";   
                                 $wt->save();
@@ -5933,7 +5922,7 @@ class ApiController extends BaseController
                 $wt->user_id = $user->id;
                 $wt->payment_type = 5;
                 $wt->payment_type_string = 'withdraw';
-                $wt->payment_mode = 'sf';
+                $wt->payment_mode = env('company_name');
                 $wt->payment_details = json_encode($request->all());
                 $wt->payment_status  = 'request';
                 $wt->transaction_id = time().'WDL'.$user->id;
@@ -6025,12 +6014,12 @@ class ApiController extends BaseController
     public function paymentCallback(Request $request)
     {
        // $data['paytm'] = json_encode($request->all());
-        $data['user_id'] =   $request->user_id;
-        $data['email'] =   $request->email;
+        $data['user_id']        =   $request->user_id;
+        $data['email']          =   $request->email;
         $data['deposit_amount'] =   $request->deposit_amount;
         $data['transaction_id'] =   $request->transaction_id;
         $data['payment_mode']   =   $request->payment_mode;
-        $data['payment_status']   =   $request->payment_status;
+        $data['payment_status'] =   $request->payment_status;
             
         \DB::table('paytm')->insert($data);
     }
@@ -6094,18 +6083,6 @@ class ApiController extends BaseController
                 ]
             );
     }
-
-    public function detectDevice(Request $request){
-
-        try{
-            
-
-        }catch(\Exception $e){
-
-        }
-
-    }
-
     /*
     * Player Stat
     */
@@ -6335,7 +6312,7 @@ class ApiController extends BaseController
                 $wt->payment_type   =   8;
                 $wt->payment_type_string = 'Affiliate Commission';
                 $wt->transaction_id =   $contest->match_id.'S'.$contest->id.'F'.$user->id;
-                $wt->payment_mode   =   'sf';
+                $wt->payment_mode   =   env('company_name');
                 $wt->payment_status =   'Success';
                 $wt->debit_credit_status = "+";
                 //dd($wt);
@@ -6376,6 +6353,3 @@ class ApiController extends BaseController
         }
     }
 }
-
-
-

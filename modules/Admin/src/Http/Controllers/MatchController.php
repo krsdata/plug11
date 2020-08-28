@@ -93,7 +93,7 @@ class MatchController extends Controller {
                                 $wt->payment_type       = 7;  
                                 $wt->payment_type_string = "Refunded";
                                 $wt->transaction_id     = $transaction_id;
-                                $wt->payment_mode       = 'Sportsfight';    
+                                $wt->payment_mode       = env('company_name');   
                                 $wt->payment_status     = "success";
                                 $wt->debit_credit_status = "+";   
                                 $wt->save();
@@ -286,7 +286,7 @@ class MatchController extends Controller {
                             $wt->payment_type       = 7;  
                             $wt->payment_type_string = "Refunded";
                             $wt->transaction_id     = $transaction_id;
-                            $wt->payment_mode       = 'Sportsfight';    
+                            $wt->payment_mode       = env('company_name');    
                             $wt->payment_status     = "success";
                             $wt->debit_credit_status = "+";   
                             $wt->save();
@@ -333,8 +333,8 @@ class MatchController extends Controller {
 
                     $email_content = [ //
                         'receipent_email'=> $item->email,
-                        'subject'=> 'Sportsfight | Prize',
-                        'greeting'=> 'SportsFight',
+                        'subject'=> env('company_name').' | Prize',
+                        'greeting'=> env('company_name'),
                         'first_name'=> ucfirst($item->name),
                         'content' => 'You have won the prize of Rs.<b>'.$item->prize_amount.'</b> for the <b>'.$match->title.'</b> match.',
                         'rank' => $item->rank
@@ -343,7 +343,7 @@ class MatchController extends Controller {
                     $helper = new Helper;
                     $m = $helper->sendNotificationMail($email_content,'prize'); 
                 }
-                 
+                    
                 \DB::table('prize_distributions')->where('id',$item->id)->update(['email_trigger'=>1]);  
                 }); 
         return  Redirect::to(route('match','search='.$match_id.'&email=true'));

@@ -44,7 +44,7 @@ class UserController extends BaseController
     public $smsUrl;
     public function __construct(Request $request) {
         // SMS Url
-        $this->smsUrl = "https://sms.waysms.in/api/api_http.php";
+        $this->smsUrl = env('smsUrl');
         /*APK URL*/
         $apk_updates = \DB::table('apk_updates')->orderBy('id','desc')->first();
         $this->download_link = $apk_updates->url??null;
@@ -90,72 +90,9 @@ class UserController extends BaseController
         $this->signup_bonus = $signup_bonus->amount??100;
         
     }
-
-    public function inviteUser(Request $request,User $inviteUser)
-    {
-        $messages = [
-            'user_id.required' => 'Invalid User id',
-            'email.required' => 'Provide email id'
-
-        ];
-        $validator = Validator::make($request->all(), [
-            'user_id' => 'required',
-            'email' => 'required|email'
-        ],$messages);
-
-        $user_id = $request->get('user_id');
-        $invited_user = User::find($user_id);
-        // Return Error Message
-        if ($validator->fails() || $invited_user ==null) {
-            $error_msg =[];
-            foreach ( $validator->messages()->all() as $key => $value) {
-                array_push($error_msg, $value);
-            }
-            return Response::json(array(
-                    'status' => false,
-                    "code"=> 201,
-                    'message' => $error_msg??'Opps! This user is not available'
-                )
-            );
-        }
-
-        $user_first_name = $invited_user->name ;
-
-        $user_email = $request->input('email');
-
-        /** --Send Mail after Sign Up-- **/
-
-        $user_data     = User::find($user_id);
-        $sender_name   = $user_data->name;
-        $invited_by    = $user_data->name==null?$invited_user->first_name.' '.$invited_user->last_name:$user_data->name;
-        $referal_code  = $user_data->user_name;
-        $receipent_name = "Hi,";
-        $subject       = ucfirst($sender_name)." has invited you to join playing11.live";
-
-        $email_content = [
-            'receipent_email'=> $user_email,
-            'subject'=>$subject,
-            'receipent_name'=>$receipent_name,
-            'invite_by'=>$invited_by,
-            'download_link' => $this->download_link,
-            'referal_code' => $referal_code
-        ];
-
-        $helper = new Helper;
-
-        $invite_notification_mail = $helper->sendNotificationMail($email_content,'invite_notification_mail');
-
-        //$user->save();
-
-        return  response()->json([
-                "status"=>1,
-                "code"=> 200,
-                "message"=>"You've invited your colleague, nice work!",
-                'data' => ['receipentEmail'=>$user_email]
-            ]
-        );
-    }
-
+    /*
+    Generate User
+    */
     public function generateUserName(){
         $uname =  Helper::generateRandomString(8);
         $is_user = 1;
@@ -167,7 +104,9 @@ class UserController extends BaseController
         }
         return $uname;
     }
-
+    /*
+    Generate Referral Code
+    */
     public function generateReferralCode(){
         $referal_code =  Helper::generateRandomString(5);
         $is_user = 1;
@@ -179,7 +118,9 @@ class UserController extends BaseController
         }
         return $referal_code;
     }
-
+    /*
+        Verify Docs
+    */
     public function verifyDocument(Request $request){
 
         $user = User::find($request->user_id);
@@ -349,7 +290,7 @@ class UserController extends BaseController
             $wallet_trns['payment_type']    =  2;
             $wallet_trns['payment_type_string'] = "Referral";
             $wallet_trns['transaction_id']  = time().'-'.$refer_by->id??null;
-            $wallet_trns['payment_mode']    = "playing11.live";
+            $wallet_trns['payment_mode']    = env('company_name');
             $wallet_trns['payment_details'] = json_encode($wallet_trns);
             $wallet_trns['payment_status']  = "success";
 
@@ -474,7 +415,7 @@ class UserController extends BaseController
             $wallet_trns['payment_type']    =  1;
             $wallet_trns['payment_type_string'] = "Bonus";
             $wallet_trns['transaction_id']  = time().'-'.$user->id??null;
-            $wallet_trns['payment_mode']    = "playing11.live";
+            $wallet_trns['payment_mode']    = env('company_name');
             $wallet_trns['payment_details'] = json_encode($wallet_trns);
             $wallet_trns['payment_status']  = "success";
 
@@ -496,7 +437,7 @@ class UserController extends BaseController
         $user->phone            = $request->phone;
         $user->save();
 
-        $token = $user->createToken('playing11.live')->accessToken;
+        $token = $user->createToken(env('company_name'))->accessToken;
         $user_data['referal_code']     =  $user->user_name;
         $user_data['user_id']          =  $user->id;
         $user_data['name']             =  $user->name;
@@ -505,11 +446,11 @@ class UserController extends BaseController
         $user_data['usable_amount']    =  (float)$wallet->usable_amount;
         $user_data['mobile_number']    =  ($user->phone==null)?$user->mobile_number:$user->phone;
 
-        $subject = "Welcome to playing11.live! Verify your email address to get started";
+        $subject = "Welcome to ".env('company_name')."! Verify your email address to get started";
         $email_content = [
             'receipent_email'=> $request->input('email'),
             'subject'=>     $subject,
-            'greeting'=>    'playing11.live',
+            'greeting'=>    env('company_name'),
             'first_name'=> $request->input('name')??$request->input('first_name')
         ];
 
@@ -557,7 +498,7 @@ class UserController extends BaseController
             $wallet_trns['payment_type']    =  2;
             $wallet_trns['payment_type_string'] = "Referral";
             $wallet_trns['transaction_id']  = time().'-'.$refer_by->id??null;
-            $wallet_trns['payment_mode']    = "playing11.live";
+            $wallet_trns['payment_mode']    = env('company_name');
             $wallet_trns['payment_details'] = json_encode($wallet_trns);
             $wallet_trns['payment_status']  = "success";
 
@@ -715,10 +656,10 @@ class UserController extends BaseController
         if($refer_by){
             $ref = $request->referral_code;
         }else{
-            $refer_by = User::where('referal_code','PLAYING11')
-                    ->where('block_referral',0)
-                    ->first();
-            $ref= "PLAYING11";        
+            $refer_by = User::where('referal_code',env('company_name'))
+                        ->where('block_referral',0)
+                        ->first();
+            $ref    = env('company_name');       
         }            
            
         if($refer_by && $user)
@@ -735,7 +676,7 @@ class UserController extends BaseController
             $wallet_trns['payment_type']    =  2;
             $wallet_trns['payment_type_string'] = "Referral Bonus";
             $wallet_trns['transaction_id']  = time().'-'.$refer_by->id??null;
-            $wallet_trns['payment_mode']    = "playing11.live";
+            $wallet_trns['payment_mode']    = env('company_name');
             $wallet_trns['payment_details'] = json_encode($wallet_trns);
             $wallet_trns['payment_status']  = "success";
 
@@ -856,7 +797,7 @@ class UserController extends BaseController
                         return array(
                             'status' => false,
                             'code' => 420,
-                            'message' => 'Your Account is disabled.To activate write an email at info@playing11.live'
+                            'message' => 'Your Account is disabled.To activate write an email at '.env('company_email')
                             );
                     }
 
@@ -1017,7 +958,7 @@ class UserController extends BaseController
                         $wallet_trns['payment_type']    =  1;
                         $wallet_trns['payment_type_string'] = "Bonus";
                         $wallet_trns['transaction_id']  = time().'-'.$user->id??null;
-                        $wallet_trns['payment_mode']    = "playing11.live";
+                        $wallet_trns['payment_mode']    = env('company_name');
                         $wallet_trns['payment_details'] = json_encode($wallet_trns);
                         $wallet_trns['payment_status']  = "success";
 
@@ -1095,12 +1036,9 @@ class UserController extends BaseController
             $token 	= $usermodel->createToken('token')->accessToken;
         }
         
-        $apk_updates = \DB::table('apk_updates')->orderBy('id','desc')->first();
-        $data['apk_url'] =  'https://playing11.live/apk'??$apk_updates->url;
-        $data['pmid']    =  'kroy';
-        
-        $data['call_url']   =  'https://playing11.live/api/v2/paymentCallback?ORDER_ID='; 
-        $data['g_pay'] =  'playing11.live@okaxis';
+        $data['apk_url']    =  env('apk_url');
+        $data['call_url']   =  env('paytm_call_back_url'); 
+        $data['g_pay']      =  env('gpay_id');
         
         if($data){
             $server = [
@@ -1122,29 +1060,28 @@ class UserController extends BaseController
                 ->updateOrInsert(['user_id'=>$user_id],$server);
 
            // $data['user_request'] = $request->all();
-            $data['name'] = $usermodel->name;
-            $data['email'] = $usermodel->email;
-            $data['user_id'] = $usermodel->user_name;
-            $data['team_name'] = $usermodel->team_name;
+            $data['name']       = $usermodel->name;
+            $data['email']      = $usermodel->email;
+            $data['user_id']    = $usermodel->user_name;
+            $data['team_name']  = $usermodel->team_name;
             $data['mobile_number'] = $usermodel->mobile_number;
 
             return response()->json([
-                'pmid'    =>  env('paytm_mid','xmHOCa32667710380797'),
-                'call_url'   =>  'https://playing11.live/api/v2/paymentCallback?ORDER_ID=', 
-                'g_pay' =>  'playing11.live@okaxis',
-                "status"=>$status,
-               // "is_account_verified" => $usermodel->is_account_verified??0,
+                'pmid'          =>  env('paytm_mid'),
+                'call_url'      =>  env('paytm_call_back_url'), 
+                'g_pay'         =>  env('gpay_id'),
+                "status"        =>  $status,
                 "is_account_verified"=>1,
-                "code"=>$code,
-                "message"=> $message ,
-                'data'=> $data,
-                'token' => $token??Hash::make(1)
+                "code"      =>$code,
+                "message"   => $message ,
+                'data'      => $data,
+                'token'     => $token??Hash::make(1)
             ]);
         }else{
             return response()->json([
-                'pmid'          =>  env('paytm_mid','xmHOCa32667710380797'),
-                'call_url'      =>  'https://playing11.live/api/v2/paymentCallback?ORDER_ID=', 
-                'g_pay'         =>  'playing11.live@okaxis',
+                'pmid'          =>  env('paytm_mid'),
+                'call_url'      =>  env('paytm_call_back_url'), 
+                'g_pay'         =>  env('gpay_id'),
                 "status"        =>  $status,
                 "is_account_verified" => 1, //0 
                 "code"          => $code,
@@ -1200,9 +1137,9 @@ class UserController extends BaseController
 
         $email_content = array(
             'receipent_email'   => $request->input('email'),
-            'subject'           => 'Your playing11 Account Password',
+            'subject'           => 'Your '.env('company_name').' Account Password',
             'name'              => $user->first_name,
-            'greeting'          => 'playing11.live',
+            'greeting'          => env('company_name'),
             'links'             => $links
 
         );
@@ -1426,8 +1363,8 @@ class UserController extends BaseController
 
     public function sendNotification($token, $data){
 
-        $serverLKey = 'AIzaSyAFIO8uE_q7vdcmymsxwmXf-olotQmOCgE';
-        $fcmUrl = 'https://fcm.googleapis.com/fcm/send';
+        $serverLKey = env('serverLKey');
+        $fcmUrl = env('fcmUrl');
 
         $extraNotificationData = $data;
 
@@ -1498,7 +1435,8 @@ class UserController extends BaseController
 
         $data['email'] = $user->email??$request->get('email');
 
-        $urlencode = urldecode("Your verification \n OTP is : ".$otp."\n Notes: playing11.live never calls you asking for OTP.");
+        $company_name = env('company_name');
+        $urlencode = urldecode("Your verification \n OTP is : ".$otp."\n Notes: ".$company_name." never calls you asking for OTP.");
 
         if($request->mobile_number){
             $this->sendSMS($request->mobile_number,$urlencode);
@@ -1520,9 +1458,9 @@ class UserController extends BaseController
         if($user){
             $email_content = [
                 'receipent_email'=> $user->email,
-                'subject'=> 'Playing11.live: Otp Verification',
+                'subject'=> "env('company_name'): Otp Verification",
                 'receipent_name'=> $user->name,
-                'sender_name'=>'playing11.live',
+                'sender_name'=>env('company_name'),
                 'data' => 'Welcome! <br><br>Your verification Otp is : <br><b>'.$otp.'</b>'
             ];
 

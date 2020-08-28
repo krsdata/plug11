@@ -34,11 +34,8 @@ use App\Models\MatchStat;
 use App\Models\PrizeDistribution;
 use App\Models\ReferralCode;
 
-
-
 class PaymentController extends BaseController
 {
-   
     public $token;
     public $date;
 
@@ -53,8 +50,7 @@ class PaymentController extends BaseController
             $request->merge(['user_id'=>$user->id]);    
         }else{
             $request->merge(['user_id'=>null]);
-        }
-       // $uname      = Helper::generateRandomString(); 
+        } 
     } 
   /**
     * Check Repeat Rank;
@@ -315,8 +311,8 @@ class PaymentController extends BaseController
     
     public function sendNotification($tokenList, $data){
         
-        $serverLKey = 'AIzaSyAFIO8uE_q7vdcmymsxwmXf-olotQmOCgE';
-        $fcmUrl = 'https://fcm.googleapis.com/fcm/send';
+        $serverLKey = env('serverLKey');
+        $fcmUrl     = env('fcmUrl');
 
        $extraNotificationData = $data;
 

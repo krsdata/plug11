@@ -33,17 +33,17 @@
         <div class="address col-md-12">
           <i class="icon icon-map-pin border_radius"></i>
           <h4>Visit Us</h4>
-          <p>www.sportsfight.in</p>
+          <p>{{env('company_email')}}</p>
         </div>
         <div class="address second col-md-12">
           <i class="icon icon-envelope border_radius"></i>
           <h4>Email Us</h4>
-          <p><a href="mailto:info@sportsfight.in">info@sportsfight.in</a></p>
+          <p><a href="mailto:{{env('company_name')}}">{{env('company_email')}}</a></p>
         </div>
         <div class="address col-md-12">
           <i class="icon icon-phone border_radius"></i>
           <h4>Call Us</h4>
-          <p>   Mo. No -  xxxxx-xxxx</p>
+          <p>   Mo. No -  {{env('company_phone')}}</p>
 <p></p>
         </div>
       </div>

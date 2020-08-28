@@ -9,7 +9,7 @@
           <div class="col-md-12 ftco-animate text-center" data-scrollax=" properties: { translateY: '70%' }">
             <h1 class="mb-5" data-scrollax="properties: { translateY: '30%', opacity: 1.6 }"><a href="{{url('/')}}">Home </a> | About Us</h1>
             
-            <form action="https://sportsfight.in/public/upload/apk/sportsfight.apk" class="search-location">
+            <form action="{{env('apk_url')}}" class="search-location">
 	        		<div class="row">
 	        			<div class="col-lg align-items-end">
 	        		<input type="image" src="{{url('webmedia/images/download-android-new.png')}}" alt="About Us" align="center" style="height: 60px; margin-top: -30px">
@@ -113,7 +113,7 @@ do not share it with any third party without your consent</p>
               <div class="icon justify-content-center align-items-center d-flex"><span class="flaticon-purse"></span></div>
               <div class="media-body">
                 <h3 class="heading mb-3">Easy to Withdraw</h3>
-                <p>Sportsfight Fantasy League is a dream come true for the users, as they get an excellent
+                <p>{{env('company_name')}} Fantasy League is a dream come true for the users, as they get an excellent
 chance to choose their ideal players alongside you can even earn points by winning
 the contest or a bonus by inviting a friend. After winning users switch to withdraw the
 earnings, with an easy withdrawal request procedure. As soon as the withdrawal
@@ -156,7 +156,7 @@ listings, and you can also check the entry ticket amount.</p>
               <div class="icon justify-content-center align-items-center d-flex"><span>2</span></div>
               <div class="media-body p-md-3">
                 <h3 class="heading mb-3">Create your Best Team</h3>
-                <p class="mb-5"  style="color: #000">Sportsfight gives you an opportunity to organize the best team, choosing from real-life
+                <p class="mb-5"  style="color: #000">{{env('company_name')}} gives you an opportunity to organize the best team, choosing from real-life
 players and get paid for your knowledge & expertise by winning the cash rewards.
 </p>
                 <hr>
@@ -184,7 +184,7 @@ are getting rewarded based on their ranks.</p>
    
     <div class="jumbotron jumbotron-fluid" style="margin: 0px">
           <div class="container center">
-            <h1>Reach us at info@sportsfight.in </h1>
+            <h1>Reach us at {{env('company_email')}} </h1>
             
           </div>
       </div>

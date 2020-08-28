@@ -467,23 +467,7 @@ td[class="buttonContent"] a {
               <!-- The "mc:hideable" is a feature for MailChimp which allows
                                       you disable certain row. It works perfectly for structure.
                                       http://kb.mailchimp.com/article/template-language-creating-editable-content-areas/
-                                -->
-
-			  
-              
-              
-             
-
-              
-      
-             
-            
-              
-            
-              
- 
-    
-              
+                                --> 
               
               
                 <!-- MODULE ROW // -->

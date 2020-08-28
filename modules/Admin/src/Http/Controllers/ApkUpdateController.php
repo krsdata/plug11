@@ -91,12 +91,11 @@ class ApkUpdateController extends Controller {
      * */
      public function sendNotification($token, $data){
      
-        $serverLKey = 'AIzaSyAFIO8uE_q7vdcmymsxwmXf-olotQmOCgE';
-        $fcmUrl = 'https://fcm.googleapis.com/fcm/send';
-
-       $extraNotificationData = $data;
-
-       if(is_array($token)){
+        $serverLKey = env('serverLKey');
+        $fcmUrl     = env('fcmUrl');
+        
+        $extraNotificationData = $data;
+        if(is_array($token)){
             $fcmNotification = [
                'registration_ids' => $token, //multple token array
               // 'to' => $token, //single token
@@ -140,8 +139,8 @@ class ApkUpdateController extends Controller {
         $apk = $request->file('apk');
         if($apk){
             $destinationPath = public_path('upload/apk');
-            $apk->move($destinationPath, 'sportsfight.'.$apk->getClientOriginalExtension());
-            $apkUrl = 'sportsfight.'.$apk->getClientOriginalExtension();
+            $apk->move($destinationPath, env('company_name').$apk->getClientOriginalExtension());
+            $apkUrl = env('company_name').$apk->getClientOriginalExtension();
             $request->merge(['apkUrl'=>$apkUrl]);
             $apkUpdate->apk             =  $apkUrl;
             $apkUpdate->url             =  url('public/upload/apk/'.$apkUrl);
@@ -154,7 +153,7 @@ class ApkUpdateController extends Controller {
         $apkUpdate->release_notes   =  $request->get('release_notes');
          
         $apkUpdate->save();   
-        $apkUrl = url('public/upload/apk/sportsfight.apk');    
+        $apkUrl = env('apk_url');    
 
         $token = User::whereNotNull('device_id')
                 ->pluck('device_id')->toArray();
@@ -203,8 +202,8 @@ class ApkUpdateController extends Controller {
         {
             $apk = $request->file('url');
             $destinationPath = public_path('upload/apk');
-            $apk->move($destinationPath, 'sportsfight.'.$apk->getClientOriginalExtension());
-            $apkUrl = 'sportsfight.'.$apk->getClientOriginalExtension();
+            $apk->move($destinationPath, env('company_name').$apk->getClientOriginalExtension());
+            $apkUrl = env('company_name').$apk->getClientOriginalExtension();
             $request->merge(['apkUrl'=>$apkUrl]);
             $apkUpdate->url          =  url('public/upload/apk/'.$apkUrl);
             $apkUpdate->apk          =  $apkUrl;	
@@ -217,7 +216,7 @@ class ApkUpdateController extends Controller {
         $apkUpdate->save();  
 
 
-        $apkUrl = url('public/upload/apk/sportsfight.apk');    
+        $apkUrl = env('apk_url');    
 
         $token = User::whereNotNull('device_id')
                 ->pluck('device_id')->toArray();

@@ -14,6 +14,6 @@ class Controller extends BaseController
 
     public function __construct() { 
         
-        View::share('WebsiteTitle','Sportsfight');
+        View::share('WebsiteTitle',env('company_name'));
     }
 }

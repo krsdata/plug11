@@ -21,7 +21,7 @@
               <div class="icon justify-content-center align-items-center d-flex"><span class="flaticon-pin"></span></div>
               <div class="media-body">
                 <h3 class="heading mb-3">Easy to Join Contest</h3>
-                <p>Sportsfight Fantasy League allows you to participate in the fantasy sports where you
+                <p>{{env('company_name')}} Fantasy League allows you to participate in the fantasy sports where you
 can quickly level up your performance choosing your dream players. As you are just a
 step away from the contest, So, buy the entry ticket and get yourself enrolled for the
 upcoming contest just in a few clicks.
@@ -34,7 +34,7 @@ upcoming contest just in a few clicks.
               <div class="icon justify-content-center align-items-center d-flex"><span class="flaticon-detective"></span></div>
               <div class="media-body">
                 <h3 class="heading mb-3">High speedy app</h3>
-                <p>Download the Sportsfight app to access exciting features easily. Also, the app is super
+                <p>Download the {{env('company_name')}} app to access exciting features easily. Also, the app is super
 easy to use as it fastens the speed so download it to win your cash rewards a few
 clicks away. Besides this, get instant notifications, offers and promotions in regards to
 your fantasy sport, upcoming contests, dream player, and so forth.</p>
@@ -59,7 +59,7 @@ do not share it with any third party without your consent</p>
               <div class="icon justify-content-center align-items-center d-flex"><span class="flaticon-purse"></span></div>
               <div class="media-body">
                 <h3 class="heading mb-3">Easy to Withdraw</h3>
-                <p>Sportsfight Fantasy League is a dream come true for the users, as they get an excellent
+                <p>{{env('company_name')}} Fantasy League is a dream come true for the users, as they get an excellent
 chance to choose their ideal players alongside you can even earn points by winning
 the contest or a bonus by inviting a friend. After winning users switch to withdraw the
 earnings, with an easy withdrawal request procedure. As soon as the withdrawal
@@ -153,7 +153,7 @@ listings, and you can also check the entry ticket amount.</p>
               <div class="icon justify-content-center align-items-center d-flex"><span>2</span></div>
               <div class="media-body p-md-3">
                 <h3 class="heading mb-3">Create your Best Team</h3>
-                <p class="mb-5"  style="color: #000">Sportsfight gives you an opportunity to organize the best team, choosing from real-life
+                <p class="mb-5"  style="color: #000">{{env('company_name')}} gives you an opportunity to organize the best team, choosing from real-life
 players and get paid for your knowledge & expertise by winning the cash rewards.
 </p>
                 <hr>
@@ -288,7 +288,7 @@ are getting rewarded based on their ranks.</p>
     </section>
     <div class="jumbotron jumbotron-fluid" style="margin: 0px">
           <div class="container center">
-            <h1>Reach us at info@sportsfight.in </h1>
+            <h1>Reach us at {{env('company_email')}} </h1>
             
           </div>
       </div>

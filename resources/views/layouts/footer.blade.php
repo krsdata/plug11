@@ -13,9 +13,9 @@ fan base by keeping a watch over shared posts in the feed. <a href="{{url('about
                 <div class="col-md-4 offset-md-1 footer-contact wow fadeInDown animated footpara " style="visibility: visible; animation-name: fadeInDown;">
                   <h3 style="border-bottom: 2px solid #fff;">Contact</h3>
                   <span style="width: 98px;display: block;border-bottom: 2px solid #fff;margin-top: -4px;"></span>
-                      <p><i class="fa fa-map-marker"></i> Address: Mumbai, Maharastra </p>
-                      <p><i class="fa fa-envelope"></i> Email: <a href="mailto:sportsfight@domain.com">info@sportsfight.in</a></p>
-                      <p><i class="fa fa-skype"></i> Skype: info@sportsfight.in</p>
+                      <p><i class="fa fa-map-marker"></i> Address: {{env('company_address')}}</p>
+                      <p><i class="fa fa-envelope"></i> Email: <a href="mailto:{{env('company_email')}}">{{env('company_email')}}</a></p>
+                      <p><i class="fa fa-skype"></i> Skype: {{env('company_email')}}</p>
                       </div>
                       <div class="col-md-4 footer-links wow fadeInUp animated footpara" style="visibility: visible; animation-name: fadeInUp;">
                         <div class="row">
@@ -30,7 +30,7 @@ fan base by keeping a watch over shared posts in the feed. <a href="{{url('about
                           <div class="col-md-6">
 
                             @foreach($static_page as $key =>  $result)
-                            @if($key > 3)
+                            @if($key > 5)
                             <?php continue; ?>
                             @endif
                             <p><a class="scroll-link" href="{{url($result->slug)}}">{{$result->title}}</a></p>
@@ -70,7 +70,7 @@ fan base by keeping a watch over shared posts in the feed. <a href="{{url('about
 <div class="container-fluid">
           <div class="copyrights">
             <div class="container text-center">
-              <p class="mb-0 py-2">Sportsfight © All rights reserved {{date('Y')}}. </p>
+              <p class="mb-0 py-2">{{env('company_name')}} © All rights reserved {{date('Y')}}. </p>
             </div>
             </div>
         </div>
