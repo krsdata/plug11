@@ -126,20 +126,13 @@ class Handler extends ExceptionHandler
                     ]
                 );
                  exit();
-            } 
+              } 
         }else{
             if(!$request->is('admin/*')){
                 $err = Str::slug($exception->getMessage());
                 $err = ($err=="")?'Page-Not-Found':$err;
                 return redirect('404?error='.$err); 
             }
-        }  
-
-        
-        if ($exception instanceof NotFoundHttpException) { 
-                $err = Str::slug($exception->getMessage());
-                $err = ($err=="")?'Page-Not-Found':$err;
-                return redirect('404?error='.$err);
         }
 
         if ($exception instanceof AuthenticationException) {
